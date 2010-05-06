@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, mic!</string>
+    <string name="app_name">MicDroid</string>
+    <string name="mic_label">Power Button</string>
+    <string name="mic_toggle_off">On</string>
+    <string name="mic_toggle_on">Off</string>
+</resources>
