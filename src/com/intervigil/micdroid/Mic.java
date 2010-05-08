@@ -5,7 +5,6 @@ import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
-import android.media.MediaRecorder.AudioEncoder;
 import android.media.MediaRecorder.AudioSource;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,7 +24,7 @@ public class Mic extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
+        
         ToggleButton powerBtn = (ToggleButton)findViewById(R.id.mic_toggle);
         powerBtn.setOnCheckedChangeListener(mPowerBtnListener);
     }
@@ -65,7 +64,7 @@ public class Mic extends Activity {
     	public void run() {
     		isRunning = true;
     		android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
-    		
+    		    		
     		int bufferSize = AudioRecord.getMinBufferSize(DEFAULT_SAMPLE_RATE, 
     				AudioFormat.CHANNEL_CONFIGURATION_MONO, 
     				AudioFormat.ENCODING_PCM_16BIT) * 4;
@@ -73,13 +72,13 @@ public class Mic extends Activity {
     		recorder = new AudioRecord(AudioSource.MIC, 
     				DEFAULT_SAMPLE_RATE, 
     				AudioFormat.CHANNEL_CONFIGURATION_MONO, 
-    				AudioEncoder.AMR_NB, 
+    				AudioFormat.ENCODING_PCM_16BIT, 
     				bufferSize);
     		
-    		player = new AudioTrack(AudioManager.STREAM_VOICE_CALL, 
+    		player = new AudioTrack(AudioManager.STREAM_MUSIC, 
     				DEFAULT_SAMPLE_RATE, 
     				AudioFormat.CHANNEL_CONFIGURATION_MONO, 
-    				AudioEncoder.AMR_NB , 
+    				AudioFormat.ENCODING_PCM_16BIT, 
     				bufferSize, 
     				AudioTrack.MODE_STREAM);
     		
