@@ -14,7 +14,10 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class Mic extends Activity {
 	
+	
 	private static final int DEFAULT_SAMPLE_RATE = 22050;
+//	private static final int[] KEY_C_MAJOR = new int[] { 1, -1, 1, 1, -1, 1, -1, 1, 1, -1, 1, -1 };
+	private static final char KEY_C_MAJOR = 'c';
 	
 	private Thread micRunnerThread;
 	private MicRunner micRunner;
@@ -32,12 +35,15 @@ public class Mic extends Activity {
     private OnCheckedChangeListener mPowerBtnListener = new OnCheckedChangeListener() {
     	public void onCheckedChanged(CompoundButton btn, boolean isChecked) {
 			if (btn.isChecked()) {
+				AutoTalent.initializeAutoTalent(KEY_C_MAJOR, 0, 0.2f, 1.0f, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0.5f);
 				micRunner = new MicRunner();
 		        micRunnerThread = new Thread(micRunner, "Mic Runner Thread");
 		        
 		        micRunnerThread.start();
 			} else {
 				try {
+					// try to destroy autotalent instance created here
+					
 					micRunner.stopRunning();
 					micRunnerThread.join();
 				} catch (InterruptedException e) {
@@ -65,9 +71,10 @@ public class Mic extends Activity {
     		isRunning = true;
     		android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
     		    		
-    		int bufferSize = AudioRecord.getMinBufferSize(DEFAULT_SAMPLE_RATE, 
-    				AudioFormat.CHANNEL_CONFIGURATION_MONO, 
-    				AudioFormat.ENCODING_PCM_16BIT) * 4;
+//    		int bufferSize = AudioRecord.getMinBufferSize(DEFAULT_SAMPLE_RATE, 
+//    				AudioFormat.CHANNEL_CONFIGURATION_MONO, 
+//    				AudioFormat.ENCODING_PCM_16BIT) * 8;
+    		int bufferSize = 4096;
     		
     		recorder = new AudioRecord(AudioSource.MIC, 
     				DEFAULT_SAMPLE_RATE, 
@@ -84,15 +91,13 @@ public class Mic extends Activity {
     		
     		player.setPlaybackRate(DEFAULT_SAMPLE_RATE);
     		
-    		byte[] playbackBuffer= new byte[bufferSize];
+    		short[] playbackBuffer= new short[bufferSize];
     		recorder.startRecording();
     		player.play();
     		
     		while (isRunning) {
     			recorder.read(playbackBuffer, 0, bufferSize);
-    			
-    			// try to process playbackBuffer here
-    			
+    			processAudioSamples(playbackBuffer);
     			player.write(playbackBuffer, 0, playbackBuffer.length);
     		}
     		
@@ -104,8 +109,8 @@ public class Mic extends Activity {
     		recorder.release();
     	}
     	
-    	private void processAudioSamples(byte[] buffer) {
-    		
+    	private void processAudioSamples(short[] buffer) {
+    		buffer = AutoTalent.processSamples(buffer);
     	}
     }
 }
