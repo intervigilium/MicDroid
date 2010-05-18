@@ -400,10 +400,14 @@ Autotalent * instantiateAutotalent(unsigned long SampleRate) {
   return membvars;
 }
 
+
+  /********************
+   *   THE SETTERS    *
+   ********************/
+
 // Set autotalent key
 void setAutotalentKey(Autotalent * autotalent, char * keyPtr) {
   int* key;
-
   key = calloc(12, sizeof(int));
 
   switch (*keyPtr) {
@@ -436,11 +440,12 @@ void setAutotalentKey(Autotalent * autotalent, char * keyPtr) {
 	  key[AT_Ab] = KEY_D_Ab;
       break;
   }
+
   autotalent->m_pfKey = key;
   __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "A: %d, Bb: %d, B: %d, C: %d, Db: %d, D: %d, Eb: %d, E: %d, F: %d, Gb: %d, G: %d, Ab: %d",
 		  autotalent->m_pfKey[AT_A], autotalent->m_pfKey[AT_Bb], autotalent->m_pfKey[AT_B], autotalent->m_pfKey[AT_C], autotalent->m_pfKey[AT_Db], autotalent->m_pfKey[AT_D], autotalent->m_pfKey[AT_Eb], autotalent->m_pfKey[AT_E], autotalent->m_pfKey[AT_F], autotalent->m_pfKey[AT_Gb], autotalent->m_pfKey[AT_G], autotalent->m_pfKey[AT_Ab]);
-
 }
+
 
 // Set autotalent parameters
 void setAutotalentParameters(Autotalent * autotalent, float * concertA, float * fixedPitch, float * fixedPull,
@@ -480,11 +485,17 @@ void setAutotalentParameters(Autotalent * autotalent, float * concertA, float * 
   autotalent->m_pfLatency = calloc(1, sizeof(long int));
 }
 
+
 // Set input and output buffers
 void setAutotalentBuffers(Autotalent * autotalent, float * inputBuffer, float * outputBuffer) {
 	autotalent->m_pfInputBuffer1 = inputBuffer;
 	autotalent->m_pfOutputBuffer1 = outputBuffer;
 }
+
+
+  /********************
+   *  THE PROCESSOR   *
+   ********************/
 
 // Called every time we get a new chunk of audio
 void runAutotalent(Autotalent * Instance, unsigned long SampleCount) {
@@ -1091,10 +1102,10 @@ void runAutotalent(Autotalent * Instance, unsigned long SampleCount) {
 }
 
 
-
 /********************
  *  THE DESTRUCTOR! *
  ********************/
+
 void cleanupAutotalent(Autotalent* Instance) {
   int ti;
   fft_des(Instance->fmembvars);
@@ -1204,7 +1215,6 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_initializeAutoTal
 JNIEXPORT jbyteArray JNICALL Java_com_intervigil_micdroid_AutoTalent_processSamples
   (JNIEnv* env , jobject obj, jshortArray samples) {
 
-  int i;
   jsize sampleCount = (*env)->GetArrayLength(env, samples);
 
   Autotalent * autotalent = getAutotalentInstance();
