@@ -133,18 +133,6 @@ void fft_inverse(fft_vars* membvars, float* input_re, float* input_im, float* ou
 }
 
 #define CONCERT_A 440
-#define KEY_C_A 1
-#define KEY_C_Bb -1
-#define KEY_C_B 1
-#define KEY_C_C 1
-#define KEY_C_Db -1
-#define KEY_C_D 1
-#define KEY_C_Eb -1
-#define KEY_C_E 1
-#define KEY_C_F 1
-#define KEY_C_Gb -1
-#define KEY_C_G 1
-#define KEY_C_Ab -1
 
 #define AT_A 0
 #define AT_Bb 1
@@ -158,6 +146,32 @@ void fft_inverse(fft_vars* membvars, float* input_re, float* input_im, float* ou
 #define AT_Gb 9
 #define AT_G 10
 #define AT_Ab 11
+
+#define KEY_C_A 1
+#define KEY_C_Bb -1
+#define KEY_C_B 1
+#define KEY_C_C 1
+#define KEY_C_Db -1
+#define KEY_C_D 1
+#define KEY_C_Eb -1
+#define KEY_C_E 1
+#define KEY_C_F 1
+#define KEY_C_Gb -1
+#define KEY_C_G 1
+#define KEY_C_Ab -1
+
+#define KEY_D_A 1
+#define KEY_D_Bb -1
+#define KEY_D_B 1
+#define KEY_D_C -1
+#define KEY_D_Db 1
+#define KEY_D_D 1
+#define KEY_D_Eb -1
+#define KEY_D_E 1
+#define KEY_D_F -1
+#define KEY_D_Gb 1
+#define KEY_D_G 1
+#define KEY_D_Ab -1
 
 
 /*************************
@@ -406,11 +420,23 @@ void setAutotalentKey(Autotalent * autotalent, char * keyPtr) {
       key[AT_Gb] = KEY_C_Gb;
       key[AT_G] = KEY_C_G;
       key[AT_Ab] = KEY_C_Ab;
-
-      autotalent->m_pfKey = key;
 	  break;
-
+    case 'd':
+      key[AT_A] = KEY_D_A;
+	  key[AT_Bb] = KEY_D_Bb;
+	  key[AT_B] = KEY_D_B;
+	  key[AT_C] = KEY_D_C;
+	  key[AT_Db] = KEY_D_Db;
+	  key[AT_D] = KEY_D_D;
+	  key[AT_Eb] = KEY_D_Eb;
+	  key[AT_E] = KEY_D_E;
+	  key[AT_F] = KEY_D_F;
+	  key[AT_Gb] = KEY_D_Gb;
+	  key[AT_G] = KEY_D_G;
+	  key[AT_Ab] = KEY_D_Ab;
+      break;
   }
+  autotalent->m_pfKey = key;
   __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "A: %d, Bb: %d, B: %d, C: %d, Db: %d, D: %d, Eb: %d, E: %d, F: %d, Gb: %d, G: %d, Ab: %d",
 		  autotalent->m_pfKey[AT_A], autotalent->m_pfKey[AT_Bb], autotalent->m_pfKey[AT_B], autotalent->m_pfKey[AT_C], autotalent->m_pfKey[AT_Db], autotalent->m_pfKey[AT_D], autotalent->m_pfKey[AT_Eb], autotalent->m_pfKey[AT_E], autotalent->m_pfKey[AT_F], autotalent->m_pfKey[AT_Gb], autotalent->m_pfKey[AT_G], autotalent->m_pfKey[AT_Ab]);
 
@@ -424,6 +450,7 @@ void setAutotalentParameters(Autotalent * autotalent, float * fixedPitch, float 
 
   // set concert A
   *(autotalent->m_pfTune) = CONCERT_A;
+  __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "Concert A: %f", *(autotalent->m_pfTune));
 
   // set pitch correction parameters
   autotalent->m_pfFixed = fixedPitch;

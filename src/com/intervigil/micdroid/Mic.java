@@ -35,6 +35,7 @@ public class Mic extends Activity {
     private OnCheckedChangeListener mPowerBtnListener = new OnCheckedChangeListener() {
     	public void onCheckedChanged(CompoundButton btn, boolean isChecked) {
 			if (btn.isChecked()) {
+				// TODO: make most of these autotalent options configurable
 				AutoTalent.initializeAutoTalent(KEY_C_MAJOR, 0, 0.2f, 1.0f, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0.5f);
 				micRunner = new MicRunner();
 		        micRunnerThread = new Thread(micRunner, "Mic Runner Thread");
