@@ -7,7 +7,7 @@ public class AutoTalent {
 		System.loadLibrary(AUTOTALENT_LIB);
 	}
 	
-	public static native void initializeAutoTalent(char key, 
+	public static native void initializeAutoTalent(float concertA, char key, 
 			float fixedPitch, float fixedPull, 
 			float correctStrength, float correctSmooth, float pitchShift, float scaleRotate,
 			float lfoDepth, float lfoRate, float lfoShape, float lfoSym, int lfoQuant, 

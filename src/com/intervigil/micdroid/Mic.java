@@ -16,7 +16,7 @@ public class Mic extends Activity {
 	
 	
 	private static final int DEFAULT_SAMPLE_RATE = 22050;
-//	private static final int[] KEY_C_MAJOR = new int[] { 1, -1, 1, 1, -1, 1, -1, 1, 1, -1, 1, -1 };
+	private static final float CONCERT_A = 440.0f;
 	private static final char KEY_C_MAJOR = 'c';
 	
 	private Thread micRunnerThread;
@@ -36,7 +36,7 @@ public class Mic extends Activity {
     	public void onCheckedChanged(CompoundButton btn, boolean isChecked) {
 			if (btn.isChecked()) {
 				// TODO: make most of these autotalent options configurable
-				AutoTalent.initializeAutoTalent(KEY_C_MAJOR, 0, 0.2f, 1.0f, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0.5f);
+				AutoTalent.initializeAutoTalent(CONCERT_A, KEY_C_MAJOR, 0, 0.2f, 1.0f, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0.5f);
 				micRunner = new MicRunner();
 		        micRunnerThread = new Thread(micRunner, "Mic Runner Thread");
 		        

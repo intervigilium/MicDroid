@@ -10,10 +10,10 @@ extern "C" {
 /*
  * Class:     com_intervigil_micdroid_AutoTalent
  * Method:    initializeAutoTalent
- * Signature: (CFFFFFFFFFFIIFF)V
+ * Signature: (FCFFFFFFFFFFIIFF)V
  */
 JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_initializeAutoTalent
-  (JNIEnv *, jclass, jchar, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jint, jint, jfloat, jfloat);
+  (JNIEnv *, jclass, jfloat, jchar, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jint, jint, jfloat, jfloat);
 
 /*
  * Class:     com_intervigil_micdroid_AutoTalent

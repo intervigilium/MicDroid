@@ -404,7 +404,7 @@ Autotalent * instantiateAutotalent(unsigned long SampleRate) {
 void setAutotalentKey(Autotalent * autotalent, char * keyPtr) {
   int* key;
 
-  key = (int *)malloc(sizeof(int)*12);
+  key = calloc(12, sizeof(int));
 
   switch (*keyPtr) {
     case 'c':
@@ -443,13 +443,13 @@ void setAutotalentKey(Autotalent * autotalent, char * keyPtr) {
 }
 
 // Set autotalent parameters
-void setAutotalentParameters(Autotalent * autotalent, float * fixedPitch, float * fixedPull,
+void setAutotalentParameters(Autotalent * autotalent, float * concertA, float * fixedPitch, float * fixedPull,
 						float * correctStrength, float * correctSmooth,float * pitchShift, float * scaleRotate,
 						float * lfoDepth, float * lfoRate, float * lfoShape, float * lfoSym, int * lfoQuant,
 						int * formCorr, float * formWarp, float * mix) {
 
   // set concert A
-  *(autotalent->m_pfTune) = CONCERT_A;
+  autotalent->m_pfTune = concertA;
   __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "Concert A: %f", *(autotalent->m_pfTune));
 
   // set pitch correction parameters
@@ -1179,7 +1179,7 @@ jshort * getShortBuffer(float* floatBuffer, jsize size) {
  ********************/
 
 JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_initializeAutoTalent
-  (JNIEnv* env, jobject obj, jchar key, jfloat fixedPitch, jfloat fixedPull,
+  (JNIEnv* env, jobject obj, jfloat concertA, jchar key, jfloat fixedPitch, jfloat fixedPull,
 		  jfloat correctStrength, jfloat correctSmooth, jfloat pitchShift, jfloat scaleRotate,
 		  jfloat lfoDepth, jfloat lfoRate, jfloat lfoShape, jfloat lfoSym, jint lfoQuant,
 		  jint formCorr, jfloat formWarp, jfloat mix) {
@@ -1192,7 +1192,7 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_initializeAutoTal
 
   __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "setting parameters");
 
-  setAutotalentParameters(autotalent, &fixedPitch, &fixedPull,
+  setAutotalentParameters(autotalent, &concertA, &fixedPitch, &fixedPull,
   						&correctStrength, &correctSmooth, &pitchShift, &scaleRotate,
   						&lfoDepth, &lfoRate, &lfoShape, &lfoSym, &lfoQuant,
   						&formCorr, &formWarp, &mix);
