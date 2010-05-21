@@ -97,6 +97,7 @@ public class Mic extends Activity {
     		player.play();
     		
     		while (isRunning) {
+    			// TODO: split this into two separate threads, one for read and one for write
     			recorder.read(playbackBuffer, 0, bufferSize);
     			processAudioSamples(playbackBuffer);
     			player.write(playbackBuffer, 0, playbackBuffer.length);
@@ -111,7 +112,7 @@ public class Mic extends Activity {
     	}
     	
     	private void processAudioSamples(short[] buffer) {
-    		buffer = AutoTalent.processSamples(buffer);
+    		 AutoTalent.processSamples(buffer);
     	}
     }
 }

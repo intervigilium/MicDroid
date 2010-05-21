@@ -1160,14 +1160,14 @@ float * getFloatBuffer(JNIEnv* env, jshortArray shortArray) {
 
   int i;
   jsize size = (*env)->GetArrayLength(env, shortArray);
-  jshort* shortBuffer = (*env)->GetShortArrayElements(env, shortArray, 0);
-  float* floatBuffer = (float *)malloc(sizeof(float) * size);
+  short* shortBuffer = (short *)(*env)->GetPrimitiveArrayCritical(env, shortArray, 0);
+  float* floatBuffer = calloc(size, sizeof(float));
 
   for (i = 0; i < size; i++) {
     floatBuffer[i] = ((float)(shortBuffer[i])/32767.0f);
   }
 
-  (*env)->ReleaseShortArrayElements(env, shortArray, shortBuffer, 0);
+  (*env)->ReleasePrimitiveArrayCritical(env, shortArray, shortBuffer, 0);
 
   return floatBuffer;
 }
@@ -1175,7 +1175,7 @@ float * getFloatBuffer(JNIEnv* env, jshortArray shortArray) {
 
 jshort * getShortBuffer(float* floatBuffer, jsize size) {
   int i;
-  jshort* shortBuffer = (jshort *)malloc(sizeof(jshort) * size);
+  jshort* shortBuffer = calloc(size, sizeof(jshort));
 
   for (i = 0; i < size; i++) {
 	  shortBuffer[i] = (short)(floatBuffer[i]*32767.0f);
@@ -1212,28 +1212,26 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_initializeAutoTal
 }
 
 
-JNIEXPORT jbyteArray JNICALL Java_com_intervigil_micdroid_AutoTalent_processSamples
+JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_processSamples
   (JNIEnv* env , jobject obj, jshortArray samples) {
 
   jsize sampleCount = (*env)->GetArrayLength(env, samples);
 
   Autotalent * autotalent = getAutotalentInstance();
 
-  float* inputBuffer = getFloatBuffer(env, samples);
-  float* outputBuffer = (float *)malloc(sizeof(float) * sampleCount);
+  float* sampleBuffer = getFloatBuffer(env, samples);
 
-  setAutotalentBuffers(autotalent, inputBuffer, outputBuffer);
+  setAutotalentBuffers(autotalent, sampleBuffer, sampleBuffer);
 
   __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "autotalent run starting for %d samples", sampleCount);
 
   runAutotalent(autotalent, sampleCount);
 
-  __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "autotalent run completed");
-
+  // copy results back up to java array
   jshortArray jOutputArray = (*env)->NewShortArray(env, sampleCount);
-  (*env)->SetShortArrayRegion(env, jOutputArray, 0, sampleCount, getShortBuffer(outputBuffer, sampleCount));
+  (*env)->SetShortArrayRegion(env, samples, 0, sampleCount, getShortBuffer(sampleBuffer, sampleCount));
 
-  __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "returning output buffer");
-  return jOutputArray;
+  // de-allocate sampleBuffer here??
+  __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "autotalent run completed");
 }
 
