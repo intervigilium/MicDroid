@@ -14,7 +14,6 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class Mic extends Activity {
 	
-	
 	private static final int DEFAULT_SAMPLE_RATE = 22050;
 	private static final float CONCERT_A = 440.0f;
 	private static final char KEY_C_MAJOR = 'c';
@@ -30,27 +29,49 @@ public class Mic extends Activity {
         
         ToggleButton powerBtn = (ToggleButton)findViewById(R.id.mic_toggle);
         powerBtn.setOnCheckedChangeListener(mPowerBtnListener);
+        
+        AutoTalent.instantiateAutoTalent(DEFAULT_SAMPLE_RATE);
+    }
+    
+    @Override
+    public void onDestroy() {
+    	if (micRunner != null) {
+    		micRunner.stopRunning();
+    	}
+    	AutoTalent.destroyAutoTalent();
+		((ToggleButton)findViewById(R.id.mic_toggle)).setChecked(false);
+		
+		super.onDestroy();
+    }
+    
+    @Override
+    public void onPause() {
+    	if (micRunner != null) {
+    		micRunner.stopRunning();
+    	}
+    	AutoTalent.destroyAutoTalent();
+		((ToggleButton)findViewById(R.id.mic_toggle)).setChecked(false);
+		
+		super.onPause();
+    }
+    
+    @Override
+    public void onResume() {
+    	AutoTalent.instantiateAutoTalent(DEFAULT_SAMPLE_RATE);
+    	
+    	super.onResume();
     }
     
     private OnCheckedChangeListener mPowerBtnListener = new OnCheckedChangeListener() {
     	public void onCheckedChanged(CompoundButton btn, boolean isChecked) {
 			if (btn.isChecked()) {
-				// TODO: make most of these autotalent options configurable
-				AutoTalent.initializeAutoTalent(CONCERT_A, KEY_C_MAJOR, 0, 0.2f, 1.0f, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0.5f);
 				micRunner = new MicRunner();
-		        micRunnerThread = new Thread(micRunner, "Mic Runner Thread");
-		        
+		        micRunnerThread = new Thread(micRunner, "Mic Runner Thread");      
 		        micRunnerThread.start();
 			} else {
-				try {
-					// try to destroy autotalent instance created here
-					
-					micRunner.stopRunning();
-					micRunnerThread.join();
-				} catch (InterruptedException e) {
-					Log.e(getPackageName(), "Thread interrupted during join!", e);
-					e.printStackTrace();
-				}
+				micRunner.stopRunning();
+				micRunnerThread = null;
+				micRunner = null;
 			}
 		}
     };
@@ -71,11 +92,13 @@ public class Mic extends Activity {
     	public void run() {
     		isRunning = true;
     		android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
-    		    		
-//    		int bufferSize = AudioRecord.getMinBufferSize(DEFAULT_SAMPLE_RATE, 
-//    				AudioFormat.CHANNEL_CONFIGURATION_MONO, 
-//    				AudioFormat.ENCODING_PCM_16BIT) * 8;
-    		int bufferSize = 4096;
+    		    
+    		// TODO: make most of these autotalent options configurable
+    		AutoTalent.initializeAutoTalent(CONCERT_A, KEY_C_MAJOR, 0, 0.2f, 1.0f, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0.5f);
+
+    		int bufferSize = AudioRecord.getMinBufferSize(DEFAULT_SAMPLE_RATE, 
+    				AudioFormat.CHANNEL_CONFIGURATION_MONO, 
+    				AudioFormat.ENCODING_PCM_16BIT) * 3;
     		
     		recorder = new AudioRecord(AudioSource.MIC, 
     				DEFAULT_SAMPLE_RATE, 
@@ -102,6 +125,8 @@ public class Mic extends Activity {
     			processAudioSamples(playbackBuffer);
     			player.write(playbackBuffer, 0, playbackBuffer.length);
     		}
+    		
+    		playbackBuffer = null;
     		
     		player.stop();
     		player.flush();

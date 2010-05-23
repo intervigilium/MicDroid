@@ -1141,16 +1141,26 @@ void cleanupAutotalent(Autotalent* Instance) {
 
 Autotalent * instance;
 
-Autotalent * getAutotalentInstance() {
-	if (instance == NULL) {
-		// TODO: make this the same constant elsewhere
-		instance = instantiateAutotalent(22050);
-	}
-	else {
-		return instance;
-	}
+void instantiateAutotalentInstance(unsigned long sampleRate) {
+  if (instance != NULL) {
+	__android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "cleaned up old autotalent instance %d", instance);
+    cleanupAutotalent(instance);
+  }
+  instance = instantiateAutotalent(sampleRate);
+  __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "instantiated autotalent %d with sample rate: %d", instance, sampleRate);
 }
 
+Autotalent * getAutotalentInstance() {
+  // warning: can return null!!
+  return instance;
+}
+
+void freeAutotalentInstance() {
+  if (instance != NULL) {
+	cleanupAutotalent(instance);
+	instance = NULL;
+  }
+}
 
 /********************
  * HELPER FUNCTIONS *
@@ -1189,8 +1199,16 @@ jshort * getShortBuffer(float* floatBuffer, jsize size) {
  *  JNI INTERFACE   *
  ********************/
 
+JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_instantiateAutoTalent
+  (JNIEnv* env, jclass class, jint sampleRate) {
+
+  // convert jint to unsigned long?
+  instantiateAutotalentInstance(sampleRate);
+}
+
+
 JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_initializeAutoTalent
-  (JNIEnv* env, jobject obj, jfloat concertA, jchar key, jfloat fixedPitch, jfloat fixedPull,
+  (JNIEnv* env, jclass class, jfloat concertA, jchar key, jfloat fixedPitch, jfloat fixedPull,
 		  jfloat correctStrength, jfloat correctSmooth, jfloat pitchShift, jfloat scaleRotate,
 		  jfloat lfoDepth, jfloat lfoRate, jfloat lfoShape, jfloat lfoSym, jint lfoQuant,
 		  jint formCorr, jfloat formWarp, jfloat mix) {
@@ -1213,7 +1231,7 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_initializeAutoTal
 
 
 JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_processSamples
-  (JNIEnv* env , jobject obj, jshortArray samples) {
+  (JNIEnv* env , jclass class, jshortArray samples) {
 
   jsize sampleCount = (*env)->GetArrayLength(env, samples);
 
@@ -1231,7 +1249,18 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_processSamples
   jshortArray jOutputArray = (*env)->NewShortArray(env, sampleCount);
   (*env)->SetShortArrayRegion(env, samples, 0, sampleCount, getShortBuffer(sampleBuffer, sampleCount));
 
-  // de-allocate sampleBuffer here??
+  free(sampleBuffer);
+
   __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "autotalent run completed");
 }
 
+
+JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_destroyAutoTalent
+  (JNIEnv* env, jclass class) {
+
+  __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "destroying autotalent!");
+
+  freeAutotalentInstance();
+
+  __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "freed up autotalent instance");
+}

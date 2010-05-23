@@ -9,6 +9,14 @@ extern "C" {
 #endif
 /*
  * Class:     com_intervigil_micdroid_AutoTalent
+ * Method:    instantiateAutoTalent
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_instantiateAutoTalent
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_intervigil_micdroid_AutoTalent
  * Method:    initializeAutoTalent
  * Signature: (FCFFFFFFFFFFIIFF)V
  */
@@ -22,6 +30,14 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_initializeAutoTal
  */
 JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_processSamples
   (JNIEnv *, jclass, jshortArray);
+
+/*
+ * Class:     com_intervigil_micdroid_AutoTalent
+ * Method:    destroyAutoTalent
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_destroyAutoTalent
+  (JNIEnv *, jclass);
 
 #ifdef __cplusplus
 }

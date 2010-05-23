@@ -7,6 +7,8 @@ public class AutoTalent {
 		System.loadLibrary(AUTOTALENT_LIB);
 	}
 	
+	public static native void instantiateAutoTalent(int sampleRate);
+	
 	public static native void initializeAutoTalent(float concertA, char key, 
 			float fixedPitch, float fixedPull, 
 			float correctStrength, float correctSmooth, float pitchShift, float scaleRotate,
@@ -14,4 +16,6 @@ public class AutoTalent {
 			int formCorr, float formWarp, float mix);
 	
 	public static native void processSamples(short[] samples);
+	
+	public static native void destroyAutoTalent();
 }
