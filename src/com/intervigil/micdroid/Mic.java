@@ -14,6 +14,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class Mic extends Activity {
 	
+	private static final int DEFAULT_BUFFER_SIZE = 4096;
 	private static final int DEFAULT_SAMPLE_RATE = 22050;
 	private static final float CONCERT_A = 440.0f;
 	private static final char KEY_C_MAJOR = 'c';
@@ -29,19 +30,16 @@ public class Mic extends Activity {
         
         ToggleButton powerBtn = (ToggleButton)findViewById(R.id.mic_toggle);
         powerBtn.setOnCheckedChangeListener(mPowerBtnListener);
-        
-        AutoTalent.instantiateAutoTalent(DEFAULT_SAMPLE_RATE);
     }
     
     @Override
-    public void onDestroy() {
+    public void onStop() {
     	if (micRunner != null) {
     		micRunner.stopRunning();
     	}
     	AutoTalent.destroyAutoTalent();
-		((ToggleButton)findViewById(R.id.mic_toggle)).setChecked(false);
 		
-		super.onDestroy();
+		super.onStop();
     }
     
     @Override
@@ -50,13 +48,14 @@ public class Mic extends Activity {
     		micRunner.stopRunning();
     	}
     	AutoTalent.destroyAutoTalent();
-		((ToggleButton)findViewById(R.id.mic_toggle)).setChecked(false);
-		
+			
 		super.onPause();
     }
     
     @Override
     public void onResume() {
+    	((ToggleButton)findViewById(R.id.mic_toggle)).setChecked(false);
+    	
     	AutoTalent.instantiateAutoTalent(DEFAULT_SAMPLE_RATE);
     	
     	super.onResume();
@@ -95,35 +94,31 @@ public class Mic extends Activity {
     		    
     		// TODO: make most of these autotalent options configurable
     		AutoTalent.initializeAutoTalent(CONCERT_A, KEY_C_MAJOR, 0, 0.2f, 1.0f, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0.5f);
-
-    		int bufferSize = AudioRecord.getMinBufferSize(DEFAULT_SAMPLE_RATE, 
-    				AudioFormat.CHANNEL_CONFIGURATION_MONO, 
-    				AudioFormat.ENCODING_PCM_16BIT) * 3;
     		
-    		recorder = new AudioRecord(AudioSource.MIC, 
+    		recorder = new AudioRecord(AudioSource.MIC,
     				DEFAULT_SAMPLE_RATE, 
     				AudioFormat.CHANNEL_CONFIGURATION_MONO, 
     				AudioFormat.ENCODING_PCM_16BIT, 
-    				bufferSize);
+    				DEFAULT_BUFFER_SIZE);
     		
     		player = new AudioTrack(AudioManager.STREAM_MUSIC, 
     				DEFAULT_SAMPLE_RATE, 
     				AudioFormat.CHANNEL_CONFIGURATION_MONO, 
     				AudioFormat.ENCODING_PCM_16BIT, 
-    				bufferSize, 
+    				DEFAULT_BUFFER_SIZE, 
     				AudioTrack.MODE_STREAM);
     		
     		player.setPlaybackRate(DEFAULT_SAMPLE_RATE);
     		
-    		short[] playbackBuffer= new short[bufferSize];
+    		short[] playbackBuffer= new short[DEFAULT_BUFFER_SIZE];
     		recorder.startRecording();
     		player.play();
     		
     		while (isRunning) {
     			// TODO: split this into two separate threads, one for read and one for write
-    			recorder.read(playbackBuffer, 0, bufferSize);
+    			recorder.read(playbackBuffer, 0, DEFAULT_BUFFER_SIZE);
     			processAudioSamples(playbackBuffer);
-    			player.write(playbackBuffer, 0, playbackBuffer.length);
+    			player.write(playbackBuffer, 0, DEFAULT_BUFFER_SIZE);
     		}
     		
     		playbackBuffer = null;
@@ -131,9 +126,11 @@ public class Mic extends Activity {
     		player.stop();
     		player.flush();
     		player.release();
+    		player = null;
     		
     		recorder.stop();
     		recorder.release();
+    		recorder = null;
     	}
     	
     	private void processAudioSamples(short[] buffer) {
