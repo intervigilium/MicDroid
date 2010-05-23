@@ -10,6 +10,7 @@ import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaRecorder.AudioSource;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -71,7 +72,9 @@ public class Mic extends Activity {
     	} else {
     		queue = new LinkedBlockingQueue<short[]>();
     	}
-    	AutoTalent.instantiateAutoTalent(DEFAULT_SAMPLE_RATE);
+    	
+    	micRecorder = new MicRecorder(queue);
+    	micPlayer = new MicPlayer(queue);
     	
     	super.onResume();
     }
@@ -79,12 +82,6 @@ public class Mic extends Activity {
     private OnCheckedChangeListener mPowerBtnListener = new OnCheckedChangeListener() {
     	public void onCheckedChanged(CompoundButton btn, boolean isChecked) {
 			if (btn.isChecked()) {
-				if (micRecorder == null) {
-					micRecorder = new MicRecorder(queue);
-				}
-				if (micPlayer == null) {
-		        	micPlayer = new MicPlayer(queue);
-		        }
 				micRecorderThread = new Thread(micRecorder, "Mic Recorder Thread");
 				micRecorderThread.start();
 	        
@@ -93,6 +90,7 @@ public class Mic extends Activity {
 			} else {
 				micRecorder.stopRunning();
 				micPlayer.stopRunning();
+				queue.clear();
 			}
 		}
     };
@@ -118,6 +116,7 @@ public class Mic extends Activity {
 			android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
 			
 			// TODO: make most of these autotalent options configurable
+			AutoTalent.instantiateAutoTalent(DEFAULT_SAMPLE_RATE);
     		AutoTalent.initializeAutoTalent(CONCERT_A, KEY_C_MAJOR, 0, 0.2f, 1.0f, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0.5f);
     		
 			AudioTrack player = new AudioTrack(AudioManager.STREAM_MUSIC, 
@@ -140,7 +139,7 @@ public class Mic extends Activity {
 					e.printStackTrace();
 				}
     		}
-    		
+
     		player.stop();
     		player.flush();
     		player.release();
@@ -148,8 +147,8 @@ public class Mic extends Activity {
 		}
 		
 		private void processAudioSamples(short[] buffer) {
-   		 AutoTalent.processSamples(buffer);
-   	}
+			AutoTalent.processSamples(buffer);
+		}
     }
     
     private class MicRecorder implements Runnable {
@@ -178,6 +177,8 @@ public class Mic extends Activity {
     				AudioFormat.ENCODING_PCM_16BIT, 
     				DEFAULT_BUFFER_SIZE);
 
+    		Log.d(getPackageName(), String.format("recorder state: %d", recorder.getState()));
+    		
     		short[] buffer= new short[DEFAULT_BUFFER_SIZE];
     		recorder.startRecording();
     		

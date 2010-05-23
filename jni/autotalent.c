@@ -1147,7 +1147,7 @@ void instantiateAutotalentInstance(unsigned long sampleRate) {
     cleanupAutotalent(instance);
   }
   instance = instantiateAutotalent(sampleRate);
-  __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "instantiated autotalent %d with sample rate: %d", instance, sampleRate);
+  __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "instantiated autotalent %d with sample rate: %d", instance, (instance->fs));
 }
 
 Autotalent * getAutotalentInstance() {
@@ -1252,9 +1252,6 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_processSamples
     short* shortBuffer = getShortBuffer(sampleBuffer, sampleCount);
     jshortArray jOutputArray = (*env)->NewShortArray(env, sampleCount);
     (*env)->SetShortArrayRegion(env, samples, 0, sampleCount, shortBuffer);
-
-    //free(sampleBuffer);
-    //free(shortBuffer);
 
     __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "autotalent run completed");
   }
