@@ -1183,7 +1183,7 @@ float * getFloatBuffer(JNIEnv* env, jshortArray shortArray) {
     floatBuffer[i] = ((float)(shortBuffer[i])/32767.0f);
   }
 
-  //(*env)->ReleasePrimitiveArrayCritical(env, shortArray, shortBuffer, 0);
+  (*env)->ReleasePrimitiveArrayCritical(env, shortArray, shortBuffer, 0);
 
   return floatBuffer;
 }
