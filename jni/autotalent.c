@@ -1151,7 +1151,7 @@ Autotalent * instance;
 void instantiateAutotalentInstance(unsigned long sampleRate) {
   if (instance == NULL) {
     instance = instantiateAutotalent(sampleRate);
-    __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "instantiated autotalent %d with sample rate: %d", instance, (instance->fs));
+    __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "instantiated autotalent at %d with sample rate: %d", instance, (instance->fs));
   }
 }
 
@@ -1163,6 +1163,7 @@ Autotalent * getAutotalentInstance() {
 void freeAutotalentInstance() {
   if (instance != NULL) {
 	cleanupAutotalent(instance);
+	__android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "cleaned up autotalent at %d", instance);
 	instance = NULL;
   }
 }
@@ -1246,21 +1247,19 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_processSamples
 
   if (autotalent != NULL) {
     float* sampleBuffer = getFloatBuffer(env, samples);
-    float* outBuffer = calloc(sampleCount, sizeof(float));
 
-    setAutotalentBuffers(autotalent, sampleBuffer, outBuffer);
+    setAutotalentBuffers(autotalent, sampleBuffer, sampleBuffer);
 
     __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "autotalent run starting for %d samples", sampleCount);
 
     runAutotalent(autotalent, sampleCount);
 
     // copy results back up to java array
-    short* shortBuffer = getShortBuffer(outBuffer, sampleCount);
+    short* shortBuffer = getShortBuffer(sampleBuffer, sampleCount);
     jshortArray jOutputArray = (*env)->NewShortArray(env, sampleCount);
     (*env)->SetShortArrayRegion(env, samples, 0, sampleCount, shortBuffer);
 
     free(shortBuffer);
-    free(outBuffer);
     free(sampleBuffer);
 
     __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "autotalent run completed");
@@ -1272,6 +1271,4 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_destroyAutoTalent
   (JNIEnv* env, jclass class) {
 
   freeAutotalentInstance();
-
-  __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "freed up autotalent instance");
 }

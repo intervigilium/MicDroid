@@ -88,11 +88,9 @@ public class Mic extends Activity {
 	    		AutoTalent.initializeAutoTalent(CONCERT_A, KEY_C_MAJOR, 0, 0.2f, 1.0f, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0.5f);
 
 				micRecorderThread = new Thread(micRecorder, "Mic Recorder Thread");
-				micRecorderThread.setPriority(Thread.MAX_PRIORITY);
 				micRecorderThread.start();
 
 	        	micPlayerThread = new Thread(micPlayer, "Mic Player Thread");
-	        	micPlayerThread.setPriority(Thread.MAX_PRIORITY);
 	        	micPlayerThread.start();
 			} else {
 				micRecorder.stopRunning();
