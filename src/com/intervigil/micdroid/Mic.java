@@ -172,7 +172,6 @@ public class Mic extends Activity {
     	
 		public void run() {
 			isRunning = true;
-			android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
 			    		
 			AudioTrack player = new AudioTrack(AudioManager.STREAM_MUSIC, 
     				DEFAULT_SAMPLE_RATE, 

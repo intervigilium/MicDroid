@@ -488,8 +488,9 @@ void setAutotalentParameters(Autotalent * autotalent, float * concertA, float * 
 
 // Set input and output buffers
 void setAutotalentBuffers(Autotalent * autotalent, float * inputBuffer, float * outputBuffer) {
-	autotalent->m_pfInputBuffer1 = inputBuffer;
-	autotalent->m_pfOutputBuffer1 = outputBuffer;
+  autotalent->m_pfInputBuffer1 = inputBuffer;
+  autotalent->m_pfOutputBuffer1 = outputBuffer;
+  __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "input buffer at address: %d, output buffer at address: %d", inputBuffer, outputBuffer);
 }
 
 
@@ -1131,6 +1132,12 @@ void cleanupAutotalent(Autotalent* Instance) {
   }
   free(Instance->fbuff);
   free(Instance->ftvec);
+
+  // we allocated these cuz we just don't use them
+  free(Instance->m_pfPitch);
+  free(Instance->m_pfConf);
+  free(Instance->m_pfLatency);
+
   free(Instance);
 }
 
@@ -1175,7 +1182,7 @@ float * getFloatBuffer(JNIEnv* env, jshortArray shortArray) {
     floatBuffer[i] = ((float)(shortBuffer[i])/32767.0f);
   }
 
-  (*env)->ReleasePrimitiveArrayCritical(env, shortArray, shortBuffer, 0);
+  //(*env)->ReleasePrimitiveArrayCritical(env, shortArray, shortBuffer, 0);
 
   return floatBuffer;
 }
@@ -1239,19 +1246,21 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_processSamples
 
   if (autotalent != NULL) {
     float* sampleBuffer = getFloatBuffer(env, samples);
+    float* outBuffer = calloc(sampleCount, sizeof(float));
 
-    setAutotalentBuffers(autotalent, sampleBuffer, sampleBuffer);
+    setAutotalentBuffers(autotalent, sampleBuffer, outBuffer);
 
     __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "autotalent run starting for %d samples", sampleCount);
 
     runAutotalent(autotalent, sampleCount);
 
     // copy results back up to java array
-    short* shortBuffer = getShortBuffer(sampleBuffer, sampleCount);
+    short* shortBuffer = getShortBuffer(outBuffer, sampleCount);
     jshortArray jOutputArray = (*env)->NewShortArray(env, sampleCount);
     (*env)->SetShortArrayRegion(env, samples, 0, sampleCount, shortBuffer);
 
     free(shortBuffer);
+    free(outBuffer);
     free(sampleBuffer);
 
     __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "autotalent run completed");
