@@ -188,7 +188,6 @@ public class Mic extends Activity {
     		while (isRunning) {
 				try {
 					short[] buffer = queue.take();
-					processAudioSamples(buffer);
 	    			player.write(buffer, 0, DEFAULT_BUFFER_SIZE);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -199,10 +198,6 @@ public class Mic extends Activity {
     		player.flush();
     		player.release();
     		player = null;
-		}
-		
-		private void processAudioSamples(short[] buffer) {
-			AutoTalent.processSamples(buffer);
 		}
     }
     
