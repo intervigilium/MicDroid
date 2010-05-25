@@ -135,13 +135,11 @@ public class Mic extends Activity {
     	
 		public void run() {
 			isRunning = true;
-			android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
 			
 			// TODO: make most of these autotalent options configurable
 			AutoTalent.instantiateAutoTalent(DEFAULT_SAMPLE_RATE);
     		AutoTalent.initializeAutoTalent(CONCERT_A, KEY_C_MAJOR, 0, 0.2f, 1.0f, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0.5f);
 
-    		
     		while (isRunning) {
 				try {
 					short[] buffer = inQueue.take();
@@ -151,6 +149,8 @@ public class Mic extends Activity {
 					e.printStackTrace();
 				}
     		}
+    		
+    		AutoTalent.destroyAutoTalent();
 		}
     }
     
@@ -219,7 +219,6 @@ public class Mic extends Activity {
     	
     	public void run() {
     		isRunning = true;
-    		android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
     		      		
     		AudioRecord recorder = new AudioRecord(AudioSource.MIC,
     				DEFAULT_SAMPLE_RATE, 

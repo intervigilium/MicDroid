@@ -1142,12 +1142,10 @@ void cleanupAutotalent(Autotalent* Instance) {
 Autotalent * instance;
 
 void instantiateAutotalentInstance(unsigned long sampleRate) {
-  if (instance != NULL) {
-	__android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "cleaned up old autotalent instance %d", instance);
-    cleanupAutotalent(instance);
+  if (instance == NULL) {
+    instance = instantiateAutotalent(sampleRate);
+    __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "instantiated autotalent %d with sample rate: %d", instance, (instance->fs));
   }
-  instance = instantiateAutotalent(sampleRate);
-  __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "instantiated autotalent %d with sample rate: %d", instance, (instance->fs));
 }
 
 Autotalent * getAutotalentInstance() {
