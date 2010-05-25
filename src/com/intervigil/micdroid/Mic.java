@@ -40,33 +40,16 @@ public class Mic extends Activity {
     }
     
     @Override
-    public void onStop() {
-    	if (micRecorder != null) {
-    		micRecorder.stopRunning();
-    	}
-    	if (micPlayer != null) {
-    		micPlayer.stopRunning();
-    	}
-    	AutoTalent.destroyAutoTalent();
-		
-		super.onStop();
+    protected void onStart() {
+        Log.i(getPackageName(), "onStart()");
+        super.onStart();
     }
     
     @Override
-    public void onPause() {
-    	if (micRecorder != null) {
-    		micRecorder.stopRunning();
-    	}
-    	if (micPlayer != null) {
-    		micPlayer.stopRunning();
-    	}
-    	AutoTalent.destroyAutoTalent();
-			
-		super.onPause();
-    }
-    
-    @Override
-    public void onResume() {
+    protected void onResume() {
+    	Log.i(getPackageName(), "onResume()");
+    	super.onResume();
+    	
     	((ToggleButton)findViewById(R.id.mic_toggle)).setChecked(false);
     	if (playQueue != null) {
     		playQueue.clear();
@@ -76,8 +59,40 @@ public class Mic extends Activity {
     	
     	micRecorder = new MicRecorder(playQueue);
     	micPlayer = new MicPlayer(playQueue);
+    }
+    
+    @Override
+    protected void onPause() {
+    	Log.i(getPackageName(), "onPause()");
+    	super.onPause();
     	
-    	super.onResume();
+    	if (micRecorder != null) {
+    		micRecorder.stopRunning();
+    	}
+    	if (micPlayer != null) {
+    		micPlayer.stopRunning();
+    	}
+    	AutoTalent.destroyAutoTalent();
+    }
+    
+    @Override
+    protected void onStop() {
+    	Log.i(getPackageName(), "onStop()");
+    	super.onStop();
+    	
+    	if (micRecorder != null) {
+    		micRecorder.stopRunning();
+    	}
+    	if (micPlayer != null) {
+    		micPlayer.stopRunning();
+    	}
+    	AutoTalent.destroyAutoTalent();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        Log.i(getPackageName(), "onSaveInstanceState()");
+        super.onSaveInstanceState(outState);
     }
     
     private OnCheckedChangeListener mPowerBtnListener = new OnCheckedChangeListener() {
@@ -199,5 +214,11 @@ public class Mic extends Activity {
     		recorder.release();
     		recorder = null;
     	}
+    }
+    
+    public AudioRecord getDeviceAudioRecord() {
+    	AudioRecord recorder;
+    	
+    	return null;
     }
 }
