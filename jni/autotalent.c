@@ -1253,6 +1253,9 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_processSamples
     jshortArray jOutputArray = (*env)->NewShortArray(env, sampleCount);
     (*env)->SetShortArrayRegion(env, samples, 0, sampleCount, shortBuffer);
 
+    free(shortBuffer);
+    free(sampleBuffer);
+
     __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "autotalent run completed");
   }
 }
@@ -1260,8 +1263,6 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_processSamples
 
 JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_destroyAutoTalent
   (JNIEnv* env, jclass class) {
-
-  __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "destroying autotalent!");
 
   freeAutotalentInstance();
 

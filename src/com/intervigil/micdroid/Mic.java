@@ -23,10 +23,13 @@ public class Mic extends Activity {
 	private static final char KEY_C_MAJOR = 'c';
 	
 	private Thread micRecorderThread;
+	private Thread micProcessorThread;
 	private Thread micPlayerThread;
 	private MicPlayer micPlayer;
+	private MicProcessor micProcessor;
 	private MicRecorder micRecorder;
-	private BlockingQueue<short[]> queue;
+	private BlockingQueue<short[]> playQueue;
+	private BlockingQueue<short[]> recordQueue;
 	
     /** Called when the activity is first created. */
     @Override
@@ -43,6 +46,9 @@ public class Mic extends Activity {
     	if (micRecorder != null) {
     		micRecorder.stopRunning();
     	}
+    	if (micProcessor != null) {
+    		micProcessor.stopRunning();
+    	}
     	if (micPlayer != null) {
     		micPlayer.stopRunning();
     	}
@@ -56,6 +62,9 @@ public class Mic extends Activity {
     	if (micRecorder != null) {
     		micRecorder.stopRunning();
     	}
+    	if (micProcessor != null) {
+    		micProcessor.stopRunning();
+    	}
     	if (micPlayer != null) {
     		micPlayer.stopRunning();
     	}
@@ -67,14 +76,20 @@ public class Mic extends Activity {
     @Override
     public void onResume() {
     	((ToggleButton)findViewById(R.id.mic_toggle)).setChecked(false);
-    	if (queue != null) {
-    		queue.clear();
+    	if (recordQueue != null) {
+    		recordQueue.clear();
     	} else {
-    		queue = new LinkedBlockingQueue<short[]>();
+    		recordQueue = new LinkedBlockingQueue<short[]>();
+    	}
+    	if (playQueue != null) {
+    		playQueue.clear();
+    	} else {
+    		playQueue = new LinkedBlockingQueue<short[]>();
     	}
     	
-    	micRecorder = new MicRecorder(queue);
-    	micPlayer = new MicPlayer(queue);
+    	micRecorder = new MicRecorder(recordQueue);
+    	micProcessor = new MicProcessor(recordQueue, playQueue);
+    	micPlayer = new MicPlayer(playQueue);
     	
     	super.onResume();
     }
@@ -84,16 +99,60 @@ public class Mic extends Activity {
 			if (btn.isChecked()) {
 				micRecorderThread = new Thread(micRecorder, "Mic Recorder Thread");
 				micRecorderThread.start();
+				
+				micProcessorThread = new Thread(micProcessor, "Mic Processor Thread");
+				micProcessorThread.start();
 	        
 	        	micPlayerThread = new Thread(micPlayer, "Mic Player Thread");
 	        	micPlayerThread.start();
 			} else {
 				micRecorder.stopRunning();
+				micProcessor.stopRunning();
 				micPlayer.stopRunning();
-				queue.clear();
+				recordQueue.clear();
+				playQueue.clear();
 			}
 		}
     };
+    
+    private class MicProcessor implements Runnable {
+    	private final BlockingQueue<short[]> inQueue;
+    	private final BlockingQueue<short[]> outQueue;
+    	private boolean isRunning;
+    	
+    	public MicProcessor(BlockingQueue<short[]> in, BlockingQueue<short[]> out) {
+    		inQueue = in;
+    		outQueue = out;
+    	}
+    	
+    	public void stopRunning() {
+    		this.isRunning = false;
+    	}
+    	
+    	public boolean getIsRunning() {
+    		return this.isRunning;
+    	}
+    	
+		public void run() {
+			isRunning = true;
+			android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
+			
+			// TODO: make most of these autotalent options configurable
+			AutoTalent.instantiateAutoTalent(DEFAULT_SAMPLE_RATE);
+    		AutoTalent.initializeAutoTalent(CONCERT_A, KEY_C_MAJOR, 0, 0.2f, 1.0f, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0.5f);
+
+    		
+    		while (isRunning) {
+				try {
+					short[] buffer = inQueue.take();
+					AutoTalent.processSamples(buffer);
+					outQueue.put(buffer);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+    		}
+		}
+    }
     
     private class MicPlayer implements Runnable {
     	private final BlockingQueue<short[]> queue;
@@ -114,11 +173,7 @@ public class Mic extends Activity {
 		public void run() {
 			isRunning = true;
 			android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
-			
-			// TODO: make most of these autotalent options configurable
-			AutoTalent.instantiateAutoTalent(DEFAULT_SAMPLE_RATE);
-    		AutoTalent.initializeAutoTalent(CONCERT_A, KEY_C_MAJOR, 0, 0.2f, 1.0f, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0.5f);
-    		
+			    		
 			AudioTrack player = new AudioTrack(AudioManager.STREAM_MUSIC, 
     				DEFAULT_SAMPLE_RATE, 
     				AudioFormat.CHANNEL_CONFIGURATION_MONO, 
