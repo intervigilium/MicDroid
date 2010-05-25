@@ -10,6 +10,7 @@ import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaRecorder.AudioSource;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
@@ -23,13 +24,10 @@ public class Mic extends Activity {
 	private static final char KEY_C_MAJOR = 'c';
 	
 	private Thread micRecorderThread;
-	private Thread micProcessorThread;
 	private Thread micPlayerThread;
 	private MicPlayer micPlayer;
-	private MicProcessor micProcessor;
 	private MicRecorder micRecorder;
 	private BlockingQueue<short[]> playQueue;
-	private BlockingQueue<short[]> recordQueue;
 	
     /** Called when the activity is first created. */
     @Override
@@ -46,9 +44,6 @@ public class Mic extends Activity {
     	if (micRecorder != null) {
     		micRecorder.stopRunning();
     	}
-    	if (micProcessor != null) {
-    		micProcessor.stopRunning();
-    	}
     	if (micPlayer != null) {
     		micPlayer.stopRunning();
     	}
@@ -62,9 +57,6 @@ public class Mic extends Activity {
     	if (micRecorder != null) {
     		micRecorder.stopRunning();
     	}
-    	if (micProcessor != null) {
-    		micProcessor.stopRunning();
-    	}
     	if (micPlayer != null) {
     		micPlayer.stopRunning();
     	}
@@ -76,19 +68,13 @@ public class Mic extends Activity {
     @Override
     public void onResume() {
     	((ToggleButton)findViewById(R.id.mic_toggle)).setChecked(false);
-    	if (recordQueue != null) {
-    		recordQueue.clear();
-    	} else {
-    		recordQueue = new LinkedBlockingQueue<short[]>();
-    	}
     	if (playQueue != null) {
     		playQueue.clear();
     	} else {
     		playQueue = new LinkedBlockingQueue<short[]>();
     	}
     	
-    	micRecorder = new MicRecorder(recordQueue);
-    	micProcessor = new MicProcessor(recordQueue, playQueue);
+    	micRecorder = new MicRecorder(playQueue);
     	micPlayer = new MicPlayer(playQueue);
     	
     	super.onResume();
@@ -97,63 +83,33 @@ public class Mic extends Activity {
     private OnCheckedChangeListener mPowerBtnListener = new OnCheckedChangeListener() {
     	public void onCheckedChanged(CompoundButton btn, boolean isChecked) {
 			if (btn.isChecked()) {
+				// TODO: make most of these autotalent options configurable
+				AutoTalent.instantiateAutoTalent(DEFAULT_SAMPLE_RATE);
+	    		AutoTalent.initializeAutoTalent(CONCERT_A, KEY_C_MAJOR, 0, 0.2f, 1.0f, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0.5f);
+
 				micRecorderThread = new Thread(micRecorder, "Mic Recorder Thread");
+				micRecorderThread.setPriority(Thread.MAX_PRIORITY);
 				micRecorderThread.start();
-				
-				micProcessorThread = new Thread(micProcessor, "Mic Processor Thread");
-				micProcessorThread.start();
-	        
+
 	        	micPlayerThread = new Thread(micPlayer, "Mic Player Thread");
+	        	micPlayerThread.setPriority(Thread.MAX_PRIORITY);
 	        	micPlayerThread.start();
 			} else {
 				micRecorder.stopRunning();
-				micProcessor.stopRunning();
 				micPlayer.stopRunning();
-				recordQueue.clear();
+				try {
+					micRecorderThread.join();
+					micPlayerThread.join();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				playQueue.clear();
+				AutoTalent.destroyAutoTalent();
 			}
 		}
     };
-    
-    private class MicProcessor implements Runnable {
-    	private final BlockingQueue<short[]> inQueue;
-    	private final BlockingQueue<short[]> outQueue;
-    	private boolean isRunning;
-    	
-    	public MicProcessor(BlockingQueue<short[]> in, BlockingQueue<short[]> out) {
-    		inQueue = in;
-    		outQueue = out;
-    	}
-    	
-    	public void stopRunning() {
-    		this.isRunning = false;
-    	}
-    	
-    	public boolean getIsRunning() {
-    		return this.isRunning;
-    	}
-    	
-		public void run() {
-			isRunning = true;
-			
-			// TODO: make most of these autotalent options configurable
-			AutoTalent.instantiateAutoTalent(DEFAULT_SAMPLE_RATE);
-    		AutoTalent.initializeAutoTalent(CONCERT_A, KEY_C_MAJOR, 0, 0.2f, 1.0f, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0.5f);
 
-    		while (isRunning) {
-				try {
-					short[] buffer = inQueue.take();
-					AutoTalent.processSamples(buffer);
-					outQueue.put(buffer);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-    		}
-    		
-    		AutoTalent.destroyAutoTalent();
-		}
-    }
-    
     private class MicPlayer implements Runnable {
     	private final BlockingQueue<short[]> queue;
     	private boolean isRunning;
@@ -187,6 +143,7 @@ public class Mic extends Activity {
     		while (isRunning) {
 				try {
 					short[] buffer = queue.take();
+					AutoTalent.processSamples(buffer);
 	    			player.write(buffer, 0, DEFAULT_BUFFER_SIZE);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -218,7 +175,7 @@ public class Mic extends Activity {
     	
     	public void run() {
     		isRunning = true;
-    		      		
+    		
     		AudioRecord recorder = new AudioRecord(AudioSource.MIC,
     				DEFAULT_SAMPLE_RATE, 
     				AudioFormat.CHANNEL_CONFIGURATION_MONO, 
