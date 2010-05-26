@@ -4,24 +4,46 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaRecorder.AudioSource;
 import android.os.Bundle;
-import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class Mic extends Activity {
 	
+	private static final int MICDROID_PREFERENCES_CODE = 1337;
 	private static final int DEFAULT_BUFFER_SIZE = 4096;
 	private static final int DEFAULT_SAMPLE_RATE = 22050;
+	
 	private static final float CONCERT_A = 440.0f;
-	private static final char KEY_C_MAJOR = 'c';
+	
+	private static final String DEFAULT_KEY = "c";
+	private static final float DEFAULT_FIXED_PITCH = 0.0f;
+	private static final float DEFAULT_FIXED_PULL = 0.0f;
+	private static final float DEFAULT_CORRECT_STR = 1.0f;
+	private static final float DEFAULT_CORRECT_SMOOTH = 0.0f;
+	private static final float DEFAULT_PITCH_SHIFT = 0.0f;
+	private static final float DEFAULT_SCALE_ROTATE = 0.0f;
+	private static final float DEFAULT_LFO_DEPTH = 0.0f;
+	private static final float DEFAULT_LFO_RATE = 5.0f;
+	private static final float DEFAULT_LFO_SHAPE = 0.0f;
+	private static final float DEFAULT_LFO_SYM = 0.0f;
+	private static final int DEFAULT_LFO_QUANT = 0;
+	private static final int DEFAULT_FORM_CORR = 0;
+	private static final float DEFAULT_FORM_WARP = 0.0f;
+	private static final float DEFAULT_MIX = 0.5f;
 	
 	private Thread micRecorderThread;
 	private Thread micPlayerThread;
@@ -95,13 +117,59 @@ public class Mic extends Activity {
         super.onSaveInstanceState(outState);
     }
     
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+
+        return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.options:
+            	// Launch preferences as a subactivity
+            	Intent preferencesIntent = new Intent(getBaseContext(), Preferences.class);
+            	startActivityForResult(preferencesIntent, MICDROID_PREFERENCES_CODE);
+            	break;
+        }
+        return true;
+    }
+    
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//    	switch (requestCode) {
+//	    	case MICDROID_PREFERENCES_CODE:
+//	    		updateAutoTalentPreferences();
+//	    		break;
+//    	}
+//    }
+    
+    private void updateAutoTalentPreferences() {
+    	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+    	char key = prefs.getString("key", DEFAULT_KEY).charAt(0);
+    	float fixedPitch = prefs.getFloat("fixed_pitch", DEFAULT_FIXED_PITCH);
+    	float fixedPull = prefs.getFloat("pitch_pull", DEFAULT_FIXED_PULL);
+    	float pitchShift = prefs.getFloat("pitch_shift", DEFAULT_PITCH_SHIFT);
+    	float strength = prefs.getFloat("strength", DEFAULT_CORRECT_STR);
+    	float smooth = prefs.getFloat("smooth", DEFAULT_CORRECT_SMOOTH);
+    	float mix = prefs.getFloat("mix", DEFAULT_MIX);
+    	
+    	AutoTalent.instantiateAutoTalent(DEFAULT_SAMPLE_RATE);
+    	AutoTalent.initializeAutoTalent(CONCERT_A, key, fixedPitch, fixedPull, 
+    			strength, smooth, pitchShift, DEFAULT_SCALE_ROTATE, 
+    			DEFAULT_LFO_DEPTH, DEFAULT_LFO_RATE, DEFAULT_LFO_SHAPE, DEFAULT_LFO_SYM, DEFAULT_LFO_QUANT, 
+    			DEFAULT_FORM_CORR, DEFAULT_FORM_WARP, mix);
+    }
+    
     private OnCheckedChangeListener mPowerBtnListener = new OnCheckedChangeListener() {
     	public void onCheckedChanged(CompoundButton btn, boolean isChecked) {
 			if (btn.isChecked()) {
-				// TODO: make most of these autotalent options configurable
-				AutoTalent.instantiateAutoTalent(DEFAULT_SAMPLE_RATE);
-	    		AutoTalent.initializeAutoTalent(CONCERT_A, KEY_C_MAJOR, 0, 0.2f, 1.0f, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0.5f);
-
+				updateAutoTalentPreferences();
+	    		
 				micRecorderThread = new Thread(micRecorder, "Mic Recorder Thread");
 				micRecorderThread.start();
 

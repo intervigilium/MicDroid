@@ -1,0 +1,78 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="@string/prefs_cat_key">
+
+        <ListPreference
+                android:key="key"
+                android:title="@string/prefs_key"
+                android:summary="@string/prefs_key_summary"
+                android:entries="@array/prefs_key_entries"
+                android:entryValues="@array/prefs_key_values"
+                android:dialogTitle="@string/prefs_key_title"
+                android:defaultValue="c" />
+
+    </PreferenceCategory>
+  
+    <PreferenceCategory android:title="@string/prefs_cat_pitch">
+
+        <ListPreference
+                android:key="fixed_pitch"
+                android:title="@string/prefs_fixed_pitch"
+                android:summary="@string/prefs_fixed_pitch_summary"
+                android:entries="@array/prefs_fixed_pitch_entries"
+                android:entryValues="@array/prefs_fixed_pitch_values"
+                android:dialogTitle="@string/prefs_fixed_pitch_title"
+                android:defaultValue="0.0" />
+        
+        <ListPreference
+                android:key="pitch_pull"
+                android:title="@string/prefs_pitch_pull"
+                android:summary="@string/prefs_pitch_pull_summary"
+                android:entries="@array/prefs_pitch_pull_entries"
+                android:entryValues="@array/prefs_pitch_pull_values"
+                android:dialogTitle="@string/prefs_pitch_pull_title"
+                android:defaultValue="0.2" />
+
+		<ListPreference
+                android:key="pitch_shift"
+                android:title="@string/prefs_pitch_shift"
+                android:summary="@string/prefs_pitch_shift_summary"
+                android:entries="@array/prefs_pitch_shift_entries"
+                android:entryValues="@array/prefs_pitch_shift_values"
+                android:dialogTitle="@string/prefs_pitch_shift_title"
+                android:defaultValue="0.0" />
+                
+    </PreferenceCategory>
+    
+    <PreferenceCategory android:title="@string/prefs_cat_correction">
+
+        <ListPreference
+                android:key="strength"
+                android:title="@string/prefs_corr_str"
+                android:summary="@string/prefs_corr_str_summary"
+                android:entries="@array/prefs_corr_str_entries"
+                android:entryValues="@array/prefs_corr_str_values"
+                android:dialogTitle="@string/prefs_corr_str_title"
+                android:defaultValue="1.0" />
+                
+        <ListPreference
+                android:key="smooth"
+                android:title="@string/prefs_corr_smooth"
+                android:summary="@string/prefs_corr_smooth_summary"
+                android:entries="@array/prefs_corr_smooth_entries"
+                android:entryValues="@array/prefs_corr_smooth_values"
+                android:dialogTitle="@string/prefs_corr_smooth_title"
+                android:defaultValue="0.0" />
+
+		<ListPreference
+                android:key="mix"
+                android:title="@string/prefs_corr_mix"
+                android:summary="@string/prefs_corr_mix_summary"
+                android:entries="@array/prefs_corr_mix_entries"
+                android:entryValues="@array/prefs_corr_mix_values"
+                android:dialogTitle="@string/prefs_corr_mix_title"
+                android:defaultValue="0.5" />
+                
+    </PreferenceCategory>
+  
+</PreferenceScreen>

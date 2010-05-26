@@ -10,6 +10,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <activity android:label="@string/set_preferences" android:name=".Preferences">
+        </activity>
 
     </application>
     <uses-sdk android:minSdkVersion="4" />

@@ -8,24 +8,94 @@
 package com.intervigil.micdroid;
 
 public final class R {
+    public static final class array {
+        /**  Entry names for the histogram averaging menu. 
+         */
+        public static final int prefs_corr_mix_entries=0x7f05000c;
+        public static final int prefs_corr_mix_values=0x7f05000d;
+        /**  Entry names for the histogram averaging menu. 
+         */
+        public static final int prefs_corr_smooth_entries=0x7f05000a;
+        public static final int prefs_corr_smooth_values=0x7f05000b;
+        /**  Entry names for the histogram averaging menu. 
+         */
+        public static final int prefs_corr_str_entries=0x7f050008;
+        public static final int prefs_corr_str_values=0x7f050009;
+        /**  Entry names for the block size menu. 
+         */
+        public static final int prefs_fixed_pitch_entries=0x7f050002;
+        /**  Values for the block size menu. 
+         */
+        public static final int prefs_fixed_pitch_values=0x7f050003;
+        /**  Entry names for the key menu. 
+         */
+        public static final int prefs_key_entries=0x7f050000;
+        /**  Values for the key menu. 
+         */
+        public static final int prefs_key_values=0x7f050001;
+        /**  Entry names for the window function menu. 
+         */
+        public static final int prefs_pitch_pull_entries=0x7f050004;
+        /**  Values for the window function menu. 
+         */
+        public static final int prefs_pitch_pull_values=0x7f050005;
+        /**  Entry names for the decimation menu. 
+         */
+        public static final int prefs_pitch_shift_entries=0x7f050006;
+        /**  Values for the decimation menu. 
+         */
+        public static final int prefs_pitch_shift_values=0x7f050007;
+    }
     public static final class attr {
     }
     public static final class drawable {
         public static final int icon=0x7f020000;
     }
     public static final class id {
-        public static final int main_layout=0x7f050000;
-        public static final int mic_label=0x7f050001;
-        public static final int mic_toggle=0x7f050002;
+        public static final int main_layout=0x7f080000;
+        public static final int mic_label=0x7f080001;
+        public static final int mic_toggle=0x7f080002;
+        public static final int options=0x7f080003;
     }
     public static final class layout {
         public static final int main=0x7f030000;
     }
+    public static final class menu {
+        public static final int menu=0x7f070000;
+    }
     public static final class string {
-        public static final int app_name=0x7f040001;
-        public static final int hello=0x7f040000;
-        public static final int mic_label=0x7f040002;
-        public static final int mic_toggle_off=0x7f040003;
-        public static final int mic_toggle_on=0x7f040004;
+        public static final int app_name=0x7f060001;
+        public static final int hello=0x7f060000;
+        public static final int mic_label=0x7f060003;
+        public static final int mic_toggle_off=0x7f060004;
+        public static final int mic_toggle_on=0x7f060005;
+        public static final int prefs_cat_correction=0x7f060014;
+        public static final int prefs_cat_key=0x7f060006;
+        public static final int prefs_cat_pitch=0x7f06000a;
+        public static final int prefs_corr_mix=0x7f06001b;
+        public static final int prefs_corr_mix_summary=0x7f06001c;
+        public static final int prefs_corr_mix_title=0x7f06001d;
+        public static final int prefs_corr_smooth=0x7f060018;
+        public static final int prefs_corr_smooth_summary=0x7f060019;
+        public static final int prefs_corr_smooth_title=0x7f06001a;
+        public static final int prefs_corr_str=0x7f060015;
+        public static final int prefs_corr_str_summary=0x7f060016;
+        public static final int prefs_corr_str_title=0x7f060017;
+        public static final int prefs_fixed_pitch=0x7f06000b;
+        public static final int prefs_fixed_pitch_summary=0x7f06000c;
+        public static final int prefs_fixed_pitch_title=0x7f06000d;
+        public static final int prefs_key=0x7f060007;
+        public static final int prefs_key_summary=0x7f060008;
+        public static final int prefs_key_title=0x7f060009;
+        public static final int prefs_pitch_pull=0x7f06000e;
+        public static final int prefs_pitch_pull_summary=0x7f06000f;
+        public static final int prefs_pitch_pull_title=0x7f060010;
+        public static final int prefs_pitch_shift=0x7f060011;
+        public static final int prefs_pitch_shift_summary=0x7f060012;
+        public static final int prefs_pitch_shift_title=0x7f060013;
+        public static final int set_preferences=0x7f060002;
+    }
+    public static final class xml {
+        public static final int preferences=0x7f040000;
     }
 }

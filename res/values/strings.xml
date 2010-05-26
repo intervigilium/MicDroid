@@ -2,7 +2,36 @@
 <resources>
     <string name="hello">Hello World, mic!</string>
     <string name="app_name">MicDroid</string>
+    <string name="set_preferences">Auto-Tune Preferences</string>
     <string name="mic_label">Power Button</string>
     <string name="mic_toggle_off">On</string>
     <string name="mic_toggle_on">Off</string>
+    
+    <string name="prefs_cat_key">Key Settings</string>
+    <string name="prefs_key">Change Key</string>
+    <string name="prefs_key_summary">Change the key to tune to</string>
+    <string name="prefs_key_title">Change Key</string>
+   
+    <string name="prefs_cat_pitch">Pitch Settings</string>
+    <string name="prefs_fixed_pitch">Fixed Pitch</string>
+    <string name="prefs_fixed_pitch_summary">The pitch which input pitch will be pulled to</string>
+    <string name="prefs_fixed_pitch_title">Fixed Pitch</string>
+    <string name="prefs_pitch_pull">Pull to Fixed Pitch</string>
+    <string name="prefs_pitch_pull_summary">The degree that pitch is pulled towards</string>
+    <string name="prefs_pitch_pull_title">Pull to Fixed Pitch</string>
+    <string name="prefs_pitch_shift">Pitch Shift</string>
+    <string name="prefs_pitch_shift_summary">Number of notes in scale which pitch is shifted</string>
+    <string name="prefs_pitch_shift_title">Pitch Shift</string>
+    
+    <string name="prefs_cat_correction">Correction Settings</string>
+    <string name="prefs_corr_str">Correction Strength</string>
+    <string name="prefs_corr_str_summary">Strength of pitch correction</string>
+    <string name="prefs_corr_str_title">Correction Strength</string>
+    <string name="prefs_corr_smooth">Correction Smoothness</string>
+    <string name="prefs_corr_smooth_summary">Smoothness of correction transition</string>
+    <string name="prefs_corr_smooth_title">Correction Smoothness</string>
+    <string name="prefs_corr_mix">Mix</string>
+    <string name="prefs_corr_mix_summary">Blend between modified and delay-compensated signal</string>
+    <string name="prefs_corr_mix_title">Mix</string>
+    
 </resources>
