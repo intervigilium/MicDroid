@@ -132,15 +132,6 @@ public class Mic extends Activity {
         return true;
     }
     
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//    	switch (requestCode) {
-//	    	case MICDROID_PREFERENCES_CODE:
-//	    		updateAutoTalentPreferences();
-//	    		break;
-//    	}
-//    }
-    
     private void updateAutoTalentPreferences() {
     	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
     	char key = prefs.getString("key", null).charAt(0);
