@@ -22,7 +22,7 @@
                 android:entries="@array/prefs_fixed_pitch_entries"
                 android:entryValues="@array/prefs_fixed_pitch_values"
                 android:dialogTitle="@string/prefs_fixed_pitch_title"
-                android:defaultValue="0.0" />
+                android:defaultValue="0.0f" />
         
         <ListPreference
                 android:key="pitch_pull"
@@ -31,7 +31,7 @@
                 android:entries="@array/prefs_pitch_pull_entries"
                 android:entryValues="@array/prefs_pitch_pull_values"
                 android:dialogTitle="@string/prefs_pitch_pull_title"
-                android:defaultValue="0.2" />
+                android:defaultValue="0.2f" />
 
 		<ListPreference
                 android:key="pitch_shift"
@@ -40,7 +40,7 @@
                 android:entries="@array/prefs_pitch_shift_entries"
                 android:entryValues="@array/prefs_pitch_shift_values"
                 android:dialogTitle="@string/prefs_pitch_shift_title"
-                android:defaultValue="0.0" />
+                android:defaultValue="0.0f" />
                 
     </PreferenceCategory>
     
@@ -53,7 +53,7 @@
                 android:entries="@array/prefs_corr_str_entries"
                 android:entryValues="@array/prefs_corr_str_values"
                 android:dialogTitle="@string/prefs_corr_str_title"
-                android:defaultValue="1.0" />
+                android:defaultValue="1.0f" />
                 
         <ListPreference
                 android:key="smooth"
@@ -62,7 +62,7 @@
                 android:entries="@array/prefs_corr_smooth_entries"
                 android:entryValues="@array/prefs_corr_smooth_values"
                 android:dialogTitle="@string/prefs_corr_smooth_title"
-                android:defaultValue="0.0" />
+                android:defaultValue="0.0f" />
 
 		<ListPreference
                 android:key="mix"
@@ -71,7 +71,7 @@
                 android:entries="@array/prefs_corr_mix_entries"
                 android:entryValues="@array/prefs_corr_mix_values"
                 android:dialogTitle="@string/prefs_corr_mix_title"
-                android:defaultValue="0.5" />
+                android:defaultValue="0.5f" />
                 
     </PreferenceCategory>
   

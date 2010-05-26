@@ -28,13 +28,7 @@ public class Mic extends Activity {
 	private static final int DEFAULT_SAMPLE_RATE = 22050;
 	
 	private static final float CONCERT_A = 440.0f;
-	
-	private static final String DEFAULT_KEY = "c";
-	private static final float DEFAULT_FIXED_PITCH = 0.0f;
-	private static final float DEFAULT_FIXED_PULL = 0.0f;
-	private static final float DEFAULT_CORRECT_STR = 1.0f;
-	private static final float DEFAULT_CORRECT_SMOOTH = 0.0f;
-	private static final float DEFAULT_PITCH_SHIFT = 0.0f;
+
 	private static final float DEFAULT_SCALE_ROTATE = 0.0f;
 	private static final float DEFAULT_LFO_DEPTH = 0.0f;
 	private static final float DEFAULT_LFO_RATE = 5.0f;
@@ -43,7 +37,6 @@ public class Mic extends Activity {
 	private static final int DEFAULT_LFO_QUANT = 0;
 	private static final int DEFAULT_FORM_CORR = 0;
 	private static final float DEFAULT_FORM_WARP = 0.0f;
-	private static final float DEFAULT_MIX = 0.5f;
 	
 	private Thread micRecorderThread;
 	private Thread micPlayerThread;
@@ -150,13 +143,13 @@ public class Mic extends Activity {
     
     private void updateAutoTalentPreferences() {
     	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-    	char key = prefs.getString("key", DEFAULT_KEY).charAt(0);
-    	float fixedPitch = prefs.getFloat("fixed_pitch", DEFAULT_FIXED_PITCH);
-    	float fixedPull = prefs.getFloat("pitch_pull", DEFAULT_FIXED_PULL);
-    	float pitchShift = prefs.getFloat("pitch_shift", DEFAULT_PITCH_SHIFT);
-    	float strength = prefs.getFloat("strength", DEFAULT_CORRECT_STR);
-    	float smooth = prefs.getFloat("smooth", DEFAULT_CORRECT_SMOOTH);
-    	float mix = prefs.getFloat("mix", DEFAULT_MIX);
+    	char key = prefs.getString("key", null).charAt(0);
+    	float fixedPitch = Float.valueOf(prefs.getString("fixed_pitch", null));
+    	float fixedPull = Float.valueOf(prefs.getString("pitch_pull", null));
+    	float pitchShift = Float.valueOf(prefs.getString("pitch_shift", null));
+    	float strength = Float.valueOf(prefs.getString("strength", null));
+    	float smooth = Float.valueOf(prefs.getString("smooth", null));
+    	float mix = Float.valueOf(prefs.getString("mix", null));
     	
     	AutoTalent.instantiateAutoTalent(DEFAULT_SAMPLE_RATE);
     	AutoTalent.initializeAutoTalent(CONCERT_A, key, fixedPitch, fixedPull, 
