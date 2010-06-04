@@ -1,5 +1,7 @@
 package com.intervigil.micdroid;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -12,6 +14,7 @@ import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaRecorder.AudioSource;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
@@ -39,9 +42,9 @@ public class Mic extends Activity {
 	private static final float DEFAULT_FORM_WARP = 0.0f;
 	
 	private Thread micRecorderThread;
-	private Thread micPlayerThread;
-	private MicPlayer micPlayer;
+	private Thread micWriterThread;
 	private MicRecorder micRecorder;
+	private MicWriter micWriter; 
 	private BlockingQueue<short[]> playQueue;
 	
     /** Called when the activity is first created. */
@@ -52,6 +55,11 @@ public class Mic extends Activity {
         
         ToggleButton powerBtn = (ToggleButton)findViewById(R.id.mic_toggle);
         powerBtn.setOnCheckedChangeListener(mPowerBtnListener);
+        
+        File outputDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + getPackageName());
+        if (!outputDir.exists()) {
+        	outputDir.mkdir();
+        }
     }
     
     @Override
@@ -73,7 +81,7 @@ public class Mic extends Activity {
     	}
     	
     	micRecorder = new MicRecorder(playQueue);
-    	micPlayer = new MicPlayer(playQueue);
+    	micWriter = new MicWriter(playQueue);
     }
     
     @Override
@@ -84,8 +92,8 @@ public class Mic extends Activity {
     	if (micRecorder != null) {
     		micRecorder.stopRunning();
     	}
-    	if (micPlayer != null) {
-    		micPlayer.stopRunning();
+    	if (micWriter != null) {
+    		micWriter.stopRunning();
     	}
     	AutoTalent.destroyAutoTalent();
     }
@@ -98,8 +106,8 @@ public class Mic extends Activity {
     	if (micRecorder != null) {
     		micRecorder.stopRunning();
     	}
-    	if (micPlayer != null) {
-    		micPlayer.stopRunning();
+    	if (micWriter != null) {
+    		micWriter.stopRunning();
     	}
     	AutoTalent.destroyAutoTalent();
     }
@@ -157,14 +165,14 @@ public class Mic extends Activity {
 				micRecorderThread = new Thread(micRecorder, "Mic Recorder Thread");
 				micRecorderThread.start();
 
-	        	micPlayerThread = new Thread(micPlayer, "Mic Player Thread");
-	        	micPlayerThread.start();
+	        	micWriterThread = new Thread(micWriter, "Mic Writer Thread");
+	        	micWriterThread.start();
 			} else {
 				micRecorder.stopRunning();
-				micPlayer.stopRunning();
+				micWriter.stopRunning();
 				try {
 					micRecorderThread.join();
-					micPlayerThread.join();
+					micWriterThread.join();
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -174,13 +182,21 @@ public class Mic extends Activity {
 			}
 		}
     };
-
-    private class MicPlayer implements Runnable {
+    
+    private class MicWriter implements Runnable {
     	private final BlockingQueue<short[]> queue;
     	private boolean isRunning;
+    	private WaveWriter writer;
     	
-    	public MicPlayer(BlockingQueue<short[]> q) {
+    	public MicWriter(BlockingQueue<short[]> q) {
     		queue = q;
+    		try {
+				writer = new WaveWriter(Environment.getExternalStorageDirectory().getCanonicalPath() + File.separator + getPackageName(), "micdroid.wav", DEFAULT_SAMPLE_RATE, 1, 16);
+				writer.CreateWaveFile();
+    		} catch (IOException e) {
+				// uh oh, cannot create writer or wave file, abort!
+				e.printStackTrace();
+			}
     	}
     	
     	public void stopRunning() {
@@ -193,32 +209,25 @@ public class Mic extends Activity {
     	
 		public void run() {
 			isRunning = true;
-			    		
-			AudioTrack player = new AudioTrack(AudioManager.STREAM_MUSIC, 
-    				DEFAULT_SAMPLE_RATE, 
-    				AudioFormat.CHANNEL_CONFIGURATION_MONO, 
-    				AudioFormat.ENCODING_PCM_16BIT,
-    				DEFAULT_BUFFER_SIZE,
-    				AudioTrack.MODE_STREAM);
-    		
-    		player.setPlaybackRate(DEFAULT_SAMPLE_RATE);
-    		
-    		player.play();
-    		
-    		while (isRunning) {
+
+			while (isRunning) {
 				try {
 					short[] buffer = queue.take();
 					AutoTalent.processSamples(buffer);
-	    			player.write(buffer, 0, DEFAULT_BUFFER_SIZE);
+					writer.Write(buffer);
+				} catch (IOException e) {
+					// problem writing to the buffer
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-    		}
-
-    		player.stop();
-    		player.flush();
-    		player.release();
-    		player = null;
+			}
+			
+			try {
+				writer.CloseWaveFile();
+			} catch (IOException e) {
+				// problem writing the header or closing the output stream
+			}
+			
 		}
     }
     
