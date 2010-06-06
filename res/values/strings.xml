@@ -11,27 +11,38 @@
     <string name="prefs_key">Change Key</string>
     <string name="prefs_key_summary">Change the key to tune to</string>
     <string name="prefs_key_title">Change Key</string>
+    <string name="prefs_key_default">c</string>
    
     <string name="prefs_cat_pitch">Pitch Settings</string>
     <string name="prefs_fixed_pitch">Fixed Pitch</string>
     <string name="prefs_fixed_pitch_summary">The pitch which input pitch will be pulled to</string>
     <string name="prefs_fixed_pitch_title">Fixed Pitch</string>
+    <string name="prefs_fixed_pitch_default">0.0</string>
+    
     <string name="prefs_pitch_pull">Pull to Fixed Pitch</string>
     <string name="prefs_pitch_pull_summary">The degree that pitch is pulled towards</string>
     <string name="prefs_pitch_pull_title">Pull to Fixed Pitch</string>
+    <string name="prefs_pitch_pull_default">0.2</string>
+    
     <string name="prefs_pitch_shift">Pitch Shift</string>
     <string name="prefs_pitch_shift_summary">Number of notes in scale which pitch is shifted</string>
     <string name="prefs_pitch_shift_title">Pitch Shift</string>
+    <string name="prefs_pitch_shift_default">0.0</string>
     
     <string name="prefs_cat_correction">Correction Settings</string>
     <string name="prefs_corr_str">Correction Strength</string>
     <string name="prefs_corr_str_summary">Strength of pitch correction</string>
     <string name="prefs_corr_str_title">Correction Strength</string>
+    <string name="prefs_corr_str_default">1.0</string>
+    
     <string name="prefs_corr_smooth">Correction Smoothness</string>
     <string name="prefs_corr_smooth_summary">Smoothness of correction transition</string>
     <string name="prefs_corr_smooth_title">Correction Smoothness</string>
+    <string name="prefs_corr_smooth_default">0.0</string>
+    
     <string name="prefs_corr_mix">Mix</string>
     <string name="prefs_corr_mix_summary">Blend between modified and delay-compensated signal</string>
     <string name="prefs_corr_mix_title">Mix</string>
+    <string name="prefs_corr_mix_default">0.5</string>
     
 </resources>

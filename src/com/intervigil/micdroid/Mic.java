@@ -9,9 +9,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioFormat;
-import android.media.AudioManager;
 import android.media.AudioRecord;
-import android.media.AudioTrack;
 import android.media.MediaRecorder.AudioSource;
 import android.os.Bundle;
 import android.os.Environment;
@@ -142,13 +140,13 @@ public class Mic extends Activity {
     
     private void updateAutoTalentPreferences() {
     	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-    	char key = prefs.getString("key", null).charAt(0);
-    	float fixedPitch = Float.valueOf(prefs.getString("fixed_pitch", null));
-    	float fixedPull = Float.valueOf(prefs.getString("pitch_pull", null));
-    	float pitchShift = Float.valueOf(prefs.getString("pitch_shift", null));
-    	float strength = Float.valueOf(prefs.getString("strength", null));
-    	float smooth = Float.valueOf(prefs.getString("smooth", null));
-    	float mix = Float.valueOf(prefs.getString("mix", null));
+    	char key = prefs.getString("key", getString(R.string.prefs_key_default)).charAt(0);
+    	float fixedPitch = Float.valueOf(prefs.getString("fixed_pitch", getString(R.string.prefs_fixed_pitch_default)));
+    	float fixedPull = Float.valueOf(prefs.getString("pitch_pull", getString(R.string.prefs_pitch_pull_default)));
+    	float pitchShift = Float.valueOf(prefs.getString("pitch_shift", getString(R.string.prefs_pitch_shift_default)));
+    	float strength = Float.valueOf(prefs.getString("strength", getString(R.string.prefs_corr_str_default)));
+    	float smooth = Float.valueOf(prefs.getString("smooth", getString(R.string.prefs_corr_smooth_default)));
+    	float mix = Float.valueOf(prefs.getString("mix", getString(R.string.prefs_corr_mix_default)));
     	
     	AutoTalent.instantiateAutoTalent(DEFAULT_SAMPLE_RATE);
     	AutoTalent.initializeAutoTalent(CONCERT_A, key, fixedPitch, fixedPull, 
@@ -191,7 +189,10 @@ public class Mic extends Activity {
     	public MicWriter(BlockingQueue<short[]> q) {
     		queue = q;
     		try {
-				writer = new WaveWriter(Environment.getExternalStorageDirectory().getCanonicalPath() + File.separator + getPackageName(), "micdroid.wav", DEFAULT_SAMPLE_RATE, 1, 16);
+				writer = new WaveWriter(
+						Environment.getExternalStorageDirectory().getCanonicalPath() + File.separator + getPackageName(), 
+						"micdroid.wav", 
+						DEFAULT_SAMPLE_RATE, 1, 16);
 				writer.CreateWaveFile();
     		} catch (IOException e) {
 				// uh oh, cannot create writer or wave file, abort!
@@ -250,13 +251,13 @@ public class Mic extends Activity {
     	public void run() {
     		isRunning = true;
     		
+    		android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
+    		
     		AudioRecord recorder = new AudioRecord(AudioSource.MIC,
     				DEFAULT_SAMPLE_RATE, 
     				AudioFormat.CHANNEL_CONFIGURATION_MONO, 
     				AudioFormat.ENCODING_PCM_16BIT, 
     				DEFAULT_BUFFER_SIZE);
-
-    		Log.d(getPackageName(), String.format("recorder state: %d", recorder.getState()));
     		
     		short[] buffer= new short[DEFAULT_BUFFER_SIZE];
     		recorder.startRecording();
@@ -275,11 +276,5 @@ public class Mic extends Activity {
     		recorder.release();
     		recorder = null;
     	}
-    }
-    
-    public AudioRecord getDeviceAudioRecord() {
-    	AudioRecord recorder;
-    	
-    	return null;
     }
 }

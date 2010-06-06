@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
 
+import android.util.Log;
+
 public class WaveWriter {
 	
 	private File output;
@@ -35,9 +37,10 @@ public class WaveWriter {
 		if (output.createNewFile()) {
 			// create file, set up output stream
 			FileOutputStream fileStream = new FileOutputStream(output);
-			outputStream = new BufferedOutputStream(fileStream);
+			outputStream = new BufferedOutputStream(fileStream, 4096);
 			// write 44 bytes of space for the header
 			outputStream.write(new byte[44]);
+			Log.d("WaveWriter", "writing 44 bytes for header");
 			return true;
 		}
 		return false;
