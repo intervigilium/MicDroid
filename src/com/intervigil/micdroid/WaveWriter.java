@@ -79,6 +79,8 @@ public class WaveWriter {
 		Write16BitsLowHigh(file, (short)sampleBits); // bits per sample, this is 6 bit pcm
 		file.write(new byte[] { 'd', 'a', 't', 'a' });
 		Write32BitsLowHigh(file, bytesWritten); // length of raw pcm data in bytes
+		
+		file.close();
 	}
 	
 	private void Write16BitsLowHigh(OutputStream stream, short sample) throws IOException {
