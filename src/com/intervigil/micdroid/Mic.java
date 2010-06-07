@@ -25,7 +25,6 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 public class Mic extends Activity {
 	
 	private static final int MICDROID_PREFERENCES_CODE = 1337;
-	private static final int DEFAULT_BUFFER_SIZE = 4096;
 	private static final int DEFAULT_SAMPLE_RATE = 22050;
 	
 	private static final float CONCERT_A = 440.0f;
@@ -234,7 +233,6 @@ public class Mic extends Activity {
 					// problem writing to the buffer
 				} catch (InterruptedException e) {
 					// problem removing from the queue
-					e.printStackTrace();
 				}
 			}
 			
@@ -243,7 +241,6 @@ public class Mic extends Activity {
 			} catch (IOException e) {
 				// problem writing the header or closing the output stream
 			}
-			
 		}
     }
     
@@ -266,22 +263,24 @@ public class Mic extends Activity {
     	public void run() {
     		isRunning = true;
     		
+    		int bufferSize = AudioRecord.getMinBufferSize(DEFAULT_SAMPLE_RATE, AudioFormat.CHANNEL_CONFIGURATION_MONO, AudioFormat.ENCODING_PCM_16BIT);
+    		
     		AudioRecord recorder = new AudioRecord(AudioSource.MIC,
     				DEFAULT_SAMPLE_RATE, 
     				AudioFormat.CHANNEL_CONFIGURATION_MONO, 
     				AudioFormat.ENCODING_PCM_16BIT, 
-    				DEFAULT_BUFFER_SIZE);
+    				bufferSize);
     		
-    		short[] buffer = new short[DEFAULT_BUFFER_SIZE];
+    		short[] buffer = new short[bufferSize];
     		recorder.startRecording();
     		
     		while (isRunning) {
     			try {
-    				int numSamples = recorder.read(buffer, 0, DEFAULT_BUFFER_SIZE);	
+    				int numSamples = recorder.read(buffer, 0, buffer.length);
+    				Log.d(getPackageName(), String.format("AudioRecord read %d samples out of buffer size %d", numSamples, bufferSize));
 					queue.put(new Sample(buffer, numSamples));
 				} catch (InterruptedException e) {
 					// problem putting on the queue
-					e.printStackTrace();
 				}
     		}
     		
