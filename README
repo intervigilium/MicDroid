@@ -4,7 +4,6 @@ Known issues:
 SLOW
 Must write as PCM wav, since we do not have an API to access encoders
 Must write to a wav file before processing since we do not have cpu time to do on the fly processing
-Doesn't work on HTC Evo 4G (cannot initialize audio record correctly?)
 
 To Do:
 Process audio once recording is over
