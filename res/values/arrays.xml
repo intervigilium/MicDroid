@@ -80,15 +80,15 @@
     
     <!-- Entry names for the histogram averaging menu. -->
     <string-array name="prefs_corr_mix_entries">
-        <item>Modified Signal</item>
+        <item>Dry Signal</item>
         <item>Mixed Signal (default)</item>
-        <item>Delay Compensated Signal</item>  
+        <item>Wet Signal</item>  
     </string-array>
     
     <string-array name="prefs_corr_mix_values">
         <item>0.0</item>
         <item>0.5</item>
-        <item>1.0</item>  
+        <item>1.0</item>
     </string-array>
     
 </resources>
