@@ -43,7 +43,18 @@ public class Mic extends Activity {
 	private Thread micWriterThread;
 	private MicRecorder micRecorder;
 	private MicWriter micWriter; 
-	private BlockingQueue<short[]> playQueue;
+	private BlockingQueue<Sample> playQueue;
+	
+	/** Packet of audio to pass between reader and writer threads. */
+	private class Sample {
+    	public short[] buffer;
+    	public int bufferSize;
+    	
+    	public Sample(short[] buffer, int bufferSize) {
+    		this.buffer = buffer;
+    		this.bufferSize = bufferSize;
+    	}
+    }
 	
     /** Called when the activity is first created. */
     @Override
@@ -75,7 +86,7 @@ public class Mic extends Activity {
     	if (playQueue != null) {
     		playQueue.clear();
     	} else {
-    		playQueue = new LinkedBlockingQueue<short[]>();
+    		playQueue = new LinkedBlockingQueue<Sample>();
     	}
     	
     	micRecorder = new MicRecorder(playQueue);
@@ -182,11 +193,11 @@ public class Mic extends Activity {
     };
     
     private class MicWriter implements Runnable {
-    	private final BlockingQueue<short[]> queue;
+    	private final BlockingQueue<Sample> queue;
     	private boolean isRunning;
     	private WaveWriter writer;
     	
-    	public MicWriter(BlockingQueue<short[]> q) {
+    	public MicWriter(BlockingQueue<Sample> q) {
     		queue = q;
     		try {
 				writer = new WaveWriter(
@@ -213,9 +224,9 @@ public class Mic extends Activity {
 
 			while (isRunning) {
 				try {
-					short[] buffer = queue.take();
-					AutoTalent.processSamples(buffer);
-					writer.Write(buffer);
+					Sample sample = queue.take();
+					AutoTalent.processSamples(sample.buffer, sample.bufferSize);
+					writer.Write(sample.buffer, sample.bufferSize);
 				} catch (IOException e) {
 					// problem writing to the buffer
 				} catch (InterruptedException e) {
@@ -233,10 +244,10 @@ public class Mic extends Activity {
     }
     
     private class MicRecorder implements Runnable {
-    	private final BlockingQueue<short[]> queue;
+    	private final BlockingQueue<Sample> queue;
     	private boolean isRunning;
     	    	
-    	public MicRecorder(BlockingQueue<short[]> q) {
+    	public MicRecorder(BlockingQueue<Sample> q) {
     		queue = q;
     	}
     	
@@ -259,13 +270,13 @@ public class Mic extends Activity {
     				AudioFormat.ENCODING_PCM_16BIT, 
     				DEFAULT_BUFFER_SIZE);
     		
-    		short[] buffer= new short[DEFAULT_BUFFER_SIZE];
+    		short[] buffer = new short[DEFAULT_BUFFER_SIZE];
     		recorder.startRecording();
     		
     		while (isRunning) {
     			try {
-    				recorder.read(buffer, 0, DEFAULT_BUFFER_SIZE);
-					queue.put(buffer);
+    				int numSamples = recorder.read(buffer, 0, DEFAULT_BUFFER_SIZE);	
+					queue.put(new Sample(buffer, numSamples));
 				} catch (InterruptedException e) {
 					
 					e.printStackTrace();

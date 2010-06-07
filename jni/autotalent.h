@@ -26,10 +26,10 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_initializeAutoTal
 /*
  * Class:     com_intervigil_micdroid_AutoTalent
  * Method:    processSamples
- * Signature: ([S)V
+ * Signature: ([SI)V
  */
 JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_processSamples
-  (JNIEnv *, jclass, jshortArray);
+  (JNIEnv *, jclass, jshortArray, jint);
 
 /*
  * Class:     com_intervigil_micdroid_AutoTalent

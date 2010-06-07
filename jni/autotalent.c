@@ -490,7 +490,7 @@ void setAutotalentParameters(Autotalent * autotalent, float * concertA, float * 
 void setAutotalentBuffers(Autotalent * autotalent, float * inputBuffer, float * outputBuffer) {
   autotalent->m_pfInputBuffer1 = inputBuffer;
   autotalent->m_pfOutputBuffer1 = outputBuffer;
-  __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "input buffer at address: %d, output buffer at address: %d", inputBuffer, outputBuffer);
+  //__android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "input buffer at address: %d, output buffer at address: %d", inputBuffer, outputBuffer);
 }
 
 
@@ -1172,14 +1172,13 @@ void freeAutotalentInstance() {
  * HELPER FUNCTIONS *
  ********************/
 
-float * getFloatBuffer(JNIEnv* env, jshortArray shortArray) {
+float * getFloatBuffer(JNIEnv* env, jshortArray shortArray, jsize arraySize) {
 
   int i;
-  jsize size = (*env)->GetArrayLength(env, shortArray);
   short* shortBuffer = (short *)(*env)->GetPrimitiveArrayCritical(env, shortArray, 0);
-  float* floatBuffer = calloc(size, sizeof(float));
+  float* floatBuffer = calloc(arraySize, sizeof(float));
 
-  for (i = 0; i < size; i++) {
+  for (i = 0; i < arraySize; i++) {
     floatBuffer[i] = ((float)(shortBuffer[i])/32767.0f);
   }
 
@@ -1239,25 +1238,22 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_initializeAutoTal
 
 
 JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_processSamples
-  (JNIEnv* env , jclass class, jshortArray samples) {
-
-  jsize sampleCount = (*env)->GetArrayLength(env, samples);
+  (JNIEnv* env , jclass class, jshortArray samples, jint sampleSize) {
 
   Autotalent * autotalent = getAutotalentInstance();
 
   if (autotalent != NULL) {
-    float* sampleBuffer = getFloatBuffer(env, samples);
+    float* sampleBuffer = getFloatBuffer(env, samples, sampleSize);
 
     setAutotalentBuffers(autotalent, sampleBuffer, sampleBuffer);
 
-    __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "autotalent run starting for %d samples", sampleCount);
+    __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "autotalent run starting for %d samples", sampleSize);
 
-    runAutotalent(autotalent, sampleCount);
+    runAutotalent(autotalent, sampleSize);
 
     // copy results back up to java array
-    short* shortBuffer = getShortBuffer(sampleBuffer, sampleCount);
-    jshortArray jOutputArray = (*env)->NewShortArray(env, sampleCount);
-    (*env)->SetShortArrayRegion(env, samples, 0, sampleCount, shortBuffer);
+    short* shortBuffer = getShortBuffer(sampleBuffer, sampleSize);
+    (*env)->SetShortArrayRegion(env, samples, 0, sampleSize, shortBuffer);
 
     free(shortBuffer);
     free(sampleBuffer);

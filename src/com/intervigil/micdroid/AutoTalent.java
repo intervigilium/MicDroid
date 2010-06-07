@@ -15,7 +15,7 @@ public class AutoTalent {
 			float lfoDepth, float lfoRate, float lfoShape, float lfoSym, int lfoQuant, 
 			int formCorr, float formWarp, float mix);
 	
-	public static native void processSamples(short[] samples);
+	public static native void processSamples(short[] samples, int sampleSize);
 	
 	public static native void destroyAutoTalent();
 }

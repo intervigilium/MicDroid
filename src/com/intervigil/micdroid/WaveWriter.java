@@ -46,8 +46,8 @@ public class WaveWriter {
 		return false;
 	}
 	
-	public void Write(short[] buffer) throws IOException {
-		for (int i = 0; i < buffer.length; i++) {
+	public void Write(short[] buffer, int bufferSize) throws IOException {
+		for (int i = 0; i < bufferSize; i++) {
 			Write16BitsLowHigh(outputStream, buffer[i]);
 			bytesWritten += 2;
 		}
