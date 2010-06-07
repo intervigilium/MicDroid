@@ -91,6 +91,8 @@ public class Mic extends Activity {
     	
     	micRecorder = new MicRecorder(playQueue);
     	micWriter = new MicWriter(playQueue);
+    	
+    	android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
     }
     
     @Override
@@ -172,6 +174,7 @@ public class Mic extends Activity {
 				updateAutoTalentPreferences();
 	    		
 				micRecorderThread = new Thread(micRecorder, "Mic Recorder Thread");
+				micRecorderThread.setPriority(Thread.MAX_PRIORITY);
 				micRecorderThread.start();
 
 	        	micWriterThread = new Thread(micWriter, "Mic Writer Thread");
@@ -230,6 +233,7 @@ public class Mic extends Activity {
 				} catch (IOException e) {
 					// problem writing to the buffer
 				} catch (InterruptedException e) {
+					// problem removing from the queue
 					e.printStackTrace();
 				}
 			}
@@ -262,8 +266,6 @@ public class Mic extends Activity {
     	public void run() {
     		isRunning = true;
     		
-    		android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
-    		
     		AudioRecord recorder = new AudioRecord(AudioSource.MIC,
     				DEFAULT_SAMPLE_RATE, 
     				AudioFormat.CHANNEL_CONFIGURATION_MONO, 
@@ -278,7 +280,7 @@ public class Mic extends Activity {
     				int numSamples = recorder.read(buffer, 0, DEFAULT_BUFFER_SIZE);	
 					queue.put(new Sample(buffer, numSamples));
 				} catch (InterruptedException e) {
-					
+					// problem putting on the queue
 					e.printStackTrace();
 				}
     		}
