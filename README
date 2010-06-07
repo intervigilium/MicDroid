@@ -1,12 +1,13 @@
 This Android application auto-tunes your voice!
 
 Known issues:
-Ridiculously choppy (Android sound api limitations?)
+SLOW
+Must write as PCM wav, since we do not have an API to access encoders
+Must write to a wav file before processing since we do not have cpu time to do on the fly processing
 Doesn't work on HTC Evo 4G (cannot initialize audio record correctly?)
 
 To Do:
-Write to a .wav file instead of instantly playing back via speaker, to get around the
-choppiness issues.
+Process audio once recording is over
 
 This project uses Autotalent from http://web.mit.edu/tbaran/www/autotalent.html
 which was created originally by Tom Baran.
