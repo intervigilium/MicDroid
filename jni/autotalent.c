@@ -187,7 +187,7 @@ typedef struct {
   float* m_pfAmount;
   float* m_pfSmooth;
   float* m_pfShift;
-  float* m_pfScwarp;
+  int* m_pfScwarp;
   float* m_pfLfoamp;
   float* m_pfLforate;
   float* m_pfLfoshape;
@@ -449,7 +449,7 @@ void setAutotalentKey(Autotalent * autotalent, char * keyPtr) {
 
 // Set autotalent parameters
 void setAutotalentParameters(Autotalent * autotalent, float * concertA, float * fixedPitch, float * fixedPull,
-						float * correctStrength, float * correctSmooth,float * pitchShift, float * scaleRotate,
+						float * correctStrength, float * correctSmooth,float * pitchShift, int * scaleRotate,
 						float * lfoDepth, float * lfoRate, float * lfoShape, float * lfoSym, int * lfoQuant,
 						int * formCorr, float * formWarp, float * mix) {
 
@@ -1214,7 +1214,7 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_instantiateAutoTa
 
 JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_initializeAutoTalent
   (JNIEnv* env, jclass class, jfloat concertA, jchar key, jfloat fixedPitch, jfloat fixedPull,
-		  jfloat correctStrength, jfloat correctSmooth, jfloat pitchShift, jfloat scaleRotate,
+		  jfloat correctStrength, jfloat correctSmooth, jfloat pitchShift, jint scaleRotate,
 		  jfloat lfoDepth, jfloat lfoRate, jfloat lfoShape, jfloat lfoSym, jint lfoQuant,
 		  jint formCorr, jfloat formWarp, jfloat mix) {
 

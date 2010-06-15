@@ -18,10 +18,10 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_instantiateAutoTa
 /*
  * Class:     com_intervigil_micdroid_AutoTalent
  * Method:    initializeAutoTalent
- * Signature: (FCFFFFFFFFFFIIFF)V
+ * Signature: (FCFFFFFIFFFFIIFF)V
  */
 JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_initializeAutoTalent
-  (JNIEnv *, jclass, jfloat, jchar, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jint, jint, jfloat, jfloat);
+  (JNIEnv *, jclass, jfloat, jchar, jfloat, jfloat, jfloat, jfloat, jfloat, jint, jfloat, jfloat, jfloat, jfloat, jint, jint, jfloat, jfloat);
 
 /*
  * Class:     com_intervigil_micdroid_AutoTalent

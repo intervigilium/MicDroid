@@ -29,7 +29,7 @@ public class Mic extends Activity {
 	
 	private static final float CONCERT_A = 440.0f;
 
-	private static final float DEFAULT_SCALE_ROTATE = 0.0f;
+	private static final int DEFAULT_SCALE_ROTATE = 0;
 	private static final float DEFAULT_LFO_DEPTH = 0.0f;
 	private static final float DEFAULT_LFO_RATE = 5.0f;
 	private static final float DEFAULT_LFO_SHAPE = 0.0f;
