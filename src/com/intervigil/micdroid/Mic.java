@@ -35,7 +35,7 @@ public class Mic extends Activity {
 	private static final float DEFAULT_LFO_SHAPE = 0.0f;
 	private static final float DEFAULT_LFO_SYM = 0.0f;
 	private static final int DEFAULT_LFO_QUANT = 0;
-	private static final int DEFAULT_FORM_CORR = 0;
+	private static final int DEFAULT_FORM_CORR = 1;
 	private static final float DEFAULT_FORM_WARP = 0.0f;
 	
 	private Thread micRecorderThread;
@@ -201,16 +201,6 @@ public class Mic extends Activity {
     	
     	public MicWriter(BlockingQueue<Sample> q) {
     		queue = q;
-    		try {
-				writer = new WaveWriter(
-						Environment.getExternalStorageDirectory().getCanonicalPath() + File.separator + getPackageName(), 
-						"micdroid.wav", 
-						DEFAULT_SAMPLE_RATE, 1, 16);
-				writer.CreateWaveFile();
-    		} catch (IOException e) {
-				// uh oh, cannot create writer or wave file, abort!
-				e.printStackTrace();
-			}
     	}
     	
     	public void stopRunning() {
@@ -223,6 +213,16 @@ public class Mic extends Activity {
     	
 		public void run() {
 			isRunning = true;
+			try {
+				writer = new WaveWriter(
+						Environment.getExternalStorageDirectory().getCanonicalPath() + File.separator + getPackageName(), 
+						"micdroid.wav", 
+						DEFAULT_SAMPLE_RATE, 1, 16);
+				writer.CreateWaveFile();
+    		} catch (IOException e) {
+				// uh oh, cannot create writer or wave file, abort!
+				e.printStackTrace();
+			}
 
 			while (isRunning) {
 				try {

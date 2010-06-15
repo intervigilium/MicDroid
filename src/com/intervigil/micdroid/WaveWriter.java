@@ -33,6 +33,7 @@ public class WaveWriter {
 	public boolean CreateWaveFile() throws IOException {
 		if (output.exists()) {
 			output.delete();
+			Log.d("WaveWriter", "deleted existing file!");
 		}
 		
 		if (output.createNewFile()) {
