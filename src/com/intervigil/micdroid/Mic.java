@@ -266,7 +266,7 @@ public class Mic extends Activity {
     		int bufferSize = AudioRecord.getMinBufferSize(DEFAULT_SAMPLE_RATE, AudioFormat.CHANNEL_CONFIGURATION_MONO, AudioFormat.ENCODING_PCM_16BIT);
     		
     		AudioRecord recorder = new AudioRecord(AudioSource.MIC,
-    				DEFAULT_SAMPLE_RATE, 
+    				DEFAULT_SAMPLE_RATE,
     				AudioFormat.CHANNEL_CONFIGURATION_MONO, 
     				AudioFormat.ENCODING_PCM_16BIT, 
     				bufferSize);
