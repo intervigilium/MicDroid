@@ -132,9 +132,6 @@ void fft_inverse(fft_vars* membvars, float* input_re, float* input_im, float* ou
   }
 }
 
-#define SHORT_TO_FLOAT_CONST (float) 1.0f / 32768.0f
-#define FLOAT_TO_SHORT_CONST (float) 32767.0f
-
 #define CONCERT_A (float)440.0
 
 #define AT_A 0
@@ -1154,7 +1151,7 @@ float * getFloatBuffer(JNIEnv* env, jshortArray shortArray, jsize arraySize) {
   float* floatBuffer = calloc(arraySize, sizeof(float));
 
   for (i = 0; i < arraySize; i++) {
-    floatBuffer[i] = ((float)(shortBuffer[i])*SHORT_TO_FLOAT_CONST);
+    floatBuffer[i] = ((float)(shortBuffer[i])/32768.0f);
   }
 
   (*env)->ReleasePrimitiveArrayCritical(env, shortArray, shortBuffer, 0);
@@ -1168,7 +1165,7 @@ jshort * getShortBuffer(float* floatBuffer, jsize size) {
   jshort* shortBuffer = calloc(size, sizeof(jshort));
 
   for (i = 0; i < size; i++) {
-	  shortBuffer[i] = (short)(floatBuffer[i]*FLOAT_TO_SHORT_CONST);
+	  shortBuffer[i] = (short)(floatBuffer[i]*32767.0f);
   }
 
   return shortBuffer;

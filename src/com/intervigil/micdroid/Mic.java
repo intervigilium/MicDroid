@@ -35,7 +35,7 @@ public class Mic extends Activity {
 	private static final float DEFAULT_LFO_SHAPE = 0.0f;
 	private static final float DEFAULT_LFO_SYM = 0.0f;
 	private static final int DEFAULT_LFO_QUANT = 0;
-	private static final int DEFAULT_FORM_CORR = 1;
+	private static final int DEFAULT_FORM_CORR = 0;
 	private static final float DEFAULT_FORM_WARP = 0.0f;
 	
 	private Thread micRecorderThread;
@@ -277,7 +277,7 @@ public class Mic extends Activity {
     		while (isRunning) {
     			try {
     				int numSamples = recorder.read(buffer, 0, buffer.length);
-    				Log.d(getPackageName(), String.format("AudioRecord read %d samples out of buffer size %d", numSamples, bufferSize));
+    				//Log.d(getPackageName(), String.format("AudioRecord read %d samples out of buffer size %d", numSamples, bufferSize));
 					queue.put(new Sample(buffer, numSamples));
 				} catch (InterruptedException e) {
 					// problem putting on the queue
