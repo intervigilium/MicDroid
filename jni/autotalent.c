@@ -1143,32 +1143,6 @@ void cleanupAutotalent(Autotalent* Instance) {
 
 
 /********************
- *  THE INSTANCE    *
- ********************/
-
-Autotalent * instance;
-
-void instantiateAutotalentInstance(unsigned long sampleRate) {
-  if (instance == NULL) {
-    instance = instantiateAutotalent(sampleRate);
-    __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "instantiated autotalent at %d with sample rate: %d", instance, (instance->fs));
-  }
-}
-
-Autotalent * getAutotalentInstance() {
-  // warning: can return null!!
-  return instance;
-}
-
-void freeAutotalentInstance() {
-  if (instance != NULL) {
-	cleanupAutotalent(instance);
-	__android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "cleaned up autotalent at %d", instance);
-	instance = NULL;
-  }
-}
-
-/********************
  * HELPER FUNCTIONS *
  ********************/
 
@@ -1204,11 +1178,14 @@ jshort * getShortBuffer(float* floatBuffer, jsize size) {
  *  JNI INTERFACE   *
  ********************/
 
+static Autotalent * instance;
+
 JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_instantiateAutoTalent
   (JNIEnv* env, jclass class, jint sampleRate) {
-
-  // convert jint to unsigned long?
-  instantiateAutotalentInstance(sampleRate);
+  if (instance == NULL) {
+    instance = instantiateAutotalent(sampleRate);
+    __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "instantiated autotalent at %d with sample rate: %d", instance, (instance->fs));
+  }
 }
 
 
@@ -1217,17 +1194,14 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_initializeAutoTal
 		  jfloat correctStrength, jfloat correctSmooth, jfloat pitchShift, jint scaleRotate,
 		  jfloat lfoDepth, jfloat lfoRate, jfloat lfoShape, jfloat lfoSym, jint lfoQuant,
 		  jint formCorr, jfloat formWarp, jfloat mix) {
-
   __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "initializing autotalent");
 
-  Autotalent * autotalent = getAutotalentInstance();
-
-  if (autotalent != NULL) {
-    setAutotalentKey(autotalent, (char *)&key);
+  if (instance != NULL) {
+    setAutotalentKey(instance, (char *)&key);
 
     __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "setting parameters");
 
-    setAutotalentParameters(autotalent, &concertA, &fixedPitch, &fixedPull,
+    setAutotalentParameters(instance, &concertA, &fixedPitch, &fixedPull,
   						  &correctStrength, &correctSmooth, &pitchShift, &scaleRotate,
   						  &lfoDepth, &lfoRate, &lfoShape, &lfoSym, &lfoQuant,
   						  &formCorr, &formWarp, &mix);
@@ -1239,17 +1213,14 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_initializeAutoTal
 
 JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_processSamples
   (JNIEnv* env , jclass class, jshortArray samples, jint sampleSize) {
-
-  Autotalent * autotalent = getAutotalentInstance();
-
-  if (autotalent != NULL) {
+  if (instance != NULL) {
     float* sampleBuffer = getFloatBuffer(env, samples, sampleSize);
 
-    setAutotalentBuffers(autotalent, sampleBuffer, sampleBuffer);
+    setAutotalentBuffers(instance, sampleBuffer, sampleBuffer);
 
-    __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "autotalent run starting for %d samples", sampleSize);
+    //__android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "autotalent run starting for %d samples", sampleSize);
 
-    runAutotalent(autotalent, sampleSize);
+    runAutotalent(instance, sampleSize);
 
     // copy results back up to java array
     short* shortBuffer = getShortBuffer(sampleBuffer, sampleSize);
@@ -1258,13 +1229,16 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_processSamples
     free(shortBuffer);
     free(sampleBuffer);
 
-    __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "autotalent run completed");
+    //__android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "autotalent run completed");
   }
 }
 
 
 JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_destroyAutoTalent
   (JNIEnv* env, jclass class) {
-
-  freeAutotalentInstance();
+  if (instance != NULL) {
+    cleanupAutotalent(instance);
+    __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "cleaned up autotalent at %d", instance);
+    instance = NULL;
+  }
 }
