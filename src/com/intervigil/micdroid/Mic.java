@@ -68,9 +68,13 @@ public class Mic extends Activity {
         ToggleButton powerBtn = (ToggleButton)findViewById(R.id.mic_toggle);
         powerBtn.setOnCheckedChangeListener(mPowerBtnListener);
         
-        File outputDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + getPackageName());
+        File outputDir = new File(getOutputDirectory());
         if (!outputDir.exists()) {
         	outputDir.mkdir();
+        }
+        File autoTuneDir = new File(getAutotuneDirectory());
+        if (!autoTuneDir.exists()) {
+        	autoTuneDir.mkdir();
         }
     }
     
@@ -162,6 +166,8 @@ public class Mic extends Activity {
 	    	case FILENAME_ENTRY_CODE:
 	    		if (resultCode == Activity.RESULT_OK) {
 	    			String fileName = data.getStringExtra(getString(R.string.filename_entry_result));
+	    			fileName = fileName + ".wav";
+	    			Log.d(getPackageName(), String.format("filename is %s", fileName));
 	    			new ProcessAutotalentTask().execute(fileName);
 	    		}
 	    		break;
@@ -171,15 +177,15 @@ public class Mic extends Activity {
     }
     
     private class ProcessAutotalentTask extends AsyncTask<String, Void, Void> {
-    	private final ProgressDialog progressDialog = new ProgressDialog(getBaseContext());
+    	//private final ProgressDialog progressDialog = new ProgressDialog(getBaseContext());
     	private WaveReader reader;
     	private WaveWriter writer;
 
     	@Override
     	protected void onPreExecute() {
     		super.onPreExecute();
-    		this.progressDialog.setMessage("Saving recording...");
-    		this.progressDialog.show();
+    		//this.progressDialog.setMessage("Saving recording...");
+    		//this.progressDialog.show();
     	}
     	
 		@Override
@@ -199,6 +205,7 @@ public class Mic extends Activity {
 			} catch (IOException e) {
 				// can't create our readers and writers for some reason!
 				// TODO: real error handling
+				e.printStackTrace();
 			}
 			
 			short[] buf = new short[AUTOTALENT_CHUNK_SIZE]; 
@@ -206,7 +213,9 @@ public class Mic extends Activity {
 				try {
 					int samplesRead = reader.ReadShort(buf, AUTOTALENT_CHUNK_SIZE);
 					if (samplesRead > 0) {
+						Log.d(getPackageName(), String.format("wavereader read %d samples", samplesRead));
 						AutoTalent.processSamples(buf, samplesRead);
+						Log.d(getPackageName(), String.format("autotalent processed %d samples", samplesRead));
 						writer.Write(buf, samplesRead);
 					} else {
 						break;
@@ -214,6 +223,7 @@ public class Mic extends Activity {
 				} catch (IOException e) {
 					// failed to read/write to wave file
 					// TODO: real error handling
+					e.printStackTrace();
 				}
 			}
 			
@@ -223,6 +233,7 @@ public class Mic extends Activity {
 			} catch (IOException e) {
 				// failed to close out our files correctly
 				// TODO: real error handling
+				e.printStackTrace();
 			}
 			
 			return null;
@@ -236,7 +247,7 @@ public class Mic extends Activity {
 		@Override
 		protected void onPostExecute(Void result) {
 			super.onPostExecute(result);
-			progressDialog.dismiss();
+			//progressDialog.dismiss();
 		}
     }
     
@@ -270,12 +281,12 @@ public class Mic extends Activity {
 		}
     };
     
-    private String getOutputDirectory() throws IOException {
-		return Environment.getExternalStorageDirectory().getCanonicalPath() + File.separator + getPackageName();
+    private String getOutputDirectory() {
+		return Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + getPackageName();
     }
     
-    private String getAutotuneDirectory() throws IOException {
-    	return Environment.getExternalStorageDirectory().getCanonicalPath() + File.separator + getPackageName() + File.separator + "library";
+    private String getAutotuneDirectory() {
+    	return Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + getPackageName() + File.separator + "library";
     }
     
     private void updateAutoTalentPreferences() {
@@ -327,8 +338,10 @@ public class Mic extends Activity {
 					writer.Write(sample.buffer, sample.bufferSize);
 				} catch (IOException e) {
 					// problem writing to the buffer
+					e.printStackTrace();
 				} catch (InterruptedException e) {
 					// problem removing from the queue
+					e.printStackTrace();
 				}
 			}
 			
@@ -336,6 +349,7 @@ public class Mic extends Activity {
 				writer.CloseWaveFile();
 			} catch (IOException e) {
 				// problem writing the header or closing the output stream
+				e.printStackTrace();
 			}
 		}
     }
@@ -373,6 +387,7 @@ public class Mic extends Activity {
 					queue.put(new Sample(buffer, numSamples));
 				} catch (InterruptedException e) {
 					// problem putting on the queue
+					e.printStackTrace();
 				}
     		}
     		
