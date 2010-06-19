@@ -27,7 +27,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 public class Mic extends Activity {
 
 	private static final int FILENAME_ENTRY_CODE = 1337;
-	private static final int AUTOTALENT_CHUNK_SIZE = 4096;
+	private static final int AUTOTALENT_CHUNK_SIZE = 8192;
 	
 	private static final int DEFAULT_SAMPLE_RATE = 22050;
 	
@@ -217,6 +217,7 @@ public class Mic extends Activity {
 						AutoTalent.processSamples(buf, samplesRead);
 						Log.d(getPackageName(), String.format("autotalent processed %d samples", samplesRead));
 						writer.Write(buf, samplesRead);
+						Log.d(getPackageName(), String.format("wavewriter wrote %d samples", samplesRead));
 					} else {
 						break;
 					}
