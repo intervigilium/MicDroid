@@ -6,11 +6,13 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder.AudioSource;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -23,8 +25,10 @@ import android.widget.ToggleButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class Mic extends Activity {
+
+	private static final int FILENAME_ENTRY_CODE = 1337;
+	private static final int AUTOTALENT_CHUNK_SIZE = 4096;
 	
-	private static final int MICDROID_PREFERENCES_CODE = 1337;
 	private static final int DEFAULT_SAMPLE_RATE = 22050;
 	
 	private static final float CONCERT_A = 440.0f;
@@ -144,27 +148,96 @@ public class Mic extends Activity {
             case R.id.options:
             	// Launch preferences as a subactivity
             	Intent preferencesIntent = new Intent(getBaseContext(), Preferences.class);
-            	startActivityForResult(preferencesIntent, MICDROID_PREFERENCES_CODE);
+            	startActivity(preferencesIntent);
             	break;
         }
         return true;
     }
     
-    private void updateAutoTalentPreferences() {
-    	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-    	char key = prefs.getString("key", getString(R.string.prefs_key_default)).charAt(0);
-    	float fixedPitch = Float.valueOf(prefs.getString("fixed_pitch", getString(R.string.prefs_fixed_pitch_default)));
-    	float fixedPull = Float.valueOf(prefs.getString("pitch_pull", getString(R.string.prefs_pitch_pull_default)));
-    	float pitchShift = Float.valueOf(prefs.getString("pitch_shift", getString(R.string.prefs_pitch_shift_default)));
-    	float strength = Float.valueOf(prefs.getString("strength", getString(R.string.prefs_corr_str_default)));
-    	float smooth = Float.valueOf(prefs.getString("smooth", getString(R.string.prefs_corr_smooth_default)));
-    	float mix = Float.valueOf(prefs.getString("mix", getString(R.string.prefs_corr_mix_default)));
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    	super.onActivityResult(requestCode, resultCode, data);
     	
-    	AutoTalent.instantiateAutoTalent(DEFAULT_SAMPLE_RATE);
-    	AutoTalent.initializeAutoTalent(CONCERT_A, key, fixedPitch, fixedPull, 
-    			strength, smooth, pitchShift, DEFAULT_SCALE_ROTATE, 
-    			DEFAULT_LFO_DEPTH, DEFAULT_LFO_RATE, DEFAULT_LFO_SHAPE, DEFAULT_LFO_SYM, DEFAULT_LFO_QUANT, 
-    			DEFAULT_FORM_CORR, DEFAULT_FORM_WARP, mix);
+    	switch (requestCode) {
+	    	case FILENAME_ENTRY_CODE:
+	    		if (resultCode == Activity.RESULT_OK) {
+	    			String fileName = data.getStringExtra(getString(R.string.filename_entry_result));
+	    			new ProcessAutotalentTask().execute(fileName);
+	    		}
+	    		break;
+    		default:
+    			break;
+    	}
+    }
+    
+    private class ProcessAutotalentTask extends AsyncTask<String, Void, Void> {
+    	private final ProgressDialog progressDialog = new ProgressDialog(getBaseContext());
+    	private WaveReader reader;
+    	private WaveWriter writer;
+
+    	@Override
+    	protected void onPreExecute() {
+    		super.onPreExecute();
+    		this.progressDialog.setMessage("Saving recording...");
+    		this.progressDialog.show();
+    	}
+    	
+		@Override
+		protected Void doInBackground(String... params) {
+			// maybe ugly but we only pass one string in anyway
+			String fileName = params[0];
+			try {
+				reader = new WaveReader(
+						getOutputDirectory(), 
+						getString(R.string.default_recording_name));
+				reader.OpenWave();
+				writer = new WaveWriter(
+						getAutotuneDirectory(), 
+						fileName,
+						DEFAULT_SAMPLE_RATE, 1, 16);
+				writer.CreateWaveFile();
+			} catch (IOException e) {
+				// can't create our readers and writers for some reason!
+				// TODO: real error handling
+			}
+			
+			short[] buf = new short[AUTOTALENT_CHUNK_SIZE]; 
+			while (true) {
+				try {
+					int samplesRead = reader.ReadShort(buf, AUTOTALENT_CHUNK_SIZE);
+					if (samplesRead > 0) {
+						AutoTalent.processSamples(buf, samplesRead);
+						writer.Write(buf, samplesRead);
+					} else {
+						break;
+					}
+				} catch (IOException e) {
+					// failed to read/write to wave file
+					// TODO: real error handling
+				}
+			}
+			
+			try {
+				reader.CloseWaveFile();
+				writer.CloseWaveFile();
+			} catch (IOException e) {
+				// failed to close out our files correctly
+				// TODO: real error handling
+			}
+			
+			return null;
+		}
+		
+		@Override
+		protected void onProgressUpdate(Void... values) {
+			super.onProgressUpdate(values);
+		}
+    	
+		@Override
+		protected void onPostExecute(Void result) {
+			super.onPostExecute(result);
+			progressDialog.dismiss();
+		}
     }
     
     private OnCheckedChangeListener mPowerBtnListener = new OnCheckedChangeListener() {
@@ -189,10 +262,38 @@ public class Mic extends Activity {
 					e.printStackTrace();
 				}
 				playQueue.clear();
-				AutoTalent.destroyAutoTalent();
+				
+				// prompt user to save recording
+				Intent saveFileIntent = new Intent(getBaseContext(), FileNameEntry.class);
+				startActivityForResult(saveFileIntent, FILENAME_ENTRY_CODE);
 			}
 		}
     };
+    
+    private String getOutputDirectory() throws IOException {
+		return Environment.getExternalStorageDirectory().getCanonicalPath() + File.separator + getPackageName();
+    }
+    
+    private String getAutotuneDirectory() throws IOException {
+    	return Environment.getExternalStorageDirectory().getCanonicalPath() + File.separator + getPackageName() + File.separator + "library";
+    }
+    
+    private void updateAutoTalentPreferences() {
+    	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+    	char key = prefs.getString("key", getString(R.string.prefs_key_default)).charAt(0);
+    	float fixedPitch = Float.valueOf(prefs.getString("fixed_pitch", getString(R.string.prefs_fixed_pitch_default)));
+    	float fixedPull = Float.valueOf(prefs.getString("pitch_pull", getString(R.string.prefs_pitch_pull_default)));
+    	float pitchShift = Float.valueOf(prefs.getString("pitch_shift", getString(R.string.prefs_pitch_shift_default)));
+    	float strength = Float.valueOf(prefs.getString("strength", getString(R.string.prefs_corr_str_default)));
+    	float smooth = Float.valueOf(prefs.getString("smooth", getString(R.string.prefs_corr_smooth_default)));
+    	float mix = Float.valueOf(prefs.getString("mix", getString(R.string.prefs_corr_mix_default)));
+    	
+    	AutoTalent.instantiateAutoTalent(DEFAULT_SAMPLE_RATE);
+    	AutoTalent.initializeAutoTalent(CONCERT_A, key, fixedPitch, fixedPull, 
+    			strength, smooth, pitchShift, DEFAULT_SCALE_ROTATE, 
+    			DEFAULT_LFO_DEPTH, DEFAULT_LFO_RATE, DEFAULT_LFO_SHAPE, DEFAULT_LFO_SYM, DEFAULT_LFO_QUANT, 
+    			DEFAULT_FORM_CORR, DEFAULT_FORM_WARP, mix);
+    }
     
     private class MicWriter implements Runnable {
     	private final BlockingQueue<Sample> queue;
@@ -207,16 +308,12 @@ public class Mic extends Activity {
     		this.isRunning = false;
     	}
     	
-    	public boolean getIsRunning() {
-    		return this.isRunning;
-    	}
-    	
 		public void run() {
 			isRunning = true;
 			try {
 				writer = new WaveWriter(
-						Environment.getExternalStorageDirectory().getCanonicalPath() + File.separator + getPackageName(), 
-						"micdroid.wav", 
+						getOutputDirectory(),
+						getString(R.string.default_recording_name), 
 						DEFAULT_SAMPLE_RATE, 1, 16);
 				writer.CreateWaveFile();
     		} catch (IOException e) {
@@ -227,7 +324,6 @@ public class Mic extends Activity {
 			while (isRunning) {
 				try {
 					Sample sample = queue.take();
-					AutoTalent.processSamples(sample.buffer, sample.bufferSize);
 					writer.Write(sample.buffer, sample.bufferSize);
 				} catch (IOException e) {
 					// problem writing to the buffer
@@ -254,10 +350,6 @@ public class Mic extends Activity {
     	
     	public void stopRunning() {
     		this.isRunning = false;
-    	}
-    	
-    	public boolean getIsRunning() {
-    		return this.isRunning;
     	}
     	
     	public void run() {

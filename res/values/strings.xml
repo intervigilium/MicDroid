@@ -2,6 +2,17 @@
 <resources>
     <string name="hello">Hello World, mic!</string>
     <string name="app_name">MicDroid</string>
+    <string name="default_recording_name">recording.wav</string>
+    <string name="filename_entry_result">FILENAME_RESULT</string>
+    
+    <string name="filename_entry">Save Recording</string>
+    <string name="filename_entry_text">The current recording will be with the name: </string>
+    <string name="filename_entry_btn_ok">Save</string>
+    <string name="filename_entry_btn_cancel">Cancel</string>
+    
+    <string name="invalid_name_alert_title">Invalid Filename!</string>
+    <string name="invalid_name_alert_message">Invalid filename detected, please enter a new one</string>
+    
     <string name="set_preferences">Auto-Tune Preferences</string>
     <string name="mic_label">Power Button</string>
     <string name="mic_toggle_off">On</string>
