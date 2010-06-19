@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout android:id="@+id/filename_entry_layout" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
-
+<LinearLayout android:id="@+id/filename_entry_layout" android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
 	<TextView android:id="@+id/filename_entry_text" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/filename_entry_text" />
-	
-	<EditText android:id="@+id/filename_entry_field" android:layout_width="80sp" android:layout_height="24sp" android:singleLine="true" />
-
+	<EditText android:id="@+id/filename_entry_field" android:layout_width="fill_parent" android:layout_height="48dp" android:singleLine="true" />
 	<Button android:id="@+id/filename_entry_btn_ok" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/filename_entry_btn_ok" />
 </LinearLayout>
