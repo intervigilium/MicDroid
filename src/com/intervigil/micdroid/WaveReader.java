@@ -72,7 +72,7 @@ public class WaveReader {
 			outIndex++;
 		}
 		
-		return bytesRead;
+		return outIndex;
 	}
 	
 	public int ReadShort(short[] outBuf, int numSamples) throws IOException {
@@ -85,7 +85,7 @@ public class WaveReader {
 			outIndex++;
 		}
 		
-		return bytesRead;
+		return outIndex;
 	}
 	
 	public void CloseWaveFile() throws IOException {
