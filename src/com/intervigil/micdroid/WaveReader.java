@@ -62,35 +62,33 @@ public class WaveReader {
 		return mSampleBits;
 	}
 	
-	public float[] ReadFloat(int numSamples) throws IOException {
-		float[] outBuf = new float[numSamples];
+	public int ReadFloat(float[] outBuf, int numSamples) throws IOException {
 		byte[] buf = new byte[numSamples*2];
-		inputStream.read(buf);
+		int bytesRead = inputStream.read(buf);
 		
 		int outIndex = 0;
-		for (int i = 0; i < buf.length; i+=2) {
+		for (int i = 0; i < bytesRead; i+=2) {
 			outBuf[outIndex] = (float) ((((0xff & buf[i]) << 8) | (0xff & buf[i+1])) * 1.0f/32768.0f);
 			outIndex++;
 		}
 		
-		return outBuf;
+		return bytesRead;
 	}
 	
-	public short[] ReadShort(int numSamples) throws IOException {
-		short[] outBuf = new short[numSamples];
+	public int ReadShort(short[] outBuf, int numSamples) throws IOException {
 		byte[] buf = new byte[numSamples*2];
-		inputStream.read(buf);
+		int bytesRead = inputStream.read(buf);
 		
 		int outIndex = 0;
-		for (int i = 0; i < buf.length; i+=2) {
+		for (int i = 0; i < bytesRead; i+=2) {
 			outBuf[outIndex] = (short) (((0xff & buf[i]) << 8) | (0xff & buf[i+1]));
 			outIndex++;
 		}
 		
-		return outBuf;
+		return bytesRead;
 	}
 	
-	public void CloseWave() throws IOException {
+	public void CloseWaveFile() throws IOException {
 		inputStream.close();
 	}
 }
