@@ -12,8 +12,8 @@ public class Preferences extends PreferenceActivity {
      * @param   icicle          Activity's saved state, if any.
      */
     @Override
-    protected void onCreate(Bundle icicle) {
-        super.onCreate(icicle);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         
         // Load the preferences from an XML resource.
         addPreferencesFromResource(R.xml.preferences);

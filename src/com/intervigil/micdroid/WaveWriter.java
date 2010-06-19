@@ -5,9 +5,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.RandomAccessFile;
-
-import android.util.Log;
 
 public class WaveWriter {
 	private static final int STREAM_BUFFER_SIZE = 4096;
