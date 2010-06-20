@@ -1220,6 +1220,8 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_initializeAutoTal
     *(instance->m_pfFwarp) = (float)formWarp;
     *(instance->m_pfMix) = (float)mix;
     __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "LFODepth: %f, LFORate: %f, LFOShape %f, LFOSym: %f, LFOQuant: %d, FormCorr: %d, FormWarp: %f, Mix: %f", *(instance->m_pfLfoamp), *(instance->m_pfLforate), *(instance->m_pfLfoshape), *(instance->m_pfLfosymm), *(instance->m_pfLfoquant), *(instance->m_pfFcorr), *(instance->m_pfFwarp), *(instance->m_pfMix));
+  } else {
+    __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "No suitable autotalent instance found!");
   }
 }
 
@@ -1240,6 +1242,8 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_processSamples
 
     free(shortBuffer);
     free(sampleBuffer);
+  } else {
+    __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "No suitable autotalent instance found!");
   }
 }
 
