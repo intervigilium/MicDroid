@@ -154,6 +154,11 @@ public class Mic extends Activity {
             	Intent preferencesIntent = new Intent(getBaseContext(), Preferences.class);
             	startActivity(preferencesIntent);
             	break;
+            case R.id.playback:
+            	// Launch playback mode as a subactivity
+            	Intent playbackIntent = new Intent(getBaseContext(), Playback.class);
+            	startActivity(playbackIntent);
+            	break;
         }
         return true;
     }
