@@ -33,7 +33,6 @@ public class WaveWriter {
 	public boolean CreateWaveFile() throws IOException {
 		if (output.exists()) {
 			output.delete();
-			Log.d("WaveWriter", "deleted existing file!");
 		}
 		
 		if (output.createNewFile()) {
@@ -42,7 +41,7 @@ public class WaveWriter {
 			outputStream = new BufferedOutputStream(fileStream, OUTPUT_STREAM_BUFFER);
 			// write 44 bytes of space for the header
 			outputStream.write(new byte[44]);
-			Log.d("WaveWriter", "writing 44 bytes for header");
+			Log.d("WaveWriter", "Writing 44 bytes for wave header");
 			return true;
 		}
 		return false;
@@ -98,7 +97,6 @@ public class WaveWriter {
 	}
 	
 	private void Write32BitsLowHigh(RandomAccessFile file, int sample) throws IOException {
-		// TODO: I don't think we need to mask because java typecasts it for us?
 		Write16BitsLowHigh(file, (short)(sample & 0xffff));
 		Write16BitsLowHigh(file, (short)((sample >> 16) & 0xffff));
 	}

@@ -177,16 +177,8 @@ public class Mic extends Activity {
     }
     
     private class ProcessAutotalentTask extends AsyncTask<String, Void, Void> {
-    	//private final ProgressDialog progressDialog = new ProgressDialog(getBaseContext());
     	private WaveReader reader;
     	private WaveWriter writer;
-
-    	@Override
-    	protected void onPreExecute() {
-    		super.onPreExecute();
-    		//this.progressDialog.setMessage("Saving recording...");
-    		//this.progressDialog.show();
-    	}
     	
 		@Override
 		protected Void doInBackground(String... params) {
@@ -208,16 +200,15 @@ public class Mic extends Activity {
 				e.printStackTrace();
 			}
 			
-			short[] buf = new short[AUTOTALENT_CHUNK_SIZE]; 
+			updateAutoTalentPreferences();
+			
+			short[] buf = new short[AUTOTALENT_CHUNK_SIZE];
 			while (true) {
 				try {
 					int samplesRead = reader.ReadShort(buf, AUTOTALENT_CHUNK_SIZE);
 					if (samplesRead > 0) {
-						Log.d(getPackageName(), String.format("wavereader read %d samples", samplesRead));
 						AutoTalent.processSamples(buf, samplesRead);
-						Log.d(getPackageName(), String.format("autotalent processed %d samples", samplesRead));
 						writer.Write(buf, samplesRead);
-						Log.d(getPackageName(), String.format("wavewriter wrote %d samples", samplesRead));
 					} else {
 						break;
 					}
@@ -231,6 +222,7 @@ public class Mic extends Activity {
 			try {
 				reader.CloseWaveFile();
 				writer.CloseWaveFile();
+				AutoTalent.destroyAutoTalent();
 			} catch (IOException e) {
 				// failed to close out our files correctly
 				// TODO: real error handling
@@ -239,24 +231,11 @@ public class Mic extends Activity {
 			
 			return null;
 		}
-		
-		@Override
-		protected void onProgressUpdate(Void... values) {
-			super.onProgressUpdate(values);
-		}
-    	
-		@Override
-		protected void onPostExecute(Void result) {
-			super.onPostExecute(result);
-			//progressDialog.dismiss();
-		}
     }
     
     private OnCheckedChangeListener mPowerBtnListener = new OnCheckedChangeListener() {
     	public void onCheckedChanged(CompoundButton btn, boolean isChecked) {
 			if (btn.isChecked()) {
-				updateAutoTalentPreferences();
-	    		
 				micRecorderThread = new Thread(micRecorder, "Mic Recorder Thread");
 				micRecorderThread.setPriority(Thread.MAX_PRIORITY);
 				micRecorderThread.start();
@@ -384,7 +363,6 @@ public class Mic extends Activity {
     		while (isRunning) {
     			try {
     				int numSamples = recorder.read(buffer, 0, buffer.length);
-    				//Log.d(getPackageName(), String.format("AudioRecord read %d samples out of buffer size %d", numSamples, bufferSize));
 					queue.put(new Sample(buffer, numSamples));
 				} catch (InterruptedException e) {
 					// problem putting on the queue
