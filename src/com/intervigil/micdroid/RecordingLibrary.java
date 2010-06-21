@@ -3,7 +3,7 @@ package com.intervigil.micdroid;
 import android.app.Activity;
 import android.os.Bundle;
 
-public class Playback extends Activity {
+public class RecordingLibrary extends Activity {
 
 	/**
      * Called when the activity is starting.  This is where most
@@ -15,7 +15,7 @@ public class Playback extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.playback);
+        setContentView(R.layout.recording_library);
         
     }
 }

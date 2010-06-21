@@ -13,6 +13,8 @@
     <string name="invalid_name_alert_title">Invalid Filename!</string>
     <string name="invalid_name_alert_message">Invalid filename detected, please enter a new one</string>
     
+    <string name="recording_library_title">Recorded Clips</string>
+    
     <string name="set_preferences">Auto-Tune Preferences</string>
     <string name="mic_label">Power Button</string>
     <string name="mic_toggle_off">On</string>
