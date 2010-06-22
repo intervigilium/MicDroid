@@ -11,10 +11,9 @@
             </intent-filter>
         </activity>
         
-        <activity android:label="@string/set_preferences" android:name=".Preferences">
-        </activity>
-        
+        <activity android:label="@string/set_preferences" android:name=".Preferences" />
         <activity android:label="@string/filename_entry" android:name=".FileNameEntry" android:theme="@android:style/Theme.Dialog" />
+		<activity android:label="@string/recording_library" android:name=".RecordingLibrary" />
 
     </application>
     <uses-sdk android:minSdkVersion="4" />

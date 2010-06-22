@@ -20,6 +20,10 @@ public class WaveReader {
 		input = new File(path + File.separator + name);
 	}
 	
+	public WaveReader(File file) {
+		input = file;
+	}
+	
 	public void OpenWave() throws FileNotFoundException, IOException {
 		FileInputStream fileStream = new FileInputStream(input);
 		inputStream = new BufferedInputStream(fileStream, STREAM_BUFFER_SIZE);
@@ -51,15 +55,23 @@ public class WaveReader {
 	}
 	
 	public int GetSampleRate() {
+		// returns sample rate, typically 22050
 		return mSampleRate;
 	}
 	
 	public int GetChannels() {
+		// returns number of channels, mono or stereo
 		return mChannels;
 	}
 	
 	public int GetPcmFormat() {
+		// returns PCM format, typically 16 bit PCM
 		return mSampleBits;
+	}
+	
+	public int GetLength() {
+		// returns length in seconds
+		return 0;
 	}
 	
 	public int ReadShort(short[] outBuf, int numSamples) throws IOException {
