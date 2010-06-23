@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
@@ -38,7 +40,7 @@ public class RecordingLibrary extends ListActivity {
         this.libraryAdapter = new RecordingAdapter(this, R.layout.library_row, recordings);
         setListAdapter(libraryAdapter);
 		new LoadRecordingsTask().execute((Void)null);
-		libraryAdapter.notifyDataSetChanged();
+		this.libraryAdapter.notifyDataSetChanged();
     }
     
     @Override
@@ -78,19 +80,27 @@ public class RecordingLibrary extends ListActivity {
 
 		@Override
 		public View getView (int position, View convertView, ViewGroup parent) {
-            View v = convertView;
-            if (v == null) {
+            View view = convertView;
+            if (view == null) {
                 LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                v = vi.inflate(R.layout.library_row, null);
+                view = vi.inflate(R.layout.library_row, null);
             }
+            view.setClickable(true);
+            view.setOnClickListener(new OnClickListener() {
+				public void onClick(View v) {
+					String fileName = ((TextView)v.findViewById(R.id.row_first_line)).getText().toString();
+					new AlertDialog.Builder(getContext()).setTitle(String.format("Selected %s", fileName)).show();
+				}
+            });
+            
             Recording r = this.getItem(position);
             if (r != null) {
-                TextView first = (TextView) v.findViewById(R.id.row_first_line);
-                TextView second = (TextView) v.findViewById(R.id.row_second_line);
+                TextView first = (TextView)view.findViewById(R.id.row_first_line);
+                TextView second = (TextView)view.findViewById(R.id.row_second_line);
             	first.setText("Name: " + r.getRecordingName());
             	second.setText("Length: " + r.getRecordingLength());
             }
-            return v;
+            return view;
         }
     }
     
