@@ -17,6 +17,11 @@
     <string name="recording_library_title">Recorded Clips</string>
     <string name="recording_library_empty">No Recordings</string>
     
+    <string name="recording_player">Playback</string>
+    <string name="recording_player_btn_play">Play</string>
+    <string name="recording_player_btn_stop">Stop</string>
+    <string name="recording_player_btn_close">Close</string>
+    
     <string name="set_preferences">Auto-Tune Preferences</string>
     <string name="mic_label">Power Button</string>
     <string name="mic_toggle_off">On</string>

@@ -9,6 +9,7 @@ import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -88,8 +89,13 @@ public class RecordingLibrary extends ListActivity {
             view.setClickable(true);
             view.setOnClickListener(new OnClickListener() {
 				public void onClick(View v) {
+					Intent playIntent = new Intent(getBaseContext(), RecordingPlayer.class);
+					Bundle playData = new Bundle();
+					// TODO: move global vars to application
 					String fileName = ((TextView)v.findViewById(R.id.row_first_line)).getText().toString();
-					new AlertDialog.Builder(getContext()).setTitle(String.format("Selected %s", fileName)).show();
+					playData.putString("recordingName", fileName);
+					playIntent.putExtras(playData);
+					startActivity(playIntent);
 				}
             });
             
@@ -123,11 +129,11 @@ public class RecordingLibrary extends ListActivity {
 			for (int i = 0; i < waveFiles.length; i++) {
 				reader = new WaveReader(waveFiles[i]);
 				try {
-					reader.OpenWave();
-					Recording r = new Recording(waveFiles[i].getName(), reader.GetLength());
+					reader.openWave();
+					Recording r = new Recording(waveFiles[i].getName(), reader.getLength());
 					recordings.add(r);
 					Log.d("LoadRecordings", String.format("added recording %s", r.getRecordingName()));
-					reader.CloseWaveFile();
+					reader.closeWaveFile();
 					reader = null;
 				} catch (IOException e) {
 					e.printStackTrace();
