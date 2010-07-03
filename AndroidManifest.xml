@@ -14,6 +14,7 @@
         <activity android:label="@string/set_preferences" android:name=".Preferences" />
         <activity android:label="@string/filename_entry" android:name=".FileNameEntry" android:theme="@android:style/Theme.Dialog" />
 		<activity android:label="@string/recording_library" android:name=".RecordingLibrary" />
+		<activity android:label="@string/recording_player" android:name=".RecordingPlayer" />
 
     </application>
     <uses-sdk android:minSdkVersion="4" />

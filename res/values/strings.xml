@@ -17,7 +17,7 @@
     <string name="recording_library_title">Recorded Clips</string>
     <string name="recording_library_empty">No Recordings</string>
     
-    <string name="recording_player">Playback</string>
+    <string name="recording_player">Recording Player</string>
     <string name="recording_player_btn_play">Play</string>
     <string name="recording_player_btn_stop">Stop</string>
     <string name="recording_player_btn_close">Close</string>
