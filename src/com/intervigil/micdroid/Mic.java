@@ -192,12 +192,12 @@ public class Mic extends Activity {
 				reader = new WaveReader(
 						getOutputDirectory(), 
 						getString(R.string.default_recording_name));
-				reader.OpenWave();
+				reader.openWave();
 				writer = new WaveWriter(
 						getAutotuneDirectory(), 
 						fileName,
 						DEFAULT_SAMPLE_RATE, 1, 16);
-				writer.CreateWaveFile();
+				writer.createWaveFile();
 			} catch (IOException e) {
 				// can't create our readers and writers for some reason!
 				// TODO: real error handling
@@ -209,10 +209,10 @@ public class Mic extends Activity {
 			short[] buf = new short[AUTOTALENT_CHUNK_SIZE];
 			while (true) {
 				try {
-					int samplesRead = reader.ReadShort(buf, AUTOTALENT_CHUNK_SIZE);
+					int samplesRead = reader.readShort(buf, AUTOTALENT_CHUNK_SIZE);
 					if (samplesRead > 0) {
 						AutoTalent.processSamples(buf, samplesRead);
-						writer.Write(buf, samplesRead);
+						writer.write(buf, samplesRead);
 					} else {
 						break;
 					}
@@ -224,8 +224,8 @@ public class Mic extends Activity {
 			}
 			
 			try {
-				reader.CloseWaveFile();
-				writer.CloseWaveFile();
+				reader.closeWaveFile();
+				writer.closeWaveFile();
 				AutoTalent.destroyAutoTalent();
 			} catch (IOException e) {
 				// failed to close out our files correctly
@@ -310,7 +310,7 @@ public class Mic extends Activity {
 						getOutputDirectory(),
 						getString(R.string.default_recording_name), 
 						DEFAULT_SAMPLE_RATE, 1, 16);
-				writer.CreateWaveFile();
+				writer.createWaveFile();
     		} catch (IOException e) {
 				// uh oh, cannot create writer or wave file, abort!
 				e.printStackTrace();
@@ -319,7 +319,7 @@ public class Mic extends Activity {
 			while (isRunning) {
 				try {
 					Sample sample = queue.take();
-					writer.Write(sample.buffer, sample.bufferSize);
+					writer.write(sample.buffer, sample.bufferSize);
 				} catch (IOException e) {
 					// problem writing to the buffer
 					e.printStackTrace();
@@ -330,7 +330,7 @@ public class Mic extends Activity {
 			}
 			
 			try {
-				writer.CloseWaveFile();
+				writer.closeWaveFile();
 			} catch (IOException e) {
 				// problem writing the header or closing the output stream
 				e.printStackTrace();

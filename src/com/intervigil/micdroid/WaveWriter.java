@@ -30,7 +30,7 @@ public class WaveWriter {
 		bytesWritten = 0;
 	}
 	
-	public boolean CreateWaveFile() throws IOException {
+	public boolean createWaveFile() throws IOException {
 		if (output.exists()) {
 			output.delete();
 		}
@@ -47,21 +47,21 @@ public class WaveWriter {
 		return false;
 	}
 	
-	public void Write(short[] buffer, int bufferSize) throws IOException {
+	public void write(short[] buffer, int bufferSize) throws IOException {
 		for (int i = 0; i < bufferSize; i++) {
-			Write16BitsLowHigh(outputStream, buffer[i]);
+			write16BitsLowHigh(outputStream, buffer[i]);
 			bytesWritten += 2;
 		}
 	}
 	
-	public void CloseWaveFile() throws IOException {
+	public void closeWaveFile() throws IOException {
 		// close output stream then rewind and write wave header
 		outputStream.flush();
 		outputStream.close();
-		WriteWaveHeader();
+		writeWaveHeader();
 	}
 	
-	private void WriteWaveHeader() throws IOException {
+	private void writeWaveHeader() throws IOException {
 		// rewind to beginning of the file
 		RandomAccessFile file = new RandomAccessFile(output, "rw");
 		file.seek(0);
@@ -69,35 +69,35 @@ public class WaveWriter {
 		int bytesPerSec = (sampleBits + 7) / 8;
 		
 		file.write(new byte[] { 'R', 'I', 'F', 'F' }); // label
-		Write32BitsLowHigh(file, (short)(bytesWritten + 44 - 8)); // length in bytes without header
+		write32BitsLowHigh(file, (short)(bytesWritten + 44 - 8)); // length in bytes without header
 		file.write(new byte[] { 'W', 'A', 'V', 'E', 'f', 'm', 't', ' ' }); // 2 labels?
-		Write32BitsLowHigh(file, 2 + 2 + 4 + 4 + 2 + 2); // length of pcm format declaration area
-		Write16BitsLowHigh(file, (short)1); // is PCM?
-		Write16BitsLowHigh(file, (short)channels); // number of channels, this is mono
-		Write32BitsLowHigh(file, sampleRate); // sample rate, this is 22050 Hz
-		Write32BitsLowHigh(file, sampleRate * channels * bytesPerSec); // bytes per second
-		Write16BitsLowHigh(file, (short)(channels * bytesPerSec)); // bytes per sample time
-		Write16BitsLowHigh(file, (short)sampleBits); // bits per sample, this is 6 bit pcm
+		write32BitsLowHigh(file, 2 + 2 + 4 + 4 + 2 + 2); // length of pcm format declaration area
+		write16BitsLowHigh(file, (short)1); // is PCM?
+		write16BitsLowHigh(file, (short)channels); // number of channels, this is mono
+		write32BitsLowHigh(file, sampleRate); // sample rate, this is 22050 Hz
+		write32BitsLowHigh(file, sampleRate * channels * bytesPerSec); // bytes per second
+		write16BitsLowHigh(file, (short)(channels * bytesPerSec)); // bytes per sample time
+		write16BitsLowHigh(file, (short)sampleBits); // bits per sample, this is 6 bit pcm
 		file.write(new byte[] { 'd', 'a', 't', 'a' });
-		Write32BitsLowHigh(file, bytesWritten); // length of raw pcm data in bytes
+		write32BitsLowHigh(file, bytesWritten); // length of raw pcm data in bytes
 		
 		file.close();
 	}
 	
-	private void Write16BitsLowHigh(OutputStream stream, short sample) throws IOException {
+	private void write16BitsLowHigh(OutputStream stream, short sample) throws IOException {
 		// write already writes the lower order byte of this short
 		stream.write(sample);
 		stream.write((sample >> 8));
 	}
 	
-	private void Write16BitsLowHigh(RandomAccessFile file, short sample) throws IOException {
+	private void write16BitsLowHigh(RandomAccessFile file, short sample) throws IOException {
 		// write already writes the lower order byte of this short
 		file.write(sample);
 		file.write((sample >> 8));
 	}
 	
-	private void Write32BitsLowHigh(RandomAccessFile file, int sample) throws IOException {
-		Write16BitsLowHigh(file, (short)(sample & 0xffff));
-		Write16BitsLowHigh(file, (short)((sample >> 16) & 0xffff));
+	private void write32BitsLowHigh(RandomAccessFile file, int sample) throws IOException {
+		write16BitsLowHigh(file, (short)(sample & 0xffff));
+		write16BitsLowHigh(file, (short)((sample >> 16) & 0xffff));
 	}
 }
