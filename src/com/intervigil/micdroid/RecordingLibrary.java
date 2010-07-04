@@ -84,7 +84,7 @@ public class RecordingLibrary extends ListActivity {
             View view = convertView;
             if (view == null) {
                 LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = vi.inflate(R.layout.library_row, null);
+                view = vi.inflate(R.layout.library_row, parent, false);
             }
             view.setClickable(true);
             view.setOnClickListener(new OnClickListener() {
@@ -101,10 +101,10 @@ public class RecordingLibrary extends ListActivity {
             
             Recording r = this.getItem(position);
             if (r != null) {
-                TextView first = (TextView)view.findViewById(R.id.row_first_line);
                 TextView second = (TextView)view.findViewById(R.id.row_second_line);
+                second.setText("Length: " + r.getRecordingLength());
+                TextView first = (TextView)view.findViewById(R.id.row_first_line);
             	first.setText("Name: " + r.getRecordingName());
-            	second.setText("Length: " + r.getRecordingLength());
             }
             return view;
         }

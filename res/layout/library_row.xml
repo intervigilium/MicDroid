@@ -31,7 +31,7 @@
 
         android:singleLine="true"
         android:ellipsize="marquee"
-        android:text="Recording Name" />
+        android:text="Recording Length" />
 
     <TextView
     	android:id="@+id/row_first_line"
@@ -46,6 +46,6 @@
         android:layout_alignWithParentIfMissing="true"
 
         android:gravity="center_vertical"
-        android:text="Recording Length" />
+        android:text="Recording Name" />
 
 </RelativeLayout>
