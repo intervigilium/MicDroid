@@ -23,7 +23,6 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class Mic extends Activity {
 
-	private static final int FILENAME_ENTRY_CODE = 1337;
 	private static final int AUTOTALENT_CHUNK_SIZE = 8192;
 	
 	private static final int DEFAULT_SAMPLE_RATE = 22050;
@@ -157,7 +156,7 @@ public class Mic extends Activity {
     	super.onActivityResult(requestCode, resultCode, data);
     	
     	switch (requestCode) {
-	    	case FILENAME_ENTRY_CODE:
+	    	case Constants.FILENAME_ENTRY_INTENT_CODE:
 	    		if (resultCode == Activity.RESULT_OK) {
 	    			String fileName = data.getStringExtra(getString(R.string.filename_entry_result));
 	    			fileName = fileName + ".wav";
@@ -251,7 +250,7 @@ public class Mic extends Activity {
 				
 				// prompt user to save recording
 				Intent saveFileIntent = new Intent(getBaseContext(), FileNameEntry.class);
-				startActivityForResult(saveFileIntent, FILENAME_ENTRY_CODE);
+				startActivityForResult(saveFileIntent, Constants.FILENAME_ENTRY_INTENT_CODE);
 			}
 		}
     };
