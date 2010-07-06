@@ -10,6 +10,14 @@ public class MicApplication extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		File outputDir = new File(this.getOutputDirectory());
+        if (!outputDir.exists()) {
+        	outputDir.mkdir();
+        }
+        File libraryDir = new File(this.getLibraryDirectory());
+        if (!libraryDir.exists()) {
+        	libraryDir.mkdir();
+        }
 	}
 	
 	@Override

@@ -1,6 +1,5 @@
 package com.intervigil.micdroid;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -65,17 +64,7 @@ public class Mic extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
-        ToggleButton powerBtn = (ToggleButton)findViewById(R.id.mic_toggle);
-        powerBtn.setOnCheckedChangeListener(mPowerBtnListener);
-        
-        File outputDir = new File(((MicApplication)getApplication()).getOutputDirectory());
-        if (!outputDir.exists()) {
-        	outputDir.mkdir();
-        }
-        File autoTuneDir = new File(((MicApplication)getApplication()).getLibraryDirectory());
-        if (!autoTuneDir.exists()) {
-        	autoTuneDir.mkdir();
-        }
+        ((ToggleButton)findViewById(R.id.mic_toggle)).setOnCheckedChangeListener(mPowerBtnListener);
     }
     
     @Override
