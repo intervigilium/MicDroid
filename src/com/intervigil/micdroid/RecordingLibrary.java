@@ -5,14 +5,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -124,7 +122,7 @@ public class RecordingLibrary extends ListActivity {
     	
 		@Override
 		protected Void doInBackground(Void... params) {
-			File libraryDir = new File(getLibraryDirectory());
+			File libraryDir = new File(((MicApplication)getApplication()).getLibraryDirectory());
 			File[] waveFiles = libraryDir.listFiles();
 			
 			for (int i = 0; i < waveFiles.length; i++) {
@@ -150,9 +148,5 @@ public class RecordingLibrary extends ListActivity {
 			this.spinner.dismiss();
 			libraryAdapter.notifyDataSetChanged();
 		}
-    }
-    
-    private String getLibraryDirectory() {
-    	return Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + getPackageName() + File.separator + "library";
     }
 }

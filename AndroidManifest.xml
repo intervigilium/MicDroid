@@ -3,7 +3,7 @@
       package="com.intervigil.micdroid"
       android:versionCode="1"
       android:versionName="1.0">
-    <application android:icon="@drawable/icon" android:label="@string/app_name">
+    <application android:icon="@drawable/icon" android:label="@string/app_name" android:name="com.intervigil.micdroid.MicApplication">
         <activity android:label="@string/app_name" android:name=".Mic" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

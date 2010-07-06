@@ -1,6 +1,5 @@
 package com.intervigil.micdroid;
 
-import java.io.File;
 import java.io.IOException;
 
 import android.app.Activity;
@@ -9,7 +8,6 @@ import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -134,7 +132,7 @@ public class RecordingPlayer extends Activity {
     		isRunning = true;
     		
     		try {
-				reader = new WaveReader(getLibraryDirectory(), recording);
+				reader = new WaveReader(((MicApplication)getApplication()).getLibraryDirectory(), recording);
 				reader.openWave();
 			} catch (IOException e) {
 				// failed to open file somehow
@@ -206,8 +204,4 @@ public class RecordingPlayer extends Activity {
 				return AudioFormat.ENCODING_DEFAULT;
 		}
 	}
-	
-	private String getLibraryDirectory() {
-    	return Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + getPackageName() + File.separator + "library";
-    }
 }

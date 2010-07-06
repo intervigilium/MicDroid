@@ -13,7 +13,6 @@ import android.media.AudioRecord;
 import android.media.MediaRecorder.AudioSource;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
@@ -67,11 +66,11 @@ public class Mic extends Activity {
         ToggleButton powerBtn = (ToggleButton)findViewById(R.id.mic_toggle);
         powerBtn.setOnCheckedChangeListener(mPowerBtnListener);
         
-        File outputDir = new File(getOutputDirectory());
+        File outputDir = new File(((MicApplication)getApplication()).getOutputDirectory());
         if (!outputDir.exists()) {
         	outputDir.mkdir();
         }
-        File autoTuneDir = new File(getAutotuneDirectory());
+        File autoTuneDir = new File(((MicApplication)getApplication()).getLibraryDirectory());
         if (!autoTuneDir.exists()) {
         	autoTuneDir.mkdir();
         }
@@ -188,13 +187,14 @@ public class Mic extends Activity {
 		protected Void doInBackground(String... params) {
 			// maybe ugly but we only pass one string in anyway
 			String fileName = params[0];
+
 			try {
 				reader = new WaveReader(
-						getOutputDirectory(), 
+						((MicApplication)getApplication()).getOutputDirectory(), 
 						getString(R.string.default_recording_name));
 				reader.openWave();
 				writer = new WaveWriter(
-						getAutotuneDirectory(), 
+						((MicApplication)getApplication()).getLibraryDirectory(), 
 						fileName,
 						DEFAULT_SAMPLE_RATE, 1, 16);
 				writer.createWaveFile();
@@ -265,14 +265,6 @@ public class Mic extends Activity {
 		}
     };
     
-    private String getOutputDirectory() {
-		return Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + getPackageName();
-    }
-    
-    private String getAutotuneDirectory() {
-    	return Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + getPackageName() + File.separator + "library";
-    }
-    
     private void updateAutoTalentPreferences() {
     	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
     	char key = prefs.getString("key", getString(R.string.prefs_key_default)).charAt(0);
@@ -307,7 +299,7 @@ public class Mic extends Activity {
 			isRunning = true;
 			try {
 				writer = new WaveWriter(
-						getOutputDirectory(),
+						((MicApplication)getApplication()).getOutputDirectory(),
 						getString(R.string.default_recording_name), 
 						DEFAULT_SAMPLE_RATE, 1, 16);
 				writer.createWaveFile();
