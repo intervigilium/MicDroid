@@ -8,7 +8,6 @@ UGLY!
 To Do:
 Fix clickability/highlighting on recording library view
 Implement timeline/progress bar for playback
-Make recordings deletable from library
 
 This project uses Autotalent from http://web.mit.edu/tbaran/www/autotalent.html
 which was created originally by Tom Baran.
