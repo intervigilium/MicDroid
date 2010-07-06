@@ -20,7 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 public class RecordingLibrary extends ListActivity {
-	public static final String PLAY_DATA_RECORDING_NAME = "recordingName";
+
 	private RecordingAdapter libraryAdapter;
 	private ArrayList<Recording> recordings;
 
@@ -73,6 +73,22 @@ public class RecordingLibrary extends ListActivity {
         super.onSaveInstanceState(outState);
     }
     
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    	super.onActivityResult(requestCode, resultCode, data);
+    	
+    	switch (requestCode) {
+	    	case Constants.PLAYER_INTENT_CODE:
+	    		if (resultCode == Constants.RESULT_FILE_DELETED) {
+	    			new LoadRecordingsTask().execute((Void)null);
+	    			libraryAdapter.notifyDataSetChanged();
+	    		}
+	    		break;
+    		default:
+    			break;
+    	}
+    }
+    
     private class RecordingAdapter extends ArrayAdapter<Recording> {		
 		public RecordingAdapter(Context context, int textViewResourceId, List<Recording> objects) {
 			super(context, textViewResourceId, objects);
@@ -99,9 +115,9 @@ public class RecordingLibrary extends ListActivity {
 					Intent playIntent = new Intent(getBaseContext(), RecordingPlayer.class);
 					Bundle playData = new Bundle();
 					// TODO: move global vars to application
-					playData.putString(PLAY_DATA_RECORDING_NAME, r.getRecordingName());
+					playData.putString(Constants.PLAY_DATA_RECORDING_NAME, r.getRecordingName());
 					playIntent.putExtras(playData);
-					startActivity(playIntent);
+					startActivityForResult(playIntent, Constants.PLAYER_INTENT_CODE);
 				}
             });
             
@@ -116,6 +132,7 @@ public class RecordingLibrary extends ListActivity {
     	
     	@Override
     	protected void onPreExecute() {
+    		recordings.clear();
     		this.spinner.setMessage("Loading");
     		this.spinner.show();
     	}

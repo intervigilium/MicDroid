@@ -1,5 +1,6 @@
 package com.intervigil.micdroid;
 
+import java.io.File;
 import java.io.IOException;
 
 import android.app.Activity;
@@ -34,10 +35,11 @@ public class RecordingPlayer extends Activity {
         setContentView(R.layout.recording_player);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND, WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
 
-        this.recordingName = getIntent().getExtras().getString(RecordingLibrary.PLAY_DATA_RECORDING_NAME);
+        this.recordingName = getIntent().getExtras().getString(Constants.PLAY_DATA_RECORDING_NAME);
         
         ((Button)findViewById(R.id.recording_player_btn_play)).setOnClickListener(playBtnListener);
         ((Button)findViewById(R.id.recording_player_btn_stop)).setOnClickListener(stopBtnListener);
+        ((Button)findViewById(R.id.recording_player_btn_delete)).setOnClickListener(deleteBtnListener);
         ((Button)findViewById(R.id.recording_player_btn_close)).setOnClickListener(closeBtnListener);
         
         ((TextView)findViewById(R.id.recording_player_file_name)).setText(recordingName);
@@ -95,6 +97,27 @@ public class RecordingPlayer extends Activity {
 					e.printStackTrace();
 				}
 			}
+		}
+	};
+	
+	private OnClickListener deleteBtnListener = new OnClickListener() {	
+		public void onClick(View v) {
+			if (playerThread != null) {
+				try {
+					player.stopRunning();
+					playerThread.join();
+					playerThread = null;
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			// delete file here
+			File toDelete = new File(((MicApplication)getApplication()).getLibraryDirectory() + File.separator + recordingName);
+			toDelete.delete();
+			
+			// don't forget to refresh previous adapter data!
+			setResult(Constants.RESULT_FILE_DELETED);
+			finish();
 		}
 	};
 	

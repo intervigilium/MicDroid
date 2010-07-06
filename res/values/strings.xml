@@ -21,6 +21,7 @@
     <string name="recording_player_file_name">Recording Name</string>
     <string name="recording_player_btn_play">Play</string>
     <string name="recording_player_btn_stop">Stop</string>
+    <string name="recording_player_btn_delete">Delete</string>
     <string name="recording_player_btn_close">Close</string>
     
     <string name="set_preferences">Auto-Tune Preferences</string>
