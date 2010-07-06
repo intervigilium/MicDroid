@@ -28,6 +28,8 @@ public class Mic extends Activity {
 	private static final int AUTOTALENT_CHUNK_SIZE = 8192;
 	
 	private static final int DEFAULT_SAMPLE_RATE = 22050;
+	private static final int DEFAULT_CHANNELS = 1;
+	private static final int DEFAULT_PCM_FORMAT = 16;
 	
 	private static final float CONCERT_A = 440.0f;
 
@@ -196,7 +198,7 @@ public class Mic extends Activity {
 				writer = new WaveWriter(
 						((MicApplication)getApplication()).getLibraryDirectory(), 
 						fileName,
-						DEFAULT_SAMPLE_RATE, 1, 16);
+						DEFAULT_SAMPLE_RATE, reader.getChannels(), reader.getPcmFormat());
 				writer.createWaveFile();
 			} catch (IOException e) {
 				// can't create our readers and writers for some reason!
@@ -301,7 +303,7 @@ public class Mic extends Activity {
 				writer = new WaveWriter(
 						((MicApplication)getApplication()).getOutputDirectory(),
 						getString(R.string.default_recording_name), 
-						DEFAULT_SAMPLE_RATE, 1, 16);
+						DEFAULT_SAMPLE_RATE, DEFAULT_CHANNELS, DEFAULT_PCM_FORMAT);
 				writer.createWaveFile();
     		} catch (IOException e) {
 				// uh oh, cannot create writer or wave file, abort!
