@@ -79,20 +79,24 @@ public class RecordingPlayer extends Activity {
     }
     
     private OnClickListener playBtnListener = new OnClickListener() {	
-		public void onClick(View v) {				
-			playerThread = new Thread(player, "Recording Player Thread");
-			playerThread.start();
+		public void onClick(View v) {
+			if (playerThread == null) {
+				playerThread = new Thread(player, "Recording Player Thread");
+				playerThread.start();
+			}
 		}
 	};
 	
 	private OnClickListener stopBtnListener = new OnClickListener() {	
 		public void onClick(View v) {
-			try {
-				player.stopRunning();
-				playerThread.join();
-				playerThread = null;
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+			if (playerThread != null) {
+				try {
+					player.stopRunning();
+					playerThread.join();
+					playerThread = null;
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	};
@@ -170,6 +174,7 @@ public class RecordingPlayer extends Activity {
 			
 			try {
 				reader.closeWaveFile();
+				reader = null;
 				player.stop();
 				player.flush();
 				player = null;
