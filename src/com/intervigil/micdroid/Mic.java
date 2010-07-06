@@ -292,7 +292,9 @@ public class Mic extends Activity {
 				writer = new WaveWriter(
 						((MicApplication)getApplication()).getOutputDirectory(),
 						getString(R.string.default_recording_name), 
-						DEFAULT_SAMPLE_RATE, DEFAULT_CHANNELS, DEFAULT_PCM_FORMAT);
+						DEFAULT_SAMPLE_RATE, 
+						DEFAULT_CHANNELS, 
+						DEFAULT_PCM_FORMAT);
 				writer.createWaveFile();
     		} catch (IOException e) {
 				// uh oh, cannot create writer or wave file, abort!
@@ -340,8 +342,8 @@ public class Mic extends Activity {
     		
     		AudioRecord recorder = new AudioRecord(AudioSource.MIC,
     				DEFAULT_SAMPLE_RATE, 
-    				AudioFormat.CHANNEL_CONFIGURATION_MONO, 
-    				AudioFormat.ENCODING_PCM_16BIT, 
+    				AudioHelper.convertChannelConfig(DEFAULT_CHANNELS), 
+    				AudioHelper.convertPcmEncoding(DEFAULT_PCM_FORMAT),
     				bufferSize);
     		
     		short[] buffer = new short[bufferSize];

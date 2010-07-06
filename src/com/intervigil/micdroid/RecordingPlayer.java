@@ -3,7 +3,6 @@ package com.intervigil.micdroid;
 import java.io.IOException;
 
 import android.app.Activity;
-import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
@@ -143,12 +142,12 @@ public class RecordingPlayer extends Activity {
 			Log.d("RecordingPlayer", String.format("playing file: %s, sample rate: %d, channels: %d, pcm format: %d", recordingName, reader.getSampleRate(), reader.getChannels(), reader.getPcmFormat()));
 			
 			int bufferSize = AudioRecord.getMinBufferSize(reader.getSampleRate(), 
-					convertChannelConfig(reader.getChannels()), 
-					convertPcmEncoding(reader.getPcmFormat())) * 2;
+					AudioHelper.convertChannelConfig(reader.getChannels()), 
+					AudioHelper.convertPcmEncoding(reader.getPcmFormat())) * 2;
 			player = new AudioTrack(AudioManager.STREAM_MUSIC, 
 					reader.getSampleRate(), 
-					convertChannelConfig(reader.getChannels()), 
-					convertPcmEncoding(reader.getPcmFormat()), 
+					AudioHelper.convertChannelConfig(reader.getChannels()), 
+					AudioHelper.convertPcmEncoding(reader.getPcmFormat()), 
 					bufferSize, 
 					AudioTrack.MODE_STREAM);
 			player.play();
@@ -182,26 +181,4 @@ public class RecordingPlayer extends Activity {
 			}
     	}
     }
-	
-	private int convertChannelConfig(int numChannels) {
-		switch (numChannels) {
-			case 1:
-				return AudioFormat.CHANNEL_CONFIGURATION_MONO;
-			case 2:
-				return AudioFormat.CHANNEL_CONFIGURATION_STEREO;
-			default:
-				return AudioFormat.CHANNEL_CONFIGURATION_DEFAULT;
-		}
-	}
-	
-	private int convertPcmEncoding(int bitsPerSample) {
-		switch (bitsPerSample) {
-			case 8:
-				return AudioFormat.ENCODING_PCM_8BIT;
-			case 16:
-				return AudioFormat.ENCODING_PCM_16BIT;
-			default:
-				return AudioFormat.ENCODING_DEFAULT;
-		}
-	}
 }
