@@ -37,7 +37,7 @@ public class RecordingPlayer extends Activity {
         setContentView(R.layout.recording_player);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND, WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
 
-        this.recordingName = getIntent().getExtras().getString("recordingName");
+        this.recordingName = getIntent().getExtras().getString(RecordingLibrary.PLAY_DATA_RECORDING_NAME);
         
         ((Button)findViewById(R.id.recording_player_btn_play)).setOnClickListener(playBtnListener);
         ((Button)findViewById(R.id.recording_player_btn_stop)).setOnClickListener(stopBtnListener);

@@ -22,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 public class RecordingLibrary extends ListActivity {
+	public static final String PLAY_DATA_RECORDING_NAME = "recordingName";
 	private RecordingAdapter libraryAdapter;
 	private ArrayList<Recording> recordings;
 
@@ -100,7 +101,7 @@ public class RecordingLibrary extends ListActivity {
 					Intent playIntent = new Intent(getBaseContext(), RecordingPlayer.class);
 					Bundle playData = new Bundle();
 					// TODO: move global vars to application
-					playData.putString("recordingName", r.getRecordingName());
+					playData.putString(PLAY_DATA_RECORDING_NAME, r.getRecordingName());
 					playIntent.putExtras(playData);
 					startActivity(playIntent);
 				}
