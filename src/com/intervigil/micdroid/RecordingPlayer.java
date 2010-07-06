@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class RecordingPlayer extends Activity {
 	
@@ -36,14 +37,13 @@ public class RecordingPlayer extends Activity {
         setContentView(R.layout.recording_player);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND, WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
 
-        Button playBtn = (Button)findViewById(R.id.recording_player_btn_play);
-        Button stopBtn = (Button)findViewById(R.id.recording_player_btn_stop);
-        Button closeBtn = (Button)findViewById(R.id.recording_player_btn_close);
-        playBtn.setOnClickListener(playBtnListener);
-        stopBtn.setOnClickListener(stopBtnListener);
-        closeBtn.setOnClickListener(closeBtnListener);
+        this.recordingName = getIntent().getExtras().getString("recordingName");
         
-        recordingName = getIntent().getExtras().getString("recordingName");
+        ((Button)findViewById(R.id.recording_player_btn_play)).setOnClickListener(playBtnListener);
+        ((Button)findViewById(R.id.recording_player_btn_stop)).setOnClickListener(stopBtnListener);
+        ((Button)findViewById(R.id.recording_player_btn_close)).setOnClickListener(closeBtnListener);
+        
+        ((TextView)findViewById(R.id.recording_player_file_name)).setText(recordingName);
     }
     
     @Override
@@ -75,6 +75,8 @@ public class RecordingPlayer extends Activity {
         Log.i(getPackageName(), "onSaveInstanceState()");
         super.onSaveInstanceState(outState);
     }
+    
+    // TODO: convert playback to use threads
     
     private OnClickListener playBtnListener = new OnClickListener() {	
 		public void onClick(View v) {				

@@ -39,7 +39,7 @@ public class RecordingLibrary extends ListActivity {
         
         recordings = new ArrayList<Recording>();
         this.libraryAdapter = new RecordingAdapter(this, R.layout.library_row, recordings);
-        setListAdapter(libraryAdapter);
+        this.setListAdapter(libraryAdapter);
 		new LoadRecordingsTask().execute((Void)null);
 		this.libraryAdapter.notifyDataSetChanged();
     }
@@ -86,13 +86,13 @@ public class RecordingLibrary extends ListActivity {
                 LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = vi.inflate(R.layout.library_row, parent, false);
             }
+            view.setClickable(true);
+            view.setFocusable(true);
             
             final Recording r = this.getItem(position);
             if (r != null) {
-                TextView second = (TextView)view.findViewById(R.id.row_second_line);
-                second.setText("Length: " + r.getRecordingLength());
-                TextView first = (TextView)view.findViewById(R.id.row_first_line);
-            	first.setText("Name: " + r.getRecordingName());
+            	((TextView)view.findViewById(R.id.row_first_line)).setText("Name: " + r.getRecordingName());
+                ((TextView)view.findViewById(R.id.row_second_line)).setText("Length: " + r.getRecordingLength());
             }
 
             view.setOnClickListener(new OnClickListener() {
