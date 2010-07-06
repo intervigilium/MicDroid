@@ -50,8 +50,8 @@ public class WaveReader {
 			((0xff & header[25]) << 8) |
 			((0xff & header[24]));
 		mSampleBits = 
-			((0xff & header[34]) << 8) |
-			((0xff & header[35]));
+			((0xff & header[34])) |
+			((0xff & header[35]) << 8);
 	}
 	
 	public int getSampleRate() {

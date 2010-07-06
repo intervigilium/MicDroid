@@ -77,7 +77,7 @@ public class WaveWriter {
 		write32BitsLowHigh(file, sampleRate); // sample rate, this is 22050 Hz
 		write32BitsLowHigh(file, sampleRate * channels * bytesPerSec); // bytes per second
 		write16BitsLowHigh(file, (short)(channels * bytesPerSec)); // bytes per sample time
-		write16BitsLowHigh(file, (short)sampleBits); // bits per sample, this is 6 bit pcm
+		write16BitsLowHigh(file, (short)sampleBits); // bits per sample, this is 16 bit pcm
 		file.write(new byte[] { 'd', 'a', 't', 'a' });
 		write32BitsLowHigh(file, bytesWritten); // length of raw pcm data in bytes
 		
