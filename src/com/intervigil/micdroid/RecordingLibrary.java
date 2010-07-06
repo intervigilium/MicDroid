@@ -86,26 +86,26 @@ public class RecordingLibrary extends ListActivity {
                 LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = vi.inflate(R.layout.library_row, parent, false);
             }
-            view.setClickable(true);
-            view.setOnClickListener(new OnClickListener() {
-				public void onClick(View v) {
-					Intent playIntent = new Intent(getBaseContext(), RecordingPlayer.class);
-					Bundle playData = new Bundle();
-					// TODO: move global vars to application
-					String fileName = ((TextView)v.findViewById(R.id.row_first_line)).getText().toString();
-					playData.putString("recordingName", fileName);
-					playIntent.putExtras(playData);
-					startActivity(playIntent);
-				}
-            });
             
-            Recording r = this.getItem(position);
+            final Recording r = this.getItem(position);
             if (r != null) {
                 TextView second = (TextView)view.findViewById(R.id.row_second_line);
                 second.setText("Length: " + r.getRecordingLength());
                 TextView first = (TextView)view.findViewById(R.id.row_first_line);
             	first.setText("Name: " + r.getRecordingName());
             }
+
+            view.setOnClickListener(new OnClickListener() {
+				public void onClick(View v) {
+					Intent playIntent = new Intent(getBaseContext(), RecordingPlayer.class);
+					Bundle playData = new Bundle();
+					// TODO: move global vars to application
+					playData.putString("recordingName", r.getRecordingName());
+					playIntent.putExtras(playData);
+					startActivity(playIntent);
+				}
+            });
+            
             return view;
         }
     }

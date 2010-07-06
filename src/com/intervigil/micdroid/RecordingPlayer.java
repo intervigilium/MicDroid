@@ -20,6 +20,8 @@ public class RecordingPlayer extends Activity {
 	
 	private static final int READ_BUFFER_SIZE = 4096;
 	private String recordingName;
+	private AudioTrack player;
+	private WaveReader fileReader;
 	
 	/**
      * Called when the activity is starting.  This is where most
@@ -41,7 +43,7 @@ public class RecordingPlayer extends Activity {
         stopBtn.setOnClickListener(stopBtnListener);
         closeBtn.setOnClickListener(closeBtnListener);
         
-        recordingName = savedInstanceState.getString("recordingName");
+        recordingName = getIntent().getExtras().getString("recordingName");
     }
     
     @Override
@@ -76,19 +78,22 @@ public class RecordingPlayer extends Activity {
     
     private OnClickListener playBtnListener = new OnClickListener() {	
 		public void onClick(View v) {				
-			WaveReader fileReader = new WaveReader(getLibraryDirectory(), recordingName);
 			try {
+				fileReader = new WaveReader(getLibraryDirectory(), recordingName);
 				fileReader.openWave();
 			} catch (IOException e) {
 				// failed to open file somehow
 				// TODO: add error handling
 				e.printStackTrace();
+				finish();
 			}
+			
+			Log.d("RecordingPlayer", String.format("playing file: %s, sample rate: %d, channels: %d, pcm format: %d", recordingName, fileReader.getSampleRate(), fileReader.getChannels(), fileReader.getPcmFormat()));
 			
 			int bufferSize = AudioRecord.getMinBufferSize(fileReader.getSampleRate(), 
 					convertChannelConfig(fileReader.getChannels()), 
-					convertPcmEncoding(fileReader.getPcmFormat()));
-			AudioTrack player = new AudioTrack(AudioManager.STREAM_MUSIC, 
+					convertPcmEncoding(fileReader.getPcmFormat())) * 2;
+			player = new AudioTrack(AudioManager.STREAM_MUSIC, 
 					fileReader.getSampleRate(), 
 					convertChannelConfig(fileReader.getChannels()), 
 					convertPcmEncoding(fileReader.getPcmFormat()), 
@@ -109,15 +114,32 @@ public class RecordingPlayer extends Activity {
 					// failed to read/write to wave file
 					// TODO: real error handling
 					e.printStackTrace();
+					finish();
 				}
 			}
 			
+			try {
+				fileReader.closeWaveFile();
+				player.stop();
+				player.flush();
+				player = null;
+			} catch (IOException e) {
+				
+			}
 		}
 	};
 	
 	private OnClickListener stopBtnListener = new OnClickListener() {	
 		public void onClick(View v) {
-			
+			if (player != null) {
+				if (player.getPlaybackRate() == AudioTrack.PLAYSTATE_PLAYING) {
+					
+					player.stop();
+					player.flush();
+					player = null;
+					
+				}
+			}
 		}
 	};
 	
