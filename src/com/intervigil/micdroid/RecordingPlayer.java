@@ -21,8 +21,8 @@ public class RecordingPlayer extends Activity {
 	
 	private static final int READ_BUFFER_SIZE = 4096;
 	private String recordingName;
-	private AudioTrack player;
-	private WaveReader fileReader;
+	private MediaPlayer player;
+	private Thread playerThread;
 	
 	/**
      * Called when the activity is starting.  This is where most
@@ -44,6 +44,8 @@ public class RecordingPlayer extends Activity {
         ((Button)findViewById(R.id.recording_player_btn_close)).setOnClickListener(closeBtnListener);
         
         ((TextView)findViewById(R.id.recording_player_file_name)).setText(recordingName);
+        
+        player = new MediaPlayer(recordingName);
     }
     
     @Override
@@ -76,37 +78,83 @@ public class RecordingPlayer extends Activity {
         super.onSaveInstanceState(outState);
     }
     
-    // TODO: convert playback to use threads
-    
     private OnClickListener playBtnListener = new OnClickListener() {	
 		public void onClick(View v) {				
+			playerThread = new Thread(player, "Recording Player Thread");
+			playerThread.start();
+		}
+	};
+	
+	private OnClickListener stopBtnListener = new OnClickListener() {	
+		public void onClick(View v) {
 			try {
-				fileReader = new WaveReader(getLibraryDirectory(), recordingName);
-				fileReader.openWave();
+				player.stopRunning();
+				playerThread.join();
+				playerThread = null;
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	};
+	
+	private OnClickListener closeBtnListener = new OnClickListener() {	
+		public void onClick(View v) {
+			if (playerThread != null) {
+				try {
+					player.stopRunning();
+					playerThread.join();
+					playerThread = null;
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			finish();
+		}
+	};
+	
+	private class MediaPlayer implements Runnable {
+    	private boolean isRunning;
+    	private String recording;
+    	private AudioTrack player;
+    	private WaveReader reader;
+    	    	
+    	public MediaPlayer(String recording) {
+    		this.recording = recording;
+    	}
+    	
+    	public void stopRunning() {
+    		this.isRunning = false;
+    	}
+    	
+    	public void run() {
+    		isRunning = true;
+    		
+    		try {
+				reader = new WaveReader(getLibraryDirectory(), recording);
+				reader.openWave();
 			} catch (IOException e) {
 				// failed to open file somehow
 				// TODO: add error handling
 				e.printStackTrace();
-				finish();
 			}
+
+			Log.d("RecordingPlayer", String.format("playing file: %s, sample rate: %d, channels: %d, pcm format: %d", recordingName, reader.getSampleRate(), reader.getChannels(), reader.getPcmFormat()));
 			
-			Log.d("RecordingPlayer", String.format("playing file: %s, sample rate: %d, channels: %d, pcm format: %d", recordingName, fileReader.getSampleRate(), fileReader.getChannels(), fileReader.getPcmFormat()));
-			
-			int bufferSize = AudioRecord.getMinBufferSize(fileReader.getSampleRate(), 
-					convertChannelConfig(fileReader.getChannels()), 
-					convertPcmEncoding(fileReader.getPcmFormat())) * 2;
+			int bufferSize = AudioRecord.getMinBufferSize(reader.getSampleRate(), 
+					convertChannelConfig(reader.getChannels()), 
+					convertPcmEncoding(reader.getPcmFormat())) * 2;
 			player = new AudioTrack(AudioManager.STREAM_MUSIC, 
-					fileReader.getSampleRate(), 
-					convertChannelConfig(fileReader.getChannels()), 
-					convertPcmEncoding(fileReader.getPcmFormat()), 
+					reader.getSampleRate(), 
+					convertChannelConfig(reader.getChannels()), 
+					convertPcmEncoding(reader.getPcmFormat()), 
 					bufferSize, 
 					AudioTrack.MODE_STREAM);
 			player.play();
 			
 			short[] buf = new short[READ_BUFFER_SIZE];
-			while (true) {
+			while (isRunning) {
 				try {
-					int samplesRead = fileReader.readShort(buf, READ_BUFFER_SIZE);
+					int samplesRead = reader.readShort(buf, READ_BUFFER_SIZE);
 					if (samplesRead > 0) {
 						player.write(buf, 0, samplesRead);
 					} else {
@@ -116,40 +164,21 @@ public class RecordingPlayer extends Activity {
 					// failed to read/write to wave file
 					// TODO: real error handling
 					e.printStackTrace();
-					finish();
+					break;
 				}
 			}
 			
 			try {
-				fileReader.closeWaveFile();
+				reader.closeWaveFile();
 				player.stop();
 				player.flush();
 				player = null;
 			} catch (IOException e) {
-				
+				e.printStackTrace();
+				// TODO: real error handling
 			}
-		}
-	};
-	
-	private OnClickListener stopBtnListener = new OnClickListener() {	
-		public void onClick(View v) {
-			if (player != null) {
-				if (player.getPlaybackRate() == AudioTrack.PLAYSTATE_PLAYING) {
-					
-					player.stop();
-					player.flush();
-					player = null;
-					
-				}
-			}
-		}
-	};
-	
-	private OnClickListener closeBtnListener = new OnClickListener() {	
-		public void onClick(View v) {
-			finish();
-		}
-	};
+    	}
+    }
 	
 	private int convertChannelConfig(int numChannels) {
 		switch (numChannels) {
