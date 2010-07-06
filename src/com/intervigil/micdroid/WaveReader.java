@@ -15,6 +15,7 @@ public class WaveReader {
 	private int mSampleRate;
 	private int mChannels;
 	private int mSampleBits;
+	private int mDataSize;
 	
 	public WaveReader(String path, String name) {
 		input = new File(path + File.separator + name);
@@ -50,8 +51,13 @@ public class WaveReader {
 			((0xff & header[25]) << 8) |
 			((0xff & header[24]));
 		mSampleBits = 
-			((0xff & header[34])) |
-			((0xff & header[35]) << 8);
+			((0xff & header[35]) << 8) |
+			((0xff & header[34]));
+		mDataSize = 
+			((0xff & header[43]) << 24) |
+			((0xff & header[42]) << 16) |
+			((0xff & header[41]) << 8) |
+			((0xff & header[40]));
 	}
 	
 	public int getSampleRate() {
@@ -71,7 +77,7 @@ public class WaveReader {
 	
 	public int getLength() {
 		// returns length in seconds
-		return 0;
+		return mDataSize/(mSampleRate * mChannels * ((mSampleBits + 7)/8));
 	}
 	
 	public int readShort(short[] outBuf, int numSamples) throws IOException {
