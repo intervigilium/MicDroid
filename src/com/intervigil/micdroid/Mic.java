@@ -40,6 +40,7 @@ public class Mic extends Activity {
 	private static final int DEFAULT_FORM_CORR = 0;
 	private static final float DEFAULT_FORM_WARP = 0.0f;
 	
+	private StartupDialog startupDialog;
 	private Thread micRecorderThread;
 	private Thread micWriterThread;
 	private MicRecorder micRecorder;
@@ -64,6 +65,7 @@ public class Mic extends Activity {
         setContentView(R.layout.main);
         
         ((ToggleButton)findViewById(R.id.mic_toggle)).setOnCheckedChangeListener(mPowerBtnListener);
+        startupDialog = new StartupDialog(this, R.string.startup_dialog_title, R.string.startup_dialog_text, R.string.startup_dialog_accept_btn);
     }
     
     @Override
@@ -86,6 +88,8 @@ public class Mic extends Activity {
     	
     	micRecorder = new MicRecorder(playQueue);
     	micWriter = new MicWriter(playQueue);
+    	
+    	startupDialog.show();
     	
     	android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
     }
