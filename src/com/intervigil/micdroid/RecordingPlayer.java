@@ -19,8 +19,8 @@ public class RecordingPlayer extends Activity {
 	
 	private static final int READ_BUFFER_SIZE = 4096;
 	private String recordingName;
-	private MediaPlayer player;
-	private Thread playerThread;
+	private MediaPlayer mediaPlayer;
+	private Thread mediaPlayerThread;
 	
 	/**
      * Called when the activity is starting.  This is where most
@@ -44,7 +44,7 @@ public class RecordingPlayer extends Activity {
         
         ((TextView)findViewById(R.id.recording_player_file_name)).setText(recordingName);
         
-        player = new MediaPlayer(recordingName);
+        mediaPlayer = new MediaPlayer(recordingName);
     }
     
     @Override
@@ -79,20 +79,20 @@ public class RecordingPlayer extends Activity {
     
     private OnClickListener playBtnListener = new OnClickListener() {	
 		public void onClick(View v) {
-			if (playerThread == null) {
-				playerThread = new Thread(player, "Recording Player Thread");
-				playerThread.start();
+			if (!mediaPlayer.isRunning()) {
+				mediaPlayerThread = new Thread(mediaPlayer, "Recording Player Thread");
+				mediaPlayerThread.start();
 			}
 		}
 	};
 	
 	private OnClickListener stopBtnListener = new OnClickListener() {	
 		public void onClick(View v) {
-			if (playerThread != null) {
+			if (mediaPlayer.isRunning()) {
 				try {
-					player.stopRunning();
-					playerThread.join();
-					playerThread = null;
+					mediaPlayer.stopRunning();
+					mediaPlayerThread.join();
+					mediaPlayerThread = null;
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -102,11 +102,11 @@ public class RecordingPlayer extends Activity {
 	
 	private OnClickListener deleteBtnListener = new OnClickListener() {	
 		public void onClick(View v) {
-			if (playerThread != null) {
+			if (mediaPlayer.isRunning()) {
 				try {
-					player.stopRunning();
-					playerThread.join();
-					playerThread = null;
+					mediaPlayer.stopRunning();
+					mediaPlayerThread.join();
+					mediaPlayerThread = null;
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -123,11 +123,11 @@ public class RecordingPlayer extends Activity {
 	
 	private OnClickListener closeBtnListener = new OnClickListener() {	
 		public void onClick(View v) {
-			if (playerThread != null) {
+			if (mediaPlayer.isRunning()) {
 				try {
-					player.stopRunning();
-					playerThread.join();
-					playerThread = null;
+					mediaPlayer.stopRunning();
+					mediaPlayerThread.join();
+					mediaPlayerThread = null;
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -146,6 +146,10 @@ public class RecordingPlayer extends Activity {
     		this.recording = recording;
     	}
     	
+    	public boolean isRunning() {
+    		return this.isRunning;
+    	}
+    	
     	public void stopRunning() {
     		this.isRunning = false;
     	}
@@ -161,8 +165,6 @@ public class RecordingPlayer extends Activity {
 				// TODO: add error handling
 				e.printStackTrace();
 			}
-
-			Log.d("RecordingPlayer", String.format("playing file: %s, sample rate: %d, channels: %d, pcm format: %d", recordingName, reader.getSampleRate(), reader.getChannels(), reader.getPcmFormat()));
 			
 			int bufferSize = AudioRecord.getMinBufferSize(reader.getSampleRate(), 
 					AudioHelper.convertChannelConfig(reader.getChannels()), 
@@ -198,6 +200,7 @@ public class RecordingPlayer extends Activity {
 				player.stop();
 				player.flush();
 				player = null;
+				isRunning = false;
 			} catch (IOException e) {
 				e.printStackTrace();
 				// TODO: real error handling
