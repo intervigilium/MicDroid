@@ -14,77 +14,80 @@
         <item>d</item>
     </string-array>
     
-    <!-- Entry names for the block size menu. -->
+    <!-- Entry names for the fixed pitch menu. -->
     <string-array name="prefs_fixed_pitch_entries">
         <item>0.0 (middle A)</item> 
     </string-array>
 
-    <!-- Values for the block size menu. -->
+    <!-- Values for the fixed pitch menu. -->
     <string-array name="prefs_fixed_pitch_values">
         <item>0.0</item>
     </string-array>
       
-    <!-- Entry names for the window function menu. -->
+    <!-- Entry names for the pitch pull menu. -->
     <string-array name="prefs_pitch_pull_entries">
         <item>0.0 (Use original pitch)</item>
         <item>0.2 (default)</item>
         <item>1.0 (Use fixed pitch)</item>  
     </string-array>
 
-    <!-- Values for the window function menu. -->
+    <!-- Values for the pitch pull menu. -->
     <string-array name="prefs_pitch_pull_values">
         <item>0.0</item>  
         <item>0.2</item>
         <item>1.0</item>
     </string-array>
     
-    <!-- Entry names for the decimation menu. -->
+    <!-- Entry names for the pitch shift menu. -->
     <string-array name="prefs_pitch_shift_entries">
         <item>-1.0</item>
         <item>0.0 (default)</item>
         <item>1.0</item>  
     </string-array>
 
-    <!-- Values for the decimation menu. -->
+    <!-- Values for the pitch shift menu. -->
     <string-array name="prefs_pitch_shift_values">
         <item>-1.0</item>  
         <item>0.0</item>
         <item>1.0</item>
     </string-array>
     
-    <!-- Entry names for the histogram averaging menu. -->
+    <!-- Entry names for the correction strength menu. -->
     <string-array name="prefs_corr_str_entries">
         <item>No Correction</item>
         <item>Some Correction</item>
         <item>Full Correction (default)</item>  
     </string-array>
     
+    <!-- Values for correction strength menu. -->
     <string-array name="prefs_corr_str_values">
         <item>0.0</item>
         <item>0.5</item>
         <item>1.0</item>
     </string-array>
     
-    <!-- Entry names for the histogram averaging menu. -->
+    <!-- Entry names for the correction strength menu. -->
     <string-array name="prefs_corr_smooth_entries">
         <item>No Smoothing (default)</item>
         <item>Some Smoothing</item>
         <item>Full Smoothing</item>  
     </string-array>
     
+    <!-- Values for correction strength menu. -->
     <string-array name="prefs_corr_smooth_values">
         <item>0.0</item>
         <item>0.5</item>
         <item>1.0</item>  
     </string-array>
     
-    <!-- Entry names for the histogram averaging menu. -->
+    <!-- Entry names for the mix menu. -->
     <string-array name="prefs_corr_mix_entries">
         <item>Dry Signal</item>
         <item>Mixed Signal (default)</item>
         <item>Wet Signal</item>  
     </string-array>
     
+    <!-- Values for mix menu. -->
     <string-array name="prefs_corr_mix_values">
         <item>0.0</item>
         <item>0.5</item>

@@ -9,22 +9,28 @@ package com.intervigil.micdroid;
 
 public final class R {
     public static final class array {
-        /**  Entry names for the histogram averaging menu. 
+        /**  Entry names for the mix menu. 
          */
         public static final int prefs_corr_mix_entries=0x7f05000c;
+        /**  Values for mix menu. 
+         */
         public static final int prefs_corr_mix_values=0x7f05000d;
-        /**  Entry names for the histogram averaging menu. 
+        /**  Entry names for the correction strength menu. 
          */
         public static final int prefs_corr_smooth_entries=0x7f05000a;
+        /**  Values for correction strength menu. 
+         */
         public static final int prefs_corr_smooth_values=0x7f05000b;
-        /**  Entry names for the histogram averaging menu. 
+        /**  Entry names for the correction strength menu. 
          */
         public static final int prefs_corr_str_entries=0x7f050008;
+        /**  Values for correction strength menu. 
+         */
         public static final int prefs_corr_str_values=0x7f050009;
-        /**  Entry names for the block size menu. 
+        /**  Entry names for the fixed pitch menu. 
          */
         public static final int prefs_fixed_pitch_entries=0x7f050002;
-        /**  Values for the block size menu. 
+        /**  Values for the fixed pitch menu. 
          */
         public static final int prefs_fixed_pitch_values=0x7f050003;
         /**  Entry names for the key menu. 
@@ -33,16 +39,16 @@ public final class R {
         /**  Values for the key menu. 
          */
         public static final int prefs_key_values=0x7f050001;
-        /**  Entry names for the window function menu. 
+        /**  Entry names for the pitch pull menu. 
          */
         public static final int prefs_pitch_pull_entries=0x7f050004;
-        /**  Values for the window function menu. 
+        /**  Values for the pitch pull menu. 
          */
         public static final int prefs_pitch_pull_values=0x7f050005;
-        /**  Entry names for the decimation menu. 
+        /**  Entry names for the pitch shift menu. 
          */
         public static final int prefs_pitch_shift_entries=0x7f050006;
-        /**  Values for the decimation menu. 
+        /**  Values for the pitch shift menu. 
          */
         public static final int prefs_pitch_shift_values=0x7f050007;
     }
