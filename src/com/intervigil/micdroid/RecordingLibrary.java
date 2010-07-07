@@ -15,8 +15,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class RecordingLibrary extends ListActivity {
@@ -89,6 +89,16 @@ public class RecordingLibrary extends ListActivity {
     	}
     }
     
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+    	Recording r = (Recording)l.getItemAtPosition(position);
+    	Intent playIntent = new Intent(getBaseContext(), RecordingPlayer.class);
+		Bundle playData = new Bundle();
+		playData.putString(Constants.PLAY_DATA_RECORDING_NAME, r.getRecordingName());
+		playIntent.putExtras(playData);
+		startActivityForResult(playIntent, Constants.PLAYER_INTENT_CODE);
+    }
+    
     private class RecordingAdapter extends ArrayAdapter<Recording> {		
 		public RecordingAdapter(Context context, int textViewResourceId, List<Recording> objects) {
 			super(context, textViewResourceId, objects);
@@ -101,26 +111,13 @@ public class RecordingLibrary extends ListActivity {
                 LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = vi.inflate(R.layout.library_row, parent, false);
             }
-            view.setClickable(true);
-            view.setFocusable(true);
             
-            final Recording r = this.getItem(position);
+            Recording r = this.getItem(position);
             if (r != null) {
             	((TextView)view.findViewById(R.id.row_first_line)).setText("Name: " + r.getRecordingName());
                 ((TextView)view.findViewById(R.id.row_second_line)).setText("Length: " + r.getRecordingLength());
             }
 
-            view.setOnClickListener(new OnClickListener() {
-				public void onClick(View v) {
-					Intent playIntent = new Intent(getBaseContext(), RecordingPlayer.class);
-					Bundle playData = new Bundle();
-					// TODO: move global vars to application
-					playData.putString(Constants.PLAY_DATA_RECORDING_NAME, r.getRecordingName());
-					playIntent.putExtras(playData);
-					startActivityForResult(playIntent, Constants.PLAYER_INTENT_CODE);
-				}
-            });
-            
             return view;
         }
     }
