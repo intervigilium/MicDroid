@@ -7,7 +7,6 @@ UGLY!
 
 To Do:
 ADD GRAPHICS
-Add toast to On switch to show recording
 Fix force-close on record for various devices, AudioRecord initialization??
 Implement timeline/progress bar for playback
 Add 'About' menu option
