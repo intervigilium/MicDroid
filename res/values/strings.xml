@@ -17,6 +17,12 @@ DISCLAIMER: This is alpha software! May be buggy and force close on you! Author 
     </string>
     <string name="startup_dialog_accept_btn">Accept</string>
     
+    <string name="recording_started_toast">Recording started! Press power button to stop recording!</string>
+    <string name="recording_finished_toast">Recording finished!</string>
+    
+    <string name="recording_save_success">Recording saved successfully! Use the MENU key to access saved recordings!</string>
+    <string name="recording_save_canceled">Recording save canceled!</string>
+    
     <string name="filename_entry">Save Recording</string>
     <string name="filename_entry_text">The current recording will be with the name: </string>
     <string name="filename_entry_btn_ok">Save</string>

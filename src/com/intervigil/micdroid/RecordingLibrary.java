@@ -31,7 +31,8 @@ public class RecordingLibrary extends ListActivity {
      * 
      * @param   savedInstanceState	Activity's saved state, if any.
      */
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recording_library);

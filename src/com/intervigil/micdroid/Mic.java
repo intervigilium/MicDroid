@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.CompoundButton;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
@@ -172,10 +173,12 @@ public class Mic extends Activity {
 	    			fileName = fileName + ".wav";
 	    			Log.d(getPackageName(), String.format("filename is %s", fileName));
 	    			new ProcessAutotalentTask().execute(fileName);
-	    			// TODO: show a toast or something saying recording save finished
-	    		}
-	    		else {
-	    			// TODO: show a toast or something saying recording save canceled
+	    			
+	    			Toast.makeText(this, R.string.recording_save_success, Toast.LENGTH_SHORT).show();
+	    		} else if (resultCode == Activity.RESULT_CANCELED) {
+	    			Toast.makeText(this, R.string.recording_save_canceled, Toast.LENGTH_SHORT).show();
+	    		} else {
+	    			// Something went wrong!
 	    		}
 	    		break;
     		default:
@@ -250,7 +253,10 @@ public class Mic extends Activity {
 
 	        	micWriterThread = new Thread(micWriter, "Mic Writer Thread");
 	        	micWriterThread.start();
+	        	Toast.makeText(getBaseContext(), R.string.recording_started_toast, Toast.LENGTH_SHORT).show();
 			} else {
+				Toast.makeText(getBaseContext(), R.string.recording_finished_toast, Toast.LENGTH_SHORT).show();
+				
 				micRecorder.stopRunning();
 				micWriter.stopRunning();
 				try {
