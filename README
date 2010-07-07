@@ -10,8 +10,6 @@ ADD GRAPHICS
 Add toast to On switch to show recording
 Fix force-close on record for various devices, AudioRecord initialization??
 Implement timeline/progress bar for playback
-Save application state on rotate
-More settings from Auto-Tune settings menu option
 Add 'About' menu option
 Add 'Help' menu option
 Add 'Share' option to recordings
