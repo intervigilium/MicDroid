@@ -40,7 +40,6 @@ public class FileNameEntry extends Activity {
         	.create();
         
         ((Button)findViewById(R.id.filename_entry_btn_ok)).setOnClickListener(mOkBtnListener);
-        
     }
     
     private OnClickListener mOkBtnListener = new OnClickListener() {	

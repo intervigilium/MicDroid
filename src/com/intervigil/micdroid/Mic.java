@@ -166,6 +166,10 @@ public class Mic extends Activity {
 	    			fileName = fileName + ".wav";
 	    			Log.d(getPackageName(), String.format("filename is %s", fileName));
 	    			new ProcessAutotalentTask().execute(fileName);
+	    			// TODO: show a toast or something saying recording save finished
+	    		}
+	    		else {
+	    			// TODO: show a toast or something saying recording save canceled
 	    		}
 	    		break;
     		default:
