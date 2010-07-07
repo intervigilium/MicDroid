@@ -62,7 +62,7 @@ DISCLAIMER: This is alpha software! May be buggy and force close on you! Author 
     <string name="prefs_pitch_pull">Pull to Fixed Pitch</string>
     <string name="prefs_pitch_pull_summary">The degree that pitch is pulled towards</string>
     <string name="prefs_pitch_pull_title">Pull to Fixed Pitch</string>
-    <string name="prefs_pitch_pull_default">0.2</string>
+    <string name="prefs_pitch_pull_default">0.1</string>
     
     <string name="prefs_pitch_shift">Pitch Shift</string>
     <string name="prefs_pitch_shift_summary">Number of notes in scale which pitch is shifted</string>
@@ -83,6 +83,6 @@ DISCLAIMER: This is alpha software! May be buggy and force close on you! Author 
     <string name="prefs_corr_mix">Mix</string>
     <string name="prefs_corr_mix_summary">Blend between wet and dry signal</string>
     <string name="prefs_corr_mix_title">Mix</string>
-    <string name="prefs_corr_mix_default">0.5</string>
+    <string name="prefs_corr_mix_default">1.0</string>
     
 </resources>

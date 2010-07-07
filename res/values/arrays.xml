@@ -37,8 +37,8 @@
     <!-- Entry names for the pitch pull menu. -->
     <string-array name="prefs_pitch_pull_entries">
         <item>0.0 (Use original pitch)</item>
-        <item>0.1</item>
-        <item>0.2 (default)</item>
+        <item>0.1 (default)</item>
+        <item>0.2</item>
         <item>0.3</item>
         <item>0.4</item>
         <item>0.5</item>
@@ -135,8 +135,8 @@
     <!-- Entry names for the mix menu. -->
     <string-array name="prefs_corr_mix_entries">
         <item>Dry Signal</item>
-        <item>Mixed Signal (default)</item>
-        <item>Wet Signal</item>  
+        <item>Mixed Signal</item>
+        <item>Wet Signal (default)</item>  
     </string-array>
     
     <!-- Values for mix menu. -->
