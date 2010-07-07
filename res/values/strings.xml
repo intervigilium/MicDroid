@@ -7,7 +7,7 @@
     
     <string name="startup_dialog_title">What's new in this version?</string>
     <string name="startup_dialog_text">1. Added additional status dialogs\n\
-2. Fix library list refresh on rotate
+2. Fix library list refresh on rotate\n\
 3. Fixed issue with force close on playback for Droid\n\
 4. Fixed issue with playback buttons\n\
 \n\
