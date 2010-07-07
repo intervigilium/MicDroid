@@ -5,7 +5,6 @@ import java.io.IOException;
 
 import android.app.Activity;
 import android.media.AudioManager;
-import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.os.Bundle;
 import android.util.Log;
@@ -166,7 +165,7 @@ public class RecordingPlayer extends Activity {
 				e.printStackTrace();
 			}
 			
-			int bufferSize = AudioRecord.getMinBufferSize(reader.getSampleRate(), 
+			int bufferSize = AudioTrack.getMinBufferSize(reader.getSampleRate(), 
 					AudioHelper.convertChannelConfig(reader.getChannels()), 
 					AudioHelper.convertPcmEncoding(reader.getPcmFormat())) * 2;
 			player = new AudioTrack(AudioManager.STREAM_MUSIC, 
