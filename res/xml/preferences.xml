@@ -42,7 +42,8 @@
                 android:dialogTitle="@string/prefs_pitch_shift_title"
                 android:defaultValue="@string/prefs_pitch_shift_default" />
                 
-    </PreferenceCategory>
+    
+</PreferenceCategory>
     
     <PreferenceCategory android:title="@string/prefs_cat_correction">
 

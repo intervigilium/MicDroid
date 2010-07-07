@@ -147,6 +147,32 @@ void fft_inverse(fft_vars* membvars, float* input_re, float* input_im, float* ou
 #define AT_G 10
 #define AT_Ab 11
 
+#define KEY_A_A 1
+#define KEY_A_Bb -1
+#define KEY_A_B 1
+#define KEY_A_C -1
+#define KEY_A_Db 1
+#define KEY_A_D 1
+#define KEY_A_Eb -1
+#define KEY_A_E 1
+#define KEY_A_F -1
+#define KEY_A_Gb 1
+#define KEY_A_G -1
+#define KEY_A_Ab 1
+
+#define KEY_B_A -1
+#define KEY_B_Bb 1
+#define KEY_B_B 1
+#define KEY_B_C -1
+#define KEY_B_Db 1
+#define KEY_B_D -1
+#define KEY_B_Eb 1
+#define KEY_B_E 1
+#define KEY_B_F -1
+#define KEY_B_Gb 1
+#define KEY_B_G -1
+#define KEY_B_Ab 1
+
 #define KEY_C_A 1
 #define KEY_C_Bb -1
 #define KEY_C_B 1
@@ -172,6 +198,45 @@ void fft_inverse(fft_vars* membvars, float* input_re, float* input_im, float* ou
 #define KEY_D_Gb 1
 #define KEY_D_G 1
 #define KEY_D_Ab -1
+
+#define KEY_E_A 1
+#define KEY_E_Bb -1
+#define KEY_E_B 1
+#define KEY_E_C -1
+#define KEY_E_Db 1
+#define KEY_E_D -1
+#define KEY_E_Eb 1
+#define KEY_E_E 1
+#define KEY_E_F -1
+#define KEY_E_Gb 1
+#define KEY_E_G -1
+#define KEY_E_Ab 1
+
+#define KEY_F_A 1
+#define KEY_F_Bb 1
+#define KEY_F_B -1
+#define KEY_F_C 1
+#define KEY_F_Db -1
+#define KEY_F_D 1
+#define KEY_F_Eb -1
+#define KEY_F_E 1
+#define KEY_F_F 1
+#define KEY_F_Gb -1
+#define KEY_F_G 1
+#define KEY_F_Ab -1
+
+#define KEY_G_A 1
+#define KEY_G_Bb -1
+#define KEY_G_B 1
+#define KEY_G_C 1
+#define KEY_G_Db -1
+#define KEY_G_D 1
+#define KEY_G_Eb -1
+#define KEY_G_E 1
+#define KEY_G_F -1
+#define KEY_G_Gb 1
+#define KEY_G_G 1
+#define KEY_G_Ab -1
 
 
 /*************************
@@ -433,6 +498,34 @@ void setAutotalentKey(Autotalent * autotalent, char * keyPtr) {
   key = calloc(12, sizeof(int));
 
   switch (*keyPtr) {
+    case 'a':
+	  key[AT_A] = KEY_A_A;
+	  key[AT_Bb] = KEY_A_Bb;
+	  key[AT_B] = KEY_A_B;
+	  key[AT_C] = KEY_A_C;
+	  key[AT_Db] = KEY_A_Db;
+	  key[AT_D] = KEY_A_D;
+	  key[AT_Eb] = KEY_A_Eb;
+	  key[AT_E] = KEY_A_E;
+	  key[AT_F] = KEY_A_F;
+	  key[AT_Gb] = KEY_A_Gb;
+	  key[AT_G] = KEY_A_G;
+	  key[AT_Ab] = KEY_A_Ab;
+  	  break;
+    case 'b':
+	  key[AT_A] = KEY_B_A;
+	  key[AT_Bb] = KEY_B_Bb;
+	  key[AT_B] = KEY_B_B;
+	  key[AT_C] = KEY_B_C;
+	  key[AT_Db] = KEY_B_Db;
+	  key[AT_D] = KEY_B_D;
+	  key[AT_Eb] = KEY_B_Eb;
+	  key[AT_E] = KEY_B_E;
+	  key[AT_F] = KEY_B_F;
+	  key[AT_Gb] = KEY_B_Gb;
+	  key[AT_G] = KEY_B_G;
+	  key[AT_Ab] = KEY_B_Ab;
+  	  break;
     case 'c':
       key[AT_A] = KEY_C_A;
       key[AT_Bb] = KEY_C_Bb;
@@ -461,6 +554,48 @@ void setAutotalentKey(Autotalent * autotalent, char * keyPtr) {
 	  key[AT_G] = KEY_D_G;
 	  key[AT_Ab] = KEY_D_Ab;
       break;
+    case 'e':
+	  key[AT_A] = KEY_E_A;
+	  key[AT_Bb] = KEY_E_Bb;
+	  key[AT_B] = KEY_E_B;
+	  key[AT_C] = KEY_E_C;
+	  key[AT_Db] = KEY_E_Db;
+	  key[AT_D] = KEY_E_D;
+	  key[AT_Eb] = KEY_E_Eb;
+	  key[AT_E] = KEY_E_E;
+	  key[AT_F] = KEY_E_F;
+	  key[AT_Gb] = KEY_E_Gb;
+	  key[AT_G] = KEY_E_G;
+	  key[AT_Ab] = KEY_E_Ab;
+	  break;
+    case 'f':
+	  key[AT_A] = KEY_F_A;
+	  key[AT_Bb] = KEY_F_Bb;
+	  key[AT_B] = KEY_F_B;
+	  key[AT_C] = KEY_F_C;
+	  key[AT_Db] = KEY_F_Db;
+	  key[AT_D] = KEY_F_D;
+	  key[AT_Eb] = KEY_F_Eb;
+	  key[AT_E] = KEY_F_E;
+	  key[AT_F] = KEY_F_F;
+	  key[AT_Gb] = KEY_F_Gb;
+	  key[AT_G] = KEY_F_G;
+	  key[AT_Ab] = KEY_F_Ab;
+	  break;
+    case 'g':
+	  key[AT_A] = KEY_G_A;
+	  key[AT_Bb] = KEY_G_Bb;
+	  key[AT_B] = KEY_G_B;
+	  key[AT_C] = KEY_G_C;
+	  key[AT_Db] = KEY_G_Db;
+	  key[AT_D] = KEY_G_D;
+	  key[AT_Eb] = KEY_G_Eb;
+	  key[AT_E] = KEY_G_E;
+	  key[AT_F] = KEY_G_F;
+	  key[AT_Gb] = KEY_G_Gb;
+	  key[AT_G] = KEY_G_G;
+	  key[AT_Ab] = KEY_G_Ab;
+	  break;
   }
 
   autotalent->m_pfKey = key;
