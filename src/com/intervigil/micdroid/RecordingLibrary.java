@@ -36,11 +36,20 @@ public class RecordingLibrary extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recording_library);
         
-        recordings = new ArrayList<Recording>();
-        this.libraryAdapter = new RecordingAdapter(this, R.layout.library_row, recordings);
-        this.setListAdapter(libraryAdapter);
-		new LoadRecordingsTask().execute((Void)null);
-		this.libraryAdapter.notifyDataSetChanged();
+        Object savedRecordings = getLastNonConfigurationInstance();
+        
+        if (savedRecordings == null) {
+	        recordings = new ArrayList<Recording>();
+	        this.libraryAdapter = new RecordingAdapter(this, R.layout.library_row, recordings);
+	        this.setListAdapter(libraryAdapter);
+			new LoadRecordingsTask().execute((Void)null);
+			this.libraryAdapter.notifyDataSetChanged();
+        } else {
+        	recordings = (ArrayList<Recording>)savedRecordings;
+        	this.libraryAdapter = new RecordingAdapter(this, R.layout.library_row, recordings);
+	        this.setListAdapter(libraryAdapter);
+	        this.libraryAdapter.notifyDataSetChanged();
+        }
     }
     
     @Override
@@ -71,6 +80,12 @@ public class RecordingLibrary extends ListActivity {
     protected void onSaveInstanceState(Bundle outState) {
         Log.i(getPackageName(), "onSaveInstanceState()");
         super.onSaveInstanceState(outState);
+    }
+    
+    @Override
+    public Object onRetainNonConfigurationInstance() {
+    	final ArrayList<Recording> recordingList = recordings;
+    	return recordingList;
     }
     
     @Override
