@@ -6,7 +6,6 @@ Must write to a wav file before processing since we do not have cpu time to do o
 UGLY!
 
 To Do:
-Fix clickability/highlighting on recording library view
 Implement timeline/progress bar for playback
 
 This project uses Autotalent from http://web.mit.edu/tbaran/www/autotalent.html
