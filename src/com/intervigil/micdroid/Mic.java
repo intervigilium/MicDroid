@@ -5,6 +5,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioFormat;
@@ -173,10 +174,8 @@ public class Mic extends Activity {
 	    			fileName = fileName + ".wav";
 	    			Log.d(getPackageName(), String.format("filename is %s", fileName));
 	    			new ProcessAutotalentTask().execute(fileName);
-	    			
-	    			Toast.makeText(this, R.string.recording_save_success, Toast.LENGTH_SHORT).show();
 	    		} else if (resultCode == Activity.RESULT_CANCELED) {
-	    			Toast.makeText(this, R.string.recording_save_canceled, Toast.LENGTH_SHORT).show();
+	    			Toast.makeText(Mic.this, R.string.recording_save_canceled, Toast.LENGTH_SHORT).show();
 	    		} else {
 	    			// Something went wrong!
 	    		}
@@ -189,6 +188,18 @@ public class Mic extends Activity {
     private class ProcessAutotalentTask extends AsyncTask<String, Void, Void> {
     	private WaveReader reader;
     	private WaveWriter writer;
+    	private ProgressDialog spinner;
+    	
+    	public ProcessAutotalentTask() {
+    		spinner = new ProgressDialog(Mic.this);
+    		spinner.setCancelable(false);
+    	}
+    	
+    	@Override
+    	protected void onPreExecute() {
+    		spinner.setMessage(getString(R.string.autotalent_progress_msg));
+    		spinner.show();
+    	}
     	
 		@Override
 		protected Void doInBackground(String... params) {
@@ -241,6 +252,12 @@ public class Mic extends Activity {
 			}
 			
 			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(Void unused) {
+			spinner.dismiss();
+			Toast.makeText(Mic.this, R.string.recording_save_success, Toast.LENGTH_SHORT).show();
 		}
     }
     

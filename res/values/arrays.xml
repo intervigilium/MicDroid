@@ -134,9 +134,9 @@
     
     <!-- Entry names for the mix menu. -->
     <string-array name="prefs_corr_mix_entries">
-        <item>Dry Signal</item>
+        <item>Original Signal</item>
         <item>Mixed Signal</item>
-        <item>Wet Signal (default)</item>  
+        <item>Tuned Signal (default)</item>  
     </string-array>
     
     <!-- Values for mix menu. -->
