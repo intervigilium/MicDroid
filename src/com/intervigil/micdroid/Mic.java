@@ -123,9 +123,15 @@ public class Mic extends Activity {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
         Log.i(getPackageName(), "onSaveInstanceState()");
-        super.onSaveInstanceState(outState);
+        super.onSaveInstanceState(savedInstanceState);
+    }
+    
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+    	Log.i(getPackageName(), "onRestoreInstanceState()");
+    	super.onRestoreInstanceState(savedInstanceState);
     }
     
     @Override

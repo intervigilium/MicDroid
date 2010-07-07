@@ -83,6 +83,12 @@ public class RecordingLibrary extends ListActivity {
     }
     
     @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+    	Log.i(getPackageName(), "onRestoreInstanceState()");
+    	super.onRestoreInstanceState(savedInstanceState);
+    }
+    
+    @Override
     public Object onRetainNonConfigurationInstance() {
     	final ArrayList<Recording> recordingList = recordings;
     	return recordingList;
