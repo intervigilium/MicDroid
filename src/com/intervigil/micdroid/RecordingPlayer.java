@@ -10,8 +10,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.TextView;
 
 public class RecordingPlayer extends Activity {
@@ -35,11 +33,6 @@ public class RecordingPlayer extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND, WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
 
         this.recordingName = getIntent().getExtras().getString(Constants.PLAY_DATA_RECORDING_NAME);
-        
-        ((Button)findViewById(R.id.recording_player_btn_play)).setOnClickListener(playBtnListener);
-        ((Button)findViewById(R.id.recording_player_btn_stop)).setOnClickListener(stopBtnListener);
-        ((Button)findViewById(R.id.recording_player_btn_delete)).setOnClickListener(deleteBtnListener);
-        ((Button)findViewById(R.id.recording_player_btn_close)).setOnClickListener(closeBtnListener);
         
         ((TextView)findViewById(R.id.recording_player_file_name)).setText(recordingName);
         
@@ -76,64 +69,57 @@ public class RecordingPlayer extends Activity {
         super.onSaveInstanceState(outState);
     }
     
-    private OnClickListener playBtnListener = new OnClickListener() {	
-		public void onClick(View v) {
-			if (!mediaPlayer.isRunning()) {
-				mediaPlayerThread = new Thread(mediaPlayer, "Recording Player Thread");
-				mediaPlayerThread.start();
-			}
-		}
-	};
-	
-	private OnClickListener stopBtnListener = new OnClickListener() {	
-		public void onClick(View v) {
-			if (mediaPlayer.isRunning()) {
-				try {
-					mediaPlayer.stopRunning();
-					mediaPlayerThread.join();
-					mediaPlayerThread = null;
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+    public void recordingPlayerClickHandler(View view) {
+    	switch (view.getId()) {
+	    	case R.id.recording_player_btn_play:
+	    		if (!mediaPlayer.isRunning()) {
+					mediaPlayerThread = new Thread(mediaPlayer, "Recording Player Thread");
+					mediaPlayerThread.start();
 				}
-			}
-		}
-	};
-	
-	private OnClickListener deleteBtnListener = new OnClickListener() {	
-		public void onClick(View v) {
-			if (mediaPlayer.isRunning()) {
-				try {
-					mediaPlayer.stopRunning();
-					mediaPlayerThread.join();
-					mediaPlayerThread = null;
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+	    		break;
+	    	case R.id.recording_player_btn_stop:
+	    		if (mediaPlayer.isRunning()) {
+					try {
+						mediaPlayer.stopRunning();
+						mediaPlayerThread.join();
+						mediaPlayerThread = null;
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
-			}
-			// delete file here
-			File toDelete = new File(((MicApplication)getApplication()).getLibraryDirectory() + File.separator + recordingName);
-			toDelete.delete();
-			
-			// don't forget to refresh previous adapter data!
-			setResult(Constants.RESULT_FILE_DELETED);
-			finish();
-		}
-	};
-	
-	private OnClickListener closeBtnListener = new OnClickListener() {	
-		public void onClick(View v) {
-			if (mediaPlayer.isRunning()) {
-				try {
-					mediaPlayer.stopRunning();
-					mediaPlayerThread.join();
-					mediaPlayerThread = null;
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+	    		break;
+	    	case R.id.recording_player_btn_delete:
+    			if (mediaPlayer.isRunning()) {
+    				try {
+    					mediaPlayer.stopRunning();
+    					mediaPlayerThread.join();
+    					mediaPlayerThread = null;
+    				} catch (InterruptedException e) {
+    					e.printStackTrace();
+    				}
+    			}
+    			File toDelete = new File(((MicApplication)getApplication()).getLibraryDirectory() + File.separator + recordingName);
+    			toDelete.delete();
+
+    			setResult(Constants.RESULT_FILE_DELETED);
+    			finish();
+	    		break;
+	    	case R.id.recording_player_btn_close:
+	    		if (mediaPlayer.isRunning()) {
+					try {
+						mediaPlayer.stopRunning();
+						mediaPlayerThread.join();
+						mediaPlayerThread = null;
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
-			}
-			finish();
-		}
-	};
+				finish();
+	    		break;
+    		default:
+    			break;
+    	}
+    }
 	
 	private class MediaPlayer implements Runnable {
     	private boolean isRunning;
