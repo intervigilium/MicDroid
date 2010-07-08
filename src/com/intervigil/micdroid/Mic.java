@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder.AudioSource;
@@ -134,6 +135,19 @@ public class Mic extends Activity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
     	Log.i(getPackageName(), "onRestoreInstanceState()");
     	super.onRestoreInstanceState(savedInstanceState);
+    }
+    
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+    	Log.i(getPackageName(), "onConfigurationChanged");
+    	super.onConfigurationChanged(newConfig);
+    	
+    	setContentView(R.layout.main);
+    	
+    	boolean isRecording = micRecorder.isRunning() || micWriter.isRunning();
+    	ToggleButton micSwitch = (ToggleButton)findViewById(R.id.mic_toggle);
+    	micSwitch.setChecked(isRecording);
+    	micSwitch.setOnCheckedChangeListener(mPowerBtnListener);
     }
     
     @Override
@@ -318,6 +332,10 @@ public class Mic extends Activity {
     		queue = q;
     	}
     	
+    	public boolean isRunning() {
+    		return this.isRunning;
+    	}
+    	
     	public void stopRunning() {
     		this.isRunning = false;
     	}
@@ -365,6 +383,10 @@ public class Mic extends Activity {
     	    	
     	public MicRecorder(BlockingQueue<Sample> q) {
     		queue = q;
+    	}
+    	
+    	public boolean isRunning() {
+    		return this.isRunning;
     	}
     	
     	public void stopRunning() {
