@@ -25,7 +25,7 @@ package com.intervigil.micdroid;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.preference.PreferenceManager;
 import android.view.View;
@@ -121,7 +121,7 @@ public class StartupDialog extends Dialog {
     }
     
     private void setSeen() {
-        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(parent).edit();
+        Editor editor = PreferenceManager.getDefaultSharedPreferences(parent).edit();
         editor.putInt(SEEN_STARTUP_DIALOG, getPackageVersion());
         editor.commit();
     }
