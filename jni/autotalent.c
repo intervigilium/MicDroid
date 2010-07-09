@@ -6,6 +6,11 @@
    VERSION 0.2
    March 20, 2010
 
+   Modified for use in Android by Ethan Chen
+   http://github.com/intervigilium/MicDroid
+   VERSION 0.1
+   July 8th, 2010
+
    This program is free software; you can redistribute it and/or modify        
    it under the terms of the GNU General Public License as published by        
    the Free Software Foundation; either version 2 of the License, or           
