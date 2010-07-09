@@ -35,7 +35,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 public class StartupDialog extends Dialog {
-	private static final String SEEN_STARTUP_DIALOG = "seenStartupDialog";
 
 	private Activity parent;
 	private TextView textView;
@@ -113,16 +112,14 @@ public class StartupDialog extends Dialog {
 
     private boolean isAccepted() {
         int seen = -1;
-        try {
-            seen = PreferenceManager.getDefaultSharedPreferences(parent).getInt(SEEN_STARTUP_DIALOG, seen);
-        } catch (Exception e) { }
+        seen = PreferenceManager.getDefaultSharedPreferences(parent).getInt(Constants.KEY_SEEN_STARTUP_DIALOG, seen);
 
         return seen == getPackageVersion();
     }
     
     private void setSeen() {
         Editor editor = PreferenceManager.getDefaultSharedPreferences(parent).edit();
-        editor.putInt(SEEN_STARTUP_DIALOG, getPackageVersion());
+        editor.putInt(Constants.KEY_SEEN_STARTUP_DIALOG, getPackageVersion());
         editor.commit();
     }
     
