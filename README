@@ -9,6 +9,8 @@ No graphics
 Force closes reported on G1, MyTouch3G, Galaxy S
 
 To Do:
+Add pop-ups to notify user about sample rate config issues
+Add default sample rate as a config option
 Add new nicer graphic resources for everything
 Implement timeline/progress bar for playback
 Add 'About' menu option, including license information

@@ -174,14 +174,14 @@ public class RecordingPlayer extends Activity {
 				// TODO: add error handling
 				e.printStackTrace();
 			}
-			
+
 			int bufferSize = AudioTrack.getMinBufferSize(reader.getSampleRate(), 
-					AudioHelper.convertChannelConfig(reader.getChannels()), 
-					AudioHelper.convertPcmEncoding(reader.getPcmFormat())) * 2;
+					AudioHelper.getAndroidChannelConfig(reader.getChannels()), 
+					AudioHelper.getAndroidPcmEncoding(reader.getPcmFormat())) * 2;
 			player = new AudioTrack(AudioManager.STREAM_MUSIC, 
 					reader.getSampleRate(), 
-					AudioHelper.convertChannelConfig(reader.getChannels()), 
-					AudioHelper.convertPcmEncoding(reader.getPcmFormat()), 
+					AudioHelper.getAndroidChannelConfig(reader.getChannels()), 
+					AudioHelper.getAndroidPcmEncoding(reader.getPcmFormat()), 
 					bufferSize, 
 					AudioTrack.MODE_STREAM);
 			player.play();

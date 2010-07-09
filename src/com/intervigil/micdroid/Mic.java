@@ -33,9 +33,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.media.AudioFormat;
 import android.media.AudioRecord;
-import android.media.MediaRecorder.AudioSource;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -51,10 +49,6 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 public class Mic extends Activity {
 
 	private static final int AUTOTALENT_CHUNK_SIZE = 8192;
-	
-	private static final int DEFAULT_SAMPLE_RATE = 22050;
-	private static final int DEFAULT_CHANNELS = 1;
-	private static final int DEFAULT_PCM_FORMAT = 16;
 	
 	private static final float CONCERT_A = 440.0f;
 
@@ -117,6 +111,7 @@ public class Mic extends Activity {
     	micWriter = new MicWriter(playQueue);
     	
     	startupDialog.show();
+    	AudioHelper.configureRecorder(Mic.this);
     	
     	android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
     }
@@ -214,8 +209,6 @@ public class Mic extends Activity {
 	    			new ProcessAutotalentTask().execute(fileName);
 	    		} else if (resultCode == Activity.RESULT_CANCELED) {
 	    			Toast.makeText(Mic.this, R.string.recording_save_canceled, Toast.LENGTH_SHORT).show();
-	    		} else {
-	    			// Something went wrong!
 	    		}
 	    		break;
     		default:
@@ -252,7 +245,7 @@ public class Mic extends Activity {
 				writer = new WaveWriter(
 						((MicApplication)getApplication()).getLibraryDirectory(), 
 						fileName,
-						DEFAULT_SAMPLE_RATE, reader.getChannels(), reader.getPcmFormat());
+						reader.getSampleRate(), reader.getChannels(), reader.getPcmFormat());
 				writer.createWaveFile();
 			} catch (IOException e) {
 				// can't create our readers and writers for some reason!
@@ -318,7 +311,6 @@ public class Mic extends Activity {
 					micRecorderThread.join();
 					micWriterThread.join();
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				playQueue.clear();
@@ -340,7 +332,7 @@ public class Mic extends Activity {
     	float smooth = Float.valueOf(prefs.getString("smooth", getString(R.string.prefs_corr_smooth_default)));
     	float mix = Float.valueOf(prefs.getString("mix", getString(R.string.prefs_corr_mix_default)));
     	
-    	AutoTalent.instantiateAutoTalent(DEFAULT_SAMPLE_RATE);
+    	AutoTalent.instantiateAutoTalent(AudioHelper.getRecorderSampleRate(Mic.this));
     	AutoTalent.initializeAutoTalent(CONCERT_A, key, fixedPitch, fixedPull, 
     			strength, smooth, pitchShift, DEFAULT_SCALE_ROTATE, 
     			DEFAULT_LFO_DEPTH, DEFAULT_LFO_RATE, DEFAULT_LFO_SHAPE, DEFAULT_LFO_SYM, DEFAULT_LFO_QUANT, 
@@ -370,12 +362,13 @@ public class Mic extends Activity {
 				writer = new WaveWriter(
 						((MicApplication)getApplication()).getOutputDirectory(),
 						getString(R.string.default_recording_name), 
-						DEFAULT_SAMPLE_RATE, 
-						DEFAULT_CHANNELS, 
-						DEFAULT_PCM_FORMAT);
+						AudioHelper.getRecorderSampleRate(Mic.this), 
+						AudioHelper.getChannelConfig(Constants.DEFAULT_CHANNEL_CONFIG), 
+						AudioHelper.getPcmEncoding(Constants.DEFAULT_PCM_FORMAT));
 				writer.createWaveFile();
     		} catch (IOException e) {
 				// uh oh, cannot create writer or wave file, abort!
+    			// TODO: real error handling
 				e.printStackTrace();
 			}
 
@@ -419,31 +412,29 @@ public class Mic extends Activity {
     	
     	public void run() {
     		isRunning = true;
+
+    		AudioRecord recorder = AudioHelper.getRecorder(Mic.this);
     		
-    		int bufferSize = AudioRecord.getMinBufferSize(DEFAULT_SAMPLE_RATE, AudioFormat.CHANNEL_CONFIGURATION_MONO, AudioFormat.ENCODING_PCM_16BIT);
-    		
-    		AudioRecord recorder = new AudioRecord(AudioSource.MIC,
-    				DEFAULT_SAMPLE_RATE, 
-    				AudioHelper.convertChannelConfig(DEFAULT_CHANNELS), 
-    				AudioHelper.convertPcmEncoding(DEFAULT_PCM_FORMAT),
-    				bufferSize);
-    		
-    		short[] buffer = new short[bufferSize];
-    		recorder.startRecording();
-    		
-    		while (isRunning) {
-    			try {
-    				int numSamples = recorder.read(buffer, 0, buffer.length);
-					queue.put(new Sample(buffer, numSamples));
-				} catch (InterruptedException e) {
-					// problem putting on the queue
-					e.printStackTrace();
-				}
+    		if (recorder != null) {
+	    		short[] buffer = new short[AudioHelper.getRecorderBufferSize(Mic.this)];
+	    		recorder.startRecording();
+	    		
+	    		while (isRunning) {
+	    			try {
+	    				int numSamples = recorder.read(buffer, 0, buffer.length);
+						queue.put(new Sample(buffer, numSamples));
+					} catch (InterruptedException e) {
+						// problem putting on the queue
+						e.printStackTrace();
+					}
+	    		}
+	    		
+	    		recorder.stop();
+	    		recorder.release();
+	    		recorder = null;
+    		} else {
+    			// TODO: notify user we could not initialize recording, and tell them to check sample rate settings
     		}
-    		
-    		recorder.stop();
-    		recorder.release();
-    		recorder = null;
     	}
     }
 }
