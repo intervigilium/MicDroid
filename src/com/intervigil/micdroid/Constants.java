@@ -23,10 +23,29 @@
 
 package com.intervigil.micdroid;
 
+import android.media.AudioFormat;
+
 public class Constants {
 	
+	// default recording parameters
+	public static final int DEFAULT_CHANNEL_CONFIG = AudioFormat.CHANNEL_CONFIGURATION_MONO;
+	public static final int DEFAULT_PCM_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
+	
+	// sample rates
+	public static final int SAMPLE_RATE_44KHZ = 44100;
+	public static final int SAMPLE_RATE_22KHZ = 22050;
+	public static final int SAMPLE_RATE_11KHZ = 11025;
+	public static final int SAMPLE_RATE_8KHZ = 8000;
+	
+	// recording names
 	public static final String PLAY_DATA_RECORDING_NAME = "recordingName";
+	
+	// intent codes
 	public static final int FILENAME_ENTRY_INTENT_CODE = 12768;
 	public static final int PLAYER_INTENT_CODE = 12769;
 	public static final int RESULT_FILE_DELETED = 12770;
+	
+	// shared preference keys
+	public static final String KEY_SAMPLE_RATE = "sampleRate";
+	public static final String KEY_SEEN_STARTUP_DIALOG = "seenStartupDialog";
 }
