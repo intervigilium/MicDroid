@@ -23,8 +23,8 @@
 
 package com.intervigil.micdroid;
 
-import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.preference.PreferenceManager;
@@ -36,16 +36,16 @@ import android.widget.TextView;
 
 public class StartupDialog extends Dialog {
 
-	private Activity parent;
+	private Context context;
 	private TextView textView;
 	private LinearLayout buttonHolder;
 	private int titleId;
 	private int textId;
 	private int buttonLabelId;
 	
-	public StartupDialog(Activity parent, int titleId, int textId, int buttonLabelId) {
-		super(parent);
-		this.parent = parent;
+	public StartupDialog(Context context, int titleId, int textId, int buttonLabelId) {
+		super(context);
+		this.context = context;
 		this.titleId = titleId;
 		this.textId = textId;
 		this.buttonLabelId = buttonLabelId;
@@ -59,18 +59,18 @@ public class StartupDialog extends Dialog {
 		setTitle(titleId);
 		
         // Create the overall layout.
-        LinearLayout layout = new LinearLayout(parent);
+        LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.setPadding(6, 6, 6, 6);
 
         // Create a ScrollView to put the text in.  Shouldn't be necessary...
-        ScrollView tscroll = new ScrollView(parent);
+        ScrollView tscroll = new ScrollView(context);
         tscroll.setVerticalScrollBarEnabled(true);
         tscroll.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
         layout.addView(tscroll);
 
         // Now create the text view and add it to the scroller.
-        textView = new TextView(parent);
+        textView = new TextView(context);
         textView.setTextSize(16);
         textView.setTextColor(0xffffffff);
         textView.setText(textId);
@@ -78,14 +78,14 @@ public class StartupDialog extends Dialog {
         tscroll.addView(textView);
 
         // Add a layout to hold the buttons.
-        buttonHolder = new LinearLayout(parent);
+        buttonHolder = new LinearLayout(context);
         buttonHolder.setBackgroundColor(0xf08080);
         buttonHolder.setOrientation(LinearLayout.HORIZONTAL);
         buttonHolder.setPadding(6, 3, 3, 3);
         layout.addView(buttonHolder, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         
         // Add the OK button.
-        Button btn = new Button(parent);
+        Button btn = new Button(context);
         btn.setText(buttonLabelId);
         btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -112,13 +112,13 @@ public class StartupDialog extends Dialog {
 
     private boolean isAccepted() {
         int seen = -1;
-        seen = PreferenceManager.getDefaultSharedPreferences(parent).getInt(Constants.KEY_SEEN_STARTUP_DIALOG, seen);
+        seen = PreferenceManager.getDefaultSharedPreferences(context).getInt(Constants.KEY_SEEN_STARTUP_DIALOG, seen);
 
         return seen == getPackageVersion();
     }
     
     private void setSeen() {
-        Editor editor = PreferenceManager.getDefaultSharedPreferences(parent).edit();
+        Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
         editor.putInt(Constants.KEY_SEEN_STARTUP_DIALOG, getPackageVersion());
         editor.commit();
     }
@@ -126,7 +126,7 @@ public class StartupDialog extends Dialog {
     private int getPackageVersion() {
     	int versionCode = -1;
     	try {
-			versionCode = parent.getPackageManager().getPackageInfo(parent.getPackageName(), 0).versionCode;
+			versionCode = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
 		} catch (NameNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
