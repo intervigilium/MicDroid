@@ -183,19 +183,21 @@ public class RecordingLibrary extends ListActivity {
 		protected Void doInBackground(Void... params) {
 			File libraryDir = new File(((MicApplication)getApplication()).getLibraryDirectory());
 			File[] waveFiles = libraryDir.listFiles();
+			Recording r = null;
 			
 			for (int i = 0; i < waveFiles.length; i++) {
 				reader = new WaveReader(waveFiles[i]);
+				
 				try {
 					reader.openWave();
-					Recording r = new Recording(waveFiles[i].getName(), reader.getLength());
+					r = new Recording(waveFiles[i].getName(), reader.getLength());
 					recordings.add(r);
-					Log.d("LoadRecordings", String.format("added recording %s", r.getRecordingName()));
+					Log.i("RecordingLibrary", String.format("Added recording %s to library", r.getRecordingName()));
 					reader.closeWaveFile();
 					reader = null;
 				} catch (IOException e) {
-					e.printStackTrace();
-					Log.d("RecordingLibrary", "Non-wave file found in library!");
+					// yes I know it sucks that we do control flow with an exception here, fix it later
+					Log.i("RecordingLibrary", String.format("Non-wave file %s found in library directory!", r.getRecordingName()));
 				}
 			}
 			

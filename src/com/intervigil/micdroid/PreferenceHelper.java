@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 public class PreferenceHelper {
 	
@@ -63,14 +62,12 @@ public class PreferenceHelper {
 	public static int getSampleRate(Context context) {
 		SharedPreferences prefReader = PreferenceManager.getDefaultSharedPreferences(context);
 		String sampleRate = prefReader.getString(context.getString(R.string.prefs_sample_rate_key), "-1");
-		Log.d("PreferenceHelper", String.format("retrieved sample rate %s from prefereces", sampleRate));
 		return Integer.parseInt(sampleRate);
 	}
 	
 	public static void setSampleRate(Context context, int sampleRate) {
 		Editor prefEditor = PreferenceManager.getDefaultSharedPreferences(context).edit();
 		prefEditor.putString(context.getString(R.string.prefs_sample_rate_key), String.format("%d", sampleRate));
-		Log.d("PreferenceHelper", String.format("inserting sample rate %d into sample rate", sampleRate));
 		prefEditor.commit();
 	}
 }

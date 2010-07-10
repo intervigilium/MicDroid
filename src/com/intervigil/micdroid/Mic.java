@@ -203,7 +203,6 @@ public class Mic extends Activity {
 	    		if (resultCode == Activity.RESULT_OK) {
 	    			String fileName = data.getStringExtra(getString(R.string.filename_entry_result));
 	    			fileName = fileName + ".wav";
-	    			Log.d(getPackageName(), String.format("filename is %s", fileName));
 	    			new ProcessAutotalentTask().execute(fileName);
 	    		} else if (resultCode == Activity.RESULT_CANCELED) {
 	    			Toast.makeText(Mic.this, R.string.recording_save_canceled, Toast.LENGTH_SHORT).show();
