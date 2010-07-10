@@ -23,17 +23,19 @@
 
 package com.intervigil.micdroid;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences.Editor;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder.AudioSource;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class AudioHelper {
 	
+	/**
+     * Convert Android AudioFormat.CHANNEL_CONFIGURATION constants to integers
+     * 
+     * @param		androidChannels			Android AudioFormat constant
+     */
 	public static int getChannelConfig(int androidChannels) {
 		switch (androidChannels) {
 			case AudioFormat.CHANNEL_CONFIGURATION_MONO:
@@ -45,6 +47,11 @@ public class AudioHelper {
 		}
 	}
 	
+	/**
+     * Convert Android AudioFormat.ENCODING_PCM constants to integers
+     * 
+     * @param		androidEncoding			Android AudioFormat constant
+     */
 	public static int getPcmEncoding(int androidEncoding) {
 		switch (androidEncoding) {
 			case AudioFormat.ENCODING_PCM_8BIT:
@@ -56,6 +63,11 @@ public class AudioHelper {
 		}
 	}
 
+	/**
+     * Convert integers to AudioFormat.CHANNEL_CONFIGURATION constants
+     * 
+     * @param		numChannels			number of channels, typically 1 or 2
+     */
 	public static int getAndroidChannelConfig(int numChannels) {
 		switch (numChannels) {
 			case 1:
@@ -67,6 +79,11 @@ public class AudioHelper {
 		}
 	}
 	
+	/**
+     * Convert integers to AudioFormat.ENCODING_PCM constants
+     * 
+     * @param		bitsPerSample			bits in a sample of audio, typically 8 or 16
+     */
 	public static int getAndroidPcmEncoding(int bitsPerSample) {
 		switch (bitsPerSample) {
 			case 8:
@@ -78,11 +95,28 @@ public class AudioHelper {
 		}
 	}
 	
+	/**
+     * Gets the validity of the current recorder settings, particularly sample rate;
+     * This function wraps getRecorderBufferSize(Context)
+     * 
+     * @param		context				Context which we are getting recorder information about
+     */
+	public static boolean isValidRecorderConfiguration(Context context) {
+		return getRecorderBufferSize(context) != AudioRecord.ERROR_BAD_VALUE;
+	}
+	
+	/**
+     * Gets the buffer size needed for the current recorder settings
+     * This function wraps AudioRecord.getMinBufferSize(SampleRate, ChannelConfig, PcmFormat)
+     * which means this function can return AudioRecord.ERROR_BAD_VALUE for invalid settings
+     * or AudioRecord.ERROR when the system is unable to query hardware for proper settings
+     * 
+     * @param		context				Context which we are getting recorder information about
+     */
 	public static int getRecorderBufferSize(Context context) {
 		int bufferSize = 0;
-		int sampleRate = -1;
+		int sampleRate = PreferenceHelper.getSampleRate(context);
 		
-		sampleRate = PreferenceManager.getDefaultSharedPreferences(context).getInt(Constants.KEY_SAMPLE_RATE, sampleRate);
 		if (sampleRate > 0) {
 			bufferSize = AudioRecord.getMinBufferSize(sampleRate, 
 					Constants.DEFAULT_CHANNEL_CONFIG, 
@@ -91,45 +125,40 @@ public class AudioHelper {
 		return bufferSize;
 	}
 	
-	public static int getRecorderSampleRate(Context context) {
-		int sampleRate = -1;
-		
-		sampleRate = PreferenceManager.getDefaultSharedPreferences(context).getInt(Constants.KEY_SAMPLE_RATE, sampleRate);
-
-		return sampleRate;
-	}
-	
-	public static AudioRecord getRecorder(Activity parent) {
+	/**
+     * Gets an AudioRecord object using the current recording settings
+     * 
+     * @param		context				Context which we are getting recorder for
+     */
+	public static AudioRecord getRecorder(Context context) throws IllegalArgumentException {
 		AudioRecord recorder = null;
 		int bufferSize = 0;
-		int sampleRate = -1;
-		sampleRate = PreferenceManager.getDefaultSharedPreferences(parent).getInt(Constants.KEY_SAMPLE_RATE, sampleRate);
+		int sampleRate = PreferenceHelper.getSampleRate(context);
+
+		Log.i("AudioHelper", String.format("AudioRecord initialized with saved configuration! sample rate: %d", sampleRate));
 		
-		if (sampleRate > 0) {
-			// use saved sample rate
-			Log.i("AudioHelper", String.format("AudioRecord initialized with saved configuration! sample rate: %d", sampleRate));
-			bufferSize = AudioRecord.getMinBufferSize(sampleRate, 
-					Constants.DEFAULT_CHANNEL_CONFIG, 
-					Constants.DEFAULT_PCM_FORMAT);
-    		
-			try {
-	    		recorder = new AudioRecord(AudioSource.MIC,
-	    				sampleRate, 
-	    				Constants.DEFAULT_CHANNEL_CONFIG,
-						Constants.DEFAULT_PCM_FORMAT,
-	    				bufferSize);
-			} catch (IllegalArgumentException e) {
-				Log.i("AudioHelper", "Failed to initialize AudioRecord! Please check your sample rate settings!");
-				e.printStackTrace();
-			}
-		}
+		bufferSize = AudioRecord.getMinBufferSize(sampleRate, 
+				Constants.DEFAULT_CHANNEL_CONFIG, 
+				Constants.DEFAULT_PCM_FORMAT);
+
+		recorder = new AudioRecord(AudioSource.MIC,
+				sampleRate, 
+				Constants.DEFAULT_CHANNEL_CONFIG,
+				Constants.DEFAULT_PCM_FORMAT,
+				bufferSize);
+		
 		return recorder;
 	}
 	
-	public static void configureRecorder(Activity parent) {
+	/**
+     * Attempts to autoconfigure current Context's sample rate
+     * Will show a pop-up warning if autoconfiguration failed to set sample rate
+     * 
+     * @param		context				Context which we are attempting to configure
+     */
+	public static void configureRecorder(Context context) {
 		int bufferSize = 0;
-		int sampleRate = -1;
-		sampleRate = PreferenceManager.getDefaultSharedPreferences(parent).getInt(Constants.KEY_SAMPLE_RATE, sampleRate);
+		int sampleRate = PreferenceHelper.getSampleRate(context);
 		
 		if (sampleRate < 0) {
 			// try a new sample rates until we find one that works  		
@@ -149,8 +178,9 @@ public class AudioHelper {
 						sampleRate = Constants.SAMPLE_RATE_8KHZ;
 						break;
     				default:
-    					Log.i("AudioHelper", String.format("Hardware does not support recording!"));
     					// show some kind of error pop-up
+    					Log.w("AudioHelper", String.format("Hardware does not support recording!"));
+    					DialogHelper.showWarning(context, R.string.unable_to_configure_audio_title, R.string.unable_to_configure_audio_warning);
     					return;
     			}
     			
@@ -163,9 +193,7 @@ public class AudioHelper {
     		
     		// save the last known good sample rate
     		Log.i("AudioHelper", String.format("AudioRecord initially configured! sample rate: %d", sampleRate));
-    		Editor editor = PreferenceManager.getDefaultSharedPreferences(parent).edit();
-    		editor.putInt(Constants.KEY_SAMPLE_RATE, sampleRate);
-    		editor.commit();
+    		PreferenceHelper.setSampleRate(context, sampleRate);
 		}
 	}
 }

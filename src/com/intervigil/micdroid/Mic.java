@@ -295,13 +295,23 @@ public class Mic extends Activity {
     private OnCheckedChangeListener mPowerBtnListener = new OnCheckedChangeListener() {
     	public void onCheckedChanged(CompoundButton btn, boolean isChecked) {
 			if (btn.isChecked()) {
-				micRecorderThread = new Thread(micRecorder, "Mic Recorder Thread");
-				micRecorderThread.setPriority(Thread.MAX_PRIORITY);
-				micRecorderThread.start();
+				if (AudioHelper.isValidRecorderConfiguration(Mic.this)) {
+					micRecorderThread = new Thread(micRecorder, "Mic Recorder Thread");
+					micRecorderThread.setPriority(Thread.MAX_PRIORITY);
+					micRecorderThread.start();
 
-	        	micWriterThread = new Thread(micWriter, "Mic Writer Thread");
-	        	micWriterThread.start();
-	        	Toast.makeText(getBaseContext(), R.string.recording_started_toast, Toast.LENGTH_SHORT).show();
+		        	micWriterThread = new Thread(micWriter, "Mic Writer Thread");
+		        	micWriterThread.start();
+		        	Toast.makeText(getBaseContext(), R.string.recording_started_toast, Toast.LENGTH_SHORT).show();
+				} else {
+					// TODO: theoretically this should stop those force-close on failure to record, but
+					// it's possible that we can get the system to think the configuration is valid and still
+					// have AudioRecord fail to initialize, so we need to make MicWriter start if and only if 
+					// MicRecorder starts up correctly
+					
+					btn.setChecked(false);
+					DialogHelper.showWarning(Mic.this, R.string.unconfigured_audio_title, R.string.unconfigured_audio_warning);
+				}
 			} else {
 				Toast.makeText(getBaseContext(), R.string.recording_finished_toast, Toast.LENGTH_SHORT).show();
 				
@@ -332,7 +342,7 @@ public class Mic extends Activity {
     	float smooth = Float.valueOf(prefs.getString("smooth", getString(R.string.prefs_corr_smooth_default)));
     	float mix = Float.valueOf(prefs.getString("mix", getString(R.string.prefs_corr_mix_default)));
     	
-    	AutoTalent.instantiateAutoTalent(AudioHelper.getRecorderSampleRate(Mic.this));
+    	AutoTalent.instantiateAutoTalent(PreferenceHelper.getSampleRate(Mic.this));
     	AutoTalent.initializeAutoTalent(CONCERT_A, key, fixedPitch, fixedPull, 
     			strength, smooth, pitchShift, DEFAULT_SCALE_ROTATE, 
     			DEFAULT_LFO_DEPTH, DEFAULT_LFO_RATE, DEFAULT_LFO_SHAPE, DEFAULT_LFO_SYM, DEFAULT_LFO_QUANT, 
@@ -362,7 +372,7 @@ public class Mic extends Activity {
 				writer = new WaveWriter(
 						((MicApplication)getApplication()).getOutputDirectory(),
 						getString(R.string.default_recording_name), 
-						AudioHelper.getRecorderSampleRate(Mic.this), 
+						PreferenceHelper.getSampleRate(Mic.this), 
 						AudioHelper.getChannelConfig(Constants.DEFAULT_CHANNEL_CONFIG), 
 						AudioHelper.getPcmEncoding(Constants.DEFAULT_PCM_FORMAT));
 				writer.createWaveFile();
@@ -391,6 +401,7 @@ public class Mic extends Activity {
 				// problem writing the header or closing the output stream
 				e.printStackTrace();
 			}
+			isRunning = false;
 		}
     }
     
@@ -413,9 +424,9 @@ public class Mic extends Activity {
     	public void run() {
     		isRunning = true;
 
-    		AudioRecord recorder = AudioHelper.getRecorder(Mic.this);
-    		
-    		if (recorder != null) {
+    		try {
+    			AudioRecord recorder = AudioHelper.getRecorder(Mic.this);
+
 	    		short[] buffer = new short[AudioHelper.getRecorderBufferSize(Mic.this)];
 	    		recorder.startRecording();
 	    		
@@ -432,9 +443,12 @@ public class Mic extends Activity {
 	    		recorder.stop();
 	    		recorder.release();
 	    		recorder = null;
-    		} else {
-    			// TODO: notify user we could not initialize recording, and tell them to check sample rate settings
+    		} catch (IllegalArgumentException e) {
+    			Log.e(getPackageName(), "Unable to initialize AudioRecord! Check sample rate settings!");
+    			e.printStackTrace();
+    			throw e;
     		}
+    		isRunning = false;
     	}
     }
 }

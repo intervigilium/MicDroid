@@ -18,6 +18,12 @@ DISCLAIMER: This is alpha software! May be buggy and force close on you! Author 
     </string>
     <string name="startup_dialog_accept_btn">Accept</string>
     
+    <string name="unable_to_configure_audio_title">WARNING!</string>
+    <string name="unable_to_configure_audio_warning">Unable to configure audio! Please check your sample rate settings and make sure your device is able to record at that rate!</string>
+    
+    <string name="unconfigured_audio_title">WARNING!</string>
+    <string name="unconfigured_audio_warning">Cannot record audio with current settings! Please check your sample rate settings and make sure your device is able to record at that rate!</string>
+    
     <string name="recording_started_toast">Recording started! Press power button to stop recording!</string>
     <string name="recording_finished_toast">Recording finished!</string>
     
