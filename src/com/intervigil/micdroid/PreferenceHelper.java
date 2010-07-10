@@ -15,4 +15,14 @@ public class PreferenceHelper {
         editor.putInt(Constants.KEY_SEEN_STARTUP_DIALOG, value);
         editor.commit(); 
 	}
+	
+	public static int getSampleRate(Context context) {
+		return PreferenceManager.getDefaultSharedPreferences(context).getInt(Constants.KEY_SAMPLE_RATE, -1);
+	}
+	
+	public static void setSampleRate(Context context, int sampleRate) {
+		Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+		editor.putInt(Constants.KEY_SAMPLE_RATE, sampleRate);
+		editor.commit();
+	}
 }
