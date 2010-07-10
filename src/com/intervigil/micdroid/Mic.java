@@ -333,7 +333,7 @@ public class Mic extends Activity {
     };
     
     private void updateAutoTalentPreferences() {
-    	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+    	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Mic.this);
     	char key = prefs.getString("key", getString(R.string.prefs_key_default)).charAt(0);
     	float fixedPitch = Float.valueOf(prefs.getString("fixed_pitch", getString(R.string.prefs_fixed_pitch_default)));
     	float fixedPull = Float.valueOf(prefs.getString("pitch_pull", getString(R.string.prefs_pitch_pull_default)));
