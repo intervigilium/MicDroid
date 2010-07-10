@@ -197,7 +197,7 @@ public class RecordingLibrary extends ListActivity {
 					reader = null;
 				} catch (IOException e) {
 					// yes I know it sucks that we do control flow with an exception here, fix it later
-					Log.i("RecordingLibrary", String.format("Non-wave file %s found in library directory!", r.getRecordingName()));
+					Log.i("RecordingLibrary", String.format("Non-wave file %s found in library directory!", waveFiles[i].getName()));
 				}
 			}
 			
