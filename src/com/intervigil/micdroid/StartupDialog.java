@@ -25,9 +25,7 @@ package com.intervigil.micdroid;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -105,22 +103,12 @@ public class StartupDialog extends Dialog {
 	}
 	
 	protected void okButtonPressed() {
-		// write to settings
-		setSeen();
+		PreferenceHelper.setSeenStartupDialog(context, getPackageVersion());
 		dismiss();
 	}
 
     private boolean isAccepted() {
-        int seen = -1;
-        seen = PreferenceManager.getDefaultSharedPreferences(context).getInt(Constants.KEY_SEEN_STARTUP_DIALOG, seen);
-
-        return seen == getPackageVersion();
-    }
-    
-    private void setSeen() {
-        Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-        editor.putInt(Constants.KEY_SEEN_STARTUP_DIALOG, getPackageVersion());
-        editor.commit();
+        return PreferenceHelper.getSeenStartupDialog(context) == getPackageVersion();
     }
     
     private int getPackageVersion() {
