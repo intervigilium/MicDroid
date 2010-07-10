@@ -43,26 +43,26 @@ public class WaveWriter {
 	private int sampleBits;
 	
 	public WaveWriter(String path, String name, int sampleRate, int channels, int sampleBits) {
-		output = new File(path + File.separator + name);
+		this.output = new File(path + File.separator + name);
 		
 		this.sampleRate= sampleRate;
 		this.channels = channels;
 		this.sampleBits = sampleBits;
 		
-		bytesWritten = 0;
+		this.bytesWritten = 0;
 	}
 	
 	public boolean createWaveFile() throws IOException {
-		if (output.exists()) {
-			output.delete();
+		if (this.output.exists()) {
+			this.output.delete();
 		}
 		
-		if (output.createNewFile()) {
+		if (this.output.createNewFile()) {
 			// create file, set up output stream
 			FileOutputStream fileStream = new FileOutputStream(output);
-			outputStream = new BufferedOutputStream(fileStream, OUTPUT_STREAM_BUFFER);
+			this.outputStream = new BufferedOutputStream(fileStream, OUTPUT_STREAM_BUFFER);
 			// write 44 bytes of space for the header
-			outputStream.write(new byte[44]);
+			this.outputStream.write(new byte[44]);
 			return true;
 		}
 		return false;
@@ -70,15 +70,15 @@ public class WaveWriter {
 	
 	public void write(short[] buffer, int bufferSize) throws IOException {
 		for (int i = 0; i < bufferSize; i++) {
-			write16BitsLowHigh(outputStream, buffer[i]);
+			write16BitsLowHigh(this.outputStream, buffer[i]);
 			bytesWritten += 2;
 		}
 	}
 	
 	public void closeWaveFile() throws IOException {
 		// close output stream then rewind and write wave header
-		outputStream.flush();
-		outputStream.close();
+		this.outputStream.flush();
+		this.outputStream.close();
 		writeWaveHeader();
 	}
 	
@@ -105,19 +105,19 @@ public class WaveWriter {
 		file.close();
 	}
 	
-	private void write16BitsLowHigh(OutputStream stream, short sample) throws IOException {
+	private static void write16BitsLowHigh(OutputStream stream, short sample) throws IOException {
 		// write already writes the lower order byte of this short
 		stream.write(sample);
 		stream.write((sample >> 8));
 	}
 	
-	private void write16BitsLowHigh(RandomAccessFile file, short sample) throws IOException {
+	private static void write16BitsLowHigh(RandomAccessFile file, short sample) throws IOException {
 		// write already writes the lower order byte of this short
 		file.write(sample);
 		file.write((sample >> 8));
 	}
 	
-	private void write32BitsLowHigh(RandomAccessFile file, int sample) throws IOException {
+	private static void write32BitsLowHigh(RandomAccessFile file, int sample) throws IOException {
 		write16BitsLowHigh(file, (short)(sample & 0xffff));
 		write16BitsLowHigh(file, (short)((sample >> 16) & 0xffff));
 	}
