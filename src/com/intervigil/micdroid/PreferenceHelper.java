@@ -1,6 +1,7 @@
 package com.intervigil.micdroid;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 
@@ -17,12 +18,13 @@ public class PreferenceHelper {
 	}
 	
 	public static int getSampleRate(Context context) {
-		return PreferenceManager.getDefaultSharedPreferences(context).getInt(Constants.KEY_SAMPLE_RATE, -1);
+		SharedPreferences prefReader = PreferenceManager.getDefaultSharedPreferences(context);
+		return Integer.parseInt(prefReader.getString(context.getString(R.string.prefs_sample_rate), "-1"));
 	}
 	
 	public static void setSampleRate(Context context, int sampleRate) {
-		Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-		editor.putInt(Constants.KEY_SAMPLE_RATE, sampleRate);
-		editor.commit();
+		Editor prefEditor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+		prefEditor.putString(context.getString(R.string.prefs_sample_rate), String.format("%d", sampleRate));
+		prefEditor.commit();
 	}
 }

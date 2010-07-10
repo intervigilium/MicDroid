@@ -56,6 +56,12 @@ DISCLAIMER: This is alpha software! May be buggy and force close on you! Author 
     <string name="mic_toggle_off">On</string>
     <string name="mic_toggle_on">Off</string>
     
+    <string name="prefs_cat_recording">Recording Settings</string>
+    <string name="prefs_sample_rate">Change Recording Sample Rate</string>
+    <string name="prefs_sample_rate_summary">This is the recording sample rate. This setting is device dependent, if you have trouble recording try changing this.</string>
+    <string name="prefs_sample_rate_title">Change Recording Sample Rate</string>
+    <string name="prefs_sample_rate_default">22050</string>
+    
     <string name="prefs_cat_key">Key Settings</string>
     <string name="prefs_key">Change Key</string>
     <string name="prefs_key_summary">Change the key to tune to</string>

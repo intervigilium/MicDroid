@@ -46,6 +46,5 @@ public class Constants {
 	public static final int RESULT_FILE_DELETED = 12770;
 	
 	// shared preference keys
-	public static final String KEY_SAMPLE_RATE = "sampleRate";
-	public static final String KEY_SEEN_STARTUP_DIALOG = "seenStartupDialog";
+	public static final String KEY_SEEN_STARTUP_DIALOG = "prefs_seen_startup_dialog";
 }

@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
+	<!-- Recording sample rates. -->
+	<string-array name="prefs_sample_rate_entries">
+		<item>44100 Hz</item>
+		<item>22050 Hz (default)</item>
+		<item>11025 Hz</item>
+		<item>8000 Hz</item>
+	</string-array>
+	
+	<!-- Values for sample rates menu. -->
+	<string-array name="prefs_sample_rate_values">
+		<item>44100</item>
+		<item>22050</item>
+		<item>11025</item>
+		<item>8000</item>
+	</string-array>
     
     <!-- Entry names for the key menu. -->
     <string-array name="prefs_key_entries">
