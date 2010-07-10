@@ -14,7 +14,7 @@ public class PreferenceHelper {
 	public static void setSeenStartupDialog(Context context, int value) {
 		Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
         editor.putInt(Constants.KEY_SEEN_STARTUP_DIALOG, value);
-        editor.commit(); 
+        editor.commit();
 	}
 	
 	public static int getSampleRate(Context context) {
