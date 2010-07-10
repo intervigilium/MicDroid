@@ -84,7 +84,7 @@ public class WaveWriter {
 	
 	private void writeWaveHeader() throws IOException {
 		// rewind to beginning of the file
-		RandomAccessFile file = new RandomAccessFile(output, "rw");
+		RandomAccessFile file = new RandomAccessFile(this.output, "rw");
 		file.seek(0);
 		
 		int bytesPerSec = (sampleBits + 7) / 8;
