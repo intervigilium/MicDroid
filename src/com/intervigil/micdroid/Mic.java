@@ -31,12 +31,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.media.AudioRecord;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -333,14 +331,13 @@ public class Mic extends Activity {
     };
     
     private void updateAutoTalentPreferences() {
-    	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Mic.this);
-    	char key = prefs.getString("key", getString(R.string.prefs_key_default)).charAt(0);
-    	float fixedPitch = Float.valueOf(prefs.getString("fixed_pitch", getString(R.string.prefs_fixed_pitch_default)));
-    	float fixedPull = Float.valueOf(prefs.getString("pitch_pull", getString(R.string.prefs_pitch_pull_default)));
-    	float pitchShift = Float.valueOf(prefs.getString("pitch_shift", getString(R.string.prefs_pitch_shift_default)));
-    	float strength = Float.valueOf(prefs.getString("strength", getString(R.string.prefs_corr_str_default)));
-    	float smooth = Float.valueOf(prefs.getString("smooth", getString(R.string.prefs_corr_smooth_default)));
-    	float mix = Float.valueOf(prefs.getString("mix", getString(R.string.prefs_corr_mix_default)));
+    	char key = PreferenceHelper.getKey(Mic.this);
+    	float fixedPitch = PreferenceHelper.getFixedPitch(Mic.this);
+    	float fixedPull = PreferenceHelper.getPullToFixedPitch(Mic.this);
+    	float pitchShift = PreferenceHelper.getPitchShift(Mic.this);
+    	float strength = PreferenceHelper.getCorrectionStrength(Mic.this);
+    	float smooth = PreferenceHelper.getCorrectionSmoothness(Mic.this);
+    	float mix = PreferenceHelper.getMix(Mic.this);
     	
     	AutoTalent.instantiateAutoTalent(PreferenceHelper.getSampleRate(Mic.this));
     	AutoTalent.initializeAutoTalent(CONCERT_A, key, fixedPitch, fixedPull, 
