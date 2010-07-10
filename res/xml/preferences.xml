@@ -3,7 +3,7 @@
 	<PreferenceCategory android:title="@string/prefs_cat_recording">
 	
 		<ListPreference
-				android:key="sample_rate"
+				android:key="@string/prefs_sample_rate_key"
 				android:title="@string/prefs_sample_rate"
 				android:summary="@string/prefs_sample_rate_summary"
                 android:entries="@array/prefs_sample_rate_entries"
@@ -16,7 +16,7 @@
     <PreferenceCategory android:title="@string/prefs_cat_key">
 
         <ListPreference
-                android:key="key"
+                android:key="@string/prefs_key_key"
                 android:title="@string/prefs_key"
                 android:summary="@string/prefs_key_summary"
                 android:entries="@array/prefs_key_entries"
@@ -29,7 +29,7 @@
     <PreferenceCategory android:title="@string/prefs_cat_pitch">
 
         <ListPreference
-                android:key="fixed_pitch"
+                android:key="@string/prefs_fixed_pitch_key"
                 android:title="@string/prefs_fixed_pitch"
                 android:summary="@string/prefs_fixed_pitch_summary"
                 android:entries="@array/prefs_fixed_pitch_entries"
@@ -38,7 +38,7 @@
                 android:defaultValue="@string/prefs_fixed_pitch_default" />
         
         <ListPreference
-                android:key="pitch_pull"
+                android:key="@string/prefs_pitch_pull_key"
                 android:title="@string/prefs_pitch_pull"
                 android:summary="@string/prefs_pitch_pull_summary"
                 android:entries="@array/prefs_pitch_pull_entries"
@@ -47,7 +47,7 @@
                 android:defaultValue="@string/prefs_pitch_pull_default" />
 
 		<ListPreference
-                android:key="pitch_shift"
+                android:key="@string/prefs_pitch_shift_key"
                 android:title="@string/prefs_pitch_shift"
                 android:summary="@string/prefs_pitch_shift_summary"
                 android:entries="@array/prefs_pitch_shift_entries"
@@ -61,7 +61,7 @@
     <PreferenceCategory android:title="@string/prefs_cat_correction">
 
         <ListPreference
-                android:key="strength"
+                android:key="@string/prefs_corr_str_key"
                 android:title="@string/prefs_corr_str"
                 android:summary="@string/prefs_corr_str_summary"
                 android:entries="@array/prefs_corr_str_entries"
@@ -70,7 +70,7 @@
                 android:defaultValue="@string/prefs_corr_str_default" />
                 
         <ListPreference
-                android:key="smooth"
+                android:key="@string/prefs_corr_smooth_key"
                 android:title="@string/prefs_corr_smooth"
                 android:summary="@string/prefs_corr_smooth_summary"
                 android:entries="@array/prefs_corr_smooth_entries"
@@ -79,7 +79,7 @@
                 android:defaultValue="@string/prefs_corr_smooth_default" />
 
 		<ListPreference
-                android:key="mix"
+                android:key="@string/prefs_corr_mix_key"
                 android:title="@string/prefs_corr_mix"
                 android:summary="@string/prefs_corr_mix_summary"
                 android:entries="@array/prefs_corr_mix_entries"
