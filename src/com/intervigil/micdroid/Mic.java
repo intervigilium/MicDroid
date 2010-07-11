@@ -295,13 +295,15 @@ public class Mic extends Activity {
     		if (!canWriteToSdCard()) {
     			// TODO: I think this should stop the force-close in WaveWriter.write16BitsLowHigh
     			// but I'm really not sure, anyway this is a case that needs to be checked
-        		DialogHelper.showWarning(Mic.this, R.string.no_external_storage_title, R.string.no_external_storage_warning);
+        		btn.setChecked(false);
+    			DialogHelper.showWarning(Mic.this, R.string.no_external_storage_title, R.string.no_external_storage_warning);
         	}
     		else if (!AudioHelper.isValidRecorderConfiguration(Mic.this)) {
     			// TODO: theoretically this should stop those force-close on failure to record, but
 				// it's possible that we can get the system to think the configuration is valid and still
 				// have AudioRecord fail to initialize, so we need to make MicWriter start if and only if 
 				// MicRecorder starts up correctly
+    			btn.setChecked(false);
     			DialogHelper.showWarning(Mic.this, R.string.unconfigured_audio_title, R.string.unconfigured_audio_warning);
     		}
     		else {
