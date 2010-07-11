@@ -19,6 +19,9 @@ DISCLAIMER: This is alpha software! May be buggy and force close on you! Author 
     </string>
     <string name="startup_dialog_accept_btn">Accept</string>
     
+    <string name="no_external_storage_title">WARNING!</string>
+    <string name="no_external_storage_warning">This app requires a mounted SD card to function properly! Make sure there is an SD card properly inserted and mounted before recording!</string>
+    
     <string name="unable_to_configure_audio_title">WARNING!</string>
     <string name="unable_to_configure_audio_warning">Unable to configure audio! Please check your sample rate settings and make sure your device is able to record at that rate!</string>
     

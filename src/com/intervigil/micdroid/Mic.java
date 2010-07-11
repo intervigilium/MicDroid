@@ -35,6 +35,7 @@ import android.content.res.Configuration;
 import android.media.AudioRecord;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -110,7 +111,7 @@ public class Mic extends Activity {
     	
     	startupDialog.show();
     	AudioHelper.configureRecorder(Mic.this);
-    	
+
     	android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
     }
     
@@ -291,8 +292,20 @@ public class Mic extends Activity {
     
     private OnCheckedChangeListener mPowerBtnListener = new OnCheckedChangeListener() {
     	public void onCheckedChanged(CompoundButton btn, boolean isChecked) {
-			if (btn.isChecked()) {
-				if (AudioHelper.isValidRecorderConfiguration(Mic.this)) {
+    		if (!canWriteToSdCard()) {
+    			// TODO: I think this should stop the force-close in WaveWriter.write16BitsLowHigh
+    			// but I'm really not sure, anyway this is a case that needs to be checked
+        		DialogHelper.showWarning(Mic.this, R.string.no_external_storage_title, R.string.no_external_storage_warning);
+        	}
+    		else if (!AudioHelper.isValidRecorderConfiguration(Mic.this)) {
+    			// TODO: theoretically this should stop those force-close on failure to record, but
+				// it's possible that we can get the system to think the configuration is valid and still
+				// have AudioRecord fail to initialize, so we need to make MicWriter start if and only if 
+				// MicRecorder starts up correctly
+    			DialogHelper.showWarning(Mic.this, R.string.unconfigured_audio_title, R.string.unconfigured_audio_warning);
+    		}
+    		else {
+				if (btn.isChecked()) {
 					micRecorderThread = new Thread(micRecorder, "Mic Recorder Thread");
 					micRecorderThread.setPriority(Thread.MAX_PRIORITY);
 					micRecorderThread.start();
@@ -301,31 +314,23 @@ public class Mic extends Activity {
 		        	micWriterThread.start();
 		        	Toast.makeText(getBaseContext(), R.string.recording_started_toast, Toast.LENGTH_SHORT).show();
 				} else {
-					// TODO: theoretically this should stop those force-close on failure to record, but
-					// it's possible that we can get the system to think the configuration is valid and still
-					// have AudioRecord fail to initialize, so we need to make MicWriter start if and only if 
-					// MicRecorder starts up correctly
+					Toast.makeText(getBaseContext(), R.string.recording_finished_toast, Toast.LENGTH_SHORT).show();
 					
-					btn.setChecked(false);
-					DialogHelper.showWarning(Mic.this, R.string.unconfigured_audio_title, R.string.unconfigured_audio_warning);
+					micRecorder.stopRunning();
+					micWriter.stopRunning();
+					try {
+						micRecorderThread.join();
+						micWriterThread.join();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					playQueue.clear();
+					
+					// prompt user to save recording
+					Intent saveFileIntent = new Intent(getBaseContext(), FileNameEntry.class);
+					startActivityForResult(saveFileIntent, Constants.FILENAME_ENTRY_INTENT_CODE);
 				}
-			} else {
-				Toast.makeText(getBaseContext(), R.string.recording_finished_toast, Toast.LENGTH_SHORT).show();
-				
-				micRecorder.stopRunning();
-				micWriter.stopRunning();
-				try {
-					micRecorderThread.join();
-					micWriterThread.join();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				playQueue.clear();
-				
-				// prompt user to save recording
-				Intent saveFileIntent = new Intent(getBaseContext(), FileNameEntry.class);
-				startActivityForResult(saveFileIntent, Constants.FILENAME_ENTRY_INTENT_CODE);
-			}
+    		}
 		}
     };
     
@@ -446,5 +451,9 @@ public class Mic extends Activity {
     		}
     		isRunning = false;
     	}
+    }
+    
+    private static boolean canWriteToSdCard() {
+    	return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
     }
 }
