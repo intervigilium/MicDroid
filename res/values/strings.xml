@@ -6,10 +6,11 @@
     <string name="filename_entry_result">FILENAME_RESULT</string>
     
     <string name="startup_dialog_title">What's new in this version?</string>
-    <string name="startup_dialog_text">1. Add recording sample rate as an option\n\
-2. Attempt to fix force-close on recording issues\n\
-3. Allow rotation on main screen\n\
-4. Set defaults to sound more like the T-Pain effect\n\
+    <string name="startup_dialog_text">1. Show warning if no SD card is inserted\n\
+2. Add recording sample rate as an option\n\
+3. Attempt to fix force-close on recording issues\n\
+4. Allow rotation on main screen\n\
+5. Set defaults to sound more like the T-Pain effect\n\
 \n\
 Important Usage Note 1: Recordings can be played back by using 'MENU' button and going to 'Recording Library'!\n\
 \n\
