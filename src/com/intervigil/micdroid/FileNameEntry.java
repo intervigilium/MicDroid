@@ -23,6 +23,9 @@
 
 package com.intervigil.micdroid;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -51,6 +54,10 @@ public class FileNameEntry extends Activity {
         setContentView(R.layout.filename_entry);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND, WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
 
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd-HH.mm.ss");
+        String defaultName = formatter.format(new Date());
+        ((EditText)findViewById(R.id.filename_entry_field)).setText(defaultName);
+        
         invalidNameAlert = new AlertDialog.Builder(this)
         	.setTitle(getString(R.string.invalid_name_alert_title))
         	.setMessage(getString(R.string.invalid_name_alert_message))
