@@ -10,9 +10,9 @@ Force closes reported on G1, MyTouch3G, Galaxy S
 
 To Do:
 Add new nicer graphic resources for everything
+Add default filename when saving
 Add minor keys
-Register recordings with system when finished recording
-Share as MMS, set as ringtone option for recordings
+Share as MMS, set as ringtone option, rename recording options for recordings
 Rewrite recording player to use MediaPlayer, add progress bar for playback
 Add 'About' menu option, including license information
 Add 'Help' menu option
