@@ -88,37 +88,26 @@ public class WaveWriter {
 		file.seek(0);
 		
 		int bytesPerSec = (sampleBits + 7) / 8;
-		
-		file.write(new byte[] { 'R', 'I', 'F', 'F' }); // label
-		write32BitsLowHigh(file, (short)(bytesWritten + 44 - 8)); // length in bytes without header
-		file.write(new byte[] { 'W', 'A', 'V', 'E', 'f', 'm', 't', ' ' }); // 2 labels?
-		write32BitsLowHigh(file, 2 + 2 + 4 + 4 + 2 + 2); // length of pcm format declaration area
-		write16BitsLowHigh(file, (short)1); // is PCM?
-		write16BitsLowHigh(file, (short)channels); // number of channels, this is mono
-		write32BitsLowHigh(file, sampleRate); // sample rate, this is 22050 Hz
-		write32BitsLowHigh(file, sampleRate * channels * bytesPerSec); // bytes per second
-		write16BitsLowHigh(file, (short)(channels * bytesPerSec)); // bytes per sample time
-		write16BitsLowHigh(file, (short)sampleBits); // bits per sample, this is 16 bit pcm
-		file.write(new byte[] { 'd', 'a', 't', 'a' });
-		write32BitsLowHigh(file, bytesWritten); // length of raw pcm data in bytes
-		
+
+		file.writeBytes("RIFF"); // wave label
+		file.writeInt(Integer.reverseBytes(bytesWritten+36)); // length in bytes without header
+		file.writeBytes("WAVEfmt");
+		file.writeInt(Integer.reverseBytes(16)); // length of pcm format declaration area
+		file.writeShort(Short.reverseBytes((short) 1)); // is PCM
+		file.writeShort(Short.reverseBytes((short) channels)); // number of channels, this is mono
+		file.writeInt(Integer.reverseBytes(sampleRate)); // sample rate, this is probably 22050 Hz
+		file.writeInt(Integer.reverseBytes(sampleRate * channels * bytesPerSec)); // bytes per second
+		file.writeShort(Short.reverseBytes((short)(channels * bytesPerSec))); // bytes per sample time
+		file.writeShort(Short.reverseBytes((short)sampleBits)); // bits per sample, this is 16 bit pcm
+		file.writeBytes("data"); // data section label
+		file.writeInt(Integer.reverseBytes(bytesWritten)); // length of raw pcm data in bytes
 		file.close();
+		file = null;
 	}
 	
 	private static void write16BitsLowHigh(OutputStream stream, short sample) throws IOException {
 		// write already writes the lower order byte of this short
 		stream.write(sample);
 		stream.write((sample >> 8));
-	}
-	
-	private static void write16BitsLowHigh(RandomAccessFile file, short sample) throws IOException {
-		// write already writes the lower order byte of this short
-		file.write(sample);
-		file.write((sample >> 8));
-	}
-	
-	private static void write32BitsLowHigh(RandomAccessFile file, int sample) throws IOException {
-		write16BitsLowHigh(file, (short)(sample & 0xffff));
-		write16BitsLowHigh(file, (short)((sample >> 16) & 0xffff));
 	}
 }
