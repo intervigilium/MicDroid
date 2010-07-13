@@ -32,8 +32,7 @@ public class MediaScannerHelper implements MediaScannerConnectionClient {
 	}
 
 	public void onScanCompleted(String path, Uri uri) {
-		// set our scan result code
-		scanSuccessful = (uri != null);
+		// set our result code
+		scanSuccessful = (uri != null);  
 	}
-
 }

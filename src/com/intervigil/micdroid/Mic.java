@@ -283,7 +283,7 @@ public class Mic extends Activity {
 			}
 			
 			// scan file with mediascanner
-			String filePath = ((MicApplication) getApplication()).getOutputDirectory() + File.separator + fileName;
+			String filePath = ((MicApplication) getApplication()).getLibraryDirectory() + File.separator + fileName;
 			MediaScannerHelper mediaScanner = new MediaScannerHelper(Mic.this, filePath);
 			mediaScanner.scanFile();
 			
