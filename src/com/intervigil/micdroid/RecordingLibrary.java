@@ -226,6 +226,7 @@ public class RecordingLibrary extends ListActivity {
 					if (waveFiles[i].isFile()) {
 						File destination = new File(((MicApplication)getApplication()).getLibraryDirectory() + File.separator + waveFiles[i].getName());
 						waveFiles[i].renameTo(destination);
+						Log.i("RecordingLibrary", String.format("Moved recording %s to new library directory!", waveFiles[i].getName()));
 					}
 				}
 			}
