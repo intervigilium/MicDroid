@@ -218,7 +218,7 @@ public class RecordingLibrary extends ListActivity {
 		}
 		
 		private void migrateOldRecordings() {
-			File oldLibraryDir = new File(((MicApplication)getApplication()).getOldApplicationLibraryDirectory());
+			File oldLibraryDir = new File(((MicApplication)getApplication()).getOldLibraryDirectory());
 			File[] waveFiles = oldLibraryDir.listFiles();
 			
 			if (waveFiles != null) {

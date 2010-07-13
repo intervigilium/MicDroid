@@ -24,6 +24,7 @@
 package com.intervigil.micdroid;
 
 import java.io.File;
+import java.io.IOException;
 
 import android.app.Application;
 import android.os.Environment;
@@ -36,6 +37,10 @@ public class MicApplication extends Application {
 		File outputDir = new File(this.getOutputDirectory());
         if (!outputDir.exists()) {
         	outputDir.mkdirs();
+        	try {
+        		// it's ok if this fails, all it's supposed to do is prevent the user from seeing the temp file
+				new File(this.getOutputDirectory() + File.separator + ".nomedia").createNewFile();
+			} catch (IOException e) { }
         }
         File libraryDir = new File(this.getLibraryDirectory());
         if (!libraryDir.exists()) {
@@ -52,7 +57,7 @@ public class MicApplication extends Application {
 		return Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "Android" + File.separator + "data" + File.separator + getPackageName();
 	}
 	
-	public String getOldApplicationLibraryDirectory() {
+	public String getOldLibraryDirectory() {
 		return Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + getPackageName() + File.separator + "library";
 	}
 	
@@ -61,6 +66,6 @@ public class MicApplication extends Application {
 	}
 	
 	public String getLibraryDirectory() {
-		return getApplicationDirectory() + File.separator + "library";
+		return Environment.getExternalStorageDirectory() + File.separator + "Music";
 	}
 }
