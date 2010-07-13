@@ -87,6 +87,7 @@ public class RecordingPlayer extends Activity {
 			FileInputStream file = new FileInputStream(((MicApplication)getApplication()).getLibraryDirectory() + File.separator + recordingName);
 			mediaPlayer.setDataSource(file.getFD());
 			mediaPlayer.prepare();
+			file.close();
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
