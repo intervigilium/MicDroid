@@ -52,6 +52,10 @@ public class MicApplication extends Application {
 		return Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "Android" + File.separator + "data" + File.separator + getPackageName();
 	}
 	
+	public String getOldApplicationLibraryDirectory() {
+		return Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + getPackageName() + File.separator + "library";
+	}
+	
 	public String getOutputDirectory() {
 		return getApplicationDirectory() + File.separator + "temp";
 	}

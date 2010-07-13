@@ -181,24 +181,29 @@ public class RecordingLibrary extends ListActivity {
     	
 		@Override
 		protected Void doInBackground(Void... params) {
+			// move old recordings if there are any
+			migrateOldRecordings();
+			
 			File libraryDir = new File(((MicApplication)getApplication()).getLibraryDirectory());
 			File[] waveFiles = libraryDir.listFiles();
 			Recording r = null;
 			
 			if (waveFiles != null) {
 				for (int i = 0; i < waveFiles.length; i++) {
-					reader = new WaveReader(waveFiles[i]);
-					
-					try {
-						reader.openWave();
-						r = new Recording(waveFiles[i].getName(), reader.getLength());
-						recordings.add(r);
-						Log.i("RecordingLibrary", String.format("Added recording %s to library", r.getRecordingName()));
-						reader.closeWaveFile();
-						reader = null;
-					} catch (IOException e) {
-						// yes I know it sucks that we do control flow with an exception here, fix it later
-						Log.i("RecordingLibrary", String.format("Non-wave file %s found in library directory!", waveFiles[i].getName()));
+					if (waveFiles[i].isFile()) {
+						reader = new WaveReader(waveFiles[i]);
+						
+						try {
+							reader.openWave();
+							r = new Recording(waveFiles[i].getName(), reader.getLength());
+							recordings.add(r);
+							Log.i("RecordingLibrary", String.format("Added recording %s to library", r.getRecordingName()));
+							reader.closeWaveFile();
+							reader = null;
+						} catch (IOException e) {
+							// yes I know it sucks that we do control flow with an exception here, fix it later
+							Log.i("RecordingLibrary", String.format("Non-wave file %s found in library directory!", waveFiles[i].getName()));
+						}
 					}
 				}
 			}
@@ -210,6 +215,20 @@ public class RecordingLibrary extends ListActivity {
 		protected void onPostExecute(Void result) {
 			this.spinner.dismiss();
 			libraryAdapter.notifyDataSetChanged();
+		}
+		
+		private void migrateOldRecordings() {
+			File oldLibraryDir = new File(((MicApplication)getApplication()).getOldApplicationLibraryDirectory());
+			File[] waveFiles = oldLibraryDir.listFiles();
+			
+			if (waveFiles != null) {
+				for (int i = 0; i < waveFiles.length; i++) {
+					if (waveFiles[i].isFile()) {
+						File destination = new File(((MicApplication)getApplication()).getLibraryDirectory() + File.separator + waveFiles[i].getName());
+						waveFiles[i].renameTo(destination);
+					}
+				}
+			}
 		}
     }
 }
