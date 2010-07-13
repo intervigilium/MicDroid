@@ -12,7 +12,6 @@ To Do:
 Add new nicer graphic resources for everything
 Add minor keys
 Share as MMS, set as ringtone option, rename recording options for recordings
-Rewrite recording player to use MediaPlayer, add progress bar for playback
 Fix thread sync when failure on record thread occurs: http://tutorials.jenkov.com/java-concurrency/thread-signaling.html
 Make preferences seekbar based: http://www.mail-archive.com/android-developers@googlegroups.com/msg19042.html
 Add 'About' menu option, including license information
