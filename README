@@ -10,10 +10,12 @@ Force closes reported on G1, MyTouch3G, Galaxy S
 
 To Do:
 Add new nicer graphic resources for everything
-Implement timeline/progress bar for playback
+Add minor keys
+Register recordings with system when finished recording
+Share as MMS, set as ringtone option for recordings
+Rewrite recording player to use MediaPlayer, add progress bar for playback
 Add 'About' menu option, including license information
 Add 'Help' menu option
-Add 'Share' option to recordings
 Use directbuffer for JNI data transfers?
 Add option to playback tracks while recording (auto-cancellation is difficult??)
 
