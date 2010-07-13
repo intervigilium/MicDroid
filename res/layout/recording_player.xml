@@ -13,19 +13,24 @@
     		android:layout_alignParentTop="true"
     		android:layout_centerHorizontal="true"
     		android:text="@string/recording_player_file_name" />
+    		
+    <SeekBar android:id="@+id/recording_player_seekbar"
+    		android:layout_width="fill_parent"
+    		android:layout_height="wrap_content"
+    		android:layout_below="@id/recording_player_file_name" />
     
     <Button android:id="@+id/recording_player_btn_play" 
     		android:onClick="recordingPlayerClickHandler"
     		android:layout_width="wrap_content" 
     		android:layout_height="wrap_content"
-    		android:layout_below="@id/recording_player_file_name"
+    		android:layout_below="@id/recording_player_seekbar"
     		android:text="@string/recording_player_btn_play" />
     		
 	<Button android:id="@+id/recording_player_btn_stop" 
 			android:onClick="recordingPlayerClickHandler"
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content"
-			android:layout_below="@id/recording_player_file_name"
+			android:layout_below="@id/recording_player_seekbar"
 			android:layout_toRightOf="@id/recording_player_btn_play"
 			android:text="@string/recording_player_btn_stop" />
 			
@@ -33,7 +38,7 @@
 			android:onClick="recordingPlayerClickHandler" 
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content"
-			android:layout_below="@id/recording_player_file_name"
+			android:layout_below="@id/recording_player_seekbar"
 			android:layout_toRightOf="@id/recording_player_btn_stop"
 			android:text="@string/recording_player_btn_delete" />
 			
@@ -41,7 +46,7 @@
 			android:onClick="recordingPlayerClickHandler"
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content"
-			android:layout_below="@id/recording_player_file_name"
+			android:layout_below="@id/recording_player_seekbar"
 			android:layout_toRightOf="@id/recording_player_btn_delete"
 			android:text="@string/recording_player_btn_close" />
 

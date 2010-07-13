@@ -25,23 +25,28 @@
 package com.intervigil.micdroid;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 import android.app.Activity;
-import android.media.AudioManager;
-import android.media.AudioTrack;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 
 public class RecordingPlayer extends Activity {
 	
-	private static final int READ_BUFFER_SIZE = 4096;
 	private String recordingName;
 	private MediaPlayer mediaPlayer;
-	private Thread mediaPlayerThread;
+	private SeekBar mediaSeekBar;
+	private RefreshHandler refreshHandler;
 	
 	/**
      * Called when the activity is starting.  This is where most
@@ -56,11 +61,12 @@ public class RecordingPlayer extends Activity {
         setContentView(R.layout.recording_player);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND, WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
 
-        this.recordingName = getIntent().getExtras().getString(Constants.PLAY_DATA_RECORDING_NAME);
+        recordingName = getIntent().getExtras().getString(Constants.PLAY_DATA_RECORDING_NAME);
         
+        mediaSeekBar = (SeekBar)findViewById(R.id.recording_player_seekbar);
         ((TextView)findViewById(R.id.recording_player_file_name)).setText(recordingName);
         
-        mediaPlayer = new MediaPlayer(recordingName);
+        mediaSeekBar.setOnSeekBarChangeListener(mediaSeekListener);
     }
     
     @Override
@@ -73,18 +79,52 @@ public class RecordingPlayer extends Activity {
     protected void onResume() {
     	Log.i(getPackageName(), "onResume()");
     	super.onResume();
+    	
+    	refreshHandler = new RefreshHandler();
+    	mediaPlayer = new MediaPlayer();
+    	mediaPlayer.setOnCompletionListener(playbackCompletionListener);
+		try {
+			FileInputStream file = new FileInputStream(((MicApplication)getApplication()).getLibraryDirectory() + File.separator + recordingName);
+			mediaPlayer.setDataSource(file.getFD());
+			mediaPlayer.prepare();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalStateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
     
     @Override
     protected void onPause() {
     	Log.i(getPackageName(), "onPause()");
     	super.onPause();
+    	
+    	if (mediaPlayer != null) {
+    		if (mediaPlayer.isPlaying()) {
+    			mediaPlayer.stop();
+    		}
+    		mediaPlayer.release();
+    	}
+    	mediaPlayer = null;
     }
     
     @Override
     protected void onStop() {
     	Log.i(getPackageName(), "onStop()");
     	super.onStop();
+    	
+    	if (mediaPlayer != null) {
+    		if (mediaPlayer.isPlaying()) {
+    			mediaPlayer.stop();
+    		}
+    		mediaPlayer.release();
+    	}
+    	mediaPlayer = null;
     }
 
     @Override
@@ -93,35 +133,80 @@ public class RecordingPlayer extends Activity {
         super.onSaveInstanceState(outState);
     }
     
+    private OnSeekBarChangeListener mediaSeekListener = new OnSeekBarChangeListener() {
+		
+		public void onStopTrackingTouch(SeekBar seekBar) {
+			// don't do anything yet
+		}
+		
+		public void onStartTrackingTouch(SeekBar seekBar) {
+			// don't do anything yet
+		}
+		
+		public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+			if (fromUser) {
+				int progressMs = (int) ((progress/100.0) * mediaPlayer.getDuration());
+				mediaPlayer.seekTo(progressMs);
+			}
+		}
+	};
+	
+	private class RefreshHandler extends Handler {
+		@Override
+		public void handleMessage(Message msg) {
+			updateProgressBar();
+		}
+		
+		public void sleep(long delay) {
+			this.removeMessages(0);
+			sendMessageDelayed(obtainMessage(0), delay);
+		}
+	}
+	
+	private OnCompletionListener playbackCompletionListener = new OnCompletionListener() {
+		public void onCompletion(MediaPlayer mp) {
+			try {
+				mp.stop();
+				mp.prepare();
+			} catch (IllegalStateException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}; 
+    
     public void recordingPlayerClickHandler(View view) {
     	switch (view.getId()) {
 	    	case R.id.recording_player_btn_play:
-	    		if (!mediaPlayer.isRunning()) {
-					mediaPlayerThread = new Thread(mediaPlayer, "Recording Player Thread");
-					mediaPlayerThread.start();
-				}
+	    		if (!mediaPlayer.isPlaying()) {
+	    			mediaPlayer.seekTo(0);
+	    			mediaPlayer.start();
+	    			//updateProgressBar();
+	    		}
 	    		break;
 	    	case R.id.recording_player_btn_stop:
-	    		if (mediaPlayer.isRunning()) {
-					try {
-						mediaPlayer.stopRunning();
-						mediaPlayerThread.join();
-						mediaPlayerThread = null;
-					} catch (InterruptedException e) {
+	    		if (mediaPlayer.isPlaying()) {
+	    			try {
+	    				mediaPlayer.stop();
+						mediaPlayer.prepare();
+					} catch (IllegalStateException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-				}
+	    		}
 	    		break;
 	    	case R.id.recording_player_btn_delete:
-    			if (mediaPlayer.isRunning()) {
-    				try {
-    					mediaPlayer.stopRunning();
-    					mediaPlayerThread.join();
-    					mediaPlayerThread = null;
-    				} catch (InterruptedException e) {
-    					e.printStackTrace();
-    				}
-    			}
+	    		if (mediaPlayer.isPlaying()) {
+	    			mediaPlayer.stop();
+	    			mediaPlayer.release();
+	    			mediaPlayer = null;
+	    		}
     			File toDelete = new File(((MicApplication)getApplication()).getLibraryDirectory() + File.separator + recordingName);
     			toDelete.delete();
 
@@ -129,91 +214,20 @@ public class RecordingPlayer extends Activity {
     			finish();
 	    		break;
 	    	case R.id.recording_player_btn_close:
-	    		if (mediaPlayer.isRunning()) {
-					try {
-						mediaPlayer.stopRunning();
-						mediaPlayerThread.join();
-						mediaPlayerThread = null;
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
+	    		if (mediaPlayer.isPlaying()) {
+	    			mediaPlayer.stop();
+	    			mediaPlayer.release();
+	    			mediaPlayer = null;
+	    		}
 				finish();
 	    		break;
     		default:
     			break;
     	}
     }
-	
-	private class MediaPlayer implements Runnable {
-    	private boolean isRunning;
-    	private String recording;
-    	private AudioTrack player;
-    	private WaveReader reader;
-    	    	
-    	public MediaPlayer(String recording) {
-    		this.recording = recording;
-    	}
-    	
-    	public boolean isRunning() {
-    		return this.isRunning;
-    	}
-    	
-    	public void stopRunning() {
-    		this.isRunning = false;
-    	}
-    	
-    	public void run() {
-    		isRunning = true;
-    		
-    		try {
-				reader = new WaveReader(((MicApplication)getApplication()).getLibraryDirectory(), recording);
-				reader.openWave();
-			} catch (IOException e) {
-				// failed to open file somehow
-				// TODO: add error handling
-				e.printStackTrace();
-			}
-
-			int bufferSize = AudioTrack.getMinBufferSize(reader.getSampleRate(), 
-					AudioHelper.getAndroidChannelConfig(reader.getChannels()), 
-					AudioHelper.getAndroidPcmEncoding(reader.getPcmFormat())) * 2;
-			player = new AudioTrack(AudioManager.STREAM_MUSIC, 
-					reader.getSampleRate(), 
-					AudioHelper.getAndroidChannelConfig(reader.getChannels()), 
-					AudioHelper.getAndroidPcmEncoding(reader.getPcmFormat()), 
-					bufferSize, 
-					AudioTrack.MODE_STREAM);
-			player.play();
-			
-			short[] buf = new short[READ_BUFFER_SIZE];
-			while (isRunning) {
-				try {
-					int samplesRead = reader.readShort(buf, READ_BUFFER_SIZE);
-					if (samplesRead > 0) {
-						player.write(buf, 0, samplesRead);
-					} else {
-						break;
-					}
-				} catch (IOException e) {
-					// failed to read/write to wave file
-					// TODO: real error handling
-					e.printStackTrace();
-					break;
-				}
-			}
-			
-			try {
-				reader.closeWaveFile();
-				reader = null;
-				player.stop();
-				player.flush();
-				player = null;
-				isRunning = false;
-			} catch (IOException e) {
-				e.printStackTrace();
-				// TODO: real error handling
-			}
-    	}
+    
+    private void updateProgressBar() {
+    	mediaSeekBar.setProgress((int) (mediaPlayer.getCurrentPosition()/mediaPlayer.getDuration() * 100.00));
+    	refreshHandler.sleep(100);
     }
 }
