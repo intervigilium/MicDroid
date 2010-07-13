@@ -5,6 +5,7 @@ Add new nicer graphic resources for everything
 Add minor keys
 Share as MMS, set as ringtone option, rename recording options for recordings
 Fix thread sync when failure on record thread occurs: http://tutorials.jenkov.com/java-concurrency/thread-signaling.html
+Integrate automatic log collector: http://code.google.com/p/android-send-me-logs/
 Make preferences seekbar based: http://www.mail-archive.com/android-developers@googlegroups.com/msg19042.html
 Add 'About' menu option, including license information
 Add 'Help' menu option
