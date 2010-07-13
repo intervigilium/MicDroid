@@ -88,10 +88,10 @@ public class WaveWriter {
 		file.seek(0);
 		
 		int bytesPerSec = (sampleBits + 7) / 8;
-
+		
 		file.writeBytes("RIFF"); // wave label
 		file.writeInt(Integer.reverseBytes(bytesWritten+36)); // length in bytes without header
-		file.writeBytes("WAVEfmt");
+		file.writeBytes("WAVEfmt ");
 		file.writeInt(Integer.reverseBytes(16)); // length of pcm format declaration area
 		file.writeShort(Short.reverseBytes((short) 1)); // is PCM
 		file.writeShort(Short.reverseBytes((short) channels)); // number of channels, this is mono
