@@ -54,7 +54,7 @@ public class FileNameEntry extends Activity {
         setContentView(R.layout.filename_entry);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND, WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
 
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd-HH.mm.ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH.mm.ss");
         String defaultName = formatter.format(new Date());
         ((EditText)findViewById(R.id.filename_entry_field)).setText(defaultName);
         
