@@ -25,28 +25,22 @@
 package com.intervigil.micdroid;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 
 import android.app.Activity;
-import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.SeekBar.OnSeekBarChangeListener;
 
 public class RecordingPlayer extends Activity {
 	
+	private static final int SEEKBAR_RESOLUTION = 1000;
+	
 	private String recordingName;
-	private MediaPlayer mediaPlayer;
+	private SeekableMediaPlayer mediaPlayer;
 	private SeekBar mediaSeekBar;
-	private RefreshHandler refreshHandler;
 	
 	/**
      * Called when the activity is starting.  This is where most
@@ -62,11 +56,12 @@ public class RecordingPlayer extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND, WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
 
         recordingName = getIntent().getExtras().getString(Constants.PLAY_DATA_RECORDING_NAME);
-        
+
         mediaSeekBar = (SeekBar)findViewById(R.id.recording_player_seekbar);
         ((TextView)findViewById(R.id.recording_player_file_name)).setText(recordingName);
         
-        mediaSeekBar.setOnSeekBarChangeListener(mediaSeekListener);
+        mediaSeekBar.setMax(SEEKBAR_RESOLUTION);
+        mediaPlayer = new SeekableMediaPlayer(((MicApplication)getApplication()).getLibraryDirectory() + File.separator + recordingName, mediaSeekBar); 
     }
     
     @Override
@@ -80,24 +75,6 @@ public class RecordingPlayer extends Activity {
     	Log.i(getPackageName(), "onResume()");
     	super.onResume();
     	
-    	refreshHandler = new RefreshHandler();
-    	mediaPlayer = new MediaPlayer();
-    	mediaPlayer.setOnCompletionListener(playbackCompletionListener);
-		try {
-			FileInputStream file = new FileInputStream(((MicApplication)getApplication()).getLibraryDirectory() + File.separator + recordingName);
-			mediaPlayer.setDataSource(file.getFD());
-			mediaPlayer.prepare();
-			file.close();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalStateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
     }
     
     @Override
@@ -106,10 +83,7 @@ public class RecordingPlayer extends Activity {
     	super.onPause();
     	
     	if (mediaPlayer != null) {
-    		if (mediaPlayer.isPlaying()) {
-    			mediaPlayer.stop();
-    		}
-    		mediaPlayer.release();
+    		mediaPlayer.close();
     	}
     	mediaPlayer = null;
     }
@@ -120,10 +94,7 @@ public class RecordingPlayer extends Activity {
     	super.onStop();
     	
     	if (mediaPlayer != null) {
-    		if (mediaPlayer.isPlaying()) {
-    			mediaPlayer.stop();
-    		}
-    		mediaPlayer.release();
+    		mediaPlayer.close();
     	}
     	mediaPlayer = null;
     }
@@ -133,81 +104,17 @@ public class RecordingPlayer extends Activity {
         Log.i(getPackageName(), "onSaveInstanceState()");
         super.onSaveInstanceState(outState);
     }
-    
-    private OnSeekBarChangeListener mediaSeekListener = new OnSeekBarChangeListener() {
-		
-		public void onStopTrackingTouch(SeekBar seekBar) {
-			// don't do anything yet
-		}
-		
-		public void onStartTrackingTouch(SeekBar seekBar) {
-			// don't do anything yet
-		}
-		
-		public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-			if (fromUser) {
-				int progressMs = (int) ((progress/100.0) * mediaPlayer.getDuration());
-				mediaPlayer.seekTo(progressMs);
-			}
-		}
-	};
-	
-	private class RefreshHandler extends Handler {
-		@Override
-		public void handleMessage(Message msg) {
-			updateProgressBar();
-		}
-		
-		public void sleep(long delay) {
-			this.removeMessages(0);
-			sendMessageDelayed(obtainMessage(0), delay);
-		}
-	}
-	
-	private OnCompletionListener playbackCompletionListener = new OnCompletionListener() {
-		public void onCompletion(MediaPlayer mp) {
-			try {
-				mp.stop();
-				mp.prepare();
-			} catch (IllegalStateException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}; 
-    
+
     public void recordingPlayerClickHandler(View view) {
     	switch (view.getId()) {
 	    	case R.id.recording_player_btn_play:
-	    		if (!mediaPlayer.isPlaying()) {
-	    			mediaPlayer.seekTo(0);
-	    			mediaPlayer.start();
-	    			//updateProgressBar();
-	    		}
+	    		mediaPlayer.play();
 	    		break;
 	    	case R.id.recording_player_btn_stop:
-	    		if (mediaPlayer.isPlaying()) {
-	    			try {
-	    				mediaPlayer.stop();
-						mediaPlayer.prepare();
-					} catch (IllegalStateException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-	    		}
+	    		mediaPlayer.stop();
 	    		break;
 	    	case R.id.recording_player_btn_delete:
-	    		if (mediaPlayer.isPlaying()) {
-	    			mediaPlayer.stop();
-	    			mediaPlayer.release();
-	    			mediaPlayer = null;
-	    		}
+	    		mediaPlayer.close();
     			File toDelete = new File(((MicApplication)getApplication()).getLibraryDirectory() + File.separator + recordingName);
     			toDelete.delete();
 
@@ -215,20 +122,10 @@ public class RecordingPlayer extends Activity {
     			finish();
 	    		break;
 	    	case R.id.recording_player_btn_close:
-	    		if (mediaPlayer.isPlaying()) {
-	    			mediaPlayer.stop();
-	    			mediaPlayer.release();
-	    			mediaPlayer = null;
-	    		}
 				finish();
 	    		break;
     		default:
     			break;
     	}
-    }
-    
-    private void updateProgressBar() {
-    	mediaSeekBar.setProgress((int) (mediaPlayer.getCurrentPosition()/mediaPlayer.getDuration() * 100.00));
-    	refreshHandler.sleep(100);
     }
 }
