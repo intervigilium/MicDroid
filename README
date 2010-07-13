@@ -2,11 +2,14 @@ This Android application auto-tunes your voice!
 Now available under MIT license, excepting the modified Autotalent plugin,
 which is still under GPL2
 
+Build Instructions:
+Import project into Eclipse, since I have not created Ant makefiles for this project.
+For help building the autotalent C library, please consult the INSTALL file. 
+
 Known Issues:
 Must write as PCM wav, since we do not have an API to access encoders
 Must write to a wav file before processing since we do not have cpu time to do on the fly processing
-No graphics
-Force closes reported on G1, MyTouch3G, Galaxy S
+Force closes reported on G1, MyTouch3G, Droid Incredible, Galaxy S
 
 To Do:
 Add new nicer graphic resources for everything
@@ -16,8 +19,9 @@ Fix thread sync when failure on record thread occurs: http://tutorials.jenkov.co
 Make preferences seekbar based: http://www.mail-archive.com/android-developers@googlegroups.com/msg19042.html
 Add 'About' menu option, including license information
 Add 'Help' menu option
-Use directbuffer for JNI data transfers?
-Add option to playback tracks while recording (auto-cancellation is difficult??)
+
+Try using directbuffer for JNI data transfers
+Try adding option to playback tracks while recording
 
 This project uses Autotalent from http://web.mit.edu/tbaran/www/autotalent.html
 which was created originally by Tom Baran.
