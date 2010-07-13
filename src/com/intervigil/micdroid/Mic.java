@@ -24,6 +24,7 @@
 
 package com.intervigil.micdroid;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -111,6 +112,7 @@ public class Mic extends Activity {
     	
     	startupDialog.show();
     	AudioHelper.configureRecorder(Mic.this);
+    	// write a helper to move all files found in /sdcard/com.intervigil.micdroid/library to new library location
 
     	android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
     }
@@ -279,6 +281,11 @@ public class Mic extends Activity {
 				// TODO: real error handling
 				e.printStackTrace();
 			}
+			
+			// scan file with mediascanner
+			String filePath = ((MicApplication) getApplication()).getOutputDirectory() + File.separator + fileName;
+			MediaScannerHelper mediaScanner = new MediaScannerHelper(Mic.this, filePath);
+			mediaScanner.scanFile();
 			
 			return null;
 		}
