@@ -35,11 +35,11 @@ public class MicApplication extends Application {
 		super.onCreate();
 		File outputDir = new File(this.getOutputDirectory());
         if (!outputDir.exists()) {
-        	outputDir.mkdir();
+        	outputDir.mkdirs();
         }
         File libraryDir = new File(this.getLibraryDirectory());
         if (!libraryDir.exists()) {
-        	libraryDir.mkdir();
+        	libraryDir.mkdirs();
         }
 	}
 	
