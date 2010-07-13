@@ -8,20 +8,8 @@ For help building the autotalent C library, please consult the INSTALL file.
 
 Known Issues:
 Must write as PCM wav, since we do not have an API to access encoders
-Must write to a wav file before processing since we do not have cpu time to do on the fly processing
+Must write to a wav file before processing since we do not have the proper API to do on the fly processing
 Force closes reported on G1, MyTouch3G, Droid Incredible, Galaxy S
-
-To Do:
-Add new nicer graphic resources for everything
-Add minor keys
-Share as MMS, set as ringtone option, rename recording options for recordings
-Fix thread sync when failure on record thread occurs: http://tutorials.jenkov.com/java-concurrency/thread-signaling.html
-Make preferences seekbar based: http://www.mail-archive.com/android-developers@googlegroups.com/msg19042.html
-Add 'About' menu option, including license information
-Add 'Help' menu option
-
-Try using directbuffer for JNI data transfers
-Try adding option to playback tracks while recording
 
 This project uses Autotalent from http://web.mit.edu/tbaran/www/autotalent.html
 which was created originally by Tom Baran.

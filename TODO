@@ -1,0 +1,15 @@
+There are a lot of things left to do, and many features to add. 
+
+To Do:
+Add new nicer graphic resources for everything
+Add minor keys
+Share as MMS, set as ringtone option, rename recording options for recordings
+Fix thread sync when failure on record thread occurs: http://tutorials.jenkov.com/java-concurrency/thread-signaling.html
+Make preferences seekbar based: http://www.mail-archive.com/android-developers@googlegroups.com/msg19042.html
+Add 'About' menu option, including license information
+Add 'Help' menu option
+
+Try using directbuffer for JNI data transfers
+Try adding option to playback tracks while recording
+
+
