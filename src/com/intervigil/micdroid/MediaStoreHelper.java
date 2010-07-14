@@ -1,4 +1,4 @@
-/* MediaScannerHelper.java
+/* MediaStoreHelper.java
 
    Copyright (c) 2010 Ethan Chen
 
