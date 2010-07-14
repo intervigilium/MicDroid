@@ -61,7 +61,6 @@ public class RecordingPlayer extends Activity {
         ((TextView)findViewById(R.id.recording_player_file_name)).setText(recordingName);
         
         mediaSeekBar.setMax(SEEKBAR_RESOLUTION);
-        mediaPlayer = new SeekableMediaPlayer(((MicApplication)getApplication()).getLibraryDirectory() + File.separator + recordingName, mediaSeekBar); 
     }
     
     @Override
@@ -75,6 +74,7 @@ public class RecordingPlayer extends Activity {
     	Log.i(getPackageName(), "onResume()");
     	super.onResume();
     	
+    	mediaPlayer = new SeekableMediaPlayer(((MicApplication)getApplication()).getLibraryDirectory() + File.separator + recordingName, mediaSeekBar); 
     }
     
     @Override
