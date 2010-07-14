@@ -42,9 +42,15 @@ public class MicApplication extends Application {
 				new File(this.getOutputDirectory() + File.separator + ".nomedia").createNewFile();
 			} catch (IOException e) { }
         }
+        
         File libraryDir = new File(this.getLibraryDirectory());
         if (!libraryDir.exists()) {
         	libraryDir.mkdirs();
+        }
+        
+        File ringtoneDir = new File(this.getRingtoneDirectory());
+        if (!ringtoneDir.exists()) {
+        	ringtoneDir.mkdirs();
         }
 	}
 	
@@ -67,5 +73,9 @@ public class MicApplication extends Application {
 	
 	public String getLibraryDirectory() {
 		return Environment.getExternalStorageDirectory() + File.separator + "Music";
+	}
+	
+	public String getRingtoneDirectory() {
+		return Environment.getExternalStorageDirectory() + File.separator + "Ringtones";
 	}
 }
