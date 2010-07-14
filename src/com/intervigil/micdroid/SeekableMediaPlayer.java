@@ -7,7 +7,6 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
@@ -144,7 +143,6 @@ public class SeekableMediaPlayer {
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 				case REFRESH:
-					Log.d("RecordingPlayer", "updating seekbar");
 					long delay = onRefresh();
 					queueNextRefresh(delay);
 					break;
@@ -159,14 +157,12 @@ public class SeekableMediaPlayer {
     		Message msg = refreshHandler.obtainMessage(REFRESH);
     		refreshHandler.removeMessages(REFRESH);
     		refreshHandler.sendMessageDelayed(msg, delay);
-    		Log.d("SeekableMediaPlayer", String.format("queueing next refresh in %d ms", delay));
     	}
     }
     
     private long onRefresh() {
     	if (mediaPlayer != null) {
     		int progress = (mediaPlayer.getCurrentPosition() * seekBar.getMax())/mediaPlayer.getDuration();
-    		Log.d("SeekableMediaPlayer", String.format("updating progress bar to %d", progress));
     		seekBar.setProgress((int)progress);
     	}
     	return DEFAULT_INCREMENT;
