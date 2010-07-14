@@ -13,7 +13,7 @@
 			android:focusable="false"
 			android:text="@string/recording_library_title" />
 			
-	<ListView android:id="@id/android:list" 
+	<ListView android:id="@+id/recording_library_list" 
 			android:layout_width="fill_parent" 
 			android:layout_height="fill_parent" 
 			android:choiceMode="singleChoice" />

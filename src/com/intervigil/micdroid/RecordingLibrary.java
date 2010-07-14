@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.ListActivity;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -38,12 +38,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 
-public class RecordingLibrary extends ListActivity {
+public class RecordingLibrary extends Activity {
 
+	private ListView library;
 	private RecordingAdapter libraryAdapter;
 	private ArrayList<Recording> recordings;
 
@@ -59,19 +63,21 @@ public class RecordingLibrary extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recording_library);
+
+        this.library = (ListView)findViewById(R.id.recording_library_list);
+        this.library.setOnItemClickListener(libraryClickListener);
+        this.library.setOnItemLongClickListener(libraryLongClickListener);
         
         Object savedRecordings = getLastNonConfigurationInstance();
-        
         if (savedRecordings == null) {
 	        recordings = new ArrayList<Recording>();
 	        this.libraryAdapter = new RecordingAdapter(this, R.layout.library_row, recordings);
-	        this.setListAdapter(libraryAdapter);
+	        this.library.setAdapter(libraryAdapter);
 			new LoadRecordingsTask().execute((Void)null);
-			this.libraryAdapter.notifyDataSetChanged();
         } else {
         	recordings = (ArrayList<Recording>)savedRecordings;
         	this.libraryAdapter = new RecordingAdapter(this, R.layout.library_row, recordings);
-	        this.setListAdapter(libraryAdapter);
+	        this.library.setAdapter(libraryAdapter);
 	        this.libraryAdapter.notifyDataSetChanged();
         }
     }
@@ -126,7 +132,6 @@ public class RecordingLibrary extends ListActivity {
 	    	case Constants.PLAYER_INTENT_CODE:
 	    		if (resultCode == Constants.RESULT_FILE_DELETED) {
 	    			new LoadRecordingsTask().execute((Void)null);
-	    			libraryAdapter.notifyDataSetChanged();
 	    		}
 	    		break;
     		default:
@@ -134,15 +139,23 @@ public class RecordingLibrary extends ListActivity {
     	}
     }
     
-    @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-    	Recording r = (Recording)l.getItemAtPosition(position);
-    	Intent playIntent = new Intent(getBaseContext(), RecordingPlayer.class);
-		Bundle playData = new Bundle();
-		playData.putString(Constants.PLAY_DATA_RECORDING_NAME, r.getRecordingName());
-		playIntent.putExtras(playData);
-		startActivityForResult(playIntent, Constants.PLAYER_INTENT_CODE);
-    }
+    private OnItemClickListener libraryClickListener = new OnItemClickListener() {
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			Recording r = (Recording)parent.getItemAtPosition(position);
+	    	Intent playIntent = new Intent(getBaseContext(), RecordingPlayer.class);
+			Bundle playData = new Bundle();
+			playData.putString(Constants.PLAY_DATA_RECORDING_NAME, r.getRecordingName());
+			playIntent.putExtras(playData);
+			startActivityForResult(playIntent, Constants.PLAYER_INTENT_CODE);
+		}
+	};
+	
+	private OnItemLongClickListener libraryLongClickListener = new OnItemLongClickListener() {
+		public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+			
+			return false;
+		}
+	};
     
     private class RecordingAdapter extends ArrayAdapter<Recording> {		
 		public RecordingAdapter(Context context, int textViewResourceId, List<Recording> objects) {
