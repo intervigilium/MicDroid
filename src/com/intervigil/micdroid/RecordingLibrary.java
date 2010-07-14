@@ -250,6 +250,7 @@ public class RecordingLibrary extends Activity {
 						MediaStoreHelper mediaStore = new MediaStoreHelper(RecordingLibrary.this, waveFiles[i]);
 						if (!mediaStore.isInserted()) {
 							mediaStore.insertFile();
+							Log.i("RecordingLibrary", String.format("Added recording %s to media store", r.getRecordingName()));
 						}
 					}
 				}
