@@ -73,7 +73,7 @@ DISCLAIMER: This is alpha software! May be buggy and force close on you! Author 
     <string name="prefs_key">Change Key</string>
     <string name="prefs_key_summary">Change the key to tune to</string>
     <string name="prefs_key_title">Change Key</string>
-    <string name="prefs_key_default">c</string>
+    <string name="prefs_key_default">C</string>
    
     <string name="prefs_cat_pitch">Pitch Settings</string>
     <string name="prefs_fixed_pitch_key">fixed_pitch</string>
