@@ -99,6 +99,11 @@ public class WaveReader {
 		return mSampleBits;
 	}
 	
+	public int getDataSize() {
+		// returns number of bytes of sound data
+		return mDataSize;
+	}
+	
 	public int getLength() {
 		// returns length in seconds
 		return mDataSize/(mSampleRate * mChannels * ((mSampleBits + 7)/8));
