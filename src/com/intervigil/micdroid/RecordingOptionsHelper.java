@@ -27,6 +27,7 @@ import java.io.File;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -40,7 +41,7 @@ public class RecordingOptionsHelper {
 		values.put(MediaStore.MediaColumns.DATA, recordingPath);
         values.put(MediaStore.MediaColumns.TITLE, recording.getRecordingName());
         values.put(MediaStore.MediaColumns.SIZE, recording.getRecordingSize());
-        values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/wav");
+        values.put(MediaStore.MediaColumns.MIME_TYPE, Constants.AUDIO_WAVE);
 
         values.put(MediaStore.Audio.Media.ARTIST, "MicDroid");
         values.put(MediaStore.Audio.Media.ALBUM, "MicDroid");
@@ -57,4 +58,15 @@ public class RecordingOptionsHelper {
 
         RingtoneManager.setActualDefaultRingtoneUri(context, RingtoneManager.TYPE_RINGTONE, recordingUri);
     }
+	
+	public static void sendEmailAttachment(Context context, Recording recording) {
+		String recordingPath = ((MicApplication)context.getApplicationContext()).getLibraryDirectory() + File.separator + recording.getRecordingName();
+		File recordingFile = new File(recordingPath);
+		
+		Intent sendEmailIntent = new Intent(Intent.ACTION_SEND);
+		sendEmailIntent.setType(Constants.AUDIO_WAVE);
+		sendEmailIntent.putExtra(Intent.EXTRA_SUBJECT, "MicDroid");
+		sendEmailIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(recordingFile));
+		context.startActivity(Intent.createChooser(sendEmailIntent, "Email:"));
+	}
 }

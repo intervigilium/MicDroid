@@ -164,7 +164,7 @@ public class RecordingLibrary extends Activity {
 				Toast.makeText(RecordingLibrary.this, R.string.recording_options_ringtone_set, Toast.LENGTH_SHORT).show();
 				break;
 			case R.string.recording_options_send_email:
-				
+				RecordingOptionsHelper.sendEmailAttachment(RecordingLibrary.this, r);
 				break;
 			case R.string.recording_options_send_mms:
 				break;
