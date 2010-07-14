@@ -106,7 +106,11 @@ public class WaveReader {
 	
 	public int getLength() {
 		// returns length in seconds
-		return mDataSize/(mSampleRate * mChannels * ((mSampleBits + 7)/8));
+		if (mSampleRate == 0 || mChannels == 0) {
+			return 0;
+		} else {
+			return mDataSize/(mSampleRate * mChannels * ((mSampleBits + 7)/8));
+		}
 	}
 	
 	public int readShort(short[] outBuf, int numSamples) throws IOException {
