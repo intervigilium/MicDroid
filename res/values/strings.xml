@@ -15,7 +15,7 @@
 \n\
 Important Usage Note 1: Recordings can be played back by using \'MENU\' button and going to \'Recording Library\'!\n\
 \n\
-Important Usage Note 2: If your device's recording sample rate is not auto-detected, use the \'MENU\' button and change the sample rate under \'Auto-Tune Settings\'\n\
+Important Usage Note 2: If your device's recording sample rate is not auto-detected, use the \'MENU\' button and change the sample rate under \'Pitch-Correction Settings\'\n\
 \n\
 DISCLAIMER: This is alpha software! May be buggy and force close on you! Author is aware and working on issues!\n\
     </string>
@@ -65,7 +65,7 @@ DISCLAIMER: This is alpha software! May be buggy and force close on you! Author 
     <string name="recording_player_btn_delete">Delete</string>
     <string name="recording_player_btn_close">Close</string>
     
-    <string name="set_preferences">Auto-Tune Preferences</string>
+    <string name="set_preferences">Pitch-Correction Preferences</string>
     <string name="mic_label">Power Button</string>
     <string name="mic_toggle_off">On</string>
     <string name="mic_toggle_on">Off</string>
