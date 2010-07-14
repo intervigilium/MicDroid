@@ -100,7 +100,7 @@ public class WaveReader {
 	}
 	
 	public int getDataSize() {
-		// returns number of bytes of sound data
+		// returns number of bytes of sound data, add 44 to get file size
 		return mDataSize;
 	}
 	
