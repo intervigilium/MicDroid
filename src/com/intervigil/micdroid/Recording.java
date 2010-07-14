@@ -26,13 +26,15 @@ package com.intervigil.micdroid;
 public class Recording {
 	private String recordingName;
 	private int recordingLength;
+	private int recordingSize;
 	
 	public Recording() {
 	}
 	
-	public Recording(String name, int length) {
+	public Recording(String name, int length, int size) {
 		this.recordingName = name;
 		this.recordingLength = length;
+		this.recordingSize = size;
 	}
 	
 	public String getRecordingName() {
@@ -40,11 +42,19 @@ public class Recording {
 		return recordingName;
 	}
 	
+	public int getRecordingMs() {
+		return recordingLength * 1000;
+	}
+	
 	public String getRecordingLength() {
 		// gets recording length in MM:SS format
 		int minutes = recordingLength/60;
 		int seconds = recordingLength%60;
 		return String.format("%d:%02d", minutes, seconds);
+	}
+	
+	public int getRecordingSize() {
+		return recordingSize;
 	}
 	
 	public void setRecordingName(String name) {
@@ -55,5 +65,9 @@ public class Recording {
 	public void setRecordingLength(int length) {
 		// sets recording length, in number of seconds
 		recordingLength = length;
+	}
+	
+	public void setRecordingSize(int size) {
+		recordingSize = size;
 	}
 }
