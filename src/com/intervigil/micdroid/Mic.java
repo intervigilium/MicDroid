@@ -282,10 +282,10 @@ public class Mic extends Activity {
 				e.printStackTrace();
 			}
 			
-			// scan file with mediascanner
-			String filePath = ((MicApplication) getApplication()).getLibraryDirectory() + File.separator + fileName;
-			MediaScannerHelper mediaScanner = new MediaScannerHelper(Mic.this, filePath);
-			mediaScanner.scanFile();
+			// insert file into media store
+			File file = new File(((MicApplication)getApplication()).getLibraryDirectory() + File.separator + fileName);
+			MediaStoreHelper mediaStore = new MediaStoreHelper(Mic.this, file);
+			mediaStore.insertFile();
 
 			return null;
 		}
