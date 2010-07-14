@@ -49,6 +49,14 @@ DISCLAIMER: This is alpha software! May be buggy and force close on you! Author 
     <string name="recording_library_title">Recorded Clips</string>
     <string name="recording_library_empty">No Recordings</string>
     
+    <string name="recording_options_title">Recording Options</string>
+    <string name="recording_options_set_ringtone">Set as Ringtone</string>
+    <string name="recording_options_send_email">Send as Email</string>
+    <string name="recording_options_send_mms">Send as MMS</string>
+    <string name="recording_options_ringtone_set">Recording set as ringtone!</string>
+    <string name="recording_options_mms_sent">Recording sent as MMS!</string>
+    <string name="recording_options_email_sent">Recording sent as email!</string>
+    
     <string name="recording_player">Recording Player</string>
     <string name="recording_player_file_name">Recording Name</string>
     <string name="recording_player_btn_play">Play</string>

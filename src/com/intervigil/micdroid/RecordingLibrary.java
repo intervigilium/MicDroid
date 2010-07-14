@@ -35,15 +35,20 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
 
 public class RecordingLibrary extends Activity {
 
@@ -65,7 +70,7 @@ public class RecordingLibrary extends Activity {
 
         ListView library = (ListView)findViewById(R.id.recording_library_list);
         library.setOnItemClickListener(libraryClickListener);
-        library.setOnItemLongClickListener(libraryLongClickListener);
+        registerForContextMenu(library);
         
         Object savedRecordings = getLastNonConfigurationInstance();
         if (savedRecordings == null) {
@@ -138,6 +143,37 @@ public class RecordingLibrary extends Activity {
     	}
     }
     
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+    	super.onCreateContextMenu(menu, v, menuInfo);
+    	menu.setHeaderTitle(R.string.recording_options_title);
+    	menu.add(Menu.NONE, R.string.recording_options_set_ringtone, Menu.NONE, R.string.recording_options_set_ringtone);
+    	menu.add(Menu.NONE, R.string.recording_options_send_email, Menu.NONE, R.string.recording_options_send_email);
+    	// disable MMS for now because it can get messy with file sizes
+    	//menu.add(Menu.NONE, R.string.recording_options_send_mms, Menu.NONE, R.string.recording_options_send_mms);
+    }
+    
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+    	AdapterContextMenuInfo info = (AdapterContextMenuInfo)item.getMenuInfo();
+    	Recording r = (Recording) libraryAdapter.getItem(info.position); 
+    	
+    	switch (item.getItemId()) {
+			case R.string.recording_options_set_ringtone:
+				RecordingOptionsHelper.setRingTone(RecordingLibrary.this, r);
+				Toast.makeText(RecordingLibrary.this, R.string.recording_options_ringtone_set, Toast.LENGTH_SHORT).show();
+				break;
+			case R.string.recording_options_send_email:
+				
+				break;
+			case R.string.recording_options_send_mms:
+				break;
+			default:
+				break;
+		}
+    	return true;
+    }
+    
     private OnItemClickListener libraryClickListener = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			Recording r = (Recording)parent.getItemAtPosition(position);
@@ -146,13 +182,6 @@ public class RecordingLibrary extends Activity {
 			playData.putString(Constants.PLAY_DATA_RECORDING_NAME, r.getRecordingName());
 			playIntent.putExtras(playData);
 			startActivityForResult(playIntent, Constants.PLAYER_INTENT_CODE);
-		}
-	};
-	
-	private OnItemLongClickListener libraryLongClickListener = new OnItemLongClickListener() {
-		public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-			
-			return false;
 		}
 	};
     
@@ -207,7 +236,7 @@ public class RecordingLibrary extends Activity {
 						
 						try {
 							reader.openWave();
-							r = new Recording(waveFiles[i].getName(), reader.getLength());
+							r = new Recording(waveFiles[i].getName(), reader.getLength(), reader.getDataSize() + 44);
 							recordings.add(r);
 							Log.i("RecordingLibrary", String.format("Added recording %s to library", r.getRecordingName()));
 							reader.closeWaveFile();
