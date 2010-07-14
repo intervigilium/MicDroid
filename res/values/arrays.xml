@@ -19,24 +19,34 @@
     
     <!-- Entry names for the key menu. -->
     <string-array name="prefs_key_entries">
+    	<item>Ab Major</item>
     	<item>A Major</item>
+    	<item>Bb Major</item>
     	<item>B Major</item>
         <item>C Major (default)</item>
+        <item>Db Major</item>
         <item>D Major</item>
+        <item>Eb Major</item>
         <item>E Major</item>
         <item>F Major</item>
+        <item>Gb Major</item>
         <item>G Major</item>
     </string-array>
 
     <!-- Values for the key menu. -->
     <string-array name="prefs_key_values">
     	<item>a</item>
+    	<item>A</item>
     	<item>b</item>
-        <item>c</item>
+    	<item>B</item>
+        <item>C</item>
         <item>d</item>
+        <item>D</item>
         <item>e</item>
-        <item>f</item>
+        <item>E</item>
+        <item>F</item>
         <item>g</item>
+        <item>G</item>
     </string-array>
     
     <!-- Entry names for the fixed pitch menu. -->
