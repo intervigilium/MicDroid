@@ -55,7 +55,7 @@ public class MediaStoreHelper {
 			values.put(MediaStore.MediaColumns.DATA, file.getAbsolutePath());
 	        values.put(MediaStore.MediaColumns.TITLE, file.getName());
 	        values.put(MediaStore.MediaColumns.SIZE, reader.getDataSize() + WAVE_HEADER_SIZE);
-	        values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/wav");
+	        values.put(MediaStore.MediaColumns.MIME_TYPE, Constants.AUDIO_WAVE);
 
 	        values.put(MediaStore.Audio.Media.ARTIST, "MicDroid");
 	        values.put(MediaStore.Audio.Media.ALBUM, "MicDroid");
