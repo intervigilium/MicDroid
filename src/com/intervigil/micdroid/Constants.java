@@ -47,4 +47,7 @@ public class Constants {
 	
 	// shared preference keys
 	public static final String KEY_SEEN_STARTUP_DIALOG = "prefs_seen_startup_dialog";
+	
+	// mime type
+	public static final String AUDIO_WAVE = "audio/wav";
 }
