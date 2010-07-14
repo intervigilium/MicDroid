@@ -47,7 +47,6 @@ import android.widget.AdapterView.OnItemLongClickListener;
 
 public class RecordingLibrary extends Activity {
 
-	private ListView library;
 	private RecordingAdapter libraryAdapter;
 	private ArrayList<Recording> recordings;
 
@@ -64,20 +63,20 @@ public class RecordingLibrary extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recording_library);
 
-        this.library = (ListView)findViewById(R.id.recording_library_list);
-        this.library.setOnItemClickListener(libraryClickListener);
-        this.library.setOnItemLongClickListener(libraryLongClickListener);
+        ListView library = (ListView)findViewById(R.id.recording_library_list);
+        library.setOnItemClickListener(libraryClickListener);
+        library.setOnItemLongClickListener(libraryLongClickListener);
         
         Object savedRecordings = getLastNonConfigurationInstance();
         if (savedRecordings == null) {
 	        recordings = new ArrayList<Recording>();
 	        this.libraryAdapter = new RecordingAdapter(this, R.layout.library_row, recordings);
-	        this.library.setAdapter(libraryAdapter);
+	        library.setAdapter(libraryAdapter);
 			new LoadRecordingsTask().execute((Void)null);
         } else {
         	recordings = (ArrayList<Recording>)savedRecordings;
         	this.libraryAdapter = new RecordingAdapter(this, R.layout.library_row, recordings);
-	        this.library.setAdapter(libraryAdapter);
+	        library.setAdapter(libraryAdapter);
 	        this.libraryAdapter.notifyDataSetChanged();
         }
     }
