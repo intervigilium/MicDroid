@@ -29,6 +29,7 @@ import java.io.IOException;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 
@@ -43,6 +44,17 @@ public class MediaStoreHelper {
 	public MediaStoreHelper(Context context, File file) {
 		this.context = context;
 		this.file = file;
+	}
+	
+	public boolean isInserted() {
+		ContentValues values = new ContentValues();
+		values.put(MediaStore.MediaColumns.DATA, file.getAbsolutePath());
+		values.put(MediaStore.MediaColumns.TITLE, file.getName());
+		
+		Uri contentUri = MediaStore.Audio.Media.getContentUriForPath(file.getAbsolutePath());
+
+        Cursor results = context.getContentResolver().query(contentUri, new String[] { "_data", "title" }, "_data=? and title=?", new String[] { file.getAbsolutePath(), file.getName() }, null);
+        return (results.getCount() > 0);
 	}
 	
 	public void insertFile() {
@@ -67,9 +79,13 @@ public class MediaStoreHelper {
 	        values.put(MediaStore.Audio.Media.IS_MUSIC, true);
 	        
 	        Uri contentUri = MediaStore.Audio.Media.getContentUriForPath(file.getAbsolutePath());
-	        context.getContentResolver().delete(contentUri, "_data=? and title=?", new String[] {file.getAbsolutePath(), file.getName()});
+
+	        Cursor results = context.getContentResolver().query(contentUri, new String[] { "_data", "title" }, "_data=? and title=?", new String[] { file.getAbsolutePath(), file.getName() }, null);
+	        if (results.getCount() > 0) {
+	        	context.getContentResolver().delete(contentUri, "_data=? and title=?", new String[] { file.getAbsolutePath(), file.getName() });   
+	        }
 	        context.getContentResolver().insert(contentUri, values);
-	        
+
 	        reader.closeWaveFile();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block

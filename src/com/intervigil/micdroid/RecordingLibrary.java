@@ -245,6 +245,12 @@ public class RecordingLibrary extends Activity {
 							// yes I know it sucks that we do control flow with an exception here, fix it later
 							Log.i("RecordingLibrary", String.format("Non-wave file %s found in library directory!", waveFiles[i].getName()));
 						}
+						
+						// check to see if this exists in the media store, if it doesn't insert it
+						MediaStoreHelper mediaStore = new MediaStoreHelper(RecordingLibrary.this, waveFiles[i]);
+						if (!mediaStore.isInserted()) {
+							mediaStore.insertFile();
+						}
 					}
 				}
 			}
