@@ -112,6 +112,7 @@ public class Mic extends Activity {
     	
     	startupDialog.show();
     	AudioHelper.configureRecorder(Mic.this);
+    	PreferenceHelper.resetKeyDefault(Mic.this);
     	// write a helper to move all files found in /sdcard/com.intervigil.micdroid/library to new library location
 
     	android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);

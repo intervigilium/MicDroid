@@ -30,6 +30,14 @@ import android.preference.PreferenceManager;
 
 public class PreferenceHelper {
 	
+	public static void resetKeyDefault(Context context) {
+		if (getKey(context) == 'c') {
+			Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+	        editor.putString(context.getString(R.string.prefs_key_key), "C");
+	        editor.commit();
+		}
+	}
+	
 	public static char getKey(Context context) {
 		SharedPreferences prefReader = PreferenceManager.getDefaultSharedPreferences(context);
 		String pref = prefReader.getString(context.getString(R.string.prefs_key_key), context.getString(R.string.prefs_key_default));
