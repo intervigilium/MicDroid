@@ -27,6 +27,7 @@ package com.intervigil.micdroid;
 import java.io.File;
 
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -103,6 +104,21 @@ public class RecordingPlayer extends Activity {
     protected void onSaveInstanceState(Bundle outState) {
         Log.i(getPackageName(), "onSaveInstanceState()");
         super.onSaveInstanceState(outState);
+    }
+    
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+    	Log.i(getPackageName(), "onConfigurationChanged");
+    	super.onConfigurationChanged(newConfig);
+    	
+    	setContentView(R.layout.recording_player);
+
+    	mediaSeekBar = (SeekBar)findViewById(R.id.recording_player_seekbar);
+        ((TextView)findViewById(R.id.recording_player_file_name)).setText(recordingName);
+        
+        mediaSeekBar.setMax(SEEKBAR_RESOLUTION);
+        
+        mediaPlayer.bindSeekBar(mediaSeekBar);
     }
 
     public void recordingPlayerClickHandler(View view) {

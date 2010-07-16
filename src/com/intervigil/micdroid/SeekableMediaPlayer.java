@@ -73,6 +73,10 @@ public class SeekableMediaPlayer {
 		isPaused = false;
 	}
 	
+	public void bindSeekBar(SeekBar seekBar) {
+		this.seekBar = seekBar;
+	}
+	
 	public void play() {
 		if (!mediaPlayer.isPlaying() || isPaused) {
 			mediaPlayer.start();
