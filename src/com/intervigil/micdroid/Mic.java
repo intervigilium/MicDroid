@@ -26,7 +26,6 @@ package com.intervigil.micdroid;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -64,9 +63,6 @@ public class Mic extends Activity {
 	private static final int DEFAULT_FORM_CORR = 0;
 	private static final float DEFAULT_FORM_WARP = 0.0f;
 	
-	private static final int START_RECORDING = 1;
-	private static final int STOP_RECORDING = 2;
-	private static final int RECORDING_STOPPED = 3;
 	private static final int AUDIORECORD_ILLEGAL_STATE = 4;
 	private static final int AUDIORECORD_ILLEGAL_ARGUMENT = 5;
 	private static final int WRITER_OUT_OF_SPACE = 6;
@@ -78,7 +74,7 @@ public class Mic extends Activity {
 	private MicWriter micWriter;
 	
 	// keep this queue separate from the message queues since this is a data channel
-	private BlockingQueue<Sample> playQueue;
+	private BlockingQueue<Sample> sampleQueue;
 	
 	/** Packet of audio to pass between reader and writer threads. */
 	private class Sample {
@@ -113,10 +109,10 @@ public class Mic extends Activity {
     	super.onResume();
     	
     	((ToggleButton)findViewById(R.id.mic_toggle)).setChecked(false);
-    	if (playQueue != null) {
-    		playQueue.clear();
+    	if (sampleQueue != null) {
+    		sampleQueue.clear();
     	} else {
-    		playQueue = new LinkedBlockingQueue<Sample>();
+    		sampleQueue = new LinkedBlockingQueue<Sample>();
     	}
     	
     	startupDialog.show();
@@ -132,10 +128,10 @@ public class Mic extends Activity {
     	super.onPause();
     	
     	if (micRecorder != null) {
-    		micRecorder.stopRunning();
+    		micRecorder.shutdown();
     	}
     	if (micWriter != null) {
-    		micWriter.stopRunning();
+    		micWriter.shutdown();
     	}
     	AutoTalent.destroyAutoTalent();
     }
@@ -146,10 +142,24 @@ public class Mic extends Activity {
     	super.onStop();
     	
     	if (micRecorder != null) {
-    		micRecorder.stopRunning();
+    		micRecorder.shutdown();
     	}
     	if (micWriter != null) {
-    		micWriter.stopRunning();
+    		micWriter.shutdown();
+    	}
+    	AutoTalent.destroyAutoTalent();
+    }
+    
+    @Override
+    protected void onDestroy() {
+    	Log.i(getPackageName(), "onDestroy()");
+    	super.onStop();
+    	
+    	if (micRecorder != null) {
+    		micRecorder.shutdown();
+    	}
+    	if (micWriter != null) {
+    		micWriter.shutdown();
     	}
     	AutoTalent.destroyAutoTalent();
     }
@@ -225,57 +235,28 @@ public class Mic extends Activity {
     	}
     }
     
-    private Handler recordingHandler = new Handler() {
+    private Handler recordingErrorHandler = new Handler() {
+    	// use the handler to receive error messages from the threads
     	@Override
     	public void handleMessage(Message msg) {
     		ToggleButton micToggle = (ToggleButton)findViewById(R.id.mic_toggle);
     		
     		switch (msg.what) {
-	    		case START_RECORDING:
-	    			micRecorder = new MicRecorder(playQueue);
-					micRecorder.setPriority(Thread.MAX_PRIORITY);
-					micRecorder.setUncaughtExceptionHandler(new RecordThreadExceptionHandler());
-					micRecorder.start();
-
-		        	micWriter = new MicWriter(playQueue);
-		        	micWriter.start();
-		        	Toast.makeText(getBaseContext(), R.string.recording_started_toast, Toast.LENGTH_SHORT).show();
-	    			break;
-	    		case STOP_RECORDING:
-	    			micToggle.setEnabled(false);
-	    			micRecorder.stopRunning();
-					micWriter.stopRunning();
-					try {
-						micRecorder.join();
-						micWriter.join();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					playQueue.clear();
-	    			break;
-	    		case RECORDING_STOPPED:
-	    			Toast.makeText(getBaseContext(), R.string.recording_finished_toast, Toast.LENGTH_SHORT).show();
-	    			Intent saveFileIntent = new Intent(getBaseContext(), FileNameEntry.class);
-					startActivityForResult(saveFileIntent, Constants.FILENAME_ENTRY_INTENT_CODE);
-					micToggle.setEnabled(true);
-	    			break;
 	    		case AUDIORECORD_ILLEGAL_STATE:
 	    			micToggle.setChecked(false);
 	    			DialogHelper.showWarning(Mic.this, R.string.unconfigured_audio_title, R.string.unconfigured_audio_warning);
-	    			
-	    			micRecorder.shutdown();
 	    			micWriter.shutdown();
 	    			break;
 	    		case AUDIORECORD_ILLEGAL_ARGUMENT:
 	    			micToggle.setChecked(false);
 	    			DialogHelper.showWarning(Mic.this, R.string.unconfigured_audio_title, R.string.unconfigured_audio_warning);
-	    			
-	    			micRecorder.shutdown();
 	    			micWriter.shutdown();
 	    			break;
 	    		case WRITER_OUT_OF_SPACE:
 	    			micToggle.setChecked(false);
 	    			DialogHelper.showWarning(Mic.this, R.string.writer_out_of_space_title, R.string.writer_out_of_space_warning);
+	    			micRecorder.shutdown();
+	    			sampleQueue.clear();
 	    			
 	    			Intent savePartialFileIntent = new Intent(getBaseContext(), FileNameEntry.class);
 					startActivityForResult(savePartialFileIntent, Constants.FILENAME_ENTRY_INTENT_CODE);
@@ -283,7 +264,6 @@ public class Mic extends Activity {
 	    		case RECORDING_GENERIC_EXCEPTION:
 	    			micToggle.setChecked(false);
 	    			DialogHelper.showWarning(Mic.this, R.string.recording_exception_title, R.string.recording_exception_warning);
-	    			
 	    			micRecorder.shutdown();
 	    			micWriter.shutdown();
 	    			break;
@@ -388,11 +368,27 @@ public class Mic extends Activity {
     		}
     		else {
 				if (btn.isChecked()) {
-					Message msg = recordingHandler.obtainMessage(START_RECORDING);
-					recordingHandler.sendMessage(msg);
+					micRecorder = new MicRecorder(sampleQueue);
+					micRecorder.setPriority(Thread.MAX_PRIORITY);
+					micRecorder.start();
+
+		        	micWriter = new MicWriter(sampleQueue);
+		        	micWriter.start();
+		        	Toast.makeText(getBaseContext(), R.string.recording_started_toast, Toast.LENGTH_SHORT).show();
 				} else {
-					Message msg = recordingHandler.obtainMessage(STOP_RECORDING);
-					recordingHandler.sendMessage(msg);
+	    			micRecorder.stopRunning();
+					micWriter.stopRunning();
+					try {
+						micRecorder.join();
+						micWriter.join();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					sampleQueue.clear();
+					Toast.makeText(getBaseContext(), R.string.recording_finished_toast, Toast.LENGTH_SHORT).show();
+					
+	    			Intent saveFileIntent = new Intent(getBaseContext(), FileNameEntry.class);
+					startActivityForResult(saveFileIntent, Constants.FILENAME_ENTRY_INTENT_CODE);
 				}
     		}
 		}
@@ -433,6 +429,7 @@ public class Mic extends Activity {
     	
 		public void run() {
 			isRunning = true;
+			
 			try {
 				writer = new WaveWriter(
 						((MicApplication)getApplication()).getOutputDirectory(),
@@ -441,34 +438,28 @@ public class Mic extends Activity {
 						AudioHelper.getChannelConfig(Constants.DEFAULT_CHANNEL_CONFIG), 
 						AudioHelper.getPcmEncoding(Constants.DEFAULT_PCM_FORMAT));
 				writer.createWaveFile();
-    		} catch (IOException e) {
-				// uh oh, cannot create writer or wave file, abort!
-    			// TODO: real error handling
-				e.printStackTrace();
-			}
-
-			while (isRunning) {
-				try {
+    		
+				while (isRunning) {
 					Sample sample = queue.take();
 					writer.write(sample.buffer, sample.bufferSize);
-				} catch (IOException e) {
-					// problem writing to the buffer
-					e.printStackTrace();
-					shutdown();
-					Message msg = recordingHandler.obtainMessage(WRITER_OUT_OF_SPACE);
-					recordingHandler.sendMessage(msg);
-				} catch (InterruptedException e) {
-					// problem removing from the queue
-					e.printStackTrace();
-					shutdown();
-					Message msg = recordingHandler.obtainMessage(RECORDING_GENERIC_EXCEPTION);
-					recordingHandler.sendMessage(msg);
 				}
-			}
 			
-			shutdown();
-			Message msg = recordingHandler.obtainMessage(RECORDING_STOPPED);
-    		recordingHandler.sendMessage(msg);
+				shutdown();
+			} catch (IOException e) {
+				// problem writing to the buffer, usually means we're out of space
+				e.printStackTrace();
+				shutdown();
+				
+				Message msg = recordingErrorHandler.obtainMessage(WRITER_OUT_OF_SPACE);
+				recordingErrorHandler.sendMessage(msg);
+			} catch (InterruptedException e) {
+				// problem removing from the queue
+				e.printStackTrace();
+				shutdown();
+				
+				Message msg = recordingErrorHandler.obtainMessage(RECORDING_GENERIC_EXCEPTION);
+				recordingErrorHandler.sendMessage(msg);
+			}
 		}
 		
 		public void shutdown() {
@@ -504,25 +495,41 @@ public class Mic extends Activity {
     	
     	public void run() {
     		isRunning = true;
-
-			recorder = AudioHelper.getRecorder(Mic.this);
-
-    		short[] buffer = new short[AudioHelper.getRecorderBufferSize(Mic.this)];
-    		recorder.startRecording();
     		
-    		while (isRunning) {
-    			try {
-    				int numSamples = recorder.read(buffer, 0, buffer.length);
+    		try {
+				recorder = AudioHelper.getRecorder(Mic.this);
+	
+	    		short[] buffer = new short[AudioHelper.getRecorderBufferSize(Mic.this)];
+	    		recorder.startRecording();
+	    		
+	    		while (isRunning) {
+					int numSamples = recorder.read(buffer, 0, buffer.length);
 					queue.put(new Sample(buffer, numSamples));
-				} catch (InterruptedException e) {
-					// problem putting on the queue
-					e.printStackTrace();
-					Message msg = recordingHandler.obtainMessage(RECORDING_GENERIC_EXCEPTION);
-					recordingHandler.sendMessage(msg);
-				}
+	    		}
+	    		
+	    		shutdown();
+    		} catch (IllegalStateException e) {
+    			// problem with audiorecord not being initialized properly
+    			e.printStackTrace();
+    			shutdown();
+    			
+    			Message msg = recordingErrorHandler.obtainMessage(AUDIORECORD_ILLEGAL_STATE);
+    			recordingErrorHandler.sendMessage(msg);
+    		} catch (IllegalArgumentException e) {
+    			// problem with audiorecord being given a bad sample rate/buffer size
+    			e.printStackTrace();
+    			shutdown();
+    			
+    			Message msg = recordingErrorHandler.obtainMessage(AUDIORECORD_ILLEGAL_ARGUMENT);
+    			recordingErrorHandler.sendMessage(msg);
+    		} catch (InterruptedException e) {
+    			// problem putting sample on the queue
+				e.printStackTrace();
+				shutdown();
+				
+				Message msg = recordingErrorHandler.obtainMessage(RECORDING_GENERIC_EXCEPTION);
+				recordingErrorHandler.sendMessage(msg);
     		}
-    		
-    		shutdown();
     	}
     	
     	public void shutdown() {
@@ -533,23 +540,6 @@ public class Mic extends Activity {
 	    		recorder = null;
     		}
     	}
-    }
-    
-    private class RecordThreadExceptionHandler implements UncaughtExceptionHandler {
-		public void uncaughtException(Thread thread, Throwable exception) {
-			exception.printStackTrace();
-			
-			Message msg = null;
-			if (exception instanceof IllegalStateException) {
-				msg = recordingHandler.obtainMessage(AUDIORECORD_ILLEGAL_STATE);
-			} else if (exception instanceof IllegalArgumentException) {
-				msg = recordingHandler.obtainMessage(AUDIORECORD_ILLEGAL_ARGUMENT);
-			} else {
-				msg = recordingHandler.obtainMessage(RECORDING_GENERIC_EXCEPTION);
-			}
-			
-			recordingHandler.sendMessage(msg);
-		}
     }
     
     private static boolean canWriteToSdCard() {
