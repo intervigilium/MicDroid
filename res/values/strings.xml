@@ -24,11 +24,17 @@ DISCLAIMER: This is alpha software! May be buggy and force close on you! Author 
     <string name="no_external_storage_title">WARNING!</string>
     <string name="no_external_storage_warning">This app requires a mounted SD card to function properly! Make sure there is an SD card properly inserted and mounted before recording!</string>
     
-    <string name="unable_to_configure_audio_title">WARNING!</string>
+    <string name="unable_to_configure_audio_title">ERROR!</string>
     <string name="unable_to_configure_audio_warning">Unable to configure audio! Please check your sample rate settings and make sure your device is able to record at that rate!</string>
     
-    <string name="unconfigured_audio_title">WARNING!</string>
+    <string name="unconfigured_audio_title">ERROR!</string>
     <string name="unconfigured_audio_warning">Cannot record audio with current settings! Please check your sample rate settings and make sure your device is able to record at that rate!</string>
+    
+    <string name="writer_out_of_space_title">WARNING!</string>
+    <string name="writer_out_of_space_warning">Writer cannot continue writing data! Please check to make sure your SD card is not full!</string>
+    
+    <string name="recording_exception_title">ERROR!</string>
+    <string name="recording_exception_warning">An unknown exception occurred while recording! Please check your settings and make sure your device is able to record audio!</string>
     
     <string name="recording_started_toast">Recording started! Press power button to stop recording!</string>
     <string name="recording_finished_toast">Recording finished!</string>
