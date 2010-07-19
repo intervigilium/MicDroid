@@ -62,6 +62,7 @@ public class RecordingPlayer extends Activity {
         ((TextView)findViewById(R.id.recording_player_file_name)).setText(recordingName);
         
         mediaSeekBar.setMax(SEEKBAR_RESOLUTION);
+        mediaPlayer = new SeekableMediaPlayer(((MicApplication)getApplication()).getLibraryDirectory() + File.separator + recordingName, mediaSeekBar); 
     }
     
     @Override
@@ -74,25 +75,24 @@ public class RecordingPlayer extends Activity {
     protected void onResume() {
     	Log.i(getPackageName(), "onResume()");
     	super.onResume();
-    	
-    	mediaPlayer = new SeekableMediaPlayer(((MicApplication)getApplication()).getLibraryDirectory() + File.separator + recordingName, mediaSeekBar); 
     }
     
     @Override
     protected void onPause() {
     	Log.i(getPackageName(), "onPause()");
     	super.onPause();
-    	
-    	if (mediaPlayer != null) {
-    		mediaPlayer.close();
-    	}
-    	mediaPlayer = null;
     }
     
     @Override
     protected void onStop() {
     	Log.i(getPackageName(), "onStop()");
     	super.onStop();
+    }
+    
+    @Override
+    protected void onDestroy() {
+    	Log.i(getPackageName(), "onDestroy()");
+    	super.onDestroy();
     	
     	if (mediaPlayer != null) {
     		mediaPlayer.close();
