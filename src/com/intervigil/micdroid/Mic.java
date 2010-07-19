@@ -80,10 +80,12 @@ public class Mic extends Activity {
 	private class Sample {
     	public short[] buffer;
     	public int bufferSize;
+    	public boolean isEnd;
     	
     	public Sample(short[] buffer, int bufferSize) {
     		this.buffer = buffer;
     		this.bufferSize = bufferSize;
+    		this.isEnd = false;
     	}
     }
 	
@@ -127,12 +129,18 @@ public class Mic extends Activity {
     	Log.i(getPackageName(), "onPause()");
     	super.onPause();
     	
-    	if (micRecorder != null) {
-    		micRecorder.shutdown();
+    	if (micRecorder != null && micWriter != null) {
+    		micRecorder.stopRunning();
+    		
+    		try {
+    			micRecorder.join();
+    			micWriter.join();
+    		} catch (InterruptedException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		}
     	}
-    	if (micWriter != null) {
-    		micWriter.shutdown();
-    	}
+    	
     	AutoTalent.destroyAutoTalent();
     }
     
@@ -141,12 +149,18 @@ public class Mic extends Activity {
     	Log.i(getPackageName(), "onStop()");
     	super.onStop();
     	
-    	if (micRecorder != null) {
-    		micRecorder.shutdown();
+    	if (micRecorder != null && micWriter != null) {
+    		micRecorder.stopRunning();
+    		
+    		try {
+    			micRecorder.join();
+    			micWriter.join();
+    		} catch (InterruptedException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		}
     	}
-    	if (micWriter != null) {
-    		micWriter.shutdown();
-    	}
+    	
     	AutoTalent.destroyAutoTalent();
     }
     
@@ -155,12 +169,18 @@ public class Mic extends Activity {
     	Log.i(getPackageName(), "onDestroy()");
     	super.onStop();
     	
-    	if (micRecorder != null) {
-    		micRecorder.shutdown();
+    	if (micRecorder != null && micWriter != null) {
+    		micRecorder.stopRunning();
+    		
+    		try {
+    			micRecorder.join();
+    			micWriter.join();
+    		} catch (InterruptedException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		}
     	}
-    	if (micWriter != null) {
-    		micWriter.shutdown();
-    	}
+
     	AutoTalent.destroyAutoTalent();
     }
 
@@ -183,7 +203,7 @@ public class Mic extends Activity {
     	
     	setContentView(R.layout.main);
     	
-    	boolean isRecording = micRecorder.isRunning() || micWriter.isRunning();
+    	boolean isRecording = micRecorder.isRunning();
     	ToggleButton micSwitch = (ToggleButton)findViewById(R.id.mic_toggle);
     	micSwitch.setChecked(isRecording);
     	micSwitch.setOnCheckedChangeListener(mPowerBtnListener);
@@ -243,29 +263,28 @@ public class Mic extends Activity {
     		
     		switch (msg.what) {
 	    		case AUDIORECORD_ILLEGAL_STATE:
+	    			// received error message that AudioRecord was started without being properly initialized
 	    			micToggle.setChecked(false);
 	    			DialogHelper.showWarning(Mic.this, R.string.unconfigured_audio_title, R.string.unconfigured_audio_warning);
-	    			micWriter.shutdown();
 	    			break;
 	    		case AUDIORECORD_ILLEGAL_ARGUMENT:
+	    			// received error message that AudioRecord was started with bad sample rate/buffer size
 	    			micToggle.setChecked(false);
 	    			DialogHelper.showWarning(Mic.this, R.string.unconfigured_audio_title, R.string.unconfigured_audio_warning);
-	    			micWriter.shutdown();
 	    			break;
 	    		case WRITER_OUT_OF_SPACE:
+	    			// received error that the writer is out of SD card space
+	    			micRecorder.stopRunning();
 	    			micToggle.setChecked(false);
 	    			DialogHelper.showWarning(Mic.this, R.string.writer_out_of_space_title, R.string.writer_out_of_space_warning);
-	    			micRecorder.shutdown();
 	    			sampleQueue.clear();
-	    			
-	    			Intent savePartialFileIntent = new Intent(getBaseContext(), FileNameEntry.class);
-					startActivityForResult(savePartialFileIntent, Constants.FILENAME_ENTRY_INTENT_CODE);
 	    			break;
 	    		case RECORDING_GENERIC_EXCEPTION:
+	    			// some sort of error occurred in the threads, don't know what yet, send a log!
+	    			micRecorder.stopRunning();
 	    			micToggle.setChecked(false);
 	    			DialogHelper.showWarning(Mic.this, R.string.recording_exception_title, R.string.recording_exception_warning);
-	    			micRecorder.shutdown();
-	    			micWriter.shutdown();
+	    			sampleQueue.clear();
 	    			break;
     		}
     	}
@@ -359,15 +378,12 @@ public class Mic extends Activity {
     			DialogHelper.showWarning(Mic.this, R.string.no_external_storage_title, R.string.no_external_storage_warning);
         	}
     		else if (!AudioHelper.isValidRecorderConfiguration(Mic.this)) {
-    			// TODO: theoretically this should stop those force-close on failure to record, but
-				// it's possible that we can get the system to think the configuration is valid and still
-				// have AudioRecord fail to initialize, so we need to make MicWriter start if and only if 
-				// MicRecorder starts up correctly
     			btn.setChecked(false);
     			DialogHelper.showWarning(Mic.this, R.string.unconfigured_audio_title, R.string.unconfigured_audio_warning);
     		}
     		else {
 				if (btn.isChecked()) {
+					sampleQueue.clear();
 					micRecorder = new MicRecorder(sampleQueue);
 					micRecorder.setPriority(Thread.MAX_PRIORITY);
 					micRecorder.start();
@@ -376,19 +392,21 @@ public class Mic extends Activity {
 		        	micWriter.start();
 		        	Toast.makeText(getBaseContext(), R.string.recording_started_toast, Toast.LENGTH_SHORT).show();
 				} else {
-	    			micRecorder.stopRunning();
-					micWriter.stopRunning();
-					try {
-						micRecorder.join();
-						micWriter.join();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
+					if (micRecorder.isRunning()) {
+						// only do this if it was running, otherwise an error message triggered the check state change
+						try {
+							micRecorder.stopRunning();
+							micRecorder.join();
+							micWriter.join();
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						sampleQueue.clear();
+						Toast.makeText(getBaseContext(), R.string.recording_finished_toast, Toast.LENGTH_SHORT).show();
+						
+		    			Intent saveFileIntent = new Intent(getBaseContext(), FileNameEntry.class);
+						startActivityForResult(saveFileIntent, Constants.FILENAME_ENTRY_INTENT_CODE);
 					}
-					sampleQueue.clear();
-					Toast.makeText(getBaseContext(), R.string.recording_finished_toast, Toast.LENGTH_SHORT).show();
-					
-	    			Intent saveFileIntent = new Intent(getBaseContext(), FileNameEntry.class);
-					startActivityForResult(saveFileIntent, Constants.FILENAME_ENTRY_INTENT_CODE);
 				}
     		}
 		}
@@ -412,24 +430,13 @@ public class Mic extends Activity {
     
     private class MicWriter extends Thread {
     	private final BlockingQueue<Sample> queue;
-    	private boolean isRunning;
     	private WaveWriter writer;
     	
     	public MicWriter(BlockingQueue<Sample> q) {
     		queue = q;
     	}
     	
-    	public boolean isRunning() {
-    		return this.isRunning;
-    	}
-    	
-    	public void stopRunning() {
-    		this.isRunning = false;
-    	}
-    	
 		public void run() {
-			isRunning = true;
-			
 			try {
 				writer = new WaveWriter(
 						((MicApplication)getApplication()).getOutputDirectory(),
@@ -439,12 +446,16 @@ public class Mic extends Activity {
 						AudioHelper.getPcmEncoding(Constants.DEFAULT_PCM_FORMAT));
 				writer.createWaveFile();
     		
-				while (isRunning) {
+				while (true) {
 					Sample sample = queue.take();
-					writer.write(sample.buffer, sample.bufferSize);
+					if (!sample.isEnd) {
+						writer.write(sample.buffer, sample.bufferSize);
+					}
+					else {
+						shutdown();
+		    			return;
+					}
 				}
-			
-				shutdown();
 			} catch (IOException e) {
 				// problem writing to the buffer, usually means we're out of space
 				e.printStackTrace();
@@ -462,18 +473,15 @@ public class Mic extends Activity {
 			}
 		}
 		
-		public void shutdown() {
-			isRunning = false;
-    		if (writer != null) {
-    			try {
-    				writer.closeWaveFile();
-    			} catch (IOException e) {
-    				// problem writing the header or closing the output stream
-    				e.printStackTrace();
-    			}
-    			writer = null;
-    		}
-    	}
+		private void shutdown() {
+			try {
+				writer.closeWaveFile();
+				writer = null;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
     }
     
     private class MicRecorder extends Thread {
@@ -501,6 +509,7 @@ public class Mic extends Activity {
 	
 	    		short[] buffer = new short[AudioHelper.getRecorderBufferSize(Mic.this)];
 	    		recorder.startRecording();
+	    		
 	    		
 	    		while (isRunning) {
 					int numSamples = recorder.read(buffer, 0, buffer.length);
@@ -532,13 +541,21 @@ public class Mic extends Activity {
     		}
     	}
     	
-    	public void shutdown() {
+    	private void shutdown() {
     		isRunning = false;
     		if (recorder != null) {
-	    		recorder.stop();
 	    		recorder.release();
 	    		recorder = null;
     		}
+    		
+    		try {
+    			Sample endMarker = new Sample(null, 0);
+        		endMarker.isEnd = true;
+				queue.put(endMarker);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
     	}
     }
     
