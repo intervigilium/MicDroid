@@ -87,6 +87,10 @@ public class Mic extends Activity {
     		this.bufferSize = bufferSize;
     		this.isEnd = false;
     	}
+    	
+    	public Sample() {
+    		this.isEnd = true;
+    	}
     }
 	
     /** Called when the activity is first created. */
@@ -549,8 +553,7 @@ public class Mic extends Activity {
     		}
     		
     		try {
-    			Sample endMarker = new Sample(null, 0);
-        		endMarker.isEnd = true;
+    			Sample endMarker = new Sample();
 				queue.put(endMarker);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
