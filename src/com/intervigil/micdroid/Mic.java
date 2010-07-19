@@ -105,14 +105,8 @@ public class Mic extends Activity {
     protected void onStart() {
         Log.i(getPackageName(), "onStart()");
         super.onStart();
-    }
-    
-    @Override
-    protected void onResume() {
-    	Log.i(getPackageName(), "onResume()");
-    	super.onResume();
-    	
-    	((ToggleButton)findViewById(R.id.mic_toggle)).setChecked(false);
+        
+        ((ToggleButton)findViewById(R.id.mic_toggle)).setChecked(false);
     	if (playQueue != null) {
     		playQueue.clear();
     	} else {
@@ -127,17 +121,15 @@ public class Mic extends Activity {
     }
     
     @Override
+    protected void onResume() {
+    	Log.i(getPackageName(), "onResume()");
+    	super.onResume();
+    }
+    
+    @Override
     protected void onPause() {
     	Log.i(getPackageName(), "onPause()");
     	super.onPause();
-    	
-    	if (micRecorder != null) {
-    		micRecorder.stopRunning();
-    	}
-    	if (micWriter != null) {
-    		micWriter.stopRunning();
-    	}
-    	AutoTalent.destroyAutoTalent();
     }
     
     @Override
@@ -146,10 +138,24 @@ public class Mic extends Activity {
     	super.onStop();
     	
     	if (micRecorder != null) {
-    		micRecorder.stopRunning();
+    		micRecorder.shutdown();
     	}
     	if (micWriter != null) {
-    		micWriter.stopRunning();
+    		micWriter.shutdown();
+    	}
+    	AutoTalent.destroyAutoTalent();
+    }
+    
+    @Override
+    protected void onDestroy() {
+    	Log.i(getPackageName(), "onDestroy");
+    	super.onDestroy();
+    	
+    	if (micRecorder != null) {
+    		micRecorder.shutdown();
+    	}
+    	if (micWriter != null) {
+    		micWriter.shutdown();
     	}
     	AutoTalent.destroyAutoTalent();
     }
