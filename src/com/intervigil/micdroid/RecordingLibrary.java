@@ -109,6 +109,12 @@ public class RecordingLibrary extends Activity {
     	Log.i(getPackageName(), "onStop()");
     	super.onStop();
     }
+    
+    @Override
+    protected void onDestroy() {
+    	Log.i(getPackageName(), "onDestroy()");
+    	super.onDestroy();
+    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
