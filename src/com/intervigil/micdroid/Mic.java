@@ -101,20 +101,8 @@ public class Mic extends Activity {
         
         ((ToggleButton)findViewById(R.id.mic_toggle)).setOnCheckedChangeListener(mPowerBtnListener);
         startupDialog = new StartupDialog(this, R.string.startup_dialog_title, R.string.startup_dialog_text, R.string.startup_dialog_accept_btn);
-    }
     
-    @Override
-    protected void onStart() {
-        Log.i(getPackageName(), "onStart()");
-        super.onStart();
-    }
-    
-    @Override
-    protected void onResume() {
-    	Log.i(getPackageName(), "onResume()");
-    	super.onResume();
-    	
-    	((ToggleButton)findViewById(R.id.mic_toggle)).setChecked(false);
+        ((ToggleButton)findViewById(R.id.mic_toggle)).setChecked(false);
     	if (sampleQueue != null) {
     		sampleQueue.clear();
     	} else {
@@ -129,43 +117,27 @@ public class Mic extends Activity {
     }
     
     @Override
+    protected void onStart() {
+        Log.i(getPackageName(), "onStart()");
+        super.onStart();
+    }
+    
+    @Override
+    protected void onResume() {
+    	Log.i(getPackageName(), "onResume()");
+    	super.onResume();
+    }
+    
+    @Override
     protected void onPause() {
     	Log.i(getPackageName(), "onPause()");
     	super.onPause();
-    	
-    	if (micRecorder != null && micWriter != null) {
-    		micRecorder.stopRunning();
-    		
-    		try {
-    			micRecorder.join();
-    			micWriter.join();
-    		} catch (InterruptedException e) {
-    			// TODO Auto-generated catch block
-    			e.printStackTrace();
-    		}
-    	}
-    	
-    	AutoTalent.destroyAutoTalent();
     }
     
     @Override
     protected void onStop() {
     	Log.i(getPackageName(), "onStop()");
     	super.onStop();
-    	
-    	if (micRecorder != null && micWriter != null) {
-    		micRecorder.stopRunning();
-    		
-    		try {
-    			micRecorder.join();
-    			micWriter.join();
-    		} catch (InterruptedException e) {
-    			// TODO Auto-generated catch block
-    			e.printStackTrace();
-    		}
-    	}
-    	
-    	AutoTalent.destroyAutoTalent();
     }
     
     @Override
