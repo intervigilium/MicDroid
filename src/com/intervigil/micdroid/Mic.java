@@ -269,12 +269,12 @@ public class Mic extends Activity {
 	    		case AUDIORECORD_ILLEGAL_STATE:
 	    			// received error message that AudioRecord was started without being properly initialized
 	    			micToggle.setChecked(false);
-	    			DialogHelper.showWarning(Mic.this, R.string.unconfigured_audio_title, R.string.unconfigured_audio_warning);
+	    			DialogHelper.showWarning(Mic.this, R.string.audiorecord_exception_title, R.string.audiorecord_exception_warning);
 	    			break;
 	    		case AUDIORECORD_ILLEGAL_ARGUMENT:
 	    			// received error message that AudioRecord was started with bad sample rate/buffer size
 	    			micToggle.setChecked(false);
-	    			DialogHelper.showWarning(Mic.this, R.string.unconfigured_audio_title, R.string.unconfigured_audio_warning);
+	    			DialogHelper.showWarning(Mic.this, R.string.audiorecord_exception_title, R.string.audiorecord_exception_warning);
 	    			break;
 	    		case WRITER_OUT_OF_SPACE:
 	    			// received error that the writer is out of SD card space

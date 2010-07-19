@@ -33,6 +33,9 @@ DISCLAIMER: This is alpha software! May be buggy and force close on you! Author 
     <string name="writer_out_of_space_title">WARNING!</string>
     <string name="writer_out_of_space_warning">Writer cannot continue writing data! Please check to make sure your SD card is not full!</string>
     
+    <string name="audiorecord_exception_title">ERROR!</string>
+    <string name="audiorecord_exception_warning">An error has occurred while recording! Please check your settings and make sure your device is able to record audio!</string>
+    
     <string name="recording_exception_title">ERROR!</string>
     <string name="recording_exception_warning">An unknown exception occurred while recording! Please check your settings and make sure your device is able to record audio!</string>
     
