@@ -155,7 +155,7 @@ public class RecordingLibrary extends Activity {
     	menu.setHeaderTitle(R.string.recording_options_title);
     	menu.add(Menu.NONE, R.string.recording_options_set_ringtone, Menu.NONE, R.string.recording_options_set_ringtone);
     	menu.add(Menu.NONE, R.string.recording_options_send_email, Menu.NONE, R.string.recording_options_send_email);
-    	// disable MMS for now because it can get messy with file sizes
+    	// disable MMS for now because it can't attach wav files
     	//menu.add(Menu.NONE, R.string.recording_options_send_mms, Menu.NONE, R.string.recording_options_send_mms);
     }
     
@@ -173,6 +173,7 @@ public class RecordingLibrary extends Activity {
 				RecordingOptionsHelper.sendEmailAttachment(RecordingLibrary.this, r);
 				break;
 			case R.string.recording_options_send_mms:
+				RecordingOptionsHelper.sendMms(RecordingLibrary.this, r);
 				break;
 			default:
 				break;

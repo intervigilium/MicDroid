@@ -69,4 +69,14 @@ public class RecordingOptionsHelper {
 		sendEmailIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(recordingFile));
 		context.startActivity(Intent.createChooser(sendEmailIntent, "Email:"));
 	}
+	
+	public static void sendMms(Context context, Recording recording) {
+		String recordingPath = ((MicApplication)context.getApplicationContext()).getLibraryDirectory() + File.separator + recording.getRecordingName();
+		File recordingFile = new File(recordingPath);
+		
+		Intent sendMmsIntent = new Intent(Intent.ACTION_SEND);
+		sendMmsIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(recordingFile));
+		sendMmsIntent.setType(Constants.AUDIO_WAVE);
+		context.startActivity(Intent.createChooser(sendMmsIntent, "MMS:"));
+	}
 }
