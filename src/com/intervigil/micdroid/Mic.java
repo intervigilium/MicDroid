@@ -199,14 +199,18 @@ public class Mic extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.options:
-            	// Launch preferences as a subactivity
             	Intent preferencesIntent = new Intent(getBaseContext(), Preferences.class);
             	startActivity(preferencesIntent);
             	break;
             case R.id.playback:
-            	// Launch playback mode as a subactivity
             	Intent playbackIntent = new Intent(getBaseContext(), RecordingLibrary.class);
             	startActivity(playbackIntent);
+            	break;
+            case R.id.about:
+            	DialogHelper.showWarning(Mic.this, R.string.about_title, R.string.about_text);
+            	break;
+            case R.id.help:
+            	DialogHelper.showWarning(Mic.this, R.string.help_title, R.string.help_text);
             	break;
         }
         return true;
