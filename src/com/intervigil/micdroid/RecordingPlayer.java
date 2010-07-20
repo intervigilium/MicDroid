@@ -67,31 +67,38 @@ public class RecordingPlayer extends Activity {
     
     @Override
     protected void onStart() {
-        Log.i(getPackageName(), "onStart()");
+        Log.i("RecordingPlayer", "onStart()");
         super.onStart();
     }
     
     @Override
     protected void onResume() {
-    	Log.i(getPackageName(), "onResume()");
+    	Log.i("RecordingPlayer", "onResume()");
     	super.onResume();
     }
     
     @Override
     protected void onPause() {
-    	Log.i(getPackageName(), "onPause()");
+    	Log.i("RecordingPlayer", "onPause()");
     	super.onPause();
+    	
+    	if (isFinishing()) {
+    		if (mediaPlayer != null) {
+        		mediaPlayer.close();
+        	}
+        	mediaPlayer = null;
+    	}
     }
     
     @Override
     protected void onStop() {
-    	Log.i(getPackageName(), "onStop()");
+    	Log.i("RecordingPlayer", "onStop()");
     	super.onStop();
     }
     
     @Override
     protected void onDestroy() {
-    	Log.i(getPackageName(), "onDestroy()");
+    	Log.i("RecordingPlayer", "onDestroy()");
     	super.onDestroy();
     	
     	if (mediaPlayer != null) {
