@@ -2,7 +2,6 @@ There are a lot of things left to do, and many features to add.
 
 To Do:
 Add new nicer graphic resources for everything
-Playback/recording allowable in background/when screen turns off
 Share as MMS, rename recording options for recordings
 Integrate automatic log collector: http://code.google.com/p/android-send-me-logs/
 Make preferences seekbar based: http://www.mail-archive.com/android-developers@googlegroups.com/msg19042.html
