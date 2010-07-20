@@ -140,7 +140,7 @@ public class RecordingPlayer extends Activity {
 	    		mediaPlayer.close();
     			File toDelete = new File(((MicApplication)getApplication()).getLibraryDirectory() + File.separator + recordingName);
     			toDelete.delete();
-
+    			MediaStoreHelper.removeFile(RecordingPlayer.this, toDelete);
     			setResult(Constants.RESULT_FILE_DELETED);
     			finish();
 	    		break;
