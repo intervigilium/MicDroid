@@ -38,15 +38,7 @@ public class MediaStoreHelper {
 	private static final int WAVE_HEADER_SIZE = 44;
 	private static final int MILLISECONDS_IN_SECOND = 1000;
 	
-	private Context context;
-	private File file;
-	
-	public MediaStoreHelper(Context context, File file) {
-		this.context = context;
-		this.file = file;
-	}
-	
-	public boolean isInserted() {
+	public static boolean isInserted(Context context, File file) {
 		ContentValues values = new ContentValues();
 		values.put(MediaStore.MediaColumns.DATA, file.getAbsolutePath());
 		values.put(MediaStore.MediaColumns.TITLE, file.getName());
@@ -57,7 +49,7 @@ public class MediaStoreHelper {
         return (results.getCount() > 0);
 	}
 	
-	public void insertFile() {
+	public static void insertFile(Context context, File file) {
 		WaveReader reader = new WaveReader(file);
 		
 		try {
@@ -94,5 +86,19 @@ public class MediaStoreHelper {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public static void removeFile(Context context, File file) {
+		ContentValues values = new ContentValues();
+		values.put(MediaStore.MediaColumns.DATA, file.getAbsolutePath());
+		values.put(MediaStore.MediaColumns.TITLE, file.getName());
+		
+		Uri contentUri = MediaStore.Audio.Media.getContentUriForPath(file.getAbsolutePath());
+
+        Cursor results = context.getContentResolver().query(contentUri, new String[] { "_data", "title" }, "_data=? and title=?", new String[] { file.getAbsolutePath(), file.getName() }, null);
+        if (results.getCount() > 0) {
+        	context.getContentResolver().delete(contentUri, "_data=? and title=?", new String[] { file.getAbsolutePath(), file.getName() });
+        }
+	
 	}
 }

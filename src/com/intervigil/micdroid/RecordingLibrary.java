@@ -250,9 +250,8 @@ public class RecordingLibrary extends Activity {
 							reader = null;
 							
 							// check to see if this exists in the media store, if it doesn't insert it
-							MediaStoreHelper mediaStore = new MediaStoreHelper(RecordingLibrary.this, waveFiles[i]);
-							if (!mediaStore.isInserted()) {
-								mediaStore.insertFile();
+							if (!MediaStoreHelper.isInserted(RecordingLibrary.this, waveFiles[i])) {
+								MediaStoreHelper.insertFile(RecordingLibrary.this, waveFiles[i]);
 								Log.i("RecordingLibrary", String.format("Added recording %s to media store", r.getRecordingName()));
 							}
 						} catch (IOException e) {

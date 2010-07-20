@@ -341,8 +341,7 @@ public class Mic extends Activity {
 			
 			// insert file into media store
 			File file = new File(((MicApplication)getApplication()).getLibraryDirectory() + File.separator + fileName);
-			MediaStoreHelper mediaStore = new MediaStoreHelper(Mic.this, file);
-			mediaStore.insertFile();
+			MediaStoreHelper.insertFile(Mic.this, file);
 
 			return null;
 		}
