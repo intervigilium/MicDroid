@@ -179,7 +179,10 @@ public class Mic extends Activity {
     	
     	setContentView(R.layout.main);
     	
-    	boolean isRecording = micRecorder.isRunning();
+    	boolean isRecording = false;
+    	if (micRecorder != null) {
+	    	isRecording = micRecorder.isRunning();
+    	}
     	ToggleButton micSwitch = (ToggleButton)findViewById(R.id.mic_toggle);
     	micSwitch.setChecked(isRecording);
     	micSwitch.setOnCheckedChangeListener(mPowerBtnListener);
