@@ -1,8 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout android:id="@+id/main_layout" android:orientation="vertical" android:gravity="center" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
+<LinearLayout android:id="@+id/main_layout" 
+    android:orientation="vertical" 
+    android:gravity="center" 
+    android:layout_width="fill_parent" 
+    android:layout_height="fill_parent" 
+    android:background="@drawable/mesh_tile"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-<TextView android:id="@+id/mic_label" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/mic_label" />
-<ToggleButton android:id="@+id/mic_toggle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="15px" android:textOff="@string/mic_toggle_off" android:textOn="@string/mic_toggle_on" />
+<TextView android:id="@+id/mic_label" 
+    android:layout_width="wrap_content" 
+    android:layout_height="wrap_content" 
+    android:text="@string/mic_label" />
+    
+<ToggleButton android:id="@+id/mic_toggle" 
+    android:layout_width="wrap_content" 
+    android:layout_height="wrap_content" 
+    android:padding="15px" 
+    android:textOff="@string/mic_toggle_off" 
+    android:textOn="@string/mic_toggle_on" />
+
 
 </LinearLayout>
