@@ -144,6 +144,17 @@ public class RecordingLibrary extends Activity {
 	    			new LoadRecordingsTask().execute((Void)null);
 	    		}
 	    		break;
+	    	case Constants.FILENAME_ENTRY_INTENT_CODE:
+	    		if (resultCode == Activity.RESULT_OK) {
+	    			String destinationName = data.getStringExtra(Constants.NAME_ENTRY_INTENT_FILE_NAME).trim() + ".wav";
+	    			String originalName = data.getStringExtra(Constants.NAME_ENTRY_INTENT_ORIGINAL_FILENAME);
+	    			File original = new File(((MicApplication)getApplication()).getLibraryDirectory() + File.separator + originalName);
+	    			File destination = new File(((MicApplication)getApplication()).getLibraryDirectory() + File.separator + destinationName);
+	    		
+	    			original.renameTo(destination);
+	    			new LoadRecordingsTask().execute((Void)null);
+	    		}
+	    		break;
     		default:
     			break;
     	}
@@ -153,6 +164,7 @@ public class RecordingLibrary extends Activity {
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
     	super.onCreateContextMenu(menu, v, menuInfo);
     	menu.setHeaderTitle(R.string.recording_options_title);
+    	menu.add(Menu.NONE, R.string.recording_options_rename, Menu.NONE, R.string.recording_options_rename);
     	menu.add(Menu.NONE, R.string.recording_options_set_ringtone, Menu.NONE, R.string.recording_options_set_ringtone);
     	menu.add(Menu.NONE, R.string.recording_options_send_email, Menu.NONE, R.string.recording_options_send_email);
     	// disable MMS for now because it can't attach wav files
@@ -174,6 +186,11 @@ public class RecordingLibrary extends Activity {
 				break;
 			case R.string.recording_options_send_mms:
 				RecordingOptionsHelper.sendMms(RecordingLibrary.this, r);
+				break;
+			case R.string.recording_options_rename:
+				Intent renameFileIntent = new Intent(getBaseContext(), FileNameEntry.class);
+				renameFileIntent.putExtra(Constants.NAME_ENTRY_INTENT_ORIGINAL_FILENAME, r.getRecordingName());
+				startActivityForResult(renameFileIntent, Constants.FILENAME_ENTRY_INTENT_CODE);
 				break;
 			default:
 				break;
