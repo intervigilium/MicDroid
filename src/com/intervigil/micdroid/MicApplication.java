@@ -48,9 +48,9 @@ public class MicApplication extends Application {
         	libraryDir.mkdirs();
         }
         
-        File ringtoneDir = new File(this.getRingtoneDirectory());
-        if (!ringtoneDir.exists()) {
-        	ringtoneDir.mkdirs();
+        File instrumentalDir = new File(this.getInstrumentalDirectory());
+        if (!instrumentalDir.exists()) {
+        	instrumentalDir.mkdirs();
         }
 	}
 	
@@ -64,7 +64,7 @@ public class MicApplication extends Application {
 	}
 	
 	public String getOldLibraryDirectory() {
-		return Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + getPackageName() + File.separator + "library";
+		return Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "Music";
 	}
 	
 	public String getOutputDirectory() {
@@ -72,10 +72,10 @@ public class MicApplication extends Application {
 	}
 	
 	public String getLibraryDirectory() {
-		return Environment.getExternalStorageDirectory() + File.separator + "Music";
+		return Environment.getExternalStorageDirectory() + File.separator + "MicDroid" + File.separator + "recordings";
 	}
 	
-	public String getRingtoneDirectory() {
-		return Environment.getExternalStorageDirectory() + File.separator + "Ringtones";
+	public String getInstrumentalDirectory() {
+		return Environment.getExternalStorageDirectory() + File.separator + "MicDroid" + File.separator + "instrumental";
 	}
 }
