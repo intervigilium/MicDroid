@@ -99,6 +99,28 @@ public class MediaStoreHelper {
         if (results.getCount() > 0) {
         	context.getContentResolver().delete(contentUri, "_data=? and title=?", new String[] { file.getAbsolutePath(), file.getName() });
         }
+	}
 	
+	public static Uri getRecordingUri(Context context, Recording recording) {
+		String recordingPath = ((MicApplication)context.getApplicationContext()).getLibraryDirectory() + File.separator + recording.getRecordingName();
+    	
+    	ContentValues values = new ContentValues();
+		values.put(MediaStore.MediaColumns.DATA, recordingPath);
+        values.put(MediaStore.MediaColumns.TITLE, recording.getRecordingName());
+        values.put(MediaStore.MediaColumns.SIZE, recording.getRecordingSize());
+        values.put(MediaStore.MediaColumns.MIME_TYPE, Constants.AUDIO_WAVE);
+
+        values.put(MediaStore.Audio.Media.ARTIST, "MicDroid");
+        values.put(MediaStore.Audio.Media.ALBUM, "MicDroid");
+        values.put(MediaStore.Audio.Media.DURATION, recording.getRecordingMs());
+
+        values.put(MediaStore.Audio.Media.IS_RINGTONE, true);
+        values.put(MediaStore.Audio.Media.IS_NOTIFICATION, false);
+        values.put(MediaStore.Audio.Media.IS_ALARM, false);
+        values.put(MediaStore.Audio.Media.IS_MUSIC, true);
+        
+        Uri contentUri = MediaStore.Audio.Media.getContentUriForPath(recordingPath);
+        context.getContentResolver().delete(contentUri, "_data=? and title=?", new String[] {recordingPath, recording.getRecordingName()});
+        return context.getContentResolver().insert(contentUri, values);
 	}
 }
