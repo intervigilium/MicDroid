@@ -8,7 +8,7 @@
     <string name="startup_dialog_title">What\'s new in this version?</string>
     <string name="startup_dialog_text">1. Add chromatic scale\n\
 2. Fix crash on rotate\n\
-3. Move recordings to /sdcard/MicDroid/
+3. Move recordings to /sdcard/MicDroid/\n\
 4. Allow background recording/playback\n\
 5. Allow install to SD card in Froyo\n\
 6. Add \'Help\' and \'About\' menu items\n\
