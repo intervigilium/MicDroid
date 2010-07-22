@@ -46,7 +46,7 @@ public class MediaStoreHelper {
 		Uri contentUri = MediaStore.Audio.Media.getContentUriForPath(file.getAbsolutePath());
 
         Cursor results = context.getContentResolver().query(contentUri, new String[] { "_data", "title" }, "_data=? and title=?", new String[] { file.getAbsolutePath(), file.getName() }, null);
-        return (results.getCount() > 0);
+        return (results != null && results.getCount() > 0);
 	}
 	
 	public static void insertFile(Context context, File file) {
