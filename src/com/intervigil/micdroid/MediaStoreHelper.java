@@ -46,6 +46,7 @@ public class MediaStoreHelper {
 		Uri contentUri = MediaStore.Audio.Media.getContentUriForPath(file.getAbsolutePath());
 
         Cursor results = context.getContentResolver().query(contentUri, new String[] { "_data", "title" }, "_data=? and title=?", new String[] { file.getAbsolutePath(), file.getName() }, null);
+
         return (results != null && results.getCount() > 0);
 	}
 	
@@ -73,7 +74,7 @@ public class MediaStoreHelper {
 	        Uri contentUri = MediaStore.Audio.Media.getContentUriForPath(file.getAbsolutePath());
 
 	        Cursor results = context.getContentResolver().query(contentUri, new String[] { "_data", "title" }, "_data=? and title=?", new String[] { file.getAbsolutePath(), file.getName() }, null);
-	        if (results.getCount() > 0) {
+	        if (results != null && results.getCount() > 0) {
 	        	context.getContentResolver().delete(contentUri, "_data=? and title=?", new String[] { file.getAbsolutePath(), file.getName() });   
 	        }
 	        context.getContentResolver().insert(contentUri, values);
@@ -96,7 +97,7 @@ public class MediaStoreHelper {
 		Uri contentUri = MediaStore.Audio.Media.getContentUriForPath(file.getAbsolutePath());
 
         Cursor results = context.getContentResolver().query(contentUri, new String[] { "_data", "title" }, "_data=? and title=?", new String[] { file.getAbsolutePath(), file.getName() }, null);
-        if (results.getCount() > 0) {
+        if (results != null && results.getCount() > 0) {
         	context.getContentResolver().delete(contentUri, "_data=? and title=?", new String[] { file.getAbsolutePath(), file.getName() });
         }
 	}
