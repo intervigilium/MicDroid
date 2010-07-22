@@ -280,9 +280,12 @@ public class RecordingLibrary extends Activity {
 					if (waveFiles[i].isFile() && waveFiles[i].getName().contains(".wav")) {
 						MediaStoreHelper.removeFile(RecordingLibrary.this, waveFiles[i]);
 						File destination = new File(((MicApplication)getApplication()).getLibraryDirectory() + File.separator + waveFiles[i].getName());
-						waveFiles[i].renameTo(destination);
-						MediaStoreHelper.insertFile(RecordingLibrary.this, waveFiles[i]);
-						Log.i("RecordingLibrary", String.format("Moved recording %s to new library directory!", waveFiles[i].getName()));
+						if (waveFiles[i].renameTo(destination)) {
+							MediaStoreHelper.insertFile(RecordingLibrary.this, waveFiles[i]);
+							Log.i("RecordingLibrary", String.format("Moved recording %s to new library directory!", waveFiles[i].getName()));
+						} else {
+							Log.i("RecordingLibrary", String.format("Unable to move recording %s to new library directory!", waveFiles[i]));
+						}
 					}
 				}
 			}
