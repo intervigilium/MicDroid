@@ -226,7 +226,7 @@ public class Mic extends Activity {
     	switch (requestCode) {
 	    	case Constants.FILENAME_ENTRY_INTENT_CODE:
 	    		if (resultCode == Activity.RESULT_OK) {
-	    			String fileName = data.getStringExtra(getString(R.string.filename_entry_result));
+	    			String fileName = data.getStringExtra(Constants.NAME_ENTRY_INTENT_FILE_NAME);
 	    			fileName = fileName + ".wav";
 	    			new ProcessAutotalentTask().execute(fileName);
 	    		} else if (resultCode == Activity.RESULT_CANCELED) {

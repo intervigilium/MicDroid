@@ -3,7 +3,6 @@
     <string name="hello">Hello World, mic!</string>
     <string name="app_name">MicDroid</string>
     <string name="default_recording_name">recording.wav</string>
-    <string name="filename_entry_result">FILENAME_RESULT</string>
     
     <string name="startup_dialog_title">What\'s new in this version?</string>
     <string name="startup_dialog_text">1. Add chromatic scale\n\
