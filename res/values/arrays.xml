@@ -19,6 +19,7 @@
     
     <!-- Entry names for the key menu. -->
     <string-array name="prefs_key_entries">
+    	<item>Chromatic</item>
     	<item>Ab Major</item>
     	<item>A Major</item>
     	<item>Bb Major</item>
@@ -35,6 +36,7 @@
 
     <!-- Values for the key menu. -->
     <string-array name="prefs_key_values">
+    	<item>X</item>
     	<item>a</item>
     	<item>A</item>
     	<item>b</item>
