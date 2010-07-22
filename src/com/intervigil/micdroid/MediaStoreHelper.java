@@ -42,12 +42,19 @@ public class MediaStoreHelper {
 		ContentValues values = new ContentValues();
 		values.put(MediaStore.MediaColumns.DATA, file.getAbsolutePath());
 		values.put(MediaStore.MediaColumns.TITLE, file.getName());
+		values.put(MediaStore.MediaColumns.DISPLAY_NAME, file.getName());
 		
 		Uri contentUri = MediaStore.Audio.Media.getContentUriForPath(file.getAbsolutePath());
 
-        Cursor results = context.getContentResolver().query(contentUri, new String[] { "_data", "title" }, "_data=? and title=?", new String[] { file.getAbsolutePath(), file.getName() }, null);
+        Cursor results = context.getContentResolver().query(contentUri, new String[] { "_display_name" }, "_display_name=?", new String[] { file.getName() }, null);
 
-        return (results != null && results.getCount() > 0);
+        int count = 0;
+        if (results != null) {
+        	count = results.getCount();
+        }
+        results.close();
+        
+        return (count > 0);
 	}
 	
 	public static void insertFile(Context context, File file) {
@@ -59,6 +66,7 @@ public class MediaStoreHelper {
 			ContentValues values = new ContentValues();
 			values.put(MediaStore.MediaColumns.DATA, file.getAbsolutePath());
 	        values.put(MediaStore.MediaColumns.TITLE, file.getName());
+	        values.put(MediaStore.MediaColumns.DISPLAY_NAME, file.getName());
 	        values.put(MediaStore.MediaColumns.SIZE, reader.getDataSize() + WAVE_HEADER_SIZE);
 	        values.put(MediaStore.MediaColumns.MIME_TYPE, Constants.AUDIO_WAVE);
 
@@ -73,10 +81,11 @@ public class MediaStoreHelper {
 	        
 	        Uri contentUri = MediaStore.Audio.Media.getContentUriForPath(file.getAbsolutePath());
 
-	        Cursor results = context.getContentResolver().query(contentUri, new String[] { "_data", "title" }, "_data=? and title=?", new String[] { file.getAbsolutePath(), file.getName() }, null);
+	        Cursor results = context.getContentResolver().query(contentUri, new String[] { "_display_name" }, "_display_name=?", new String[] { file.getName() }, null);
 	        if (results != null && results.getCount() > 0) {
-	        	context.getContentResolver().delete(contentUri, "_data=? and title=?", new String[] { file.getAbsolutePath(), file.getName() });   
+	        	context.getContentResolver().delete(contentUri, "_display_name=?", new String[] { file.getName() });   
 	        }
+	        results.close();
 	        context.getContentResolver().insert(contentUri, values);
 
 	        reader.closeWaveFile();
@@ -93,13 +102,15 @@ public class MediaStoreHelper {
 		ContentValues values = new ContentValues();
 		values.put(MediaStore.MediaColumns.DATA, file.getAbsolutePath());
 		values.put(MediaStore.MediaColumns.TITLE, file.getName());
+		values.put(MediaStore.MediaColumns.DISPLAY_NAME, file.getName());
 		
 		Uri contentUri = MediaStore.Audio.Media.getContentUriForPath(file.getAbsolutePath());
 
-        Cursor results = context.getContentResolver().query(contentUri, new String[] { "_data", "title" }, "_data=? and title=?", new String[] { file.getAbsolutePath(), file.getName() }, null);
+        Cursor results = context.getContentResolver().query(contentUri, new String[] { "_display_name" }, "_display_name=?", new String[] { file.getName() }, null);
         if (results != null && results.getCount() > 0) {
-        	context.getContentResolver().delete(contentUri, "_data=? and title=?", new String[] { file.getAbsolutePath(), file.getName() });
+        	context.getContentResolver().delete(contentUri, "_display_name=?", new String[] { file.getName() });
         }
+        results.close();
 	}
 	
 	public static Uri getRecordingUri(Context context, Recording recording) {
@@ -108,6 +119,7 @@ public class MediaStoreHelper {
     	ContentValues values = new ContentValues();
 		values.put(MediaStore.MediaColumns.DATA, recordingPath);
         values.put(MediaStore.MediaColumns.TITLE, recording.getRecordingName());
+        values.put(MediaStore.MediaColumns.DISPLAY_NAME, recording.getRecordingName());
         values.put(MediaStore.MediaColumns.SIZE, recording.getRecordingSize());
         values.put(MediaStore.MediaColumns.MIME_TYPE, Constants.AUDIO_WAVE);
 
@@ -121,7 +133,7 @@ public class MediaStoreHelper {
         values.put(MediaStore.Audio.Media.IS_MUSIC, true);
         
         Uri contentUri = MediaStore.Audio.Media.getContentUriForPath(recordingPath);
-        context.getContentResolver().delete(contentUri, "_data=? and title=?", new String[] {recordingPath, recording.getRecordingName()});
+        context.getContentResolver().delete(contentUri, "_display_name=?", new String[] { recording.getRecordingName() });
         return context.getContentResolver().insert(contentUri, values);
 	}
 }
