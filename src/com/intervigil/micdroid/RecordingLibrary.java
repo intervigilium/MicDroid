@@ -148,7 +148,9 @@ public class RecordingLibrary extends Activity {
 	    		if (resultCode == Activity.RESULT_OK) {
 	    			String destinationName = data.getStringExtra(Constants.NAME_ENTRY_INTENT_FILE_NAME).trim() + ".wav";
 	    			String originalName = data.getStringExtra(Constants.NAME_ENTRY_INTENT_ORIGINAL_FILENAME);
+	    			
 	    			File original = new File(((MicApplication)getApplication()).getLibraryDirectory() + File.separator + originalName);
+	    			MediaStoreHelper.removeFile(RecordingLibrary.this, original);
 	    			File destination = new File(((MicApplication)getApplication()).getLibraryDirectory() + File.separator + destinationName);
 	    		
 	    			original.renameTo(destination);
@@ -164,6 +166,7 @@ public class RecordingLibrary extends Activity {
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
     	super.onCreateContextMenu(menu, v, menuInfo);
     	menu.setHeaderTitle(R.string.recording_options_title);
+    	
     	menu.add(Menu.NONE, R.string.recording_options_rename, Menu.NONE, R.string.recording_options_rename);
     	menu.add(Menu.NONE, R.string.recording_options_set_ringtone, Menu.NONE, R.string.recording_options_set_ringtone);
     	menu.add(Menu.NONE, R.string.recording_options_send_email, Menu.NONE, R.string.recording_options_send_email);
@@ -296,6 +299,7 @@ public class RecordingLibrary extends Activity {
 				for (int i = 0; i < waveFiles.length; i++) {
 					if (waveFiles[i].isFile() && waveFiles[i].getName().contains(".wav")) {
 						MediaStoreHelper.removeFile(RecordingLibrary.this, waveFiles[i]);
+						
 						File destination = new File(((MicApplication)getApplication()).getLibraryDirectory() + File.separator + waveFiles[i].getName());
 						if (waveFiles[i].renameTo(destination)) {
 							MediaStoreHelper.insertFile(RecordingLibrary.this, waveFiles[i]);
