@@ -24,6 +24,7 @@
 package com.intervigil.micdroid;
 
 import java.io.File;
+import java.io.IOException;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -50,11 +51,22 @@ public class Recording implements Parcelable {
 	public Recording() {
 	}
 	
+	public Recording(File file) throws IOException {
+		WaveReader reader = new WaveReader(file);
+		reader.openWave();
+		this.recordingPath = file.getParent();
+		this.recordingName = file.getName();
+		this.recordingLength = reader.getLength();
+		this.recordingSize = reader.getDataSize() + WAVE_HEADER_SIZE;
+		reader.closeWaveFile();
+		reader = null;
+	}
+	
 	private Recording(Parcel in) {
-		recordingPath = in.readString();
-		recordingName = in.readString();
-		recordingLength = in.readInt();
-		recordingSize = in.readInt();
+		this.recordingPath = in.readString();
+		this.recordingName = in.readString();
+		this.recordingLength = in.readInt();
+		this.recordingSize = in.readInt();
 	}
 	
 	public Recording(String path, String name, int length, int size) {
@@ -120,5 +132,12 @@ public class Recording implements Parcelable {
 	
 	public void setSize(int size) {
 		recordingSize = size;
+	}
+	
+	public void moveTo(File destination) {
+		File recordingFile = new File(recordingPath + File.separator + recordingName);
+		recordingPath = destination.getParent();
+		recordingName = destination.getName();
+		recordingFile.renameTo(destination);
 	}
 }

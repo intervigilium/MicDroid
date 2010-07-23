@@ -25,7 +25,6 @@ package com.intervigil.micdroid;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -103,22 +102,11 @@ public class StartupDialog extends Dialog {
 	}
 	
 	protected void okButtonPressed() {
-		PreferenceHelper.setSeenStartupDialog(context, getPackageVersion());
+		PreferenceHelper.setSeenStartupDialog(context, ApplicationHelper.getPackageVersion(context));
 		dismiss();
 	}
 
     private boolean isAccepted() {
-        return PreferenceHelper.getSeenStartupDialog(context) == getPackageVersion();
-    }
-    
-    private int getPackageVersion() {
-    	int versionCode = -1;
-    	try {
-			versionCode = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
-		} catch (NameNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return versionCode;
+        return PreferenceHelper.getSeenStartupDialog(context) == ApplicationHelper.getPackageVersion(context);
     }
 }

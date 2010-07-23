@@ -90,6 +90,16 @@ public class PreferenceHelper {
         editor.commit();
 	}
 	
+	public static int getMovedOldLibrary(Context context) {
+		return PreferenceManager.getDefaultSharedPreferences(context).getInt(Constants.KEY_MOVED_OLD_LIBRARY, -1);
+	}
+
+	public static void setMovedOldLibrary(Context context, int value) {
+		Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+        editor.putInt(Constants.KEY_MOVED_OLD_LIBRARY, value);
+        editor.commit();
+	}
+	
 	public static int getSampleRate(Context context) {
 		SharedPreferences prefReader = PreferenceManager.getDefaultSharedPreferences(context);
 		String sampleRate = prefReader.getString(context.getString(R.string.prefs_sample_rate_key), "-1");
