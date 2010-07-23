@@ -3,15 +3,16 @@
     <string name="hello">Hello World, mic!</string>
     <string name="app_name">MicDroid</string>
     <string name="default_recording_name">recording.wav</string>
-    <string name="filename_entry_result">FILENAME_RESULT</string>
     
     <string name="startup_dialog_title">What\'s new in this version?</string>
-    <string name="startup_dialog_text">1. Better recording error handling\n\
-2. Allow background recording/playback\n\
-3. Allow install to SD card in Froyo\n\
-4. Add \'Help\' and \'About\' menu items\n\
-4. Add set as ringtone support (LONG PRESS on recording to activate)\n\
-5. Add send as email attachment support (LONG PRESS on recording to activate)\n\
+    <string name="startup_dialog_text">1. Add chromatic scale\n\
+2. Fix crash on rotate\n\
+3. Move recordings to /sdcard/MicDroid/\n\
+4. Allow background recording/playback\n\
+5. Allow install to SD card in Froyo\n\
+6. Add \'Help\' and \'About\' menu items\n\
+7. Add set as ringtone support (LONG PRESS on recording to activate)\n\
+8. Add send as email attachment support (LONG PRESS on recording to activate)\n\
 \n\
 DISCLAIMER: This is alpha software! May be buggy and force close on you! Author is aware and working on issues!\n\
     </string>
@@ -42,7 +43,7 @@ DISCLAIMER: This is alpha software! May be buggy and force close on you! Author 
     <string name="recording_save_canceled">Recording save canceled!</string>
     
     <string name="filename_entry">Save Recording</string>
-    <string name="filename_entry_text">The current recording will be with the name: </string>
+    <string name="filename_entry_text">The current recording will have the name: </string>
     <string name="filename_entry_btn_ok">Save</string>
     <string name="filename_entry_btn_cancel">Cancel</string>
     
@@ -56,9 +57,11 @@ DISCLAIMER: This is alpha software! May be buggy and force close on you! Author 
     <string name="recording_library_empty">No Recordings</string>
     
     <string name="recording_options_title">Recording Options</string>
+    <string name="recording_options_rename">Rename Recording</string>
     <string name="recording_options_set_ringtone">Set as Ringtone</string>
     <string name="recording_options_send_email">Send as Email</string>
     <string name="recording_options_send_mms">Send as MMS</string>
+    
     <string name="recording_options_ringtone_set">Recording set as ringtone!</string>
     <string name="recording_options_mms_sent">Recording sent as MMS!</string>
     <string name="recording_options_email_sent">Recording sent as email!</string>

@@ -25,42 +25,20 @@ package com.intervigil.micdroid;
 
 import java.io.File;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.provider.MediaStore;
 
 public class RecordingOptionsHelper {
 	
 	public static void setRingTone(Context context, Recording recording) {
-    	String recordingPath = ((MicApplication)context.getApplicationContext()).getLibraryDirectory() + File.separator + recording.getRecordingName();
-    	    	
-    	ContentValues values = new ContentValues();
-		values.put(MediaStore.MediaColumns.DATA, recordingPath);
-        values.put(MediaStore.MediaColumns.TITLE, recording.getRecordingName());
-        values.put(MediaStore.MediaColumns.SIZE, recording.getRecordingSize());
-        values.put(MediaStore.MediaColumns.MIME_TYPE, Constants.AUDIO_WAVE);
-
-        values.put(MediaStore.Audio.Media.ARTIST, "MicDroid");
-        values.put(MediaStore.Audio.Media.ALBUM, "MicDroid");
-        values.put(MediaStore.Audio.Media.DURATION, recording.getRecordingMs());
-
-        values.put(MediaStore.Audio.Media.IS_RINGTONE, true);
-        values.put(MediaStore.Audio.Media.IS_NOTIFICATION, false);
-        values.put(MediaStore.Audio.Media.IS_ALARM, false);
-        values.put(MediaStore.Audio.Media.IS_MUSIC, true);
-        
-        Uri contentUri = MediaStore.Audio.Media.getContentUriForPath(recordingPath);
-        context.getContentResolver().delete(contentUri, "_data=? and title=?", new String[] {recordingPath, recording.getRecordingName()});
-        Uri recordingUri = context.getContentResolver().insert(contentUri, values);
-
+    	Uri recordingUri = MediaStoreHelper.getRecordingUri(context, recording);
         RingtoneManager.setActualDefaultRingtoneUri(context, RingtoneManager.TYPE_RINGTONE, recordingUri);
     }
 	
 	public static void sendEmailAttachment(Context context, Recording recording) {
-		String recordingPath = ((MicApplication)context.getApplicationContext()).getLibraryDirectory() + File.separator + recording.getRecordingName();
+		String recordingPath = ApplicationHelper.getLibraryDirectory() + File.separator + recording.getName();
 		File recordingFile = new File(recordingPath);
 		
 		Intent sendEmailIntent = new Intent(Intent.ACTION_SEND);
@@ -71,7 +49,7 @@ public class RecordingOptionsHelper {
 	}
 	
 	public static void sendMms(Context context, Recording recording) {
-		String recordingPath = ((MicApplication)context.getApplicationContext()).getLibraryDirectory() + File.separator + recording.getRecordingName();
+		String recordingPath = ApplicationHelper.getLibraryDirectory() + File.separator + recording.getName();
 		File recordingFile = new File(recordingPath);
 		
 		Intent sendMmsIntent = new Intent(Intent.ACTION_SEND);

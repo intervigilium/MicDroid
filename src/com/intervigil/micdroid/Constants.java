@@ -37,16 +37,19 @@ public class Constants {
 	public static final int SAMPLE_RATE_11KHZ = 11025;
 	public static final int SAMPLE_RATE_8KHZ = 8000;
 	
-	// recording names
-	public static final String PLAY_DATA_RECORDING_NAME = "recordingName";
-	
 	// intent codes
 	public static final int FILENAME_ENTRY_INTENT_CODE = 12768;
 	public static final int PLAYER_INTENT_CODE = 12769;
 	public static final int RESULT_FILE_DELETED = 12770;
 	
+	// intent extras
+	public static final String PLAYER_INTENT_RECORDING = "PLAYER_RECORDING";
+	public static final String NAME_ENTRY_INTENT_RECORDING = "NAME_ENTRY_RECORDING";
+	public static final String NAME_ENTRY_INTENT_FILE_NAME = "NAME_ENTRY_FILENAME_RESULT";
+	
 	// shared preference keys
 	public static final String KEY_SEEN_STARTUP_DIALOG = "prefs_seen_startup_dialog";
+	public static final String KEY_MOVED_OLD_LIBRARY = "prefs_moved_old_library";
 	
 	// mime type
 	public static final String AUDIO_WAVE = "audio/wav";

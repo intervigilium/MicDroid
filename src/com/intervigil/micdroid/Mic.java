@@ -112,6 +112,7 @@ public class Mic extends Activity {
     	startupDialog.show();
     	AudioHelper.configureRecorder(Mic.this);
     	PreferenceHelper.resetKeyDefault(Mic.this);
+    	migrateOldRecordings();
     	
     	android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
     }
@@ -226,8 +227,7 @@ public class Mic extends Activity {
     	switch (requestCode) {
 	    	case Constants.FILENAME_ENTRY_INTENT_CODE:
 	    		if (resultCode == Activity.RESULT_OK) {
-	    			String fileName = data.getStringExtra(getString(R.string.filename_entry_result));
-	    			fileName = fileName + ".wav";
+	    			String fileName = data.getStringExtra(Constants.NAME_ENTRY_INTENT_FILE_NAME).trim() + ".wav";
 	    			new ProcessAutotalentTask().execute(fileName);
 	    		} else if (resultCode == Activity.RESULT_CANCELED) {
 	    			Toast.makeText(Mic.this, R.string.recording_save_canceled, Toast.LENGTH_SHORT).show();
@@ -296,11 +296,11 @@ public class Mic extends Activity {
 
 			try {
 				reader = new WaveReader(
-						((MicApplication)getApplication()).getOutputDirectory(), 
+						ApplicationHelper.getOutputDirectory(), 
 						getString(R.string.default_recording_name));
 				reader.openWave();
 				writer = new WaveWriter(
-						((MicApplication)getApplication()).getLibraryDirectory(), 
+						ApplicationHelper.getLibraryDirectory(), 
 						fileName,
 						reader.getSampleRate(), reader.getChannels(), reader.getPcmFormat());
 				writer.createWaveFile();
@@ -338,10 +338,6 @@ public class Mic extends Activity {
 				// TODO: real error handling
 				e.printStackTrace();
 			}
-			
-			// insert file into media store
-			File file = new File(((MicApplication)getApplication()).getLibraryDirectory() + File.separator + fileName);
-			MediaStoreHelper.insertFile(Mic.this, file);
 
 			return null;
 		}
@@ -421,7 +417,7 @@ public class Mic extends Activity {
 		public void run() {
 			try {
 				writer = new WaveWriter(
-						((MicApplication)getApplication()).getOutputDirectory(),
+						ApplicationHelper.getOutputDirectory(),
 						getString(R.string.default_recording_name), 
 						PreferenceHelper.getSampleRate(Mic.this), 
 						AudioHelper.getChannelConfig(Constants.DEFAULT_CHANNEL_CONFIG), 
@@ -539,6 +535,31 @@ public class Mic extends Activity {
 			}
     	}
     }
+    
+    private void migrateOldRecordings() {
+    	// this is a oneshot, only done on upgrade/new install
+    	if (PreferenceHelper.getMovedOldLibrary(Mic.this) != ApplicationHelper.getPackageVersion(Mic.this)) {
+			File oldLibraryDir = new File(ApplicationHelper.getOldLibraryDirectory());
+			File[] waveFiles = oldLibraryDir.listFiles();
+			
+			if (waveFiles != null) {
+				for (int i = 0; i < waveFiles.length; i++) {
+					if (waveFiles[i].isFile() && waveFiles[i].getName().contains(".wav")) {
+						try {
+							Recording r = new Recording(waveFiles[i]);
+							MediaStoreHelper.removeRecording(Mic.this, r);
+							File destination = new File(ApplicationHelper.getLibraryDirectory() + File.separator + waveFiles[i].getName());
+							r.moveTo(destination);
+							MediaStoreHelper.insertRecording(Mic.this, r);
+						} catch (IOException e) {
+							// don't do anything since it's not a wave file, yes using exceptions for control flow is bad
+						}
+					}
+				}
+			}
+			PreferenceHelper.setMovedOldLibrary(Mic.this, ApplicationHelper.getPackageVersion(Mic.this));
+    	}
+	}
     
     private static boolean canWriteToSdCard() {
     	return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);

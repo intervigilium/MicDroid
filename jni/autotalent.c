@@ -313,6 +313,20 @@ void fft_inverse(fft_vars* membvars, float* input_re, float* input_im, float* ou
 #define KEY_G_G 1
 #define KEY_G_Ab -1
 
+// chromatic scale, X because it's unique
+#define KEY_X_A 1
+#define KEY_X_Bb 1
+#define KEY_X_B 1
+#define KEY_X_C 1
+#define KEY_X_Db 1
+#define KEY_X_D 1
+#define KEY_X_Eb 1
+#define KEY_X_E 1
+#define KEY_X_F 1
+#define KEY_X_Gb 1
+#define KEY_X_G 1
+#define KEY_X_Ab 1
+
 
 /*************************
  *  THE MEMBER VARIABLES *
@@ -740,6 +754,20 @@ void setAutotalentKey(Autotalent * autotalent, char * keyPtr) {
 	  key[AT_Gb] = KEY_G_Gb;
 	  key[AT_G] = KEY_G_G;
 	  key[AT_Ab] = KEY_G_Ab;
+	  break;
+    case 'X':
+	  key[AT_A] = KEY_X_A;
+	  key[AT_Bb] = KEY_X_Bb;
+	  key[AT_B] = KEY_X_B;
+	  key[AT_C] = KEY_X_C;
+	  key[AT_Db] = KEY_X_Db;
+	  key[AT_D] = KEY_X_D;
+	  key[AT_Eb] = KEY_X_Eb;
+	  key[AT_E] = KEY_X_E;
+	  key[AT_F] = KEY_X_F;
+	  key[AT_Gb] = KEY_X_Gb;
+	  key[AT_G] = KEY_X_G;
+	  key[AT_Ab] = KEY_X_Ab;
 	  break;
   }
 

@@ -24,8 +24,6 @@
 
 package com.intervigil.micdroid;
 
-import java.io.File;
-
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -39,7 +37,7 @@ public class RecordingPlayer extends Activity {
 	
 	private static final int SEEKBAR_RESOLUTION = 1000;
 	
-	private String recordingName;
+	private Recording recording;
 	private SeekableMediaPlayer mediaPlayer;
 	private SeekBar mediaSeekBar;
 	
@@ -56,13 +54,13 @@ public class RecordingPlayer extends Activity {
         setContentView(R.layout.recording_player);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND, WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
 
-        recordingName = getIntent().getExtras().getString(Constants.PLAY_DATA_RECORDING_NAME);
+        recording = getIntent().getExtras().getParcelable(Constants.PLAYER_INTENT_RECORDING);
 
         mediaSeekBar = (SeekBar)findViewById(R.id.recording_player_seekbar);
-        ((TextView)findViewById(R.id.recording_player_file_name)).setText(recordingName);
+        ((TextView)findViewById(R.id.recording_player_file_name)).setText(recording.getName());
         
         mediaSeekBar.setMax(SEEKBAR_RESOLUTION);
-        mediaPlayer = new SeekableMediaPlayer(((MicApplication)getApplication()).getLibraryDirectory() + File.separator + recordingName, mediaSeekBar); 
+        mediaPlayer = new SeekableMediaPlayer(recording.getAbsolutePath(), mediaSeekBar); 
     }
     
     @Override
@@ -121,7 +119,7 @@ public class RecordingPlayer extends Activity {
     	setContentView(R.layout.recording_player);
 
     	mediaSeekBar = (SeekBar)findViewById(R.id.recording_player_seekbar);
-        ((TextView)findViewById(R.id.recording_player_file_name)).setText(recordingName);
+        ((TextView)findViewById(R.id.recording_player_file_name)).setText(recording.getName());
         
         mediaSeekBar.setMax(SEEKBAR_RESOLUTION);
         
@@ -138,9 +136,8 @@ public class RecordingPlayer extends Activity {
 	    		break;
 	    	case R.id.recording_player_btn_delete:
 	    		mediaPlayer.close();
-    			File toDelete = new File(((MicApplication)getApplication()).getLibraryDirectory() + File.separator + recordingName);
-    			toDelete.delete();
-    			MediaStoreHelper.removeFile(RecordingPlayer.this, toDelete);
+    			recording.asFile().delete();
+    			MediaStoreHelper.removeRecording(RecordingPlayer.this, recording);
     			setResult(Constants.RESULT_FILE_DELETED);
     			finish();
 	    		break;

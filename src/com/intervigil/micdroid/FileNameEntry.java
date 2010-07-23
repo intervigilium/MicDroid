@@ -77,7 +77,13 @@ public class FileNameEntry extends Activity {
 			EditText fileNameInput = (EditText)findViewById(R.id.filename_entry_field);
 			String fileName = fileNameInput.getText().toString();
 			Intent result = new Intent();
-			result.putExtra(getString(R.string.filename_entry_result), fileName);
+			result.putExtra(Constants.NAME_ENTRY_INTENT_FILE_NAME, fileName);
+			
+			Bundle data = getIntent().getExtras();
+			if (data != null) {
+				Recording r = data.getParcelable(Constants.NAME_ENTRY_INTENT_RECORDING);
+				result.putExtra(Constants.NAME_ENTRY_INTENT_RECORDING, r);
+			}
 			
 			if (fileName == null || fileName.length() == 0) {
 				invalidNameAlert.show();
