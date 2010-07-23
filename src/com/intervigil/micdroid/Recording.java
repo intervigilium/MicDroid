@@ -23,51 +23,102 @@
 
 package com.intervigil.micdroid;
 
-public class Recording {
+import java.io.File;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Recording implements Parcelable {
+	public static final int WAVE_HEADER_SIZE = 44;
+	public static final int MILLISECONDS_IN_SECOND = 1000;
+	
+	private String recordingPath;
 	private String recordingName;
 	private int recordingLength;
 	private int recordingSize;
 	
+	public static final Parcelable.Creator<Recording> CREATOR = new Parcelable.Creator<Recording>() {
+		public Recording createFromParcel(Parcel in) {
+		    return new Recording(in);
+		}
+		
+		public Recording[] newArray(int size) {
+		    return new Recording[size];
+		}
+	};
+	
 	public Recording() {
 	}
 	
-	public Recording(String name, int length, int size) {
+	private Recording(Parcel in) {
+		recordingPath = in.readString();
+		recordingName = in.readString();
+		recordingLength = in.readInt();
+		recordingSize = in.readInt();
+	}
+	
+	public Recording(String path, String name, int length, int size) {
+		this.recordingPath = path;
 		this.recordingName = name;
 		this.recordingLength = length;
 		this.recordingSize = size;
 	}
+
+	public int describeContents() {
+		return 0;
+	}
+
+	public void writeToParcel(Parcel out, int flags) {
+		out.writeString(recordingPath);
+		out.writeString(recordingName);
+		out.writeInt(recordingLength);
+		out.writeInt(recordingSize);
+	}
 	
-	public String getRecordingName() {
+	public File asFile() {
+		return new File(recordingPath + File.separator + recordingName);
+	}
+	
+	public String getAbsolutePath() {
+		return recordingPath + File.separator + recordingName;
+	}
+	
+	public String getName() {
 		// gets recording name, typically the file name
 		return recordingName;
 	}
 	
-	public int getRecordingMs() {
+	public int getLengthInMs() {
 		return recordingLength * 1000;
 	}
 	
-	public String getRecordingLength() {
+	public String getLength() {
 		// gets recording length in MM:SS format
 		int minutes = recordingLength/60;
 		int seconds = recordingLength%60;
 		return String.format("%d:%02d", minutes, seconds);
 	}
 	
-	public int getRecordingSize() {
+	public int getSize() {
 		return recordingSize;
 	}
 	
-	public void setRecordingName(String name) {
+	public void setPath(String path) {
+		// sets the recording path, where it is located
+		recordingPath = path;
+	}
+	
+	public void setName(String name) {
 		// sets recording name, typically the file name
 		recordingName = name;
 	}
 
-	public void setRecordingLength(int length) {
+	public void setLength(int length) {
 		// sets recording length, in number of seconds
 		recordingLength = length;
 	}
 	
-	public void setRecordingSize(int size) {
+	public void setSize(int size) {
 		recordingSize = size;
 	}
 }

@@ -46,8 +46,8 @@ public class Constants {
 	public static final int RESULT_FILE_DELETED = 12770;
 	
 	// intent extras
+	public static final String NAME_ENTRY_INTENT_RECORDING = "RECORDING";
 	public static final String NAME_ENTRY_INTENT_FILE_NAME = "FILENAME_RESULT";
-	public static final String NAME_ENTRY_INTENT_ORIGINAL_FILENAME = "ORIGINAL_NAME";
 	
 	// shared preference keys
 	public static final String KEY_SEEN_STARTUP_DIALOG = "prefs_seen_startup_dialog";

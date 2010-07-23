@@ -38,7 +38,7 @@ public class RecordingOptionsHelper {
     }
 	
 	public static void sendEmailAttachment(Context context, Recording recording) {
-		String recordingPath = ((MicApplication)context.getApplicationContext()).getLibraryDirectory() + File.separator + recording.getRecordingName();
+		String recordingPath = ((MicApplication)context.getApplicationContext()).getLibraryDirectory() + File.separator + recording.getName();
 		File recordingFile = new File(recordingPath);
 		
 		Intent sendEmailIntent = new Intent(Intent.ACTION_SEND);
@@ -49,7 +49,7 @@ public class RecordingOptionsHelper {
 	}
 	
 	public static void sendMms(Context context, Recording recording) {
-		String recordingPath = ((MicApplication)context.getApplicationContext()).getLibraryDirectory() + File.separator + recording.getRecordingName();
+		String recordingPath = ((MicApplication)context.getApplicationContext()).getLibraryDirectory() + File.separator + recording.getName();
 		File recordingFile = new File(recordingPath);
 		
 		Intent sendMmsIntent = new Intent(Intent.ACTION_SEND);

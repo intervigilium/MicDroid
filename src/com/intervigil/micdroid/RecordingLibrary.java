@@ -146,10 +146,10 @@ public class RecordingLibrary extends Activity {
 	    		break;
 	    	case Constants.FILENAME_ENTRY_INTENT_CODE:
 	    		if (resultCode == Activity.RESULT_OK) {
+	    			Recording r = data.getParcelableExtra(Constants.NAME_ENTRY_INTENT_RECORDING);
 	    			String destinationName = data.getStringExtra(Constants.NAME_ENTRY_INTENT_FILE_NAME).trim() + ".wav";
-	    			String originalName = data.getStringExtra(Constants.NAME_ENTRY_INTENT_ORIGINAL_FILENAME);
 	    			
-	    			File original = new File(((MicApplication)getApplication()).getLibraryDirectory() + File.separator + originalName);
+	    			File original = r.asFile();
 	    			MediaStoreHelper.removeFile(RecordingLibrary.this, original);
 	    			File destination = new File(((MicApplication)getApplication()).getLibraryDirectory() + File.separator + destinationName);
 	    		
@@ -192,7 +192,9 @@ public class RecordingLibrary extends Activity {
 				break;
 			case R.string.recording_options_rename:
 				Intent renameFileIntent = new Intent(getBaseContext(), FileNameEntry.class);
-				renameFileIntent.putExtra(Constants.NAME_ENTRY_INTENT_ORIGINAL_FILENAME, r.getRecordingName());
+				Bundle recordingData = new Bundle();
+				recordingData.putParcelable(Constants.NAME_ENTRY_INTENT_RECORDING, r);
+				renameFileIntent.putExtras(recordingData);
 				startActivityForResult(renameFileIntent, Constants.FILENAME_ENTRY_INTENT_CODE);
 				break;
 			default:
@@ -204,10 +206,13 @@ public class RecordingLibrary extends Activity {
     private OnItemClickListener libraryClickListener = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			Recording r = (Recording)parent.getItemAtPosition(position);
+			
 	    	Intent playIntent = new Intent(getBaseContext(), RecordingPlayer.class);
 			Bundle playData = new Bundle();
-			playData.putString(Constants.PLAY_DATA_RECORDING_NAME, r.getRecordingName());
+			
+			playData.putString(Constants.PLAY_DATA_RECORDING_NAME, r.getName());
 			playIntent.putExtras(playData);
+			
 			startActivityForResult(playIntent, Constants.PLAYER_INTENT_CODE);
 		}
 	};
@@ -227,8 +232,8 @@ public class RecordingLibrary extends Activity {
             
             Recording r = this.getItem(position);
             if (r != null) {
-            	((TextView)view.findViewById(R.id.row_first_line)).setText("Name: " + r.getRecordingName());
-                ((TextView)view.findViewById(R.id.row_second_line)).setText("Length: " + r.getRecordingLength());
+            	((TextView)view.findViewById(R.id.row_first_line)).setText("Name: " + r.getName());
+                ((TextView)view.findViewById(R.id.row_second_line)).setText("Length: " + r.getLength());
             }
 
             return view;
@@ -254,7 +259,6 @@ public class RecordingLibrary extends Activity {
 			
 			File libraryDir = new File(((MicApplication)getApplication()).getLibraryDirectory());
 			File[] waveFiles = libraryDir.listFiles();
-			Recording r = null;
 			
 			if (waveFiles != null) {
 				for (int i = 0; i < waveFiles.length; i++) {
@@ -263,17 +267,11 @@ public class RecordingLibrary extends Activity {
 						
 						try {
 							reader.openWave();
-							r = new Recording(waveFiles[i].getName(), reader.getLength(), reader.getDataSize() + 44);
-							recordings.add(r);
-							Log.i("RecordingLibrary", String.format("Added recording %s to library", r.getRecordingName()));
+							Recording r = new Recording(libraryDir.getAbsolutePath(), waveFiles[i].getName(), reader.getLength(), reader.getDataSize() + Recording.WAVE_HEADER_SIZE);
 							reader.closeWaveFile();
 							reader = null;
-							
-							// check to see if this exists in the media store, if it doesn't insert it
-							if (!MediaStoreHelper.isInserted(RecordingLibrary.this, waveFiles[i])) {
-								MediaStoreHelper.insertFile(RecordingLibrary.this, waveFiles[i]);
-								Log.i("RecordingLibrary", String.format("Added recording %s to media store", r.getRecordingName()));
-							}
+							addRecording(r);
+							Log.i("RecordingLibrary", String.format("Added recording %s to library", r.getName()));
 						} catch (IOException e) {
 							// yes I know it sucks that we do control flow with an exception here, fix it later
 							Log.i("RecordingLibrary", String.format("Non-wave file %s found in library directory!", waveFiles[i].getName()));
@@ -311,5 +309,21 @@ public class RecordingLibrary extends Activity {
 				}
 			}
 		}
+    }
+    
+    protected void addRecording(Recording r) {
+    	recordings.add(r);
+    	
+    	// check to see if this exists in the media store, if it doesn't insert it
+		if (!MediaStoreHelper.isInserted(RecordingLibrary.this, r)) {
+			MediaStoreHelper.insertRecording(RecordingLibrary.this, r);
+			Log.i("RecordingLibrary", String.format("Added recording %s to media store", r.getName()));
+		}
+    }
+    
+    protected void removeRecording(Recording r) {
+    	recordings.remove(r);
+    	
+    	MediaStoreHelper.removeRecording(RecordingLibrary.this, r);
     }
 }

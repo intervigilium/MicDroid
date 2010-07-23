@@ -24,7 +24,6 @@
 
 package com.intervigil.micdroid;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -338,10 +337,6 @@ public class Mic extends Activity {
 				// TODO: real error handling
 				e.printStackTrace();
 			}
-			
-			// insert file into media store
-			File file = new File(((MicApplication)getApplication()).getLibraryDirectory() + File.separator + fileName);
-			MediaStoreHelper.insertFile(Mic.this, file);
 
 			return null;
 		}

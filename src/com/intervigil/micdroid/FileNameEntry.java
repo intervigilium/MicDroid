@@ -79,9 +79,9 @@ public class FileNameEntry extends Activity {
 			Intent result = new Intent();
 			result.putExtra(Constants.NAME_ENTRY_INTENT_FILE_NAME, fileName);
 			
-			String originalName = getIntent().getStringExtra(Constants.NAME_ENTRY_INTENT_ORIGINAL_FILENAME);
-			if (originalName != null) {
-				result.putExtra(Constants.NAME_ENTRY_INTENT_ORIGINAL_FILENAME, originalName);
+			Recording r = getIntent().getExtras().getParcelable(Constants.NAME_ENTRY_INTENT_RECORDING);
+			if (r != null) {
+				result.putExtra(Constants.NAME_ENTRY_INTENT_RECORDING, r);
 			}
 			
 			if (fileName == null || fileName.length() == 0) {
