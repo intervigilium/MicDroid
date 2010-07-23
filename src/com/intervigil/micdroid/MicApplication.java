@@ -27,28 +27,27 @@ import java.io.File;
 import java.io.IOException;
 
 import android.app.Application;
-import android.os.Environment;
 
 public class MicApplication extends Application {
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		File outputDir = new File(this.getOutputDirectory());
+		File outputDir = new File(ApplicationHelper.getOutputDirectory());
         if (!outputDir.exists()) {
         	outputDir.mkdirs();
         	try {
         		// it's ok if this fails, all it's supposed to do is prevent the user from seeing the temp file
-				new File(this.getOutputDirectory() + File.separator + ".nomedia").createNewFile();
+				new File(ApplicationHelper.getOutputDirectory() + File.separator + ".nomedia").createNewFile();
 			} catch (IOException e) { }
         }
         
-        File libraryDir = new File(this.getLibraryDirectory());
+        File libraryDir = new File(ApplicationHelper.getLibraryDirectory());
         if (!libraryDir.exists()) {
         	libraryDir.mkdirs();
         }
         
-        File instrumentalDir = new File(this.getInstrumentalDirectory());
+        File instrumentalDir = new File(ApplicationHelper.getInstrumentalDirectory());
         if (!instrumentalDir.exists()) {
         	instrumentalDir.mkdirs();
         }
@@ -57,25 +56,5 @@ public class MicApplication extends Application {
 	@Override
 	public void onTerminate() {
 		super.onTerminate();
-	}
-	
-	private String getApplicationDirectory() {
-		return Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "Android" + File.separator + "data" + File.separator + getPackageName();
-	}
-	
-	public String getOldLibraryDirectory() {
-		return Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "Music";
-	}
-	
-	public String getOutputDirectory() {
-		return getApplicationDirectory() + File.separator + "temp";
-	}
-	
-	public String getLibraryDirectory() {
-		return Environment.getExternalStorageDirectory() + File.separator + "MicDroid" + File.separator + "recordings";
-	}
-	
-	public String getInstrumentalDirectory() {
-		return Environment.getExternalStorageDirectory() + File.separator + "MicDroid" + File.separator + "instrumental";
 	}
 }
