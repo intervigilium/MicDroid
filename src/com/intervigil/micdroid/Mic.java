@@ -76,23 +76,6 @@ public class Mic extends Activity {
 	// keep this queue separate from the message queues since this is a data channel
 	private BlockingQueue<Sample> sampleQueue;
 	
-	/** Packet of audio to pass between reader and writer threads. */
-	private class Sample {
-    	public short[] buffer;
-    	public int bufferSize;
-    	public boolean isEnd;
-    	
-    	public Sample(short[] buffer, int bufferSize) {
-    		this.buffer = buffer;
-    		this.bufferSize = bufferSize;
-    		this.isEnd = false;
-    	}
-    	
-    	public Sample() {
-    		this.isEnd = true;
-    	}
-    }
-	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -534,6 +517,18 @@ public class Mic extends Activity {
 				e.printStackTrace();
 			}
     	}
+    }
+    
+    public MicRecorder getRecorderThread() {
+    	return micRecorder;
+    }
+    
+    public MicWriter getWriterThread() {
+    	return micWriter;
+    }
+    
+    public StartupDialog getStartupDialog() {
+    	return startupDialog;
     }
     
     private void migrateOldRecordings() {
