@@ -8,6 +8,18 @@
     android:layout_height="fill_parent" 
     android:background="@drawable/mesh_tile">
 
+<RelativeLayout
+    android:id="@+id/recording_panel"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_marginTop="20px"
+    android:layout_marginRight="20px"
+    android:layout_marginBottom="20px"
+    android:layout_marginLeft="20px"
+    android:background="@drawable/base_panel">
+
 <ToggleButton 
     android:id="@+id/mic_toggle" 
     android:layout_width="169px" 
@@ -16,4 +28,6 @@
     android:textOff="" 
     android:background="@drawable/recording_button" />
 
+
+</RelativeLayout>
 </RelativeLayout>
