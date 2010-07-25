@@ -131,28 +131,27 @@ DISCLAIMER: This is alpha software! May be buggy and force close on you! Author 
     <string name="prefs_corr_mix_default">1.0</string>
     
     <string name="about_title">About MicDroid</string>
-    <string name="about_text">MicDroid is licensed under the MIT License\n\
+    <string name="about_text">Graphics work courtesy of Peng X. Wang: http://pengxwang.com\n\
+\n\
+MicDroid is licensed under the GPL2 License\n\
 \n\
 Copyright (c) 2010 Ethan Chen\n\
-http://github.com/intervigilium\n\
+http://github.com/intervigilium/MicDroid\n\
 \n\
-Permission is hereby granted, free of charge, to any person obtaining a copy\n\
-of this software and associated documentation files (the "Software"), to deal\n\
-in the Software without restriction, including without limitation the rights\n\
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n\
-copies of the Software, and to permit persons to whom the Software is\n\
-furnished to do so, subject to the following conditions:\n\
+This program is free software; you can redistribute it and/or modify\n\
+it under the terms of the GNU General Public License as published by\n\
+the Free Software Foundation; either version 2 of the License, or\n\
+(at your option) any later version.\n\
 \n\
-The above copyright notice and this permission notice shall be included in\n\
-all copies or substantial portions of the Software.\n\
+This program is distributed in the hope that it will be useful,\n\
+but WITHOUT ANY WARRANTY; without even the implied warranty of\n\
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\
+GNU General Public License for more details.\n\
 \n\
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n\
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n\
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n\
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n\
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n\
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\n\
-THE SOFTWARE.\n\
+You should have received a copy of the GNU General Public License along\n\
+with this program; if not, write to the Free Software Foundation, Inc.,\n\
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.\n\
+\n\
 \n\
 Autotalent is licensed under the GPL2 License\n\
 \n\
@@ -186,8 +185,6 @@ Android icons and logos are licensed under the Creative Commons 3.0 Attribution 
 Portions of this page are modifications based on work created and shared by Google and used according to terms described in the Creative Commons 3.0 Attribution License.\n\
 \n\
 License terms available at: http://creativecommons.org/licenses/by/3.0/\n\
-\n\
-Graphics work courtesy of Peng X. Wang: http://pengxwang.com\n\
     </string>
     
     <string name="help_title">How to Use</string>
