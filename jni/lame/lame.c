@@ -27,6 +27,420 @@
 /* $Id: lame.c,v 1.323.2.8 2010/02/20 21:08:55 robert Exp $ */
 
 
+struct lame_internal_flags {
+
+/********************************************************************
+* internal variables NOT set by calling program, and should not be *
+* modified by the calling program                                  *
+********************************************************************/
+
+	/*
+	 * Some remarks to the Class_ID field:
+	 * The Class ID is an Identifier for a pointer to this struct.
+	 * It is very unlikely that a pointer to lame_global_flags has the same 32 bits
+	 * in it's structure (large and other special properties, for instance prime).
+	 *
+	 * To test that the structure is right and initialized, use:
+	 *     if ( gfc -> Class_ID == LAME_ID ) ...
+	 * Other remark:
+	 *     If you set a flag to 0 for uninit data and 1 for init data, the right test
+	 *     should be "if (flag == 1)" and NOT "if (flag)". Unintended modification
+	 *     of this element will be otherwise misinterpreted as an init.
+	 */
+#  define  LAME_ID   0xFFF88E3B
+	unsigned long Class_ID;
+
+	int     lame_encode_frame_init;
+	int     iteration_init_init;
+	int     fill_buffer_resample_init;
+
+#ifndef  MFSIZE
+# define MFSIZE  ( 3*1152 + ENCDELAY - MDCTDELAY )
+#endif
+	sample_t mfbuf[2][MFSIZE];
+
+
+	struct {
+		void    (*msgf) (const char *format, va_list ap);
+		void    (*debugf) (const char *format, va_list ap);
+		void    (*errorf) (const char *format, va_list ap);
+	} report;
+
+	int     mode_gr;     /* granules per frame */
+	int     channels_in; /* number of channels in the input data stream (PCM or decoded PCM) */
+	int     channels_out; /* number of channels in the output data stream (not used for decoding) */
+	double  resample_ratio; /* input_samp_rate/output_samp_rate */
+
+	int     mf_samples_to_encode;
+	int     mf_size;
+	int     VBR_min_bitrate; /* min bitrate index */
+	int     VBR_max_bitrate; /* max bitrate index */
+	int     bitrate_index;
+	int     samplerate_index;
+	int     mode_ext;
+
+
+	/* lowpass and highpass filter control */
+	FLOAT   lowpass1, lowpass2; /* normalized frequency bounds of passband */
+	FLOAT   highpass1, highpass2; /* normalized frequency bounds of passband */
+
+	int     noise_shaping; /* 0 = none
+							  1 = ISO AAC model
+							  2 = allow scalefac_select=1
+							*/
+
+	int     noise_shaping_amp; /*  0 = ISO model: amplify all distorted bands
+								  1 = amplify within 50% of max (on db scale)
+								  2 = amplify only most distorted band
+								  3 = method 1 and refine with method 2
+								*/
+	int     substep_shaping; /* 0 = no substep
+								1 = use substep shaping at last step(VBR only)
+								(not implemented yet)
+								2 = use substep inside loop
+								3 = use substep inside loop and last step
+							  */
+
+	int     psymodel;    /* 1 = gpsycho. 0 = none */
+	int     noise_shaping_stop; /* 0 = stop at over=0, all scalefacs amplified or
+								   a scalefac has reached max value
+								   1 = stop when all scalefacs amplified or
+								   a scalefac has reached max value
+								   2 = stop when all scalefacs amplified
+								 */
+
+	int     subblock_gain; /*  0 = no, 1 = yes */
+	int     use_best_huffman; /* 0 = no.  1=outside loop  2=inside loop(slow) */
+
+	int     full_outer_loop; /* 0 = stop early after 0 distortion found. 1 = full search */
+
+
+	/* variables used by lame.c */
+	Bit_stream_struc bs;
+	III_side_info_t l3_side;
+	FLOAT   ms_ratio[2];
+
+	/* used for padding */
+	int     padding;     /* padding for the current frame? */
+	int     frac_SpF;
+	int     slot_lag;
+
+
+	/* optional ID3 tags, used in id3tag.c  */
+	struct id3tag_spec tag_spec;
+	uint16_t nMusicCRC;
+
+
+	/* variables used by quantize.c */
+	int     OldValue[2];
+	int     CurrentStep[2];
+
+	FLOAT   masking_lower;
+	char    bv_scf[576];
+	int     pseudohalf[SFBMAX];
+
+	int     sfb21_extra; /* will be set in lame_init_params */
+
+	/* variables used by util.c */
+	/* BPC = maximum number of filter convolution windows to precompute */
+#define BPC 320
+	sample_t *inbuf_old[2];
+	sample_t *blackfilt[2 * BPC + 1];
+	double  itime[2];
+	int     sideinfo_len;
+
+	/* variables for newmdct.c */
+	FLOAT   sb_sample[2][2][18][SBLIMIT];
+	FLOAT   amp_filter[32];
+
+	/* variables for bitstream.c */
+	/* mpeg1: buffer=511 bytes  smallest frame: 96-38(sideinfo)=58
+	 * max number of frames in reservoir:  8
+	 * mpeg2: buffer=255 bytes.  smallest frame: 24-23bytes=1
+	 * with VBR, if you are encoding all silence, it is possible to
+	 * have 8kbs/24khz frames with 1byte of data each, which means we need
+	 * to buffer up to 255 headers! */
+	/* also, max_header_buf has to be a power of two */
+#define MAX_HEADER_BUF 256
+#define MAX_HEADER_LEN 40    /* max size of header is 38 */
+	struct {
+		int     write_timing;
+		int     ptr;
+		char    buf[MAX_HEADER_LEN];
+	} header[MAX_HEADER_BUF];
+
+	int     h_ptr;
+	int     w_ptr;
+	int     ancillary_flag;
+
+	/* variables for reservoir.c */
+	int     ResvSize;    /* in bits */
+	int     ResvMax;     /* in bits */
+
+	scalefac_struct scalefac_band;
+
+	/* DATA FROM PSYMODEL.C */
+/* The static variables "r", "phi_sav", "new", "old" and "oldest" have    */
+/* to be remembered for the unpredictability measure.  For "r" and        */
+/* "phi_sav", the first index from the left is the channel select and     */
+/* the second index is the "age" of the data.                             */
+	FLOAT   minval_l[CBANDS];
+	FLOAT   minval_s[CBANDS];
+	FLOAT   nb_1[4][CBANDS], nb_2[4][CBANDS];
+	FLOAT   nb_s1[4][CBANDS], nb_s2[4][CBANDS];
+	FLOAT  *s3_ss;
+	FLOAT  *s3_ll;
+	FLOAT   decay;
+
+	III_psy_xmin thm[4];
+	III_psy_xmin en[4];
+
+	/* fft and energy calculation    */
+	FLOAT   tot_ener[4];
+
+	/* loudness calculation (for adaptive threshold of hearing) */
+	FLOAT   loudness_sq[2][2]; /* loudness^2 approx. per granule and channel */
+	FLOAT   loudness_sq_save[2]; /* account for granule delay of L3psycho_anal */
+
+
+	/* Scale Factor Bands    */
+	FLOAT   mld_l[SBMAX_l], mld_s[SBMAX_s];
+	int     bm_l[SBMAX_l], bo_l[SBMAX_l];
+	int     bm_s[SBMAX_s], bo_s[SBMAX_s];
+	int     npart_l, npart_s;
+
+	int     s3ind[CBANDS][2];
+	int     s3ind_s[CBANDS][2];
+
+	int     numlines_s[CBANDS];
+	int     numlines_l[CBANDS];
+	FLOAT   rnumlines_l[CBANDS];
+	FLOAT   mld_cb_l[CBANDS], mld_cb_s[CBANDS];
+	int     numlines_s_num1;
+	int     numlines_l_num1;
+
+	/* ratios  */
+	FLOAT   pe[4];
+	FLOAT   ms_ratio_s_old, ms_ratio_l_old;
+	FLOAT   ms_ener_ratio_old;
+
+	/* block type */
+	int     blocktype_old[2];
+
+	/* CPU features */
+	struct {
+		unsigned int MMX:1; /* Pentium MMX, Pentium II...IV, K6, K6-2,
+							   K6-III, Athlon */
+		unsigned int AMD_3DNow:1; /* K6-2, K6-III, Athlon      */
+		unsigned int SSE:1; /* Pentium III, Pentium 4    */
+		unsigned int SSE2:1; /* Pentium 4, K8             */
+	} CPU_features;
+
+	/* functions to replace with CPU feature optimized versions in takehiro.c */
+	int     (*choose_table) (const int *ix, const int *const end, int *const s);
+	void    (*fft_fht) (FLOAT *, int);
+	void    (*init_xrpow_core) (gr_info * const cod_info, FLOAT xrpow[576], int upper,
+								FLOAT * sum);
+
+
+
+	nsPsy_t nsPsy;       /* variables used for --nspsytune */
+
+	VBR_seek_info_t VBR_seek_table; /* used for Xing VBR header */
+
+	ATH_t  *ATH;         /* all ATH related stuff */
+	PSY_t  *PSY;
+
+	int     nogap_total;
+	int     nogap_current;
+
+
+	/* ReplayGain */
+	unsigned int decode_on_the_fly:1;
+	unsigned int findReplayGain:1;
+	unsigned int findPeakSample:1;
+	sample_t PeakSample;
+	int     RadioGain;
+	int     AudiophileGain;
+	replaygain_t *rgdata;
+
+	int     noclipGainChange; /* gain change required for preventing clipping */
+	FLOAT   noclipScale; /* user-specified scale factor required for preventing clipping */
+
+
+	/* simple statistics */
+	int     bitrate_stereoMode_Hist[16][4 + 1];
+	int     bitrate_blockType_Hist[16][4 + 1 + 1]; /*norm/start/short/stop/mixed(short)/sum */
+
+	/* used by the frame analyzer */
+	plotting_data *pinfo;
+	hip_t hip;
+
+	int     in_buffer_nsamples;
+	sample_t *in_buffer_0;
+	sample_t *in_buffer_1;
+
+	iteration_loop_t iteration_loop;
+};
+
+
+/***********************************************************************
+*
+*  Control Parameters set by User.  These parameters are here for
+*  backwards compatibility with the old, non-shared lib API.
+*  Please use the lame_set_variablename() functions below
+*
+*
+***********************************************************************/
+struct lame_global_struct {
+    unsigned int class_id;
+    /* input description */
+    unsigned long num_samples; /* number of samples. default=2^32-1           */
+    int     num_channels;    /* input number of channels. default=2         */
+    int     in_samplerate;   /* input_samp_rate in Hz. default=44.1 kHz     */
+    int     out_samplerate;  /* output_samp_rate.
+                                default: LAME picks best value
+                                at least not used for MP3 decoding:
+                                Remember 44.1 kHz MP3s and AC97           */
+    float   scale;           /* scale input by this amount before encoding
+                                at least not used for MP3 decoding          */
+    float   scale_left;      /* scale input of channel 0 (left) by this
+                                amount before encoding                      */
+    float   scale_right;     /* scale input of channel 1 (right) by this
+                                amount before encoding                      */
+
+    /* general control params */
+    int     analysis;        /* collect data for a MP3 frame analyzer?      */
+    int     bWriteVbrTag;    /* add Xing VBR tag?                           */
+    int     decode_only;     /* use lame/mpglib to convert mp3 to wav       */
+    int     quality;         /* quality setting 0=best,  9=worst  default=5 */
+    MPEG_mode mode;          /* see enum in lame.h
+                                default = LAME picks best value             */
+    int     force_ms;        /* force M/S mode.  requires mode=1            */
+    int     free_format;     /* use free format? default=0                  */
+    int     findReplayGain;  /* find the RG value? default=0       */
+    int     decode_on_the_fly; /* decode on the fly? default=0                */
+    int     write_id3tag_automatic; /* 1 (default) writes ID3 tags, 0 not */
+
+    /*
+     * set either brate>0  or compression_ratio>0, LAME will compute
+     * the value of the variable not set.
+     * Default is compression_ratio = 11.025
+     */
+    int     brate;           /* bitrate                                    */
+    float   compression_ratio; /* sizeof(wav file)/sizeof(mp3 file)          */
+
+
+    /* frame params */
+    int     copyright;       /* mark as copyright. default=0           */
+    int     original;        /* mark as original. default=1            */
+    int     extension;       /* the MP3 'private extension' bit.
+                                Meaningless                            */
+    int     emphasis;        /* Input PCM is emphased PCM (for
+                                instance from one of the rarely
+                                emphased CDs), it is STRONGLY not
+                                recommended to use this, because
+                                psycho does not take it into account,
+                                and last but not least many decoders
+                                don't care about these bits          */
+    int     error_protection; /* use 2 bytes per frame for a CRC
+                                 checksum. default=0                    */
+    int     strict_ISO;      /* enforce ISO spec as much as possible   */
+
+    int     disable_reservoir; /* use bit reservoir?                     */
+
+    /* quantization/noise shaping */
+    int     quant_comp;
+    int     quant_comp_short;
+    int     experimentalY;
+    int     experimentalZ;
+    int     exp_nspsytune;
+
+    int     preset;
+
+    /* VBR control */
+    vbr_mode VBR;
+    float   VBR_q_frac;      /* Range [0,...,1[ */
+    int     VBR_q;           /* Range [0,...,9] */
+    int     VBR_mean_bitrate_kbps;
+    int     VBR_min_bitrate_kbps;
+    int     VBR_max_bitrate_kbps;
+    int     VBR_hard_min;    /* strictly enforce VBR_min_bitrate
+                                normaly, it will be violated for analog
+                                silence                                 */
+
+
+    /* resampling and filtering */
+    int     lowpassfreq;     /* freq in Hz. 0=lame choses.
+                                -1=no filter                          */
+    int     highpassfreq;    /* freq in Hz. 0=lame choses.
+                                -1=no filter                          */
+    int     lowpasswidth;    /* freq width of filter, in Hz
+                                (default=15%)                         */
+    int     highpasswidth;   /* freq width of filter, in Hz
+                                (default=15%)                         */
+
+
+
+    /*
+     * psycho acoustics and other arguments which you should not change
+     * unless you know what you are doing
+     */
+    float   maskingadjust;
+    float   maskingadjust_short;
+    int     ATHonly;         /* only use ATH                         */
+    int     ATHshort;        /* only use ATH for short blocks        */
+    int     noATH;           /* disable ATH                          */
+    int     ATHtype;         /* select ATH formula                   */
+    float   ATHcurve;        /* change ATH formula 4 shape           */
+    float   ATHlower;        /* lower ATH by this many db            */
+    int     athaa_type;      /* select ATH auto-adjust scheme        */
+    int     athaa_loudapprox; /* select ATH auto-adjust loudness calc */
+    float   athaa_sensitivity; /* dB, tune active region of auto-level */
+    short_block_t short_blocks;
+    int     useTemporal;     /* use temporal masking effect          */
+    float   interChRatio;
+    float   msfix;           /* Naoki's adjustment of Mid/Side maskings */
+
+    int     tune;            /* 0 off, 1 on */
+    float   tune_value_a;    /* used to pass values for debugging and stuff */
+
+    struct {
+        void    (*msgf) (const char *format, va_list ap);
+        void    (*debugf) (const char *format, va_list ap);
+        void    (*errorf) (const char *format, va_list ap);
+    } report;
+
+  /************************************************************************/
+    /* internal variables, do not set...                                    */
+    /* provided because they may be of use to calling application           */
+  /************************************************************************/
+
+    int     version;         /* 0=MPEG-2/2.5  1=MPEG-1               */
+    int     encoder_delay;
+    int     encoder_padding; /* number of samples of padding appended to input */
+    int     framesize;
+    int     frameNum;        /* number of frames encoded             */
+    int     lame_allocated_gfp; /* is this struct owned by calling
+                                   program or lame?                     */
+
+
+
+  /**************************************************************************/
+    /* more internal variables are stored in this structure:                  */
+  /**************************************************************************/
+    lame_internal_flags *internal_flags;
+
+
+    struct {
+        int     mmx;
+        int     amd3dnow;
+        int     sse;
+
+    } asm_optimizations;
+};
+
+
 /********************************************************************
  *   initialize internal params based on data in gf
  *   (globalflags struct filled in by calling program)
