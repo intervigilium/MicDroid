@@ -28,9 +28,13 @@ import android.net.Uri;
 
 public class RecordingOptionsHelper {
 	
-	public static void setRingTone(Context context, Recording recording) {
+	public static boolean setRingTone(Context context, Recording recording) {
     	Uri recordingUri = MediaStoreHelper.getRecordingUri(context, recording);
-        RingtoneManager.setActualDefaultRingtoneUri(context, RingtoneManager.TYPE_RINGTONE, recordingUri);
+    	if (recordingUri != null) {
+    		RingtoneManager.setActualDefaultRingtoneUri(context, RingtoneManager.TYPE_RINGTONE, recordingUri);
+    		return true;
+    	}
+    	return false;
     }
 	
 	public static void sendEmailAttachment(Context context, Recording recording) {

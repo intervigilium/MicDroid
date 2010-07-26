@@ -178,8 +178,11 @@ public class RecordingLibrary extends Activity {
     	
     	switch (item.getItemId()) {
 			case R.string.recording_options_set_ringtone:
-				RecordingOptionsHelper.setRingTone(RecordingLibrary.this, r);
-				Toast.makeText(RecordingLibrary.this, R.string.recording_options_ringtone_set, Toast.LENGTH_SHORT).show();
+				if (RecordingOptionsHelper.setRingTone(RecordingLibrary.this, r)) {
+					Toast.makeText(RecordingLibrary.this, R.string.recording_options_ringtone_set, Toast.LENGTH_SHORT).show();
+				} else {
+					Toast.makeText(RecordingLibrary.this, R.string.recording_options_ringtone_error, Toast.LENGTH_SHORT).show();
+				}
 				break;
 			case R.string.recording_options_send_email:
 				RecordingOptionsHelper.sendEmailAttachment(RecordingLibrary.this, r);
