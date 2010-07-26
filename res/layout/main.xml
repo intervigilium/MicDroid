@@ -9,14 +9,14 @@
     android:background="@drawable/mesh_tile">
 
 <RelativeLayout
-    android:id="@+id/recording_panel"
+    android:id="@+id/panel"
     android:orientation="vertical"
     android:gravity="center"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_marginTop="20px"
     android:layout_marginRight="20px"
-    android:layout_marginBottom="20px"
+    android:layout_marginBottom="120px"
     android:layout_marginLeft="20px"
     android:background="@drawable/base_panel">
 
@@ -28,6 +28,27 @@
     android:textOff="" 
     android:background="@drawable/recording_button" />
 
-
 </RelativeLayout>
+
+<RelativeLayout
+    android:id="@+id/navigation_area"
+    android:orientation="vertical"
+    android:gravity="top"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true">
+    
+    <Button 
+        android:id="@+id/library_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
+        android:text="My Recordings"
+        android:textSize="16sp"
+        android:textColor="#fff"
+        android:background="@drawable/base_button" />
+    
+</RelativeLayout>
+
 </RelativeLayout>
