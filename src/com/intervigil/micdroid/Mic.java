@@ -188,6 +188,7 @@ public class Mic extends Activity {
     	if (micRecorder != null) {
 	    	isRecording = micRecorder.isRunning();
     	}
+    	((Button)findViewById(R.id.library_button)).setOnClickListener(mLibraryBtnListener);
     	ToggleButton micSwitch = (ToggleButton)findViewById(R.id.mic_toggle);
     	micSwitch.setChecked(isRecording);
     	micSwitch.setOnCheckedChangeListener(mPowerBtnListener);
