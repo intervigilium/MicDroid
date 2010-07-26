@@ -43,6 +43,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -100,6 +103,7 @@ public class Mic extends Activity {
         setContentView(R.layout.main);
         
         ((ToggleButton)findViewById(R.id.mic_toggle)).setOnCheckedChangeListener(mPowerBtnListener);
+        ((Button)findViewById(R.id.library_button)).setOnClickListener(mLibraryBtnListener);
         startupDialog = new StartupDialog(this, R.string.startup_dialog_title, R.string.startup_dialog_text, R.string.startup_dialog_accept_btn);
     
         ((ToggleButton)findViewById(R.id.mic_toggle)).setChecked(false);
@@ -205,10 +209,6 @@ public class Mic extends Activity {
             case R.id.options:
             	Intent preferencesIntent = new Intent(getBaseContext(), Preferences.class);
             	startActivity(preferencesIntent);
-            	break;
-            case R.id.playback:
-            	Intent playbackIntent = new Intent(getBaseContext(), RecordingLibrary.class);
-            	startActivity(playbackIntent);
             	break;
             case R.id.about:
             	DialogHelper.showWarning(Mic.this, R.string.about_title, R.string.about_text);
@@ -348,6 +348,13 @@ public class Mic extends Activity {
 			Toast.makeText(Mic.this, R.string.recording_save_success, Toast.LENGTH_SHORT).show();
 		}
     }
+    
+    private OnClickListener mLibraryBtnListener = new OnClickListener() {
+		public void onClick(View v) {
+			Intent playbackIntent = new Intent(getBaseContext(), RecordingLibrary.class);
+        	startActivity(playbackIntent);
+		}
+	};
     
     private OnCheckedChangeListener mPowerBtnListener = new OnCheckedChangeListener() {
     	public void onCheckedChanged(CompoundButton btn, boolean isChecked) {
