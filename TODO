@@ -3,6 +3,7 @@ There are a lot of things left to do, and many features to add.
 To Do:
 Add new nicer graphic resources for everything
 Implement some kind of testing or QA routine
+Set as Notification ringtone
 Share as MMS
 Integrate MP3 encoder
 Integrate automatic log collector: http://code.google.com/p/android-send-me-logs/

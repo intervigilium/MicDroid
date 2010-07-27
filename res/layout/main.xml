@@ -68,7 +68,7 @@
         
         </RelativeLayout>
     </RelativeLayout>
-    
+
     <RelativeLayout
         android:id="@+id/navigation_area"
         android:orientation="vertical"

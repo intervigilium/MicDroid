@@ -3,23 +3,19 @@
 
    Copyright (c) 2010 Ethan Chen
 
-   Permission is hereby granted, free of charge, to any person obtaining a copy
-   of this software and associated documentation files (the "Software"), to deal
-   in the Software without restriction, including without limitation the rights
-   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-   copies of the Software, and to permit persons to whom the Software is
-   furnished to do so, subject to the following conditions:
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
 
-   The above copyright notice and this permission notice shall be included in
-   all copies or substantial portions of the Software.
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
 
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-   THE SOFTWARE.
+   You should have received a copy of the GNU General Public License along
+   with this program; if not, write to the Free Software Foundation, Inc.,
+   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
 package com.intervigil.micdroid;
@@ -43,6 +39,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -76,23 +75,6 @@ public class Mic extends Activity {
 	// keep this queue separate from the message queues since this is a data channel
 	private BlockingQueue<Sample> sampleQueue;
 	
-	/** Packet of audio to pass between reader and writer threads. */
-	private class Sample {
-    	public short[] buffer;
-    	public int bufferSize;
-    	public boolean isEnd;
-    	
-    	public Sample(short[] buffer, int bufferSize) {
-    		this.buffer = buffer;
-    		this.bufferSize = bufferSize;
-    		this.isEnd = false;
-    	}
-    	
-    	public Sample() {
-    		this.isEnd = true;
-    	}
-    }
-	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -100,6 +82,7 @@ public class Mic extends Activity {
         setContentView(R.layout.main);
         
         ((ToggleButton)findViewById(R.id.mic_toggle)).setOnCheckedChangeListener(mPowerBtnListener);
+        ((Button)findViewById(R.id.library_button)).setOnClickListener(mLibraryBtnListener);
         startupDialog = new StartupDialog(this, R.string.startup_dialog_title, R.string.startup_dialog_text, R.string.startup_dialog_accept_btn);
     
         ((ToggleButton)findViewById(R.id.mic_toggle)).setChecked(false);
@@ -184,6 +167,7 @@ public class Mic extends Activity {
     	if (micRecorder != null) {
 	    	isRecording = micRecorder.isRunning();
     	}
+    	((Button)findViewById(R.id.library_button)).setOnClickListener(mLibraryBtnListener);
     	ToggleButton micSwitch = (ToggleButton)findViewById(R.id.mic_toggle);
     	micSwitch.setChecked(isRecording);
     	micSwitch.setOnCheckedChangeListener(mPowerBtnListener);
@@ -205,10 +189,6 @@ public class Mic extends Activity {
             case R.id.options:
             	Intent preferencesIntent = new Intent(getBaseContext(), Preferences.class);
             	startActivity(preferencesIntent);
-            	break;
-            case R.id.playback:
-            	Intent playbackIntent = new Intent(getBaseContext(), RecordingLibrary.class);
-            	startActivity(playbackIntent);
             	break;
             case R.id.about:
             	DialogHelper.showWarning(Mic.this, R.string.about_title, R.string.about_text);
@@ -348,6 +328,13 @@ public class Mic extends Activity {
 			Toast.makeText(Mic.this, R.string.recording_save_success, Toast.LENGTH_SHORT).show();
 		}
     }
+    
+    private OnClickListener mLibraryBtnListener = new OnClickListener() {
+		public void onClick(View v) {
+			Intent playbackIntent = new Intent(getBaseContext(), RecordingLibrary.class);
+        	startActivity(playbackIntent);
+		}
+	};
     
     private OnCheckedChangeListener mPowerBtnListener = new OnCheckedChangeListener() {
     	public void onCheckedChanged(CompoundButton btn, boolean isChecked) {
@@ -534,6 +521,18 @@ public class Mic extends Activity {
 				e.printStackTrace();
 			}
     	}
+    }
+    
+    public MicRecorder getRecorderThread() {
+    	return micRecorder;
+    }
+    
+    public MicWriter getWriterThread() {
+    	return micWriter;
+    }
+    
+    public StartupDialog getStartupDialog() {
+    	return startupDialog;
     }
     
     private void migrateOldRecordings() {
