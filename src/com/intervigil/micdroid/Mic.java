@@ -43,6 +43,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -69,6 +70,7 @@ public class Mic extends Activity {
 	
 	private StartupDialog startupDialog;
 	
+	private Timer timer;
 	private MicRecorder micRecorder;
 	private MicWriter micWriter;
 	
@@ -83,6 +85,9 @@ public class Mic extends Activity {
         
         ((ToggleButton)findViewById(R.id.mic_toggle)).setOnCheckedChangeListener(mPowerBtnListener);
         ((Button)findViewById(R.id.library_button)).setOnClickListener(mLibraryBtnListener);
+        TextView timerDisplay = (TextView)findViewById(R.id.recording_timer);
+        
+        timer = new Timer(timerDisplay);
         startupDialog = new StartupDialog(this, R.string.startup_dialog_title, R.string.startup_dialog_text, R.string.startup_dialog_accept_btn);
     
         ((ToggleButton)findViewById(R.id.mic_toggle)).setChecked(false);
@@ -171,6 +176,9 @@ public class Mic extends Activity {
     	ToggleButton micSwitch = (ToggleButton)findViewById(R.id.mic_toggle);
     	micSwitch.setChecked(isRecording);
     	micSwitch.setOnCheckedChangeListener(mPowerBtnListener);
+    	
+    	TextView timerDisplay = (TextView)findViewById(R.id.recording_timer);
+    	timer.registerDisplay(timerDisplay);
     }
     
     @Override
@@ -222,6 +230,7 @@ public class Mic extends Activity {
     	// use the handler to receive error messages from the threads
     	@Override
     	public void handleMessage(Message msg) {
+    		timer.stop();
     		ToggleButton micToggle = (ToggleButton)findViewById(R.id.mic_toggle);
     		
     		switch (msg.what) {
@@ -355,6 +364,9 @@ public class Mic extends Activity {
 
 		        	micWriter = new MicWriter(sampleQueue);
 		        	micWriter.start();
+		        	
+		        	timer.reset();
+		        	timer.start();
 		        	Toast.makeText(getBaseContext(), R.string.recording_started_toast, Toast.LENGTH_SHORT).show();
 				} else {
 					if (micRecorder.isRunning()) {
@@ -367,6 +379,7 @@ public class Mic extends Activity {
 							e.printStackTrace();
 						}
 						sampleQueue.clear();
+						timer.stop();
 						Toast.makeText(getBaseContext(), R.string.recording_finished_toast, Toast.LENGTH_SHORT).show();
 						
 		    			Intent saveFileIntent = new Intent(getBaseContext(), FileNameEntry.class);

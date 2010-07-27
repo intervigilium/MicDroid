@@ -42,7 +42,7 @@
                 android:gravity="center"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="01:23"
+                android:text="00:00"
                 android:textSize="30sp"
                 android:textColor="#b67bff"
                 android:background="@drawable/large_display"/>
