@@ -1,4 +1,4 @@
-/* DialogHelper.java
+/* Preferences.java
 
    Copyright (c) 2010 Ethan Chen
 
@@ -17,24 +17,24 @@
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.intervigil.micdroid;
+package com.intervigil.micdroiddonate;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
+import android.os.Bundle;
+import android.preference.PreferenceActivity;
 
-public class DialogHelper {
-	
-	public static void showWarning(Context context, int titleId, int warningId) {
-		AlertDialog.Builder warningBuilder = new AlertDialog.Builder(context);
-		warningBuilder.setMessage(context.getString(warningId))
-			.setTitle(context.getString(titleId))
-			.setCancelable(false)
-			.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					dialog.dismiss();
-				}
-			});
-		warningBuilder.create().show();
-	}
+public class Preferences extends PreferenceActivity {
+	/**
+     * Called when the activity is starting.  This is where most
+     * initialization should go: calling setContentView(int) to inflate
+     * the activity's UI, etc.
+     * 
+     * @param   icicle          Activity's saved state, if any.
+     */
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        
+        // Load the preferences from an XML resource.
+        addPreferencesFromResource(R.xml.preferences);
+    }
 }

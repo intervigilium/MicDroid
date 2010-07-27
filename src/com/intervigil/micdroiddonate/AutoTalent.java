@@ -1,4 +1,4 @@
-/* Preferences.java
+/* AutoTalent.java
 
    Copyright (c) 2010 Ethan Chen
 
@@ -17,24 +17,24 @@
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.intervigil.micdroid;
+package com.intervigil.micdroiddonate;
 
-import android.os.Bundle;
-import android.preference.PreferenceActivity;
-
-public class Preferences extends PreferenceActivity {
-	/**
-     * Called when the activity is starting.  This is where most
-     * initialization should go: calling setContentView(int) to inflate
-     * the activity's UI, etc.
-     * 
-     * @param   icicle          Activity's saved state, if any.
-     */
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        
-        // Load the preferences from an XML resource.
-        addPreferencesFromResource(R.xml.preferences);
-    }
+public class AutoTalent {
+	private static final String AUTOTALENT_LIB = "autotalent";
+	
+	static {
+		System.loadLibrary(AUTOTALENT_LIB);
+	}
+	
+	public static native void instantiateAutoTalent(int sampleRate);
+	
+	public static native void initializeAutoTalent(float concertA, char key, 
+			float fixedPitch, float fixedPull, 
+			float correctStrength, float correctSmooth, float pitchShift, int scaleRotate,
+			float lfoDepth, float lfoRate, float lfoShape, float lfoSym, int lfoQuant, 
+			int formCorr, float formWarp, float mix);
+	
+	public static native void processSamples(short[] samples, int sampleSize);
+	
+	public static native void destroyAutoTalent();
 }

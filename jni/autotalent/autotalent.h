@@ -2,8 +2,8 @@
 #include <jni.h>
 /* Header for class com_intervigil_micdroid_AutoTalent */
 
-#ifndef _Included_com_intervigil_micdroid_AutoTalent
-#define _Included_com_intervigil_micdroid_AutoTalent
+#ifndef _Included_com_intervigil_micdroiddonate_AutoTalent
+#define _Included_com_intervigil_micdroiddonate_AutoTalent
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -12,7 +12,7 @@ extern "C" {
  * Method:    instantiateAutoTalent
  * Signature: (I)V
  */
-JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_instantiateAutoTalent
+JNIEXPORT void JNICALL Java_com_intervigil_micdroiddonate_AutoTalent_instantiateAutoTalent
   (JNIEnv *, jclass, jint);
 
 /*
@@ -20,7 +20,7 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_instantiateAutoTa
  * Method:    initializeAutoTalent
  * Signature: (FCFFFFFIFFFFIIFF)V
  */
-JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_initializeAutoTalent
+JNIEXPORT void JNICALL Java_com_intervigil_micdroiddonate_AutoTalent_initializeAutoTalent
   (JNIEnv *, jclass, jfloat, jchar, jfloat, jfloat, jfloat, jfloat, jfloat, jint, jfloat, jfloat, jfloat, jfloat, jint, jint, jfloat, jfloat);
 
 /*
@@ -28,7 +28,7 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_initializeAutoTal
  * Method:    processSamples
  * Signature: ([SI)V
  */
-JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_processSamples
+JNIEXPORT void JNICALL Java_com_intervigil_micdroiddonate_AutoTalent_processSamples
   (JNIEnv *, jclass, jshortArray, jint);
 
 /*
@@ -36,7 +36,7 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_processSamples
  * Method:    destroyAutoTalent
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_destroyAutoTalent
+JNIEXPORT void JNICALL Java_com_intervigil_micdroiddonate_AutoTalent_destroyAutoTalent
   (JNIEnv *, jclass);
 
 #ifdef __cplusplus

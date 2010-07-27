@@ -1,4 +1,4 @@
-/* AutoTalent.java
+/* DialogHelper.java
 
    Copyright (c) 2010 Ethan Chen
 
@@ -17,24 +17,24 @@
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.intervigil.micdroid;
+package com.intervigil.micdroiddonate;
 
-public class AutoTalent {
-	private static final String AUTOTALENT_LIB = "autotalent";
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+
+public class DialogHelper {
 	
-	static {
-		System.loadLibrary(AUTOTALENT_LIB);
+	public static void showWarning(Context context, int titleId, int warningId) {
+		AlertDialog.Builder warningBuilder = new AlertDialog.Builder(context);
+		warningBuilder.setMessage(context.getString(warningId))
+			.setTitle(context.getString(titleId))
+			.setCancelable(false)
+			.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					dialog.dismiss();
+				}
+			});
+		warningBuilder.create().show();
 	}
-	
-	public static native void instantiateAutoTalent(int sampleRate);
-	
-	public static native void initializeAutoTalent(float concertA, char key, 
-			float fixedPitch, float fixedPull, 
-			float correctStrength, float correctSmooth, float pitchShift, int scaleRotate,
-			float lfoDepth, float lfoRate, float lfoShape, float lfoSym, int lfoQuant, 
-			int formCorr, float formWarp, float mix);
-	
-	public static native void processSamples(short[] samples, int sampleSize);
-	
-	public static native void destroyAutoTalent();
 }
