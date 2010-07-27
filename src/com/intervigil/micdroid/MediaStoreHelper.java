@@ -76,8 +76,8 @@ public class MediaStoreHelper {
 	        if (results != null && results.getCount() > 0) {
 	        	resolver.delete(contentUri, "_display_name=?", new String[] { r.getName() });   
 	        }
-	        results.close();
 	        resolver.insert(contentUri, values);
+	        results.close();
 	        resolver = null;
 		}
 	}
@@ -97,6 +97,7 @@ public class MediaStoreHelper {
 	        	resolver.delete(contentUri, "_display_name=?", new String[] { r.getName() });
 	        }
 	        results.close();
+	        resolver = null;
 		}
 	}
 
@@ -121,7 +122,9 @@ public class MediaStoreHelper {
 	
 	        Uri contentUri = MediaStore.Audio.Media.getContentUriForPath(recording.getAbsolutePath());
 	        resolver.delete(contentUri, "_display_name=?", new String[] { recording.getName() });
-	        return resolver.insert(contentUri, values);
+	        Uri recordingUri = resolver.insert(contentUri, values);
+	        resolver = null;
+	        return recordingUri;
 		}
 		return null;
 	}
