@@ -1,4 +1,5 @@
-/* DialogHelper.java
+/* Sample.java
+   An auto-tune app for Android
 
    Copyright (c) 2010 Ethan Chen
 
@@ -19,22 +20,19 @@
 
 package com.intervigil.micdroid;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-
-public class DialogHelper {
+/** Packet of audio to pass between reader and writer threads. */
+public class Sample {
+	public short[] buffer;
+	public int bufferSize;
+	public boolean isEnd;
 	
-	public static void showWarning(Context context, int titleId, int warningId) {
-		AlertDialog.Builder warningBuilder = new AlertDialog.Builder(context);
-		warningBuilder.setMessage(context.getString(warningId))
-			.setTitle(context.getString(titleId))
-			.setCancelable(false)
-			.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					dialog.dismiss();
-				}
-			});
-		warningBuilder.create().show();
+	public Sample(short[] buffer, int bufferSize) {
+		this.buffer = buffer;
+		this.bufferSize = bufferSize;
+		this.isEnd = false;
+	}
+	
+	public Sample() {
+		this.isEnd = true;
 	}
 }

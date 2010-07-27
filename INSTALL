@@ -2,14 +2,12 @@ This project requires:
 Android SDK
 Android NDK
 
-This project does not contain the NDK makefile for the autotalent C library.
-In order to build it, you must first install the Android NDK from http://developer.android.com/sdk/ndk/index.html
+This project does not contain the shared libraries for autotalent or lame.
+In order to build them, you must first install the Android NDK from http://developer.android.com/sdk/ndk/index.html
 Installing the Android NDK is beyond the scope of this INSTALL file.
-Then you must create the NDK makefile for the project by going to the NDK install directory, and create 
-the application makefile, Application.mk which should contain:
 
-APP_PROJECT_PATH := /path/to/MicDroid
-APP_MODULES := autotalent
+Then you must go to the project top level and issue the command:
+/path/to/ndk-build 
+to build the libraries.
+The NDK builder will compile the shared libraries and place them in the libs directory.
 
-in <ndk top level>/apps/autotalent 
-From the <ndk top level> directory, you can then issue make APP=autotalent to compile the autotalent.so library.
