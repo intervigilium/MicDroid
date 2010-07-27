@@ -1,55 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/main_layout" 
+    android:id="@+id/recording_layout" 
     android:orientation="vertical" 
     android:gravity="center" 
     android:layout_width="fill_parent" 
     android:layout_height="fill_parent" 
     android:background="@drawable/mesh_tile">
 
-<RelativeLayout
-    android:id="@+id/panel"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:layout_marginTop="20dp"
-    android:layout_marginRight="12dp"
-    android:layout_marginBottom="90sp"
-    android:layout_marginLeft="12dp"
-    android:background="@drawable/base_panel">
-
-<ToggleButton 
-    android:id="@+id/mic_toggle" 
-    android:layout_width="110dp" 
-    android:layout_height="110dp"
-    android:textOn="" 
-    android:textOff="" 
-    android:background="@drawable/recording_button" />
-
-</RelativeLayout>
-
-<RelativeLayout
-    android:id="@+id/navigation_area"
-    android:orientation="vertical"
-    android:gravity="top"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="20sp"
-    android:layout_alignParentBottom="true">
+    <RelativeLayout
+        android:id="@+id/recording_panel"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginBottom="90sp"
+        android:layout_marginLeft="12dp"
+        android:background="@drawable/base_panel">
     
-    <Button 
-        android:id="@+id/library_button"
-        android:layout_width="wrap_content"
+    <!-- would be nice if mic_toggle -> recording_button -->
+        <RelativeLayout 
+            android:id="@+id/mic_toggle_container"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentBottom="true">
+        
+            <ToggleButton 
+                android:id="@+id/mic_toggle" 
+                android:layout_width="112dp" 
+                android:layout_height="112dp"
+                android:textOn="" 
+                android:textOff="" 
+                android:background="@drawable/recording_button" />
+        
+        </RelativeLayout>
+    </RelativeLayout>
+    
+    <RelativeLayout
+        android:id="@+id/navigation_area"
+        android:orientation="vertical"
+        android:gravity="bottom"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerInParent="true"
-        android:text="My Recordings"
-        android:textSize="15sp"
-        android:textColor="#fff"
-        android:background="@drawable/base_button" />
-    
-</RelativeLayout>
-
+        android:layout_marginBottom="20sp"
+        android:layout_alignParentBottom="true">
+        
+        <Button 
+            android:id="@+id/library_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"
+            android:text="My Recordings"
+            android:textSize="15sp"
+            android:textColor="#fff"
+            android:background="@drawable/base_button" />
+        
+    </RelativeLayout>
 </RelativeLayout>
