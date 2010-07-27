@@ -79,6 +79,10 @@ public class MediaStoreHelper {
 	        	results.close();
 	        }
 	        
+	        Log.i("MediaStoreHelper", String.format("is contentUri null? %b", contentUri == null));
+	        Log.i("MediaStoreHelper", String.format("is values null? %b", values == null));
+	        Log.i("MediaStoreHelper", String.format("is resolver null? %b", resolver == null));
+
 	        resolver.insert(contentUri, values);
 	        resolver = null;
 		}
