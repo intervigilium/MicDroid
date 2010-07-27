@@ -14,16 +14,16 @@
     android:gravity="center"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:layout_marginTop="20px"
-    android:layout_marginRight="20px"
-    android:layout_marginBottom="120px"
-    android:layout_marginLeft="20px"
+    android:layout_marginTop="20dp"
+    android:layout_marginRight="12dp"
+    android:layout_marginBottom="90sp"
+    android:layout_marginLeft="12dp"
     android:background="@drawable/base_panel">
 
 <ToggleButton 
     android:id="@+id/mic_toggle" 
-    android:layout_width="169px" 
-    android:layout_height="169px"
+    android:layout_width="110dp" 
+    android:layout_height="110dp"
     android:textOn="" 
     android:textOff="" 
     android:background="@drawable/recording_button" />
@@ -36,6 +36,7 @@
     android:gravity="top"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="20sp"
     android:layout_alignParentBottom="true">
     
     <Button 
@@ -45,7 +46,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerInParent="true"
         android:text="My Recordings"
-        android:textSize="16sp"
+        android:textSize="15sp"
         android:textColor="#fff"
         android:background="@drawable/base_button" />
     
