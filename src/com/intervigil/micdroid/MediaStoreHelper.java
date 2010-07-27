@@ -25,6 +25,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
 
 public class MediaStoreHelper {
 
@@ -74,10 +75,11 @@ public class MediaStoreHelper {
 	
 	        Cursor results = resolver.query(contentUri, new String[] { "_display_name" }, "_display_name=?", new String[] { r.getName() }, null);
 	        if (results != null && results.getCount() > 0) {
-	        	resolver.delete(contentUri, "_display_name=?", new String[] { r.getName() });   
+	        	resolver.delete(contentUri, "_display_name=?", new String[] { r.getName() });  
+	        	results.close();
 	        }
+	        
 	        resolver.insert(contentUri, values);
-	        results.close();
 	        resolver = null;
 		}
 	}
@@ -95,8 +97,8 @@ public class MediaStoreHelper {
 	        Cursor results = resolver.query(contentUri, new String[] { "_display_name" }, "_display_name=?", new String[] { r.getName() }, null);
 	        if (results != null && results.getCount() > 0) {
 	        	resolver.delete(contentUri, "_display_name=?", new String[] { r.getName() });
+	        	results.close();
 	        }
-	        results.close();
 	        resolver = null;
 		}
 	}
