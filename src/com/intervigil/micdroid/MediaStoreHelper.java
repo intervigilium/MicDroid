@@ -67,7 +67,7 @@ public class MediaStoreHelper {
 	        values.put(MediaStore.Audio.Media.DURATION, r.getLengthInMs() * Recording.MILLISECONDS_IN_SECOND);
 	
 	        values.put(MediaStore.Audio.Media.IS_RINGTONE, true);
-	        values.put(MediaStore.Audio.Media.IS_NOTIFICATION, false);
+	        values.put(MediaStore.Audio.Media.IS_NOTIFICATION, true);
 	        values.put(MediaStore.Audio.Media.IS_ALARM, false);
 	        values.put(MediaStore.Audio.Media.IS_MUSIC, true);
 	
@@ -122,7 +122,7 @@ public class MediaStoreHelper {
 	        values.put(MediaStore.Audio.Media.DURATION, recording.getLengthInMs());
 	
 	        values.put(MediaStore.Audio.Media.IS_RINGTONE, true);
-	        values.put(MediaStore.Audio.Media.IS_NOTIFICATION, false);
+	        values.put(MediaStore.Audio.Media.IS_NOTIFICATION, true);
 	        values.put(MediaStore.Audio.Media.IS_ALARM, false);
 	        values.put(MediaStore.Audio.Media.IS_MUSIC, true);
 	

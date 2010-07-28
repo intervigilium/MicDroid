@@ -166,6 +166,7 @@ public class RecordingLibrary extends Activity {
     	
     	menu.add(Menu.NONE, R.string.recording_options_rename, Menu.NONE, R.string.recording_options_rename);
     	menu.add(Menu.NONE, R.string.recording_options_set_ringtone, Menu.NONE, R.string.recording_options_set_ringtone);
+    	menu.add(Menu.NONE, R.string.recording_options_set_notification, Menu.NONE, R.string.recording_options_set_notification);
     	menu.add(Menu.NONE, R.string.recording_options_send_email, Menu.NONE, R.string.recording_options_send_email);
     	// disable MMS for now because it can't attach wav files
     	//menu.add(Menu.NONE, R.string.recording_options_send_mms, Menu.NONE, R.string.recording_options_send_mms);
@@ -182,6 +183,13 @@ public class RecordingLibrary extends Activity {
 					Toast.makeText(RecordingLibrary.this, R.string.recording_options_ringtone_set, Toast.LENGTH_SHORT).show();
 				} else {
 					Toast.makeText(RecordingLibrary.this, R.string.recording_options_ringtone_error, Toast.LENGTH_SHORT).show();
+				}
+				break;
+			case R.string.recording_options_set_notification:
+				if (RecordingOptionsHelper.setNotificationTone(RecordingLibrary.this, r)) {
+					Toast.makeText(RecordingLibrary.this, R.string.recording_options_notification_set, Toast.LENGTH_SHORT).show();
+				} else {
+					Toast.makeText(RecordingLibrary.this, R.string.recording_options_notification_error, Toast.LENGTH_SHORT).show();
 				}
 				break;
 			case R.string.recording_options_send_email:

@@ -59,11 +59,14 @@ DISCLAIMER: This is alpha software! May be buggy and force close on you! Author 
     <string name="recording_options_title">Recording Options</string>
     <string name="recording_options_rename">Rename Recording</string>
     <string name="recording_options_set_ringtone">Set as Ringtone</string>
+    <string name="recording_options_set_notification">Set as Notification</string>
     <string name="recording_options_send_email">Send as Email</string>
     <string name="recording_options_send_mms">Send as MMS</string>
     
     <string name="recording_options_ringtone_set">Recording set as ringtone!</string>
     <string name="recording_options_ringtone_error">Unable to set recording as ringtone!</string>
+    <string name="recording_options_notification_set">Recording set as notification!</string>
+    <string name="recording_options_notification_error">Unable to set recording as notification!</string>
     <string name="recording_options_mms_sent">Recording sent as MMS!</string>
     <string name="recording_options_email_sent">Recording sent as email!</string>
     
