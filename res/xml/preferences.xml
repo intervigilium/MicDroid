@@ -1,5 +1,15 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+	<PreferenceCategory android:title="@string/prefs_cat_screen">
+		<CheckBoxPreference
+				android:key="@string/prefs_prevent_screen_lock_key"
+				android:title="@string/prefs_prevent_screen_lock"
+				android:summaryOff="@string/prefs_prevent_screen_lock_summary_off"
+				android:summaryOn="@string/prefs_prevent_screen_lock_summary_on"
+				android:dialogTitle="@string/prefs_prevent_screen_lock_title"
+				android:defaultValue="@string/prefs_prevent_screen_lock_default" />
+	</PreferenceCategory>
+
 	<PreferenceCategory android:title="@string/prefs_cat_recording">
 	
 		<ListPreference

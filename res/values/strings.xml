@@ -82,6 +82,14 @@ DISCLAIMER: This is alpha software! May be buggy and force close on you! Author 
     <string name="mic_toggle_off">On</string>
     <string name="mic_toggle_on">Off</string>
     
+    <string name="prefs_cat_screen">Screen Settings</string>
+    <string name="prefs_prevent_screen_lock_key">screen_lock</string>
+    <string name="prefs_prevent_screen_lock">Prevent Screen Lock</string>
+    <string name="prefs_prevent_screen_lock_summary_on">Screen will not dim or lock when recording</string>
+    <string name="prefs_prevent_screen_lock_summary_off">Screen will dim or lock when recording</string>
+    <string name="prefs_prevent_screen_lock_title">Prevent Screen from Dimming</string>
+    <string name="prefs_prevent_screen_lock_default">true</string>
+    
     <string name="prefs_cat_recording">Recording Settings</string>
     <string name="prefs_sample_rate_key">sample_rate</string>
     <string name="prefs_sample_rate">Change Sample Rate</string>
