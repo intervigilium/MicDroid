@@ -4,6 +4,8 @@ To Do:
 Add new nicer graphic resources for everything
 Implement some kind of testing or QA routine
 Set as Notification ringtone
+Confirm delete, yes/no
+Option to disable screen timeout when recording
 Share as MMS
 Integrate MP3 encoder
 Integrate automatic log collector: http://code.google.com/p/android-send-me-logs/
