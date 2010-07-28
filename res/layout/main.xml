@@ -33,9 +33,7 @@
             android:gravity="center"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="40sp">
+            android:layout_marginTop="60dp">
             
             <TextView
                 android:id="@+id/recording_timer"
@@ -83,7 +81,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="My Recordings"
+            android:text="My Recordings" 
             android:textSize="15sp"
             android:textColor="#fff"
             android:background="@drawable/base_button" />
