@@ -29,6 +29,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Typeface;
 import android.media.AudioRecord;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -83,9 +84,12 @@ public class Mic extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
+        Typeface timerFont = Typeface.createFromAsset(getAssets(), "fonts/Clockopia.ttf");
+        
         ((ToggleButton)findViewById(R.id.mic_toggle)).setOnCheckedChangeListener(mPowerBtnListener);
         ((Button)findViewById(R.id.library_button)).setOnClickListener(mLibraryBtnListener);
         TextView timerDisplay = (TextView)findViewById(R.id.recording_timer);
+        timerDisplay.setTypeface(timerFont);
         
         timer = new Timer(timerDisplay);
         startupDialog = new StartupDialog(this, R.string.startup_dialog_title, R.string.startup_dialog_text, R.string.startup_dialog_accept_btn);
@@ -172,12 +176,15 @@ public class Mic extends Activity {
     	if (micRecorder != null) {
 	    	isRecording = micRecorder.isRunning();
     	}
+    	
     	((Button)findViewById(R.id.library_button)).setOnClickListener(mLibraryBtnListener);
     	ToggleButton micSwitch = (ToggleButton)findViewById(R.id.mic_toggle);
     	micSwitch.setChecked(isRecording);
     	micSwitch.setOnCheckedChangeListener(mPowerBtnListener);
     	
+    	Typeface timerFont = Typeface.createFromAsset(getAssets(), "fonts/Clockopia.ttf");
     	TextView timerDisplay = (TextView)findViewById(R.id.recording_timer);
+    	timerDisplay.setTypeface(timerFont);
     	timer.registerDisplay(timerDisplay);
     }
     
