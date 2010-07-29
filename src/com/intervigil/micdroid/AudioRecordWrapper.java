@@ -34,10 +34,10 @@ import android.os.Process;
 
 public class AudioRecordWrapper {
 	
+	private MicRecorder micRecorder;
 	private final AudioRecord audioRecord;
 	private final BlockingQueue<Sample> queue;
-	private MicRecorder micRecorder;
-	private Handler errorHandler;
+	private final Handler errorHandler;
 	private final int bufferSize;
 	
 	public AudioRecordWrapper(Context context, Handler errorHandler, int bufferSize) {

@@ -27,10 +27,10 @@ import android.os.Handler;
 import android.os.Message;
 
 public class Recorder {
-	private AudioRecordWrapper audioRecord;
 	private MicWriter writerThread;
-	private Handler errorHandler;
-	private WaveWriter writer;
+	private final AudioRecordWrapper audioRecord;
+	private final Handler errorHandler;
+	private final WaveWriter writer;
 
 	public Recorder(Context context, Handler errorHandler, int bufferSize) {
 		this.errorHandler = errorHandler;
@@ -70,7 +70,6 @@ public class Recorder {
 			
 			try {
 				writer.closeWaveFile();
-				writer = null;
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
