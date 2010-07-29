@@ -227,11 +227,13 @@ public class Mic extends Activity {
     		switch (msg.what) {
 	    		case Constants.AUDIORECORD_ILLEGAL_STATE:
 	    			// received error message that AudioRecord was started without being properly initialized
+	    			recorder.cleanup();
 	    			micToggle.setChecked(false);
 	    			DialogHelper.showWarning(Mic.this, R.string.audiorecord_exception_title, R.string.audiorecord_exception_warning);
 	    			break;
 	    		case Constants.AUDIORECORD_ILLEGAL_ARGUMENT:
 	    			// received error message that AudioRecord was started with bad sample rate/buffer size
+	    			recorder.cleanup();
 	    			micToggle.setChecked(false);
 	    			DialogHelper.showWarning(Mic.this, R.string.audiorecord_exception_title, R.string.audiorecord_exception_warning);
 	    			break;
