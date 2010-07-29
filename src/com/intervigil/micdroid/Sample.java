@@ -24,15 +24,12 @@ package com.intervigil.micdroid;
 public class Sample {
 	public short[] buffer;
 	public int bufferSize;
-	public boolean isEnd;
 	
 	public Sample(short[] buffer, int bufferSize) {
 		this.buffer = buffer;
 		this.bufferSize = bufferSize;
-		this.isEnd = false;
 	}
 	
 	public Sample() {
-		this.isEnd = true;
 	}
 }
