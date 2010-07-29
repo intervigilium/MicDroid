@@ -1,6 +1,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 	<item android:id="@+id/options" android:title="Pitch-Correction Settings" android:icon="@drawable/settings"/>
-	<item android:id="@+id/playback" android:title="Recording Library" android:icon="@drawable/music" />
 	<item android:id="@+id/help" android:title="Help" android:icon="@drawable/help" />
 	<item android:id="@+id/about" android:title="About" android:icon="@drawable/about" />
 </menu>

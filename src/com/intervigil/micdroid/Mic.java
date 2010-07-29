@@ -28,6 +28,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -39,7 +40,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -62,14 +67,23 @@ public class Mic extends Activity {
 	private WakeLock wakeLock;
 	private StartupDialog startupDialog;
 	private Recorder recorder;
-	
+	private Timer timer;
+
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
+        Typeface timerFont = Typeface.createFromAsset(getAssets(), "fonts/Clockopia.ttf");
+        
         ((ToggleButton)findViewById(R.id.mic_toggle)).setOnCheckedChangeListener(mPowerBtnListener);
+        ((Button)findViewById(R.id.library_button)).setOnClickListener(mLibraryBtnListener);
+        TextView timerDisplay = (TextView)findViewById(R.id.recording_timer);
+        timerDisplay.setTypeface(timerFont);
+        
+        timer = new Timer(timerDisplay);
         startupDialog = new StartupDialog(this, R.string.startup_dialog_title, R.string.startup_dialog_text, R.string.startup_dialog_accept_btn);
     
         ((ToggleButton)findViewById(R.id.mic_toggle)).setChecked(false);
@@ -144,11 +158,18 @@ public class Mic extends Activity {
     	super.onConfigurationChanged(newConfig);
     	
     	setContentView(R.layout.main);
-    	
+
     	boolean isRecording = recorder != null ? recorder.isRunning() : false;
+
+    	((Button)findViewById(R.id.library_button)).setOnClickListener(mLibraryBtnListener);
     	ToggleButton micSwitch = (ToggleButton)findViewById(R.id.mic_toggle);
     	micSwitch.setChecked(isRecording);
     	micSwitch.setOnCheckedChangeListener(mPowerBtnListener);
+    	
+    	Typeface timerFont = Typeface.createFromAsset(getAssets(), "fonts/Clockopia.ttf");
+    	TextView timerDisplay = (TextView)findViewById(R.id.recording_timer);
+    	timerDisplay.setTypeface(timerFont);
+    	timer.registerDisplay(timerDisplay);
     }
     
     @Override
@@ -167,10 +188,6 @@ public class Mic extends Activity {
             case R.id.options:
             	Intent preferencesIntent = new Intent(getBaseContext(), Preferences.class);
             	startActivity(preferencesIntent);
-            	break;
-            case R.id.playback:
-            	Intent playbackIntent = new Intent(getBaseContext(), RecordingLibrary.class);
-            	startActivity(playbackIntent);
             	break;
             case R.id.about:
             	DialogHelper.showWarning(Mic.this, R.string.about_title, R.string.about_text);
@@ -204,6 +221,7 @@ public class Mic extends Activity {
     	// use the handler to receive error messages from the threads
     	@Override
     	public void handleMessage(Message msg) {
+    		timer.stop();
     		ToggleButton micToggle = (ToggleButton)findViewById(R.id.mic_toggle);
     		
     		switch (msg.what) {
@@ -309,6 +327,13 @@ public class Mic extends Activity {
 		}
     }
     
+    private OnClickListener mLibraryBtnListener = new OnClickListener() {
+		public void onClick(View v) {
+			Intent playbackIntent = new Intent(getBaseContext(), RecordingLibrary.class);
+        	startActivity(playbackIntent);
+		}
+	};
+    
     private OnCheckedChangeListener mPowerBtnListener = new OnCheckedChangeListener() {
     	public void onCheckedChanged(CompoundButton btn, boolean isChecked) {
     		if (!canWriteToSdCard()) {
@@ -323,13 +348,15 @@ public class Mic extends Activity {
 				if (btn.isChecked()) {
 					recorder = new Recorder(Mic.this, recordingErrorHandler, AudioHelper.getRecorderBufferSize(Mic.this));
 					recorder.start();
+		        	timer.reset();
+		        	timer.start();
 		        	Toast.makeText(getBaseContext(), R.string.recording_started_toast, Toast.LENGTH_SHORT).show();
 				} else {
 					if (recorder.isRunning()) {
 						// only do this if it was running, otherwise an error message triggered the check state change
 						recorder.stop();
 						recorder.cleanup();
-						
+						timer.stop();
 						Toast.makeText(getBaseContext(), R.string.recording_finished_toast, Toast.LENGTH_SHORT).show();
 						
 		    			Intent saveFileIntent = new Intent(getBaseContext(), FileNameEntry.class);
