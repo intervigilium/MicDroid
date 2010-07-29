@@ -41,8 +41,9 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="00:00"
-                android:textSize="30sp"
+                android:textSize="40sp"
                 android:textColor="#b67bff"
+                android:textStyle="bold"
                 android:background="@drawable/large_display"/>
             
         </RelativeLayout>
@@ -84,6 +85,9 @@
             android:text="My Recordings" 
             android:textSize="15sp"
             android:textColor="#fff"
+            android:shadowColor="#000"
+            android:shadowDy="-1"
+            android:shadowRadius="1"
             android:background="@drawable/base_button" />
         
     </RelativeLayout>
