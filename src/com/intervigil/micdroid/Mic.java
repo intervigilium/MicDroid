@@ -27,6 +27,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.media.AudioRecord;
@@ -35,6 +36,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -64,6 +67,7 @@ public class Mic extends Activity {
 	private static final int WRITER_OUT_OF_SPACE = 6;
 	private static final int RECORDING_GENERIC_EXCEPTION = 7;
 	
+	private WakeLock wakeLock;
 	private StartupDialog startupDialog;
 	
 	private MicRecorder micRecorder;
@@ -88,6 +92,11 @@ public class Mic extends Activity {
     		sampleQueue = new LinkedBlockingQueue<Sample>();
     	}
     	
+    	if (PreferenceHelper.getScreenLock(Mic.this)) {
+    		PowerManager pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
+    		wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "recordingWakeLock");
+    	}
+    	
     	startupDialog.show();
     	AudioHelper.configureRecorder(Mic.this);
     	PreferenceHelper.resetKeyDefault(Mic.this);
@@ -106,12 +115,18 @@ public class Mic extends Activity {
     protected void onResume() {
     	Log.i(getPackageName(), "onResume()");
     	super.onResume();
+    	if (PreferenceHelper.getScreenLock(Mic.this)) {
+    		wakeLock.acquire();
+    	}
     }
     
     @Override
     protected void onPause() {
     	Log.i(getPackageName(), "onPause()");
     	super.onPause();
+    	if (PreferenceHelper.getScreenLock(Mic.this)) {
+    		wakeLock.release();
+    	}
     }
     
     @Override
