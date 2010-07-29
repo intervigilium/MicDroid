@@ -41,6 +41,7 @@ public class Recorder {
 				AudioHelper.getChannelConfig(Constants.DEFAULT_CHANNEL_CONFIG), 
 				AudioHelper.getPcmEncoding(Constants.DEFAULT_PCM_FORMAT));
 		this.audioRecord = new AudioRecordWrapper(context, errorHandler, bufferSize);
+		this.writerThread = new MicWriter();
 	}
 	
 	public void start() {
@@ -58,22 +59,24 @@ public class Recorder {
 	}
 	
 	public void stop() {
-		audioRecord.stop();
-		writerThread.interrupt();
-		try {
-			writerThread.join();
-		} catch (InterruptedException e) {
-			// don't do anything?
+		if (isRunning()) {
+			audioRecord.stop();
+			writerThread.interrupt();
+			try {
+				writerThread.join();
+			} catch (InterruptedException e) {
+				// don't do anything?
+			}
+			
+			try {
+				writer.closeWaveFile();
+				writer = null;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			writerThread = null;
 		}
-		
-		try {
-			writer.closeWaveFile();
-			writer = null;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		writerThread = null;
 	}
 	
 	public void cleanup() {
