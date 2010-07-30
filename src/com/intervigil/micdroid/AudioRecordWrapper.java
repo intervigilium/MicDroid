@@ -35,34 +35,36 @@ import android.os.Process;
 public class AudioRecordWrapper {
 	
 	private MicRecorder micRecorder;
-	private final AudioRecord audioRecord;
+	private AudioRecord audioRecord;
 	private final BlockingQueue<Sample> queue;
 	private final Handler errorHandler;
 	private final int bufferSize;
 	
 	public AudioRecordWrapper(Context context, Handler errorHandler, int bufferSize) {
-		this.audioRecord = AudioHelper.getRecorder(context);
+		try {
+			this.audioRecord = AudioHelper.getRecorder(context);
+		} catch (IllegalArgumentException e) {
+			// problem with audiorecord being given a bad sample rate/buffer size
+			e.printStackTrace();
+			
+			Message msg = errorHandler.obtainMessage(Constants.AUDIORECORD_ILLEGAL_ARGUMENT);
+			errorHandler.sendMessage(msg);
+		}
 		this.queue = new SynchronousQueue<Sample>();
 		this.errorHandler = errorHandler;
-		this.micRecorder = new MicRecorder();
 		this.bufferSize = bufferSize;
 	}
 	
 	public void start() {
 		try {
 			audioRecord.startRecording();
+			micRecorder = new MicRecorder();
 			micRecorder.start();
 		} catch (IllegalStateException e) {
 			// problem with audiorecord not being initialized properly
 			e.printStackTrace();
 			
 			Message msg = errorHandler.obtainMessage(Constants.AUDIORECORD_ILLEGAL_STATE);
-			errorHandler.sendMessage(msg);
-		} catch (IllegalArgumentException e) {
-			// problem with audiorecord being given a bad sample rate/buffer size
-			e.printStackTrace();
-			
-			Message msg = errorHandler.obtainMessage(Constants.AUDIORECORD_ILLEGAL_ARGUMENT);
 			errorHandler.sendMessage(msg);
 		}
 	}
@@ -72,18 +74,18 @@ public class AudioRecordWrapper {
 			micRecorder.interrupt();
 			try {
 				micRecorder.join();
-			} catch (InterruptedException e) {
-				// don't do anything
-			}
+			} catch (InterruptedException e) { }
 			micRecorder = null;
 			audioRecord.stop();
+			queue.clear();
 		}
 	}
 	
 	public void cleanup() {
 		stop();
-		audioRecord.release();
-		queue.clear();
+		if (audioRecord != null) {
+			audioRecord.release();
+		}
 	}
 	
 	public Sample poll() {
@@ -108,8 +110,6 @@ public class AudioRecordWrapper {
 				try {
 					queue.put(s);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 					break;
 				}
 				

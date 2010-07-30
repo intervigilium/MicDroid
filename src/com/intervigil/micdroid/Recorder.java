@@ -41,12 +41,14 @@ public class Recorder {
 				AudioHelper.getChannelConfig(Constants.DEFAULT_CHANNEL_CONFIG), 
 				AudioHelper.getPcmEncoding(Constants.DEFAULT_PCM_FORMAT));
 		this.audioRecord = new AudioRecordWrapper(context, errorHandler, bufferSize);
-		this.writerThread = new MicWriter();
 	}
 	
 	public void start() {
+		writerThread = new MicWriter();
 		try {
 			writer.createWaveFile();
+			audioRecord.start();
+			writerThread.start();
 		} catch (IOException e) {
 			// problem writing to file, unable to create file?
 			e.printStackTrace();
@@ -54,8 +56,6 @@ public class Recorder {
 			Message msg = errorHandler.obtainMessage(Constants.UNABLE_TO_CREATE_RECORDING);
 			errorHandler.sendMessage(msg);
 		}
-		audioRecord.start();
-		writerThread.start();
 	}
 	
 	public void stop() {
@@ -64,14 +64,11 @@ public class Recorder {
 			writerThread.interrupt();
 			try {
 				writerThread.join();
-			} catch (InterruptedException e) {
-				// don't do anything?
-			}
+			} catch (InterruptedException e) { }
 			
 			try {
 				writer.closeWaveFile();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			writerThread = null;
@@ -84,7 +81,9 @@ public class Recorder {
 	}
 	
 	public boolean isRunning() {
-		return (writerThread != null && writerThread.getState() != Thread.State.TERMINATED);
+		return (writerThread != null &&
+				writerThread.getState() != Thread.State.NEW &&
+				writerThread.getState() != Thread.State.TERMINATED);
 	}
 	
 	private class MicWriter extends Thread {
@@ -102,9 +101,6 @@ public class Recorder {
 						Message msg = errorHandler.obtainMessage(Constants.WRITER_OUT_OF_SPACE);
 						errorHandler.sendMessage(msg);
 					}
-				}
-				else {
-					// log it?
 				}
 			}
 		}

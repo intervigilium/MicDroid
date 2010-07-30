@@ -218,35 +218,34 @@ public class Mic extends Activity {
     }
     
     private Handler recordingErrorHandler = new Handler() {
-    	// use the handler to receive error messages from the threads
+    	// use the handler to receive error messages from the recorder object
     	@Override
     	public void handleMessage(Message msg) {
     		timer.stop();
+    		recorder.cleanup();
+    		recorder = null;
     		ToggleButton micToggle = (ToggleButton)findViewById(R.id.mic_toggle);
+    		micToggle.setChecked(false);
     		
     		switch (msg.what) {
 	    		case Constants.AUDIORECORD_ILLEGAL_STATE:
 	    			// received error message that AudioRecord was started without being properly initialized
-	    			recorder.cleanup();
-	    			micToggle.setChecked(false);
 	    			DialogHelper.showWarning(Mic.this, R.string.audiorecord_exception_title, R.string.audiorecord_exception_warning);
 	    			break;
 	    		case Constants.AUDIORECORD_ILLEGAL_ARGUMENT:
 	    			// received error message that AudioRecord was started with bad sample rate/buffer size
-	    			recorder.cleanup();
-	    			micToggle.setChecked(false);
 	    			DialogHelper.showWarning(Mic.this, R.string.audiorecord_exception_title, R.string.audiorecord_exception_warning);
 	    			break;
 	    		case Constants.WRITER_OUT_OF_SPACE:
 	    			// received error that the writer is out of SD card space
-	    			recorder.cleanup();
-	    			micToggle.setChecked(false);
+	    			DialogHelper.showWarning(Mic.this, R.string.writer_out_of_space_title, R.string.writer_out_of_space_warning);
+	    			break;
+	    		case Constants.UNABLE_TO_CREATE_RECORDING:
+	    			// received error that the writer couldn't create the recording
 	    			DialogHelper.showWarning(Mic.this, R.string.writer_out_of_space_title, R.string.writer_out_of_space_warning);
 	    			break;
 	    		case Constants.RECORDING_GENERIC_EXCEPTION:
 	    			// some sort of error occurred in the threads, don't know what yet, send a log!
-	    			recorder.cleanup();
-	    			micToggle.setChecked(false);
 	    			DialogHelper.showWarning(Mic.this, R.string.recording_exception_title, R.string.recording_exception_warning);
 	    			break;
     		}
@@ -348,7 +347,9 @@ public class Mic extends Activity {
     		}
     		else {
 				if (btn.isChecked()) {
-					recorder = new Recorder(Mic.this, recordingErrorHandler, AudioHelper.getRecorderBufferSize(Mic.this));
+					if (recorder == null) {
+						recorder = new Recorder(Mic.this, recordingErrorHandler, AudioHelper.getRecorderBufferSize(Mic.this));
+					}
 					recorder.start();
 		        	timer.reset();
 		        	timer.start();
@@ -357,7 +358,6 @@ public class Mic extends Activity {
 					if (recorder.isRunning()) {
 						// only do this if it was running, otherwise an error message triggered the check state change
 						recorder.stop();
-						recorder.cleanup();
 						timer.stop();
 						Toast.makeText(getBaseContext(), R.string.recording_finished_toast, Toast.LENGTH_SHORT).show();
 						
