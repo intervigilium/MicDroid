@@ -355,7 +355,7 @@ public class Mic extends Activity {
 		        	timer.start();
 		        	Toast.makeText(getBaseContext(), R.string.recording_started_toast, Toast.LENGTH_SHORT).show();
 				} else {
-					if (recorder.isRunning()) {
+					if (recorder != null && recorder.isRunning()) {
 						// only do this if it was running, otherwise an error message triggered the check state change
 						recorder.stop();
 						timer.stop();
