@@ -21,7 +21,7 @@
    for PureData for Android.
  */
 
-package com.intervigil.micdroid;
+package com.intervigil.micdroiddonate;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.SynchronousQueue;

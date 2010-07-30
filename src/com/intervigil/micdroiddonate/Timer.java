@@ -1,4 +1,4 @@
-package com.intervigil.micdroid;
+package com.intervigil.micdroiddonate;
 
 import android.os.Handler;
 import android.os.Message;
