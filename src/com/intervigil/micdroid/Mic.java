@@ -337,7 +337,10 @@ public class Mic extends Activity {
     
     private OnCheckedChangeListener mPowerBtnListener = new OnCheckedChangeListener() {
     	public void onCheckedChanged(CompoundButton btn, boolean isChecked) {
-    		if (!canWriteToSdCard()) {
+    		if (!hasWindowFocus()) {
+    			return;
+    		}
+    		else if (!canWriteToSdCard()) {
         		btn.setChecked(false);
     			DialogHelper.showWarning(Mic.this, R.string.no_external_storage_title, R.string.no_external_storage_warning);
         	}
@@ -360,7 +363,6 @@ public class Mic extends Activity {
 						recorder.stop();
 						timer.stop();
 						Toast.makeText(getBaseContext(), R.string.recording_finished_toast, Toast.LENGTH_SHORT).show();
-						
 		    			Intent saveFileIntent = new Intent(getBaseContext(), FileNameEntry.class);
 						startActivityForResult(saveFileIntent, Constants.FILENAME_ENTRY_INTENT_CODE);
 					}
