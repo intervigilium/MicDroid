@@ -22,24 +22,29 @@ package com.intervigil.micdroiddonate;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.media.AudioRecord;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -59,41 +64,39 @@ public class Mic extends Activity {
 	private static final int DEFAULT_FORM_CORR = 0;
 	private static final float DEFAULT_FORM_WARP = 0.0f;
 	
-	private static final int AUDIORECORD_ILLEGAL_STATE = 4;
-	private static final int AUDIORECORD_ILLEGAL_ARGUMENT = 5;
-	private static final int WRITER_OUT_OF_SPACE = 6;
-	private static final int RECORDING_GENERIC_EXCEPTION = 7;
-	
+	private WakeLock wakeLock;
 	private StartupDialog startupDialog;
-	
-	private MicRecorder micRecorder;
-	private MicWriter micWriter;
-	
-	// keep this queue separate from the message queues since this is a data channel
-	private BlockingQueue<Sample> sampleQueue;
-	
+	private Recorder recorder;
+	private Timer timer;
+
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
+        Typeface timerFont = Typeface.createFromAsset(getAssets(), "fonts/Clockopia.ttf");
+        
         ((ToggleButton)findViewById(R.id.mic_toggle)).setOnCheckedChangeListener(mPowerBtnListener);
+        ((Button)findViewById(R.id.library_button)).setOnClickListener(mLibraryBtnListener);
+        TextView timerDisplay = (TextView)findViewById(R.id.recording_timer);
+        timerDisplay.setTypeface(timerFont);
+        
+        timer = new Timer(timerDisplay);
         startupDialog = new StartupDialog(this, R.string.startup_dialog_title, R.string.startup_dialog_text, R.string.startup_dialog_accept_btn);
     
         ((ToggleButton)findViewById(R.id.mic_toggle)).setChecked(false);
-    	if (sampleQueue != null) {
-    		sampleQueue.clear();
-    	} else {
-    		sampleQueue = new LinkedBlockingQueue<Sample>();
+    	
+    	if (PreferenceHelper.getScreenLock(Mic.this)) {
+    		PowerManager pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
+    		wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "recordingWakeLock");
     	}
     	
     	startupDialog.show();
     	AudioHelper.configureRecorder(Mic.this);
     	PreferenceHelper.resetKeyDefault(Mic.this);
     	migrateOldRecordings();
-    	
-    	android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
     }
     
     @Override
@@ -106,12 +109,18 @@ public class Mic extends Activity {
     protected void onResume() {
     	Log.i(getPackageName(), "onResume()");
     	super.onResume();
+    	if (PreferenceHelper.getScreenLock(Mic.this)) {
+    		wakeLock.acquire();
+    	}
     }
     
     @Override
     protected void onPause() {
     	Log.i(getPackageName(), "onPause()");
     	super.onPause();
+    	if (PreferenceHelper.getScreenLock(Mic.this)) {
+    		wakeLock.release();
+    	}
     }
     
     @Override
@@ -124,19 +133,10 @@ public class Mic extends Activity {
     protected void onDestroy() {
     	Log.i(getPackageName(), "onDestroy()");
     	super.onStop();
-    	
-    	if (micRecorder != null && micWriter != null) {
-    		micRecorder.stopRunning();
-    		
-    		try {
-    			micRecorder.join();
-    			micWriter.join();
-    		} catch (InterruptedException e) {
-    			// TODO Auto-generated catch block
-    			e.printStackTrace();
-    		}
-    	}
 
+    	if (recorder != null) {
+    		recorder.cleanup();
+    	}
     	AutoTalent.destroyAutoTalent();
     }
 
@@ -158,14 +158,18 @@ public class Mic extends Activity {
     	super.onConfigurationChanged(newConfig);
     	
     	setContentView(R.layout.main);
-    	
-    	boolean isRecording = false;
-    	if (micRecorder != null) {
-	    	isRecording = micRecorder.isRunning();
-    	}
+
+    	boolean isRecording = recorder != null ? recorder.isRunning() : false;
+
+    	((Button)findViewById(R.id.library_button)).setOnClickListener(mLibraryBtnListener);
     	ToggleButton micSwitch = (ToggleButton)findViewById(R.id.mic_toggle);
     	micSwitch.setChecked(isRecording);
     	micSwitch.setOnCheckedChangeListener(mPowerBtnListener);
+    	
+    	Typeface timerFont = Typeface.createFromAsset(getAssets(), "fonts/Clockopia.ttf");
+    	TextView timerDisplay = (TextView)findViewById(R.id.recording_timer);
+    	timerDisplay.setTypeface(timerFont);
+    	timer.registerDisplay(timerDisplay);
     }
     
     @Override
@@ -184,10 +188,6 @@ public class Mic extends Activity {
             case R.id.options:
             	Intent preferencesIntent = new Intent(getBaseContext(), Preferences.class);
             	startActivity(preferencesIntent);
-            	break;
-            case R.id.playback:
-            	Intent playbackIntent = new Intent(getBaseContext(), RecordingLibrary.class);
-            	startActivity(playbackIntent);
             	break;
             case R.id.about:
             	DialogHelper.showWarning(Mic.this, R.string.about_title, R.string.about_text);
@@ -218,35 +218,35 @@ public class Mic extends Activity {
     }
     
     private Handler recordingErrorHandler = new Handler() {
-    	// use the handler to receive error messages from the threads
+    	// use the handler to receive error messages from the recorder object
     	@Override
     	public void handleMessage(Message msg) {
+    		timer.stop();
+    		recorder.cleanup();
+    		recorder = null;
     		ToggleButton micToggle = (ToggleButton)findViewById(R.id.mic_toggle);
+    		micToggle.setChecked(false);
     		
     		switch (msg.what) {
-	    		case AUDIORECORD_ILLEGAL_STATE:
+	    		case Constants.AUDIORECORD_ILLEGAL_STATE:
 	    			// received error message that AudioRecord was started without being properly initialized
-	    			micToggle.setChecked(false);
 	    			DialogHelper.showWarning(Mic.this, R.string.audiorecord_exception_title, R.string.audiorecord_exception_warning);
 	    			break;
-	    		case AUDIORECORD_ILLEGAL_ARGUMENT:
+	    		case Constants.AUDIORECORD_ILLEGAL_ARGUMENT:
 	    			// received error message that AudioRecord was started with bad sample rate/buffer size
-	    			micToggle.setChecked(false);
 	    			DialogHelper.showWarning(Mic.this, R.string.audiorecord_exception_title, R.string.audiorecord_exception_warning);
 	    			break;
-	    		case WRITER_OUT_OF_SPACE:
+	    		case Constants.WRITER_OUT_OF_SPACE:
 	    			// received error that the writer is out of SD card space
-	    			micRecorder.stopRunning();
-	    			micToggle.setChecked(false);
 	    			DialogHelper.showWarning(Mic.this, R.string.writer_out_of_space_title, R.string.writer_out_of_space_warning);
-	    			sampleQueue.clear();
 	    			break;
-	    		case RECORDING_GENERIC_EXCEPTION:
+	    		case Constants.UNABLE_TO_CREATE_RECORDING:
+	    			// received error that the writer couldn't create the recording
+	    			DialogHelper.showWarning(Mic.this, R.string.unable_to_create_recording_title, R.string.unable_to_create_recording_warning);
+	    			break;
+	    		case Constants.RECORDING_GENERIC_EXCEPTION:
 	    			// some sort of error occurred in the threads, don't know what yet, send a log!
-	    			micRecorder.stopRunning();
-	    			micToggle.setChecked(false);
 	    			DialogHelper.showWarning(Mic.this, R.string.recording_exception_title, R.string.recording_exception_warning);
-	    			sampleQueue.clear();
 	    			break;
     		}
     	}
@@ -328,6 +328,13 @@ public class Mic extends Activity {
 		}
     }
     
+    private OnClickListener mLibraryBtnListener = new OnClickListener() {
+		public void onClick(View v) {
+			Intent playbackIntent = new Intent(getBaseContext(), RecordingLibrary.class);
+        	startActivity(playbackIntent);
+		}
+	};
+    
     private OnCheckedChangeListener mPowerBtnListener = new OnCheckedChangeListener() {
     	public void onCheckedChanged(CompoundButton btn, boolean isChecked) {
     		if (!canWriteToSdCard()) {
@@ -340,25 +347,18 @@ public class Mic extends Activity {
     		}
     		else {
 				if (btn.isChecked()) {
-					sampleQueue.clear();
-					micRecorder = new MicRecorder(sampleQueue);
-					micRecorder.setPriority(Thread.MAX_PRIORITY);
-					micRecorder.start();
-
-		        	micWriter = new MicWriter(sampleQueue);
-		        	micWriter.start();
+					if (recorder == null) {
+						recorder = new Recorder(Mic.this, recordingErrorHandler, AudioHelper.getRecorderBufferSize(Mic.this));
+					}
+					recorder.start();
+		        	timer.reset();
+		        	timer.start();
 		        	Toast.makeText(getBaseContext(), R.string.recording_started_toast, Toast.LENGTH_SHORT).show();
 				} else {
-					if (micRecorder.isRunning()) {
+					if (recorder.isRunning()) {
 						// only do this if it was running, otherwise an error message triggered the check state change
-						try {
-							micRecorder.stopRunning();
-							micRecorder.join();
-							micWriter.join();
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-						sampleQueue.clear();
+						recorder.stop();
+						timer.stop();
 						Toast.makeText(getBaseContext(), R.string.recording_finished_toast, Toast.LENGTH_SHORT).show();
 						
 		    			Intent saveFileIntent = new Intent(getBaseContext(), FileNameEntry.class);
@@ -383,148 +383,6 @@ public class Mic extends Activity {
     			strength, smooth, pitchShift, DEFAULT_SCALE_ROTATE, 
     			DEFAULT_LFO_DEPTH, DEFAULT_LFO_RATE, DEFAULT_LFO_SHAPE, DEFAULT_LFO_SYM, DEFAULT_LFO_QUANT, 
     			DEFAULT_FORM_CORR, DEFAULT_FORM_WARP, mix);
-    }
-    
-    private class MicWriter extends Thread {
-    	private final BlockingQueue<Sample> queue;
-    	private WaveWriter writer;
-    	
-    	public MicWriter(BlockingQueue<Sample> q) {
-    		queue = q;
-    	}
-    	
-		public void run() {
-			try {
-				writer = new WaveWriter(
-						ApplicationHelper.getOutputDirectory(),
-						getString(R.string.default_recording_name), 
-						PreferenceHelper.getSampleRate(Mic.this), 
-						AudioHelper.getChannelConfig(Constants.DEFAULT_CHANNEL_CONFIG), 
-						AudioHelper.getPcmEncoding(Constants.DEFAULT_PCM_FORMAT));
-				writer.createWaveFile();
-    		
-				while (true) {
-					Sample sample = queue.take();
-					if (!sample.isEnd) {
-						writer.write(sample.buffer, sample.bufferSize);
-					}
-					else {
-						shutdown();
-		    			return;
-					}
-				}
-			} catch (IOException e) {
-				// problem writing to the buffer, usually means we're out of space
-				e.printStackTrace();
-				shutdown();
-				
-				Message msg = recordingErrorHandler.obtainMessage(WRITER_OUT_OF_SPACE);
-				recordingErrorHandler.sendMessage(msg);
-			} catch (InterruptedException e) {
-				// problem removing from the queue
-				e.printStackTrace();
-				shutdown();
-				
-				Message msg = recordingErrorHandler.obtainMessage(RECORDING_GENERIC_EXCEPTION);
-				recordingErrorHandler.sendMessage(msg);
-			}
-		}
-		
-		private void shutdown() {
-			try {
-				writer.closeWaveFile();
-				writer = null;
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-    }
-    
-    private class MicRecorder extends Thread {
-    	private final BlockingQueue<Sample> queue;
-    	private boolean isRunning;
-    	private AudioRecord recorder;
-    	    	
-    	public MicRecorder(BlockingQueue<Sample> q) {
-    		queue = q;
-    	}
-    	
-    	public boolean isRunning() {
-    		return this.isRunning;
-    	}
-    	
-    	public void stopRunning() {
-    		this.isRunning = false;
-    	}
-    	
-    	public void run() {
-    		isRunning = true;
-    		
-    		try {
-				recorder = AudioHelper.getRecorder(Mic.this);
-	
-	    		short[] buffer = new short[AudioHelper.getRecorderBufferSize(Mic.this)];
-	    		recorder.startRecording();
-	    		
-	    		
-	    		while (isRunning) {
-					int numSamples = recorder.read(buffer, 0, buffer.length);
-					queue.put(new Sample(buffer, numSamples));
-	    		}
-	    		
-	    		shutdown();
-    		} catch (IllegalStateException e) {
-    			// problem with audiorecord not being initialized properly
-    			e.printStackTrace();
-    			shutdown();
-    			
-    			Message msg = recordingErrorHandler.obtainMessage(AUDIORECORD_ILLEGAL_STATE);
-    			recordingErrorHandler.sendMessage(msg);
-    		} catch (IllegalArgumentException e) {
-    			// problem with audiorecord being given a bad sample rate/buffer size
-    			e.printStackTrace();
-    			shutdown();
-    			
-    			Message msg = recordingErrorHandler.obtainMessage(AUDIORECORD_ILLEGAL_ARGUMENT);
-    			recordingErrorHandler.sendMessage(msg);
-    		} catch (InterruptedException e) {
-    			// problem putting sample on the queue
-				e.printStackTrace();
-				shutdown();
-				
-				Message msg = recordingErrorHandler.obtainMessage(RECORDING_GENERIC_EXCEPTION);
-				recordingErrorHandler.sendMessage(msg);
-    		}
-    	}
-    	
-    	private void shutdown() {
-    		isRunning = false;
-    		if (recorder != null) {
-	    		recorder.release();
-	    		recorder = null;
-    		}
-    		
-    		try {
-    			Sample endMarker = new Sample();
-				queue.put(endMarker);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-    	}
-    }
-    
-    public MicRecorder getRecorderThread() {
-    	return micRecorder;
-    }
-    
-    public MicWriter getWriterThread() {
-    	return micWriter;
-    }
-    
-    public StartupDialog getStartupDialog() {
-    	return startupDialog;
     }
     
     private void migrateOldRecordings() {

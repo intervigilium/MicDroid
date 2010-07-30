@@ -1,136 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, mic!</string>
     <string name="app_name">MicDroid</string>
     <string name="default_recording_name">recording.wav</string>
-    
+
     <string name="startup_dialog_title">What\'s new in this version?</string>
-    <string name="startup_dialog_text">1. Add chromatic scale\n\
-2. Fix crash on rotate\n\
-3. Move recordings to /sdcard/MicDroid/\n\
-4. Allow background recording/playback\n\
-5. Allow install to SD card in Froyo\n\
-6. Add \'Help\' and \'About\' menu items\n\
-7. Add set as ringtone support (LONG PRESS on recording to activate)\n\
-8. Add send as email attachment support (LONG PRESS on recording to activate)\n\
+    <string name="startup_dialog_text">1. New UI for recording screen\n\
+2. Fix Droid X sound quality issues\n\
+3. Allow recordings to be set as notifications\n\
+4. Add setting to prevent screen locking while recording\n\
+5. Move recordings to /sdcard/MicDroid/\n\
+6. Allow background recording/playback\n\
+7. Allow install to SD card in Froyo\n\
+8. Add set as ringtone support (LONG PRESS on recording to activate)\n\
+9. Add send as email attachment support (LONG PRESS on recording to activate)\n\
 \n\
 DISCLAIMER: This is alpha software! May be buggy and force close on you! Author is aware and working on issues!\n\
     </string>
     <string name="startup_dialog_accept_btn">Accept</string>
-    
+
     <string name="no_external_storage_title">WARNING!</string>
     <string name="no_external_storage_warning">This app requires a mounted SD card to function properly! Make sure there is an SD card properly inserted and mounted before recording!</string>
-    
+
     <string name="unable_to_configure_audio_title">ERROR!</string>
     <string name="unable_to_configure_audio_warning">Unable to configure audio! Please check your sample rate settings and make sure your device is able to record at that rate!</string>
-    
+
     <string name="unconfigured_audio_title">ERROR!</string>
     <string name="unconfigured_audio_warning">Cannot record audio with current settings! Please check your sample rate settings and make sure your device is able to record at that rate!</string>
-    
+
     <string name="writer_out_of_space_title">WARNING!</string>
     <string name="writer_out_of_space_warning">Writer cannot continue writing data! Please check to make sure your SD card is not full!</string>
-    
+
+    <string name="unable_to_create_recording_title">WARNING!</string>
+    <string name="unable_to_create_recording_warning">Writer cannot create recording! Please make sure your SD card is inserted and is writable!</string>
+
     <string name="audiorecord_exception_title">ERROR!</string>
     <string name="audiorecord_exception_warning">An error has occurred while recording! Please check your settings and make sure your device is able to record audio!</string>
-    
+
     <string name="recording_exception_title">ERROR!</string>
     <string name="recording_exception_warning">An unknown exception occurred while recording! Please check your settings and make sure your device is able to record audio!</string>
-    
+
     <string name="recording_started_toast">Recording started! Press power button to stop recording!</string>
     <string name="recording_finished_toast">Recording finished!</string>
-    
-    <string name="recording_save_success">Recording saved successfully! Use the MENU key to access saved recordings!</string>
+
+    <string name="recording_save_success">Recording saved successfully! Use the Recording Library button to access saved recordings!</string>
     <string name="recording_save_canceled">Recording save canceled!</string>
-    
+
     <string name="filename_entry">Save Recording</string>
     <string name="filename_entry_text">The current recording will have the name: </string>
     <string name="filename_entry_btn_ok">Save</string>
     <string name="filename_entry_btn_cancel">Cancel</string>
-    
+
     <string name="invalid_name_alert_title">Invalid Filename!</string>
     <string name="invalid_name_alert_message">Invalid filename detected, please enter a new one</string>
-    
+
     <string name="autotalent_progress_msg">Pitch correction in progress...</string>
-    
+
     <string name="recording_library">Recordings</string>
     <string name="recording_library_title">Recorded Clips</string>
     <string name="recording_library_empty">No Recordings</string>
-    
+
     <string name="recording_options_title">Recording Options</string>
     <string name="recording_options_rename">Rename Recording</string>
     <string name="recording_options_set_ringtone">Set as Ringtone</string>
+    <string name="recording_options_set_notification">Set as Notification</string>
     <string name="recording_options_send_email">Send as Email</string>
     <string name="recording_options_send_mms">Send as MMS</string>
-    
+
     <string name="recording_options_ringtone_set">Recording set as ringtone!</string>
     <string name="recording_options_ringtone_error">Unable to set recording as ringtone!</string>
+    <string name="recording_options_notification_set">Recording set as notification!</string>
+    <string name="recording_options_notification_error">Unable to set recording as notification!</string>
     <string name="recording_options_mms_sent">Recording sent as MMS!</string>
     <string name="recording_options_email_sent">Recording sent as email!</string>
-    
+
     <string name="recording_player">Recording Player</string>
     <string name="recording_player_file_name">Recording Name</string>
     <string name="recording_player_btn_play">Play</string>
     <string name="recording_player_btn_stop">Stop</string>
     <string name="recording_player_btn_delete">Delete</string>
     <string name="recording_player_btn_close">Close</string>
-    
+
     <string name="set_preferences">Pitch-Correction Settings</string>
     <string name="mic_label">Power Button</string>
     <string name="mic_toggle_off">On</string>
     <string name="mic_toggle_on">Off</string>
-    
+
+    <string name="prefs_cat_screen">Screen Settings</string>
+    <string name="prefs_prevent_screen_lock_key">screen_lock</string>
+    <string name="prefs_prevent_screen_lock">Prevent Screen Lock</string>
+    <string name="prefs_prevent_screen_lock_summary_on">Screen will not dim or lock when recording</string>
+    <string name="prefs_prevent_screen_lock_summary_off">Screen will dim or lock when recording</string>
+    <string name="prefs_prevent_screen_lock_title">Prevent Screen from Dimming</string>
+    <string name="prefs_prevent_screen_lock_default">true</string>
+
     <string name="prefs_cat_recording">Recording Settings</string>
     <string name="prefs_sample_rate_key">sample_rate</string>
     <string name="prefs_sample_rate">Change Sample Rate</string>
     <string name="prefs_sample_rate_summary">Recording sample rate is device dependent, if you have trouble recording try changing this.</string>
     <string name="prefs_sample_rate_title">Change Recording Sample Rate</string>
     <string name="prefs_sample_rate_default">22050</string>
-    
+
     <string name="prefs_cat_key">Key Settings</string>
     <string name="prefs_key_key">key</string>
     <string name="prefs_key">Change Key</string>
     <string name="prefs_key_summary">Change the key to tune to</string>
     <string name="prefs_key_title">Change Key</string>
     <string name="prefs_key_default">C</string>
-   
+
     <string name="prefs_cat_pitch">Pitch Settings</string>
     <string name="prefs_fixed_pitch_key">fixed_pitch</string>
     <string name="prefs_fixed_pitch">Fixed Pitch</string>
     <string name="prefs_fixed_pitch_summary">The pitch which input pitch will be pulled to</string>
     <string name="prefs_fixed_pitch_title">Fixed Pitch</string>
     <string name="prefs_fixed_pitch_default">0.0</string>
-    
+
     <string name="prefs_pitch_pull_key">pitch_pull</string>
     <string name="prefs_pitch_pull">Pull to Fixed Pitch</string>
     <string name="prefs_pitch_pull_summary">The degree that pitch is pulled towards</string>
     <string name="prefs_pitch_pull_title">Pull to Fixed Pitch</string>
     <string name="prefs_pitch_pull_default">0.1</string>
-    
+
     <string name="prefs_pitch_shift_key">pitch_shift</string>
     <string name="prefs_pitch_shift">Pitch Shift</string>
     <string name="prefs_pitch_shift_summary">Number of notes in scale which pitch is shifted</string>
     <string name="prefs_pitch_shift_title">Pitch Shift</string>
     <string name="prefs_pitch_shift_default">0.0</string>
-    
+
     <string name="prefs_cat_correction">Correction Settings</string>
     <string name="prefs_corr_str_key">strength</string>
     <string name="prefs_corr_str">Correction Strength</string>
     <string name="prefs_corr_str_summary">Strength of pitch correction</string>
     <string name="prefs_corr_str_title">Correction Strength</string>
     <string name="prefs_corr_str_default">1.0</string>
-    
+
     <string name="prefs_corr_smooth_key">smooth</string>
     <string name="prefs_corr_smooth">Correction Smoothness</string>
     <string name="prefs_corr_smooth_summary">Smoothness of correction transition</string>
     <string name="prefs_corr_smooth_title">Correction Smoothness</string>
     <string name="prefs_corr_smooth_default">0.0</string>
-    
+
     <string name="prefs_corr_mix_key">mix</string>
     <string name="prefs_corr_mix">Mix</string>
     <string name="prefs_corr_mix_summary">Blend between wet and dry signal</string>
     <string name="prefs_corr_mix_title">Mix</string>
     <string name="prefs_corr_mix_default">1.0</string>
-    
+
     <string name="about_title">About MicDroid</string>
     <string name="about_text">Graphics work courtesy of Peng X. Wang: http://pengxwang.com\n\
 \n\
@@ -187,21 +201,19 @@ Portions of this page are modifications based on work created and shared by Goog
 \n\
 License terms available at: http://creativecommons.org/licenses/by/3.0/\n\
     </string>
-    
+
     <string name="help_title">How to Use</string>
     <string name="help_text">How to Record and Play Back\n\
-1. Press the \'Power Button\' to begin recording\n\
-2. Press the \'Power Button\' again to stop recording\n\
+1. Press the \'Record Button\' to begin recording\n\
+2. Press the \'Record Button\' again to stop recording\n\
 3. Enter a recording name in the pop-up dialog\n\
-4. Press the \'Menu Button\' on your phone to bring up the menu\n\
-5. Press the \'Recording Library\' button to access your saved recordings\n\
-6. Press any recording in your library to play it back\n\
+4. Press the \'Recording Library\' button to access your saved recordings\n\
+5. Press any recording in your library to play it back\n\
 \n\
 How to Share\n\
-1. Press to \'Menu Button\' on your phone to bring up the menu\n\
-2. Press the \'Recording Library\' button to access your saved recordings\n\
-3. Long-press on any recording to bring up the context menu\n\
-4. Share by email, or set recording as your ringtone\n\
+1. Press the \'Recording Library\' button to access your saved recordings\n\
+2. Long-press on any recording to bring up the context menu\n\
+3. Share by email, or set recording as your ringtone\n\
 \n\
 How to Change Settings\n\
 1. Press the \'Menu Button\' on your phone to bring up the menu\n\

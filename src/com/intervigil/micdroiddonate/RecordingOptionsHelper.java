@@ -37,6 +37,15 @@ public class RecordingOptionsHelper {
     	return false;
     }
 	
+	public static boolean setNotificationTone(Context context, Recording recording) {
+		Uri recordingUri = MediaStoreHelper.getRecordingUri(context, recording);
+    	if (recordingUri != null) {
+    		RingtoneManager.setActualDefaultRingtoneUri(context, RingtoneManager.TYPE_NOTIFICATION, recordingUri);
+    		return true;
+    	}
+    	return false;
+	}
+	
 	public static void sendEmailAttachment(Context context, Recording recording) {
 		String recordingPath = ApplicationHelper.getLibraryDirectory() + File.separator + recording.getName();
 		File recordingFile = new File(recordingPath);

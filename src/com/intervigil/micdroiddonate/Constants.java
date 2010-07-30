@@ -49,4 +49,11 @@ public class Constants {
 	
 	// mime type
 	public static final String AUDIO_WAVE = "audio/wav";
+	
+	// recording error handler codes
+	public static final int AUDIORECORD_ILLEGAL_STATE = 4;
+	public static final int AUDIORECORD_ILLEGAL_ARGUMENT = 5;
+	public static final int WRITER_OUT_OF_SPACE = 6;
+	public static final int UNABLE_TO_CREATE_RECORDING = 7;
+	public static final int RECORDING_GENERIC_EXCEPTION = 8;
 }

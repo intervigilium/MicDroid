@@ -25,6 +25,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
 
 public class MediaStoreHelper {
 
@@ -66,7 +67,7 @@ public class MediaStoreHelper {
 	        values.put(MediaStore.Audio.Media.DURATION, r.getLengthInMs() * Recording.MILLISECONDS_IN_SECOND);
 	
 	        values.put(MediaStore.Audio.Media.IS_RINGTONE, true);
-	        values.put(MediaStore.Audio.Media.IS_NOTIFICATION, false);
+	        values.put(MediaStore.Audio.Media.IS_NOTIFICATION, true);
 	        values.put(MediaStore.Audio.Media.IS_ALARM, false);
 	        values.put(MediaStore.Audio.Media.IS_MUSIC, true);
 	
@@ -74,10 +75,15 @@ public class MediaStoreHelper {
 	
 	        Cursor results = resolver.query(contentUri, new String[] { "_display_name" }, "_display_name=?", new String[] { r.getName() }, null);
 	        if (results != null && results.getCount() > 0) {
-	        	resolver.delete(contentUri, "_display_name=?", new String[] { r.getName() });   
+	        	resolver.delete(contentUri, "_display_name=?", new String[] { r.getName() });  
+	        	results.close();
 	        }
+	        
+	        Log.i("MediaStoreHelper", String.format("is contentUri null? %b", contentUri == null));
+	        Log.i("MediaStoreHelper", String.format("is values null? %b", values == null));
+	        Log.i("MediaStoreHelper", String.format("is resolver null? %b", resolver == null));
+
 	        resolver.insert(contentUri, values);
-	        results.close();
 	        resolver = null;
 		}
 	}
@@ -95,8 +101,8 @@ public class MediaStoreHelper {
 	        Cursor results = resolver.query(contentUri, new String[] { "_display_name" }, "_display_name=?", new String[] { r.getName() }, null);
 	        if (results != null && results.getCount() > 0) {
 	        	resolver.delete(contentUri, "_display_name=?", new String[] { r.getName() });
+	        	results.close();
 	        }
-	        results.close();
 	        resolver = null;
 		}
 	}
@@ -116,7 +122,7 @@ public class MediaStoreHelper {
 	        values.put(MediaStore.Audio.Media.DURATION, recording.getLengthInMs());
 	
 	        values.put(MediaStore.Audio.Media.IS_RINGTONE, true);
-	        values.put(MediaStore.Audio.Media.IS_NOTIFICATION, false);
+	        values.put(MediaStore.Audio.Media.IS_NOTIFICATION, true);
 	        values.put(MediaStore.Audio.Media.IS_ALARM, false);
 	        values.put(MediaStore.Audio.Media.IS_MUSIC, true);
 	
