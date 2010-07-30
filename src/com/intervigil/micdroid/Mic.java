@@ -242,7 +242,7 @@ public class Mic extends Activity {
 	    			break;
 	    		case Constants.UNABLE_TO_CREATE_RECORDING:
 	    			// received error that the writer couldn't create the recording
-	    			DialogHelper.showWarning(Mic.this, R.string.writer_out_of_space_title, R.string.writer_out_of_space_warning);
+	    			DialogHelper.showWarning(Mic.this, R.string.unable_to_create_recording_title, R.string.unable_to_create_recording_warning);
 	    			break;
 	    		case Constants.RECORDING_GENERIC_EXCEPTION:
 	    			// some sort of error occurred in the threads, don't know what yet, send a log!
