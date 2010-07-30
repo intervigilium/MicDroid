@@ -1486,7 +1486,7 @@ jshort * getShortBuffer(float* floatBuffer, jsize size) {
 
 static Autotalent * instance;
 
-JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_instantiateAutoTalent
+JNIEXPORT void JNICALL Java_com_intervigil_micdroiddonate_AutoTalent_instantiateAutoTalent
   (JNIEnv* env, jclass class, jint sampleRate) {
   if (instance == NULL) {
     instance = instantiateAutotalent(sampleRate);
@@ -1495,7 +1495,7 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_instantiateAutoTa
 }
 
 
-JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_initializeAutoTalent
+JNIEXPORT void JNICALL Java_com_intervigil_micdroiddonate_AutoTalent_initializeAutoTalent
   (JNIEnv* env, jclass class, jfloat concertA, jchar key, jfloat fixedPitch, jfloat fixedPull,
 		  jfloat correctStrength, jfloat correctSmooth, jfloat pitchShift, jint scaleRotate,
 		  jfloat lfoDepth, jfloat lfoRate, jfloat lfoShape, jfloat lfoSym, jint lfoQuant,
@@ -1534,7 +1534,7 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_initializeAutoTal
 }
 
 
-JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_processSamples
+JNIEXPORT void JNICALL Java_com_intervigil_micdroiddonate_AutoTalent_processSamples
   (JNIEnv* env , jclass class, jshortArray samples, jint sampleSize) {
   if (instance != NULL) {
 	// copy buffers
@@ -1556,7 +1556,7 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_processSamples
 }
 
 
-JNIEXPORT void JNICALL Java_com_intervigil_micdroid_AutoTalent_destroyAutoTalent
+JNIEXPORT void JNICALL Java_com_intervigil_micdroiddonate_AutoTalent_destroyAutoTalent
   (JNIEnv* env, jclass class) {
   if (instance != NULL) {
     cleanupAutotalent(instance);
