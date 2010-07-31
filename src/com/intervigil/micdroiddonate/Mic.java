@@ -77,16 +77,17 @@ public class Mic extends Activity {
         setContentView(R.layout.main);
         
         Typeface timerFont = Typeface.createFromAsset(getAssets(), "fonts/Clockopia.ttf");
-        
-        ((ToggleButton)findViewById(R.id.mic_toggle)).setOnCheckedChangeListener(mPowerBtnListener);
-        ((Button)findViewById(R.id.library_button)).setOnClickListener(mLibraryBtnListener);
+        ToggleButton recordingButton = ((ToggleButton)findViewById(R.id.recording_button));
+        Button libraryButton = ((Button)findViewById(R.id.library_button));
         TextView timerDisplay = (TextView)findViewById(R.id.recording_timer);
+        
+        recordingButton.setChecked(false);
+        recordingButton.setOnCheckedChangeListener(mPowerBtnListener);
+        libraryButton.setOnClickListener(mLibraryBtnListener);
         timerDisplay.setTypeface(timerFont);
         
         timer = new Timer(timerDisplay);
         startupDialog = new StartupDialog(this, R.string.startup_dialog_title, R.string.startup_dialog_text, R.string.startup_dialog_accept_btn);
-    
-        ((ToggleButton)findViewById(R.id.mic_toggle)).setChecked(false);
     	
     	if (PreferenceHelper.getScreenLock(Mic.this)) {
     		PowerManager pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
@@ -162,7 +163,7 @@ public class Mic extends Activity {
     	boolean isRecording = recorder != null ? recorder.isRunning() : false;
 
     	((Button)findViewById(R.id.library_button)).setOnClickListener(mLibraryBtnListener);
-    	ToggleButton micSwitch = (ToggleButton)findViewById(R.id.mic_toggle);
+    	ToggleButton micSwitch = (ToggleButton)findViewById(R.id.recording_button);
     	micSwitch.setChecked(isRecording);
     	micSwitch.setOnCheckedChangeListener(mPowerBtnListener);
     	
@@ -221,11 +222,12 @@ public class Mic extends Activity {
     	// use the handler to receive error messages from the recorder object
     	@Override
     	public void handleMessage(Message msg) {
+    		ToggleButton recordingButton = (ToggleButton)findViewById(R.id.recording_button);
+    		
     		timer.stop();
     		recorder.cleanup();
     		recorder = null;
-    		ToggleButton micToggle = (ToggleButton)findViewById(R.id.mic_toggle);
-    		micToggle.setChecked(false);
+    		recordingButton.setChecked(false);
     		
     		switch (msg.what) {
 	    		case Constants.AUDIORECORD_ILLEGAL_STATE:
@@ -337,7 +339,10 @@ public class Mic extends Activity {
     
     private OnCheckedChangeListener mPowerBtnListener = new OnCheckedChangeListener() {
     	public void onCheckedChanged(CompoundButton btn, boolean isChecked) {
-    		if (!canWriteToSdCard()) {
+    		if (!hasWindowFocus()) {
+    			return;
+    		}
+    		else if (!canWriteToSdCard()) {
         		btn.setChecked(false);
     			DialogHelper.showWarning(Mic.this, R.string.no_external_storage_title, R.string.no_external_storage_warning);
         	}
@@ -355,12 +360,11 @@ public class Mic extends Activity {
 		        	timer.start();
 		        	Toast.makeText(getBaseContext(), R.string.recording_started_toast, Toast.LENGTH_SHORT).show();
 				} else {
-					if (recorder.isRunning()) {
+					if (recorder != null && recorder.isRunning()) {
 						// only do this if it was running, otherwise an error message triggered the check state change
 						recorder.stop();
 						timer.stop();
 						Toast.makeText(getBaseContext(), R.string.recording_finished_toast, Toast.LENGTH_SHORT).show();
-						
 		    			Intent saveFileIntent = new Intent(getBaseContext(), FileNameEntry.class);
 						startActivityForResult(saveFileIntent, Constants.FILENAME_ENTRY_INTENT_CODE);
 					}

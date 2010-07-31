@@ -47,9 +47,8 @@
                 android:background="@drawable/large_display"/>
             
         </RelativeLayout>
-        <!-- would be nice if mic_toggle -> recording_button -->
         <RelativeLayout 
-            android:id="@+id/mic_toggle_container"
+            android:id="@+id/recording_button_container"
             android:orientation="vertical"
             android:gravity="center"
             android:layout_width="fill_parent"
@@ -58,7 +57,7 @@
             android:layout_alignParentBottom="true">
         
             <ToggleButton 
-                android:id="@+id/mic_toggle" 
+                android:id="@+id/recording_button" 
                 android:layout_width="112dp" 
                 android:layout_height="112dp"
                 android:textOn="" 
