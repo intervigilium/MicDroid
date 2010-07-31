@@ -1,10 +1,7 @@
 There are a lot of things left to do, and many features to add. 
 
 To Do:
-Update all the toast and text resources for new UI
-Namespace android assets with `android_`
 Implement some kind of testing or QA routine
-Confirm delete, yes/no
 Share as MMS
 Integrate MP3 encoder
 Integrate automatic log collector: http://code.google.com/p/android-send-me-logs/
