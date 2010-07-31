@@ -21,6 +21,8 @@
 package com.intervigil.micdroid;
 
 import android.app.Activity;
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
@@ -131,11 +133,27 @@ public class RecordingPlayer extends Activity {
 	    		mediaPlayer.stop();
 	    		break;
 	    	case R.id.recording_player_btn_delete:
-	    		mediaPlayer.close();
-    			recording.asFile().delete();
-    			MediaStoreHelper.removeRecording(RecordingPlayer.this, recording);
-    			setResult(Constants.RESULT_FILE_DELETED);
-    			finish();
+	    		Builder confirmDialogBuilder = new Builder(RecordingPlayer.this);
+	    		confirmDialogBuilder.setTitle(R.string.confirm_delete_title)
+	    			.setMessage(R.string.confirm_delete_message)
+	    			.setPositiveButton(R.string.confirm_delete_btn_yes, new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							mediaPlayer.close();
+			    			recording.asFile().delete();
+			    			MediaStoreHelper.removeRecording(RecordingPlayer.this, recording);
+			    			setResult(Constants.RESULT_FILE_DELETED);
+			    			dialog.dismiss();
+			    			finish();
+						}
+					})
+	    			.setNegativeButton(R.string.confirm_delete_btn_no, new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							dialog.dismiss();
+						}
+					});
+	    		confirmDialogBuilder.create().show();
 	    		break;
 	    	case R.id.recording_player_btn_close:
 				finish();
