@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">MicDroid</string>
+    <string name="app_name">MicDroid (Donate)</string>
     <string name="default_recording_name">recording.wav</string>
 
     <string name="startup_dialog_title">What\'s new in this version?</string>
