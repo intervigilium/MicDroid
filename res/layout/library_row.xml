@@ -17,7 +17,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginRight="6dip"
 
-        android:src="@drawable/music" />
+        android:src="@drawable/android_music" />
 
     <TextView
         android:id="@+id/row_second_line"
