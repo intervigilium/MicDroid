@@ -4,17 +4,13 @@
     <string name="default_recording_name">recording.wav</string>
 
     <string name="startup_dialog_title">What\'s new in this version?</string>
-    <string name="startup_dialog_text">1. New UI for recording screen\n\
-2. Fix Droid X sound quality issues\n\
-3. Allow recordings to be set as notifications\n\
-4. Add setting to prevent screen locking while recording\n\
-5. Move recordings to /sdcard/MicDroid/\n\
-6. Allow background recording/playback\n\
-7. Allow install to SD card in Froyo\n\
-8. Add set as ringtone support (LONG PRESS on recording to activate)\n\
-9. Add send as email attachment support (LONG PRESS on recording to activate)\n\
+    <string name="startup_dialog_text">1. Confirm delete recording dialog\n\
+2. New UI for recording screen\n\
+3. Fix Droid X sound quality issues\n\
+4. Allow recordings to be set as notifications\n\
+5. Add setting to prevent screen locking while recording\n\
 \n\
-DISCLAIMER: This is alpha software! May be buggy and force close on you! Author is aware and working on issues!\n\
+DISCLAIMER: This is beta software! May be buggy and force close on you! Author is aware and working on issues!\n\
     </string>
     <string name="startup_dialog_accept_btn">Accept</string>
 
@@ -42,7 +38,7 @@ DISCLAIMER: This is alpha software! May be buggy and force close on you! Author 
     <string name="recording_started_toast">Recording started! Press power button to stop recording!</string>
     <string name="recording_finished_toast">Recording finished!</string>
 
-    <string name="recording_save_success">Recording saved successfully! Use the Recording Library button to access saved recordings!</string>
+    <string name="recording_save_success">Recording saved successfully!</string>
     <string name="recording_save_canceled">Recording save canceled!</string>
 
     <string name="filename_entry">Save Recording</string>
@@ -150,7 +146,7 @@ DISCLAIMER: This is alpha software! May be buggy and force close on you! Author 
     <string name="prefs_corr_mix_title">Mix</string>
     <string name="prefs_corr_mix_default">1.0</string>
 
-    <string name="about_title">About MicDroid</string>
+    <string name="about_title">About MicDroid Version 0.30</string>
     <string name="about_text">Graphics work courtesy of Peng X. Wang: http://pengxwang.com\n\
 \n\
 MicDroid is licensed under the GPL2 License\n\
