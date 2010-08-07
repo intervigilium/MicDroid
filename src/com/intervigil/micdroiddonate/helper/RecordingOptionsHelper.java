@@ -17,7 +17,7 @@
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.intervigil.micdroiddonate;
+package com.intervigil.micdroiddonate.helper;
 
 import java.io.File;
 
@@ -25,6 +25,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
+
+import com.intervigil.micdroiddonate.Constants;
+import com.intervigil.micdroiddonate.model.Recording;
 
 public class RecordingOptionsHelper {
 	

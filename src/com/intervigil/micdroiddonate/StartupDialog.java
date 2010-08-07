@@ -27,6 +27,9 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.intervigil.micdroiddonate.helper.ApplicationHelper;
+import com.intervigil.micdroiddonate.helper.PreferenceHelper;
+
 public class StartupDialog extends Dialog {
 
 	private Context context;

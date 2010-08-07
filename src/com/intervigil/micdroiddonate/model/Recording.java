@@ -17,13 +17,15 @@
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.intervigil.micdroiddonate;
+package com.intervigil.micdroiddonate.model;
 
 import java.io.File;
 import java.io.IOException;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.intervigil.micdroiddonate.wave.WaveReader;
 
 public class Recording implements Parcelable {
 	public static final int WAVE_HEADER_SIZE = 44;

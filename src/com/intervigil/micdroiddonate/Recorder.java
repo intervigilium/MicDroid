@@ -26,6 +26,12 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 
+import com.intervigil.micdroiddonate.helper.ApplicationHelper;
+import com.intervigil.micdroiddonate.helper.AudioHelper;
+import com.intervigil.micdroiddonate.helper.PreferenceHelper;
+import com.intervigil.micdroiddonate.model.Sample;
+import com.intervigil.micdroiddonate.wave.WaveWriter;
+
 public class Recorder {
 	private MicWriter writerThread;
 	private final AudioRecordWrapper audioRecord;

@@ -33,6 +33,8 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.intervigil.micdroiddonate.model.Recording;
+
 public class FileNameEntry extends Activity {
 	
 	private AlertDialog invalidNameAlert;

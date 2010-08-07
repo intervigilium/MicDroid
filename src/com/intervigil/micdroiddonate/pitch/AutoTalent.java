@@ -1,5 +1,4 @@
-/* Sample.java
-   An auto-tune app for Android
+/* AutoTalent.java
 
    Copyright (c) 2010 Ethan Chen
 
@@ -18,18 +17,24 @@
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.intervigil.micdroiddonate;
+package com.intervigil.micdroiddonate.pitch;
 
-/** Packet of audio to pass between reader and writer threads. */
-public class Sample {
-	public short[] buffer;
-	public int bufferSize;
+public class AutoTalent {
+	private static final String AUTOTALENT_LIB = "autotalent";
 	
-	public Sample(short[] buffer, int bufferSize) {
-		this.buffer = buffer;
-		this.bufferSize = bufferSize;
+	static {
+		System.loadLibrary(AUTOTALENT_LIB);
 	}
 	
-	public Sample() {
-	}
+	public static native void instantiateAutoTalent(int sampleRate);
+	
+	public static native void initializeAutoTalent(float concertA, char key, 
+			float fixedPitch, float fixedPull, 
+			float correctStrength, float correctSmooth, float pitchShift, int scaleRotate,
+			float lfoDepth, float lfoRate, float lfoShape, float lfoSym, int lfoQuant, 
+			int formCorr, float formWarp, float mix);
+	
+	public static native void processSamples(short[] samples, int sampleSize);
+	
+	public static native void destroyAutoTalent();
 }
