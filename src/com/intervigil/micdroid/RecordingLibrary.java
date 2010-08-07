@@ -48,6 +48,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class RecordingLibrary extends Activity {
 
+	private ListView library;
 	private RecordingAdapter libraryAdapter;
 	private ArrayList<Recording> recordings;
 
@@ -64,7 +65,7 @@ public class RecordingLibrary extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recording_library);
 
-        ListView library = (ListView)findViewById(R.id.recording_library_list);
+        library = (ListView)findViewById(R.id.recording_library_list);
         library.setOnItemClickListener(libraryClickListener);
         registerForContextMenu(library);
         
@@ -256,8 +257,9 @@ public class RecordingLibrary extends Activity {
     	
     	@Override
     	protected void onPreExecute() {
+    		library.setVisibility(View.INVISIBLE);
     		recordings.clear();
-    		this.spinner.setMessage("Loading");
+    		this.spinner.setMessage("Loading recordings");
     		this.spinner.show();
     	}
     	
@@ -298,8 +300,9 @@ public class RecordingLibrary extends Activity {
 		
 		@Override
 		protected void onPostExecute(Void result) {
-			this.spinner.dismiss();
+			library.setVisibility(View.VISIBLE);
 			libraryAdapter.notifyDataSetChanged();
+			this.spinner.dismiss();
 		}
     }
 }
