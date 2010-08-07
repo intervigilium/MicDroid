@@ -24,6 +24,8 @@ import java.io.IOException;
 
 import android.app.Application;
 
+import com.intervigil.micdroid.helper.ApplicationHelper;
+
 public class MicApplication extends Application {
 
 	@Override

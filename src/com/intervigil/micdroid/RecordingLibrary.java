@@ -46,6 +46,12 @@ import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
+import com.intervigil.micdroid.helper.ApplicationHelper;
+import com.intervigil.micdroid.helper.MediaStoreHelper;
+import com.intervigil.micdroid.helper.RecordingOptionsHelper;
+import com.intervigil.micdroid.model.Recording;
+import com.intervigil.micdroid.wave.WaveReader;
+
 public class RecordingLibrary extends Activity {
 
 	private ListView library;
