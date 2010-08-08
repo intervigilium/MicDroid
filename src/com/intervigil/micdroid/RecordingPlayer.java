@@ -31,6 +31,9 @@ import android.view.WindowManager;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.intervigil.micdroid.helper.MediaStoreHelper;
+import com.intervigil.micdroid.model.Recording;
+
 public class RecordingPlayer extends Activity {
 	
 	private static final int SEEKBAR_RESOLUTION = 1000;

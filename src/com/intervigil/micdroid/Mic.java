@@ -49,6 +49,16 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
+import com.intervigil.micdroid.helper.ApplicationHelper;
+import com.intervigil.micdroid.helper.AudioHelper;
+import com.intervigil.micdroid.helper.DialogHelper;
+import com.intervigil.micdroid.helper.MediaStoreHelper;
+import com.intervigil.micdroid.helper.PreferenceHelper;
+import com.intervigil.micdroid.model.Recording;
+import com.intervigil.micdroid.pitch.AutoTalent;
+import com.intervigil.micdroid.wave.WaveReader;
+import com.intervigil.micdroid.wave.WaveWriter;
+
 public class Mic extends Activity {
 
 	private static final int AUTOTALENT_CHUNK_SIZE = 8192;

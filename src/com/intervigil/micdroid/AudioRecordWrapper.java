@@ -32,6 +32,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Process;
 
+import com.intervigil.micdroid.helper.AudioHelper;
+import com.intervigil.micdroid.model.Sample;
+
 public class AudioRecordWrapper {
 	
 	private MicRecorder micRecorder;
