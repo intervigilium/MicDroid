@@ -1,42 +1,14 @@
 #include "pitch_detector.h"
-#include "lv2.h"
 
-#ifdef DEBUGPLOT
-#include <time.h>
-
-
-void setpixel8(SDL_Surface *screen, int x, int y,Uint32 colour )
-{
-   Uint8 *pixmem8 = (Uint8*) screen->pixels  + y*1024 + x;
-   *pixmem8 = colour;
-}
-#endif
-const float * obtain_autocovariance(PitchDetector *pdetector, fft_vars* fftvars, CircularBuffer* buffer,long int N) {
-#ifdef DEBUGPLOT
-	if(!printed) {
-	    SDL_FillRect( screen, NULL, 0 );
-		
-	}
-
-	Uint32 colour= SDL_MapRGB( screen->format, 255,255,255);
-#endif
+const float * obtain_autocovariance(PitchDetector *pdetector, fft_vars* fftvars, CircularBuffer* buffer, long int N) {
 	// Window and fill FFT buffer
 	long int i;
 	for (i=0; i<N; i++) {
 		float windowval=pdetector->cbwindow[i];
 		float inputbuffer=buffer->cbi[(buffer->cbiwr-i+N)%N];
 		fftvars->ffttime[i] = inputbuffer*windowval;
-#ifdef DEBUGPLOT
-	if(i&1 && !printed) {
-			setpixel8(screen,i/2,fftvars->ffttime[i]*-50+50,colour);
-		}
-#endif
+
 	}
-#ifdef DEBUGPLOT
-	if(!printed) {
-		printed=1;
-	}
-#endif
 	// Calculate FFT
 	fft_forward(fftvars);
 
@@ -59,7 +31,6 @@ const float * obtain_autocovariance(PitchDetector *pdetector, fft_vars* fftvars,
 		fftvars->ffttime[i] = fftvars->ffttime[i] * tf;
 		
 	}
-	
 
 	fftvars->ffttime[0] = 1;
 	
@@ -171,7 +142,7 @@ float get_pitch_period(PitchDetector * pdetector, const float* autocorr, unsigne
 	}
 }
 
-void InstantiatePitchDetector(PitchDetector * pdetector,fft_vars* fftvars, unsigned long cbsize, double SampleRate) {
+void InstantiatePitchDetector(PitchDetector * pdetector, fft_vars* fftvars, unsigned long cbsize, double SampleRate) {
 	pdetector->ppickthresh=0.9;//I have no idea what this should be, except the MPM paper suggested between 0.8 and 1, so I am taking the average :P
 	unsigned long corrsize=cbsize/2+1;
 	pdetector->pmax = 1/(float)70;  // max and min periods (ms)

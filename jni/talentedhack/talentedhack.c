@@ -34,19 +34,6 @@
 
 static LV2_Descriptor *TalentedHackDescriptor = NULL;
 
-#ifdef DEBUGPLOT
-int updateScreen() {
-	printed=0;
-	while(1) {
-		if(printed) {
-		    SDL_Flip(screen);
-			printed=0;
-		}
-		SDL_Delay(2);
-	}
-	return 0;
-}
-#endif
 static void cleanupTalentedHack(LV2_Handle instance)
 {
 	TalentedHack * ATInstance=(TalentedHack*)instance;
@@ -71,11 +58,6 @@ static void cleanupTalentedHack(LV2_Handle instance)
   	}
   	free(ATInstance->fcorrector.fbuff);
   	free(ATInstance->fcorrector.ftvec);
-#ifdef DEBUGPLOT
-	SDL_FreeSurface(screen);
-    //Quit SDL
-    SDL_Quit();
-#endif
 	free(ATInstance);
 }
 static void connectPortTalentedHack(LV2_Handle instance, uint32_t port, void *data)
@@ -227,17 +209,6 @@ static LV2_Handle instantiateTalentedHack(const LV2_Descriptor *descriptor,
     InstantiatePitchDetector(&membvars->pdetector, membvars->fmembvars, N, s_rate);
 	InstantiateLFO(&membvars->lfo);
 	FormantCorrectorInit(&membvars->fcorrector,s_rate,N);
-#ifdef DEBUGPLOT
-	//Start SDL
-    	SDL_Init( SDL_INIT_EVERYTHING );
-    	//Set up screen
-    	screen = SDL_SetVideoMode( 1024, 100, 8, SDL_HWSURFACE);
-	if ( (screen->flags & SDL_HWSURFACE) != SDL_HWSURFACE ) {
-     		 printf("Can't get hardware surface\n");
-	}
-	printf("%i bpp\n",screen->format->BitsPerPixel);
-	SDL_CreateThread(updateScreen, NULL);
-#endif
 	
 	PitchShifterInit(&membvars->pshifter, s_rate,N);
 	InitializePitchSmoother(&membvars->psmoother, N, membvars->noverlap, s_rate);
@@ -361,17 +332,4 @@ static void init()
 	TalentedHackDescriptor->instantiate = instantiateTalentedHack;
 	TalentedHackDescriptor->run = runTalentedHack;
 	TalentedHackDescriptor->extension_data = NULL;
-}
-
-LV2_SYMBOL_EXPORT
-const LV2_Descriptor *lv2_descriptor(uint32_t index)
-{
-	if (!TalentedHackDescriptor) init();
-
-	switch (index) {
-	case 0:
-		return TalentedHackDescriptor;
-	default:
-		return NULL;
-	}
 }

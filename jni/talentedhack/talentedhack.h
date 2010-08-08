@@ -9,12 +9,6 @@
 #include "quantizer.h"
 #include "lfo.h"
 #include "pitch_smoother.h"
-#include <lv2.h>
-#include "event.h"
-
-#ifdef DEBUGPLOT
-#include "SDL/SDL.h"
-#endif
 
 #define TALENTEDHACK_URI "http://jeremy.salwen/plugins/talentedhack"
 // The port numbers
@@ -92,8 +86,4 @@ typedef struct {
 
 } TalentedHack
 ;
-#ifdef DEBUGPLOT
-	 SDL_Surface* screen;
-     int printed;
-#endif
 #endif
