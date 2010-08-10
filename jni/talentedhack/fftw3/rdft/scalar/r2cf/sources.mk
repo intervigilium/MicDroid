@@ -10,4 +10,4 @@ C_SOURCES := codlist.c    hc2cf_32.c      hc2cfdft2_4.c  hf_20.c   hf_3.c      r
 				hc2cf2_8.c   hc2cfdft2_20.c  hf_15.c        hf_2.c    r2cf_11.c   r2cf_3.c   r2cfII_16.c  r2cfII_8.c \
 				hc2cf_2.c    hc2cfdft2_32.c  hf_16.c        hf_32.c   r2cf_128.c  r2cf_4.c   r2cfII_20.c  r2cfII_9.c
 
-LOCAL_SRC_FILES += $(addprefix rdft/scalar/r2cf/, $(C_SOURCES))
+LOCAL_SRC_FILES += $(addprefix fftw3/rdft/scalar/r2cf/, $(C_SOURCES))

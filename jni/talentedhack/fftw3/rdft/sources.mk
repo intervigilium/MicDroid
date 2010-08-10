@@ -7,4 +7,4 @@ C_SOURCES := buffered2.c       direct2.c        khc2c.c   problem2.c            
 				dht-r2hc.c        hc2hc-generic.c  plan2.c   rdft2-inplace-strides.c  vrank-geq1.c \
 				dht-rader.c       indirect.c       plan.c    rdft2-rdft.c             vrank-geq1-rdft2.c
 
-LOCAL_SRC_FILES += $(addprefix rdft/, $(C_SOURCES))
+LOCAL_SRC_FILES += $(addprefix fftw3/rdft/, $(C_SOURCES))

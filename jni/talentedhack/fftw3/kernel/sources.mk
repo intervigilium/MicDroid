@@ -4,4 +4,4 @@ C_SOURCES := align.c     cpy1d.c       extract-reim.c  md5.c      planner.c  sca
 				awake.c     ct.c          kalloc.c        pickdim.c  problem.c  stride.c   tensor5.c  tile2d.c \
 				buffered.c  debug.c       md5-1.c         plan.c     rader.c    tensor1.c  tensor7.c  timer.c
 
-LOCAL_SRC_FILES += $(addprefix kernel/, $(C_SOURCES))
+LOCAL_SRC_FILES += $(addprefix fftw3/kernel/, $(C_SOURCES))

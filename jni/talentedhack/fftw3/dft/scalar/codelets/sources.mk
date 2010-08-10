@@ -4,4 +4,4 @@ C_SOURCES := codlist.c  n1_14.c  n1_2.c   n1_64.c  q1_2.c  q1_8.c   t1_20.c  t1_
 				n1_12.c    n1_20.c  n1_4.c   n1_8.c   q1_5.c  t1_15.c  t1_32.c  t1_6.c   t2_16.c  t2_5.c \
 				n1_13.c    n1_25.c  n1_5.c   n1_9.c   q1_6.c  t1_16.c  t1_3.c   t1_7.c   t2_20.c  t2_64.c
 
-LOCAL_SRC_FILES += $(addprefix dft/scalar/codelets/, $(C_SOURCES))
+LOCAL_SRC_FILES += $(addprefix fftw3/dft/scalar/codelets/, $(C_SOURCES))

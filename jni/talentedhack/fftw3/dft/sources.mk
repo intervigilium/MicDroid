@@ -3,4 +3,4 @@ C_SOURCES := bluestein.c  dftw-direct.c      direct.c              kdft.c       
 				conf.c       dftw-genericbuf.c  indirect.c            kdft-difsq.c  problem.c  vrank-geq1.c \
 				ct.c         dftw-generic.c     indirect-transpose.c  kdft-dit.c    rader.c    zero.c
 
-LOCAL_SRC_FILES += $(addprefix dft/, $(C_SOURCES))
+LOCAL_SRC_FILES += $(addprefix fftw3/dft/, $(C_SOURCES))
