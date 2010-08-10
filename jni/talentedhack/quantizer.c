@@ -17,8 +17,8 @@ void CopyNotesToBuffer(Notes* notes, int buffer[12]) {
 }
 
 void UpdateQuantizer(Quantizer * q) {
-	CopyNotesToBuffer(q->inotes, q->iNotes);
-	CopyNotesToBuffer(q->onotes, q->oNotes);
+	CopyNotesToBuffer(&q->inotes, q->iNotes);
+	CopyNotesToBuffer(&q->onotes, q->oNotes);
 	int numin=0;
 	int numout=0;
 	int i;
@@ -81,14 +81,6 @@ MidiPitch pperiod_to_midi(Quantizer* q, float pperiod) {
 void QuantizerInit(Quantizer* q) {
 	q->InPitch.note=0;
 	q->OutPitch.note=0;
-}
-
-MidiPitch MixMidiIn(Quantizer* q, MidiPitch detected, MidiPitch in) {
-	if(*q->p_accept_midi>0 && in.note>0) {
-		return in;
-	} else {
-		return detected;
-	}
 }
 
 int SnapToKey(int notes[12], int note, int snapup) {

@@ -10,53 +10,180 @@
 #include "pitch_smoother.h"
 
 #define TALENTEDHACK_URI "http://jeremy.salwen/plugins/talentedhack"
-// The port numbers
 
-#define AT_MIDI_OUT 0
-#define AT_MIDI_IN 1
-#define AT_AUDIO_IN 2
-#define AT_AUDIO_OUT 3
-#define AT_MIX 4
-#define AT_PULLPITCH_AMOUNT 5
-#define AT_PITCH_SMOOTH 6
-#define AT_FCORR 7
-#define AT_FWARP 8
-#define AT_ACCEPT_MIDI 9
-#define AT_CORR_MIDIOUT 10
-#define AT_LFO_QUANT 11
-#define AT_LFO_AMP 12
-#define AT_LFO_RATE 13
-#define AT_LFO_SHAPE 14
-#define AT_LFO_SYMM 15
-#define AT_AREF 16
-#define AT_DA 17
-#define AT_DAA 18
-#define AT_DB 19
-#define AT_DC 20
-#define AT_DCC 21
-#define AT_DD 22
-#define AT_DDD 23
-#define AT_DE 24
-#define AT_DF 25
-#define AT_DFF 26
-#define AT_DG 27
-#define AT_DGG 28
-#define AT_OA 29
-#define AT_OAA 30
-#define AT_OB 31
-#define AT_OC 32
-#define AT_OCC 33
-#define AT_OD 34
-#define AT_ODD 35
-#define AT_OE 36
-#define AT_OF 37
-#define AT_OFF 38
-#define AT_OG 39
-#define AT_OGG 40
-#define AT_LATENCY 41
+/*************************
+ *      THE SCALES       *
+ *************************/
 
+#define KEY_Ab_A -1
+#define KEY_Ab_Bb 1
+#define KEY_Ab_B -1
+#define KEY_Ab_C 1
+#define KEY_Ab_Db 1
+#define KEY_Ab_D -1
+#define KEY_Ab_Eb 1
+#define KEY_Ab_E -1
+#define KEY_Ab_F 1
+#define KEY_Ab_Gb -1
+#define KEY_Ab_G 1
+#define KEY_Ab_Ab 1
 
+#define KEY_A_A 1
+#define KEY_A_Bb -1
+#define KEY_A_B 1
+#define KEY_A_C -1
+#define KEY_A_Db 1
+#define KEY_A_D 1
+#define KEY_A_Eb -1
+#define KEY_A_E 1
+#define KEY_A_F -1
+#define KEY_A_Gb 1
+#define KEY_A_G -1
+#define KEY_A_Ab 1
 
+#define KEY_Bb_A 1
+#define KEY_Bb_Bb 1
+#define KEY_Bb_B -1
+#define KEY_Bb_C 1
+#define KEY_Bb_Db -1
+#define KEY_Bb_D 1
+#define KEY_Bb_Eb 1
+#define KEY_Bb_E -1
+#define KEY_Bb_F 1
+#define KEY_Bb_Gb -1
+#define KEY_Bb_G 1
+#define KEY_Bb_Ab -1
+
+#define KEY_B_A -1
+#define KEY_B_Bb 1
+#define KEY_B_B 1
+#define KEY_B_C -1
+#define KEY_B_Db 1
+#define KEY_B_D -1
+#define KEY_B_Eb 1
+#define KEY_B_E 1
+#define KEY_B_F -1
+#define KEY_B_Gb 1
+#define KEY_B_G -1
+#define KEY_B_Ab 1
+
+#define KEY_C_A 1
+#define KEY_C_Bb -1
+#define KEY_C_B 1
+#define KEY_C_C 1
+#define KEY_C_Db -1
+#define KEY_C_D 1
+#define KEY_C_Eb -1
+#define KEY_C_E 1
+#define KEY_C_F 1
+#define KEY_C_Gb -1
+#define KEY_C_G 1
+#define KEY_C_Ab -1
+
+#define KEY_Db_A -1
+#define KEY_Db_Bb 1
+#define KEY_Db_B -1
+#define KEY_Db_C 1
+#define KEY_Db_Db 1
+#define KEY_Db_D -1
+#define KEY_Db_Eb 1
+#define KEY_Db_E -1
+#define KEY_Db_F 1
+#define KEY_Db_Gb 1
+#define KEY_Db_G -1
+#define KEY_Db_Ab 1
+
+#define KEY_D_A 1
+#define KEY_D_Bb -1
+#define KEY_D_B 1
+#define KEY_D_C -1
+#define KEY_D_Db 1
+#define KEY_D_D 1
+#define KEY_D_Eb -1
+#define KEY_D_E 1
+#define KEY_D_F -1
+#define KEY_D_Gb 1
+#define KEY_D_G 1
+#define KEY_D_Ab -1
+
+#define KEY_Eb_A -1
+#define KEY_Eb_Bb 1
+#define KEY_Eb_B -1
+#define KEY_Eb_C 1
+#define KEY_Eb_Db -1
+#define KEY_Eb_D 1
+#define KEY_Eb_Eb 1
+#define KEY_Eb_E -1
+#define KEY_Eb_F 1
+#define KEY_Eb_Gb -1
+#define KEY_Eb_G 1
+#define KEY_Eb_Ab 1
+
+#define KEY_E_A 1
+#define KEY_E_Bb -1
+#define KEY_E_B 1
+#define KEY_E_C -1
+#define KEY_E_Db 1
+#define KEY_E_D -1
+#define KEY_E_Eb 1
+#define KEY_E_E 1
+#define KEY_E_F -1
+#define KEY_E_Gb 1
+#define KEY_E_G -1
+#define KEY_E_Ab 1
+
+#define KEY_F_A 1
+#define KEY_F_Bb 1
+#define KEY_F_B -1
+#define KEY_F_C 1
+#define KEY_F_Db -1
+#define KEY_F_D 1
+#define KEY_F_Eb -1
+#define KEY_F_E 1
+#define KEY_F_F 1
+#define KEY_F_Gb -1
+#define KEY_F_G 1
+#define KEY_F_Ab -1
+
+#define KEY_Gb_A -1
+#define KEY_Gb_Bb 1
+#define KEY_Gb_B 1
+#define KEY_Gb_C -1
+#define KEY_Gb_Db 1
+#define KEY_Gb_D -1
+#define KEY_Gb_Eb 1
+#define KEY_Gb_E -1
+#define KEY_Gb_F 1
+#define KEY_Gb_Gb 1
+#define KEY_Gb_G -1
+#define KEY_Gb_Ab 1
+
+#define KEY_G_A 1
+#define KEY_G_Bb -1
+#define KEY_G_B 1
+#define KEY_G_C 1
+#define KEY_G_Db -1
+#define KEY_G_D 1
+#define KEY_G_Eb -1
+#define KEY_G_E 1
+#define KEY_G_F -1
+#define KEY_G_Gb 1
+#define KEY_G_G 1
+#define KEY_G_Ab -1
+
+// chromatic scale, X because it's unique
+#define KEY_X_A 1
+#define KEY_X_Bb 1
+#define KEY_X_B 1
+#define KEY_X_C 1
+#define KEY_X_Db 1
+#define KEY_X_D 1
+#define KEY_X_Eb 1
+#define KEY_X_E 1
+#define KEY_X_F 1
+#define KEY_X_Gb 1
+#define KEY_X_G 1
+#define KEY_X_Ab 1
 
 /*************************
  *  THE MEMBER VARIABLES *

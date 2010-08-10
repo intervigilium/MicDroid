@@ -47,7 +47,7 @@ typedef struct {
 
 void UpdateQuantizer(Quantizer * q);
 
-void QuantizerInit(Quantizer* q, const LV2_Feature * const * features);
+void QuantizerInit(Quantizer* q);
 
 void PullToInTune(Quantizer* q, MidiPitch* pitch);
 

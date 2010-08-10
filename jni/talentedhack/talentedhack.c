@@ -31,6 +31,7 @@
  */
 
 #include "talentedhack.h"
+#include <android/log.h>
 
 
 void setInputKey(TalentedHack * instance, char * keyPtr) {
@@ -219,8 +220,8 @@ void setInputKey(TalentedHack * instance, char * keyPtr) {
 	  break;
   }
 
-  __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "A: %d, Bb: %d, B: %d, C: %d, Db: %d, D: %d, Eb: %d, E: %d, F: %d, Gb: %d, G: %d, Ab: %d",
-		  autotalent->m_pfKey[AT_A], autotalent->m_pfKey[AT_Bb], autotalent->m_pfKey[AT_B], autotalent->m_pfKey[AT_C], autotalent->m_pfKey[AT_Db], autotalent->m_pfKey[AT_D], autotalent->m_pfKey[AT_Eb], autotalent->m_pfKey[AT_E], autotalent->m_pfKey[AT_F], autotalent->m_pfKey[AT_Gb], autotalent->m_pfKey[AT_G], autotalent->m_pfKey[AT_Ab]);
+  __android_log_print(ANDROID_LOG_DEBUG, "libtalentedhack.so", "Input Notes\nA: %d, Bb: %d, B: %d, C: %d, Db: %d, D: %d, Eb: %d, E: %d, F: %d, Gb: %d, G: %d, Ab: %d",
+      instance->quantizer.inotes.A, instance->quantizer.inotes.Bb, instance->quantizer.inotes.B, instance->quantizer.inotes.C, instance->quantizer.inotes.Db, instance->quantizer.inotes.D, instance->quantizer.inotes.Eb, instance->quantizer.inotes.E, instance->quantizer.inotes.F, instance->quantizer.inotes.Gb, instance->quantizer.inotes.G, instance->quantizer.inotes.Ab);
 }
 
 void setOutputKey(TalentedHack * instance, char * keyPtr) {
@@ -303,7 +304,7 @@ void setOutputKey(TalentedHack * instance, char * keyPtr) {
       instance->quantizer.onotes.Db = KEY_Db_Db;
       instance->quantizer.onotes.D = KEY_Db_D;
       instance->quantizer.onotes.Eb = KEY_Db_Eb;
-      instance->quantizer.oinotes.E = KEY_Db_E;
+      instance->quantizer.onotes.E = KEY_Db_E;
       instance->quantizer.onotes.F = KEY_Db_F;
       instance->quantizer.onotes.Gb = KEY_Db_Gb;
       instance->quantizer.onotes.G = KEY_Db_G;
@@ -409,8 +410,8 @@ void setOutputKey(TalentedHack * instance, char * keyPtr) {
 	  break;
   }
 
-  __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "A: %d, Bb: %d, B: %d, C: %d, Db: %d, D: %d, Eb: %d, E: %d, F: %d, Gb: %d, G: %d, Ab: %d",
-		  autotalent->m_pfKey[AT_A], autotalent->m_pfKey[AT_Bb], autotalent->m_pfKey[AT_B], autotalent->m_pfKey[AT_C], autotalent->m_pfKey[AT_Db], autotalent->m_pfKey[AT_D], autotalent->m_pfKey[AT_Eb], autotalent->m_pfKey[AT_E], autotalent->m_pfKey[AT_F], autotalent->m_pfKey[AT_Gb], autotalent->m_pfKey[AT_G], autotalent->m_pfKey[AT_Ab]);
+  __android_log_print(ANDROID_LOG_DEBUG, "libtalentedhack.so", "Output Notes\nA: %d, Bb: %d, B: %d, C: %d, Db: %d, D: %d, Eb: %d, E: %d, F: %d, Gb: %d, G: %d, Ab: %d",
+      instance->quantizer.onotes.A, instance->quantizer.onotes.Bb, instance->quantizer.onotes.B, instance->quantizer.onotes.C, instance->quantizer.onotes.Db, instance->quantizer.onotes.D, instance->quantizer.onotes.Eb, instance->quantizer.onotes.E, instance->quantizer.onotes.F, instance->quantizer.onotes.Gb, instance->quantizer.onotes.G, instance->quantizer.onotes.Ab);
 }
 
 // Set input and output buffers
@@ -419,7 +420,7 @@ static void setTalentedHackBuffers(TalentedHack * instance, float * inputBuffer,
 	instance->p_OutputBuffer = outputBuffer;
 }
 
-static TalentedHack instantiateTalentedHack(double s_rate) {
+static TalentedHack * instantiateTalentedHack(double s_rate) {
 	TalentedHack *membvars = (TalentedHack *)malloc(sizeof(TalentedHack));
 	InstantiateCircularBuffer(&membvars->buffer,s_rate);
 	unsigned long N=membvars->buffer.cbsize;
@@ -485,28 +486,21 @@ static void runTalentedHack(TalentedHack * instance, uint32_t sample_count) {
 			//  ---- Calculate pitch and confidence ----
 			float pperiod=get_pitch_period(&psTalentedHack->pdetector, obtain_autocovariance(&psTalentedHack->pdetector,psTalentedHack->fmembvars,&psTalentedHack->buffer,N),Nf,fs);
 			
-			if(pperiod>0) {
+			if (pperiod > 0) {
 				MidiPitch note;
-				note=pperiod_to_midi(&psTalentedHack->quantizer,pperiod);
-				if(*psTalentedHack->p_correct_midiout) {
-					PullToInTune(&psTalentedHack->quantizer, &note);
-				}
-				
-				SendMidiOutput(&psTalentedHack->quantizer,note,lSampleIndex);
 				//Now we begin to modify the note, to determine what pitch we want to shift to
-				MidiPitch input=FetchLatestMidiNote(&psTalentedHack->quantizer,lSampleIndex);
-				note=MixMidiIn(&psTalentedHack->quantizer,note,input);
-				note.note=SnapToKey(psTalentedHack->quantizer.oNotes, note.note, note.pitchbend>0);
-				if(!*psTalentedHack->p_correct_midiout) {
-					PullToInTune(&psTalentedHack->quantizer, &note);
-				}
+				MidiPitch input = FetchLatestMidiNote(&psTalentedHack->quantizer, lSampleIndex);
+				note = MixMidiIn(&psTalentedHack->quantizer, note, input);
+				note.note = SnapToKey(psTalentedHack->quantizer.oNotes, note.note, note.pitchbend>0);
+
+				PullToInTune(&psTalentedHack->quantizer, &note);
+
+				note.note = addquantizedLFO(&psTalentedHack->lfo,psTalentedHack->quantizer.oNotes,note.note);
 				
-				note.note=addquantizedLFO(&psTalentedHack->lfo,psTalentedHack->quantizer.oNotes,note.note);
+				float outpitch = midi_to_semitones(note);
 				
-				float outpitch=midi_to_semitones(note);
-				
-				outpitch=addunquantizedLFO(&psTalentedHack->lfo,outpitch);
-				outpitch=SmoothPitch(&psTalentedHack->psmoother,outpitch); 
+				outpitch = addunquantizedLFO(&psTalentedHack->lfo,outpitch);
+				outpitch = SmoothPitch(&psTalentedHack->psmoother,outpitch);
 				float outpperiod=semitones_to_pperiod(&psTalentedHack->quantizer, outpitch);
 				// Compute variables for pitch shifter that depend on pitch
 				ComputePitchShifterVariables(&psTalentedHack->pshifter, pperiod,outpperiod,fs);
@@ -534,11 +528,9 @@ static void runTalentedHack(TalentedHack * instance, uint32_t sample_count) {
 		
 	}
 	FetchLatestMidiNote(&psTalentedHack->quantizer,sample_count-1);
-	// Tell the host the algorithm latency
-	*(psTalentedHack->p_latency) = (N-1);
 }
 
-static void cleanupTalentedHack(TalentedHack instance) {
+static void cleanupTalentedHack(TalentedHack* instance) {
 	TalentedHack * ATInstance = instance;
 	fft_des(ATInstance->fmembvars);
  	free(ATInstance->buffer.cbi);
@@ -618,34 +610,35 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroid_pitch_TalentedHack_initializ
     setInputKey(instance, (char *)&key);
     setOutputKey(instance, (char *)&key);
 
-    __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "setting parameters");
+    __android_log_print(ANDROID_LOG_DEBUG, "libtalentedhack.so", "setting parameters");
 
     // set concert A
-    instance->quantizer.p_aref = (float)concertA;
-    __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "Concert A: %f", *(instance->m_pfTune));
+    *(instance->quantizer.p_aref) = (float)concertA;
+    __android_log_print(ANDROID_LOG_DEBUG, "libtalentedhack.so", "Concert A: %f", *(instance->quantizer.p_aref));
 
     // set pitch correction parameters
-    instance->quantizer.p_amount = (float)correctStrength;
-    instance->psmoother.p_pitchsmooth = (float)correctSmooth;
-    __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "FixedPitch: %f, FixedPull: %f, CorrectStr: %f, CorrectSmooth: %f, PitchShift: %f, ScaleRotate: %f", *(instance->m_pfFixed), *(instance->m_pfPull), *(instance->m_pfAmount), *(instance->m_pfSmooth), *(instance->m_pfShift), *(instance->m_pfScwarp));
+    *(instance->quantizer.p_amount) = (float)correctStrength;
+    *(instance->psmoother.p_pitchsmooth) = (float)correctSmooth;
+    __android_log_print(ANDROID_LOG_DEBUG, "libtalentedhack.so", "CorrectStrength: %f, CorrectSmooth: %f", *(instance->quantizer.p_amount), *(instance->psmoother.p_pitchsmooth));
 
     // set LFO parameters
-    instance->lfo.p_amp = (float)lfoDepth;
-    instance->lfo.p_rate = (float)lfoRate;
-    instance->lfo.p_shape = (float)lfoShape;
-    instance->lfo.p_symm = (float)lfoSym;
-    instance->lfo.p_quant = (int)lfoQuant;
+    *(instance->lfo.p_amp) = (float)lfoDepth;
+    *(instance->lfo.p_rate) = (float)lfoRate;
+    *(instance->lfo.p_shape) = (float)lfoShape;
+    *(instance->lfo.p_symm) = (float)lfoSym;
+    *(instance->lfo.p_quant) = (int)lfoQuant;
 
     // set formant corrector parameters
-    instance->fcorrector.p_Fcorr = (int)formCorr;
-    instance->fcorrector.p_Fwarp = (float)formWarp;
+    *(instance->fcorrector.p_Fcorr) = (int)formCorr;
+    *(instance->fcorrector.p_Fwarp) = (float)formWarp;
 
     // set mix parameter
-    instance->p_mix = (float)mix;
+    *(instance->p_mix) = (float)mix;
 
-    __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "LFODepth: %f, LFORate: %f, LFOShape %f, LFOSym: %f, LFOQuant: %d, FormCorr: %d, FormWarp: %f, Mix: %f", *(instance->m_pfLfoamp), *(instance->m_pfLforate), *(instance->m_pfLfoshape), *(instance->m_pfLfosymm), *(instance->m_pfLfoquant), *(instance->m_pfFcorr), *(instance->m_pfFwarp), *(instance->m_pfMix));
+    __android_log_print(ANDROID_LOG_DEBUG, "libtalentedhack.so", "LFODepth: %f, LFORate: %f, LFOShape %f, LFOSym: %f, LFOQuant: %d, FormCorr: %d, FormWarp: %f, Mix: %f",
+    		*(instance->lfo.p_amp), *(instance->lfo.p_rate), *(instance->lfo.p_shape), *(instance->lfo.p_symm), *(instance->lfo.p_quant), *(instance->fcorrector.p_Fcorr), *(instance->fcorrector.p_Fwarp), *(instance->p_mix));
   } else {
-    __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "No suitable autotalent instance found!");
+    __android_log_print(ANDROID_LOG_DEBUG, "libtalentedhack.so", "No suitable autotalent instance found!");
   }
 }
 
@@ -666,7 +659,7 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroid_pitch_TalentedHack_processSa
 		free(shortBuffer);
 		free(sampleBuffer);
 	} else {
-		__android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "No suitable autotalent instance found!");
+		__android_log_print(ANDROID_LOG_DEBUG, "libtalentedhack.so", "No suitable talentedhack instance found!");
 	}
 }
 
@@ -674,7 +667,7 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroid_pitch_TalentedHack_destroyTa
 	(JNIEnv* env, jclass class) {
 	if (instance != NULL) {
 		cleanupTalentedHack(instance);
-		__android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "cleaned up autotalent at %d", instance);
+		__android_log_print(ANDROID_LOG_DEBUG, "libtalentedhack.so", "cleaned up talentedhack at %d", instance);
 		instance = NULL;
 	}
 }
