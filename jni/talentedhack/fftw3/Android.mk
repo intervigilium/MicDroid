@@ -14,7 +14,6 @@ include $(LOCAL_PATH)/rdft/scalar/r2r/sources.mk
 include $(LOCAL_PATH)/reodft/sources.mk
 
 LOCAL_MODULE := fftw3
-LOCAL_SRC_FILES += fftw3.c
 LOCAL_C_INCLUDES := . \
 					$(LOCAL_PATH)/api \
 					$(LOCAL_PATH)/dft \

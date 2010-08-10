@@ -18,6 +18,7 @@ typedef struct {
 } LFO;
 
 float LFOval(LFO *lfo);
+
 void InstantiateLFO(LFO* lfo);
 
 float addquantizedLFO(LFO* lfo, int notes[12], int pitch);

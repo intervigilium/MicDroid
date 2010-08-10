@@ -56,7 +56,7 @@ void SendMidiOutput(Quantizer* q, MidiPitch pitch, int samplenum);
 
 MidiPitch FetchLatestMidiNote(Quantizer* q, int samplenum);
 
-MidiPitch pperiod_to_midi(Quantizer* q, float pperiod) ;
+MidiPitch pperiod_to_midi(Quantizer* q, float pperiod);
 
 float midi_to_semitones(MidiPitch pitch);
 
@@ -73,4 +73,5 @@ inline int positive_mod(int A, int B) {
 	}
 	return C;
 };
+
 #endif

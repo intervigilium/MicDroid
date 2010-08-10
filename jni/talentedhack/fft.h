@@ -1,7 +1,7 @@
 #ifndef AUTOTALENT_FFT_H
 #define AUTOTALENT_FFT_H
 
-#include "fftw3/api/fftw3.h"
+#include "fftw3/fftw3.h"
 
 // Variables for FFT routine
 typedef struct
