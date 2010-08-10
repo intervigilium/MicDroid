@@ -1,5 +1,7 @@
 #include "pitch_shifter.h"
 #include <stdio.h>
+
+
 void PitchShifterInit(PitchShifter * pshifter, unsigned long SampleRate, unsigned long cbsize) {
 	// Pitch shifter initialization
 	pshifter->phprdd = 0.01; // Default period
@@ -26,7 +28,6 @@ void ComputePitchShifterVariables(PitchShifter * pshifter,float inpperiod, float
 	pshifter->inphinc = 1/invinphinc; //This is like the fraction of a period every sample is.
 	pshifter->outphinc = 1/(outpperiod*fs); 
 	pshifter->phincfact = pshifter->outphinc*invinphinc;
-
 }
 
 float ShiftPitch(PitchShifter * pshifter, CircularBuffer * buffer, long int N) {

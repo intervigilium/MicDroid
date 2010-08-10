@@ -32,173 +32,394 @@
 
 #include "talentedhack.h"
 
-static LV2_Descriptor *TalentedHackDescriptor = NULL;
 
-static void cleanupTalentedHack(LV2_Handle instance)
-{
-	TalentedHack * ATInstance=(TalentedHack*)instance;
-	fft_des(ATInstance->fmembvars);
- 	free(ATInstance->buffer.cbi);
-	free(ATInstance->buffer.cbf);
-	free(ATInstance->pshifter.cbo);
-	free(ATInstance->pdetector.cbwindow);
-	free(ATInstance->pshifter.hannwindow);
-	free(ATInstance->pdetector.acwinv);
-	free(ATInstance->pshifter.frag);
-	free(ATInstance->fcorrector.fk);
-	free(ATInstance->fcorrector.fb);
- 	free(ATInstance->fcorrector.fc);
- 	free(ATInstance->fcorrector.frb);
- 	free(ATInstance->fcorrector.frc);
- 	free(ATInstance->fcorrector.fsmooth);
- 	free(ATInstance->fcorrector.fsig);
-	int i;
-  	for (i=0; i<ATInstance->fcorrector.ford; i++) {
-  		free(ATInstance->fcorrector.fbuff[i]);
-  	}
-  	free(ATInstance->fcorrector.fbuff);
-  	free(ATInstance->fcorrector.ftvec);
-	free(ATInstance);
-}
-static void connectPortTalentedHack(LV2_Handle instance, uint32_t port, void *data)
-{
-	TalentedHack *plugin = (TalentedHack *)instance;
-	switch (port) {
-		case AT_MIDI_OUT:
-			plugin->quantizer.MidiOut=data;
-			break;
-		case AT_MIDI_IN:
-			plugin->quantizer.MidiIn=data;
-			break;
-		case AT_AUDIO_IN:
-			plugin->p_InputBuffer=data;
-			break;
-		case AT_AUDIO_OUT:
-			plugin->p_OutputBuffer=data;
-			break;
-		case AT_MIX:
-			plugin->p_mix=data;
-			break;
-		case AT_FCORR:
-			plugin->fcorrector.p_Fcorr=data;
-			break;
-		case AT_FWARP:
-			plugin->fcorrector.p_Fwarp=data;
-			break;
-		case AT_CORR_MIDIOUT:
-			plugin->p_correct_midiout=data;
-			break;
-		case AT_LFO_QUANT:
-			plugin->lfo.p_quant=data;
-			break;
-		case AT_LFO_AMP:
-			plugin->lfo.p_amp=data;
-			break;
-		case AT_LFO_RATE:
-			plugin->lfo.p_rate=data;
-			break;
-		case AT_LFO_SHAPE:
-			plugin->lfo.p_shape=data;
-			break;
-		case AT_LFO_SYMM:
-			plugin->lfo.p_symm=data;
-			break;
-		case AT_AREF:
-			plugin->quantizer.p_aref=data;
-			break;
-		case AT_PULLPITCH_AMOUNT:
-			plugin->quantizer.p_amount=data;
-			break;
-		case AT_DA:
-			plugin->quantizer.inotes.A=data;
-			break;
-		case AT_DAA:
-			plugin->quantizer.inotes.Bb=data;
-			break;
-		case AT_DB:
-			plugin->quantizer.inotes.B=data;
-			break;
-		case AT_DC:
-			plugin->quantizer.inotes.C=data;
-			break;
-		case AT_DCC:
-			plugin->quantizer.inotes.Db=data;
-			break;
-		case AT_DD:
-			plugin->quantizer.inotes.D=data;
-			break;
-		case AT_DDD:
-			plugin->quantizer.inotes.Eb=data;
-			break;
-		case AT_DE:
-			plugin->quantizer.inotes.E=data;
-			break;
-		case AT_DF:
-			plugin->quantizer.inotes.F=data;
-			break;
-		case AT_DFF:
-			plugin->quantizer.inotes.Gb=data;
-			break;
-		case AT_DG:
-			plugin->quantizer.inotes.G=data;
-			break;
-		case AT_DGG:
-			plugin->quantizer.inotes.Ab=data;
-			break;
-		case AT_OA:
-			plugin->quantizer.onotes.A=data;
-			break;
-		case AT_OAA:
-			plugin->quantizer.onotes.Bb=data;
-			break;
-		case AT_OB:
-			plugin->quantizer.onotes.B=data;
-			break;
-		case AT_OC:
-			plugin->quantizer.onotes.C=data;
-			break;
-		case AT_OCC:
-			plugin->quantizer.onotes.Db=data;
-			break;
-		case AT_OD:
-			plugin->quantizer.onotes.D=data;
-			break;
-		case AT_ODD:
-			plugin->quantizer.onotes.Eb=data;
-			break;
-		case AT_OE:
-			plugin->quantizer.onotes.E=data;
-			break;
-		case AT_OF:
-			plugin->quantizer.onotes.F=data;
-			break;
-		case AT_OFF:
-			plugin->quantizer.onotes.Gb=data;
-			break;
-		case AT_OG:
-			plugin->quantizer.onotes.G=data;
-			break;
-		case AT_OGG:
-			plugin->quantizer.onotes.Ab=data;
-			break;
-		case AT_ACCEPT_MIDI:
-			plugin->quantizer.p_accept_midi=data;
-			break;
-		case AT_LATENCY:
-			plugin->p_latency=data;
-			break;
-		case AT_PITCH_SMOOTH:
-			plugin->psmoother.p_pitchsmooth=data;
-			break;
-		default:
-			printf("Error, didn't connect port #%i",port);
-	}
+void setInputKey(TalentedHack * instance, char * keyPtr) {
+  switch (*keyPtr) {
+    case 'a':
+      instance->quantizer.inotes.A = KEY_Ab_A;
+      instance->quantizer.inotes.Bb = KEY_Ab_Bb;
+      instance->quantizer.inotes.B = KEY_Ab_B;
+      instance->quantizer.inotes.C = KEY_Ab_C;
+      instance->quantizer.inotes.Db = KEY_Ab_Db;
+      instance->quantizer.inotes.D = KEY_Ab_D;
+      instance->quantizer.inotes.Eb = KEY_Ab_Eb;
+      instance->quantizer.inotes.E = KEY_Ab_E;
+      instance->quantizer.inotes.F = KEY_Ab_F;
+      instance->quantizer.inotes.Gb = KEY_Ab_Gb;
+      instance->quantizer.inotes.G = KEY_Ab_G;
+      instance->quantizer.inotes.Ab = KEY_Ab_Ab;
+      break;
+    case 'A':
+      instance->quantizer.inotes.A = KEY_A_A;
+      instance->quantizer.inotes.Bb = KEY_A_Bb;
+      instance->quantizer.inotes.B = KEY_A_B;
+      instance->quantizer.inotes.C = KEY_A_C;
+      instance->quantizer.inotes.Db = KEY_A_Db;
+      instance->quantizer.inotes.D = KEY_A_D;
+      instance->quantizer.inotes.Eb = KEY_A_Eb;
+      instance->quantizer.inotes.E = KEY_A_E;
+      instance->quantizer.inotes.F = KEY_A_F;
+      instance->quantizer.inotes.Gb = KEY_A_Gb;
+      instance->quantizer.inotes.G = KEY_A_G;
+      instance->quantizer.inotes.Ab = KEY_A_Ab;
+  	  break;
+    case 'b':
+      instance->quantizer.inotes.A = KEY_Bb_A;
+      instance->quantizer.inotes.Bb = KEY_Bb_Bb;
+      instance->quantizer.inotes.B = KEY_Bb_B;
+      instance->quantizer.inotes.C = KEY_Bb_C;
+      instance->quantizer.inotes.Db = KEY_Bb_Db;
+      instance->quantizer.inotes.D = KEY_Bb_D;
+      instance->quantizer.inotes.Eb = KEY_Bb_Eb;
+      instance->quantizer.inotes.E = KEY_Bb_E;
+      instance->quantizer.inotes.F = KEY_Bb_F;
+      instance->quantizer.inotes.Gb = KEY_Bb_Gb;
+      instance->quantizer.inotes.G = KEY_Bb_G;
+      instance->quantizer.inotes.Ab = KEY_Bb_Ab;
+	  break;
+    case 'B':
+      instance->quantizer.inotes.A = KEY_B_A;
+      instance->quantizer.inotes.Bb = KEY_B_Bb;
+      instance->quantizer.inotes.B = KEY_B_B;
+      instance->quantizer.inotes.C = KEY_B_C;
+      instance->quantizer.inotes.Db = KEY_B_Db;
+      instance->quantizer.inotes.D = KEY_B_D;
+      instance->quantizer.inotes.Eb = KEY_B_Eb;
+      instance->quantizer.inotes.E = KEY_B_E;
+      instance->quantizer.inotes.F = KEY_B_F;
+      instance->quantizer.inotes.Gb = KEY_B_Gb;
+      instance->quantizer.inotes.G = KEY_B_G;
+      instance->quantizer.inotes.Ab = KEY_B_Ab;
+  	  break;
+    case 'C':
+      instance->quantizer.inotes.A = KEY_C_A;
+      instance->quantizer.inotes.Bb = KEY_C_Bb;
+      instance->quantizer.inotes.B = KEY_C_B;
+      instance->quantizer.inotes.C = KEY_C_C;
+      instance->quantizer.inotes.Db = KEY_C_Db;
+      instance->quantizer.inotes.D = KEY_C_D;
+      instance->quantizer.inotes.Eb = KEY_C_Eb;
+      instance->quantizer.inotes.E = KEY_C_E;
+      instance->quantizer.inotes.F = KEY_C_F;
+      instance->quantizer.inotes.Gb = KEY_C_Gb;
+      instance->quantizer.inotes.G = KEY_C_G;
+      instance->quantizer.inotes.Ab = KEY_C_Ab;
+	  break;
+    case 'd':
+      instance->quantizer.inotes.A = KEY_Db_A;
+      instance->quantizer.inotes.Bb = KEY_Db_Bb;
+      instance->quantizer.inotes.B = KEY_Db_B;
+      instance->quantizer.inotes.C = KEY_Db_C;
+      instance->quantizer.inotes.Db = KEY_Db_Db;
+      instance->quantizer.inotes.D = KEY_Db_D;
+      instance->quantizer.inotes.Eb = KEY_Db_Eb;
+      instance->quantizer.inotes.E = KEY_Db_E;
+      instance->quantizer.inotes.F = KEY_Db_F;
+      instance->quantizer.inotes.Gb = KEY_Db_Gb;
+      instance->quantizer.inotes.G = KEY_Db_G;
+      instance->quantizer.inotes.Ab = KEY_Db_Ab;
+	  break;
+    case 'D':
+      instance->quantizer.inotes.A = KEY_D_A;
+      instance->quantizer.inotes.Bb = KEY_D_Bb;
+      instance->quantizer.inotes.B = KEY_D_B;
+      instance->quantizer.inotes.C = KEY_D_C;
+      instance->quantizer.inotes.Db = KEY_D_Db;
+      instance->quantizer.inotes.D = KEY_D_D;
+      instance->quantizer.inotes.Eb = KEY_D_Eb;
+      instance->quantizer.inotes.E = KEY_D_E;
+      instance->quantizer.inotes.F = KEY_D_F;
+      instance->quantizer.inotes.Gb = KEY_D_Gb;
+      instance->quantizer.inotes.G = KEY_D_G;
+      instance->quantizer.inotes.Ab = KEY_D_Ab;
+      break;
+    case 'e':
+      instance->quantizer.inotes.A = KEY_Eb_A;
+      instance->quantizer.inotes.Bb = KEY_Eb_Bb;
+      instance->quantizer.inotes.B = KEY_Eb_B;
+      instance->quantizer.inotes.C = KEY_Eb_C;
+      instance->quantizer.inotes.Db = KEY_Eb_Db;
+      instance->quantizer.inotes.D = KEY_Eb_D;
+      instance->quantizer.inotes.Eb = KEY_Eb_Eb;
+      instance->quantizer.inotes.E = KEY_Eb_E;
+      instance->quantizer.inotes.F = KEY_Eb_F;
+      instance->quantizer.inotes.Gb = KEY_Eb_Gb;
+      instance->quantizer.inotes.G = KEY_Eb_G;
+      instance->quantizer.inotes.Ab = KEY_Eb_Ab;
+	  break;
+    case 'E':
+      instance->quantizer.inotes.A = KEY_E_A;
+      instance->quantizer.inotes.Bb = KEY_E_Bb;
+      instance->quantizer.inotes.B = KEY_E_B;
+      instance->quantizer.inotes.C = KEY_E_C;
+      instance->quantizer.inotes.Db = KEY_E_Db;
+      instance->quantizer.inotes.D = KEY_E_D;
+      instance->quantizer.inotes.Eb = KEY_E_Eb;
+      instance->quantizer.inotes.E = KEY_E_E;
+      instance->quantizer.inotes.F = KEY_E_F;
+      instance->quantizer.inotes.Gb = KEY_E_Gb;
+      instance->quantizer.inotes.G = KEY_E_G;
+      instance->quantizer.inotes.Ab = KEY_E_Ab;
+	  break;
+    case 'F':
+      instance->quantizer.inotes.A = KEY_F_A;
+      instance->quantizer.inotes.Bb = KEY_F_Bb;
+      instance->quantizer.inotes.B = KEY_F_B;
+      instance->quantizer.inotes.C = KEY_F_C;
+      instance->quantizer.inotes.Db = KEY_F_Db;
+      instance->quantizer.inotes.D = KEY_F_D;
+      instance->quantizer.inotes.Eb = KEY_F_Eb;
+      instance->quantizer.inotes.E = KEY_F_E;
+      instance->quantizer.inotes.F = KEY_F_F;
+      instance->quantizer.inotes.Gb = KEY_F_Gb;
+      instance->quantizer.inotes.G = KEY_F_G;
+      instance->quantizer.inotes.Ab = KEY_F_Ab;
+	  break;
+    case 'g':
+      instance->quantizer.inotes.A = KEY_Gb_A;
+      instance->quantizer.inotes.Bb = KEY_Gb_Bb;
+      instance->quantizer.inotes.B = KEY_Gb_B;
+      instance->quantizer.inotes.C = KEY_Gb_C;
+      instance->quantizer.inotes.Db = KEY_Gb_Db;
+      instance->quantizer.inotes.D = KEY_Gb_D;
+      instance->quantizer.inotes.Eb = KEY_Gb_Eb;
+      instance->quantizer.inotes.E = KEY_Gb_E;
+      instance->quantizer.inotes.F = KEY_Gb_F;
+      instance->quantizer.inotes.Gb = KEY_Gb_Gb;
+      instance->quantizer.inotes.G = KEY_Gb_G;
+      instance->quantizer.inotes.Ab = KEY_Gb_Ab;
+	  break;
+    case 'G':
+      instance->quantizer.inotes.A = KEY_G_A;
+      instance->quantizer.inotes.Bb = KEY_G_Bb;
+      instance->quantizer.inotes.B = KEY_G_B;
+      instance->quantizer.inotes.C = KEY_G_C;
+      instance->quantizer.inotes.Db = KEY_G_Db;
+      instance->quantizer.inotes.D = KEY_G_D;
+      instance->quantizer.inotes.Eb = KEY_G_Eb;
+      instance->quantizer.inotes.E = KEY_G_E;
+      instance->quantizer.inotes.F = KEY_G_F;
+      instance->quantizer.inotes.Gb = KEY_G_Gb;
+      instance->quantizer.inotes.G = KEY_G_G;
+      instance->quantizer.inotes.Ab = KEY_G_Ab;
+	  break;
+    case 'X':
+      instance->quantizer.inotes.A = KEY_X_A;
+      instance->quantizer.inotes.Bb = KEY_X_Bb;
+      instance->quantizer.inotes.B = KEY_X_B;
+      instance->quantizer.inotes.C = KEY_X_C;
+      instance->quantizer.inotes.Db = KEY_X_Db;
+      instance->quantizer.inotes.D = KEY_X_D;
+      instance->quantizer.inotes.Eb = KEY_X_Eb;
+      instance->quantizer.inotes.E = KEY_X_E;
+      instance->quantizer.inotes.F = KEY_X_F;
+      instance->quantizer.inotes.Gb = KEY_X_Gb;
+      instance->quantizer.inotes.G = KEY_X_G;
+      instance->quantizer.inotes.Ab = KEY_X_Ab;
+	  break;
+  }
+
+  __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "A: %d, Bb: %d, B: %d, C: %d, Db: %d, D: %d, Eb: %d, E: %d, F: %d, Gb: %d, G: %d, Ab: %d",
+		  autotalent->m_pfKey[AT_A], autotalent->m_pfKey[AT_Bb], autotalent->m_pfKey[AT_B], autotalent->m_pfKey[AT_C], autotalent->m_pfKey[AT_Db], autotalent->m_pfKey[AT_D], autotalent->m_pfKey[AT_Eb], autotalent->m_pfKey[AT_E], autotalent->m_pfKey[AT_F], autotalent->m_pfKey[AT_Gb], autotalent->m_pfKey[AT_G], autotalent->m_pfKey[AT_Ab]);
 }
 
-static LV2_Handle instantiateTalentedHack(const LV2_Descriptor *descriptor,
-	    double s_rate, const char *path,
-	    const LV2_Feature * const* features)
-{
+void setOutputKey(TalentedHack * instance, char * keyPtr) {
+  switch (*keyPtr) {
+    case 'a':
+      instance->quantizer.onotes.A = KEY_Ab_A;
+      instance->quantizer.onotes.Bb = KEY_Ab_Bb;
+      instance->quantizer.onotes.B = KEY_Ab_B;
+      instance->quantizer.onotes.C = KEY_Ab_C;
+      instance->quantizer.onotes.Db = KEY_Ab_Db;
+      instance->quantizer.onotes.D = KEY_Ab_D;
+      instance->quantizer.onotes.Eb = KEY_Ab_Eb;
+      instance->quantizer.onotes.E = KEY_Ab_E;
+      instance->quantizer.onotes.F = KEY_Ab_F;
+      instance->quantizer.onotes.Gb = KEY_Ab_Gb;
+      instance->quantizer.onotes.G = KEY_Ab_G;
+      instance->quantizer.onotes.Ab = KEY_Ab_Ab;
+      break;
+    case 'A':
+      instance->quantizer.onotes.A = KEY_A_A;
+      instance->quantizer.onotes.Bb = KEY_A_Bb;
+      instance->quantizer.onotes.B = KEY_A_B;
+      instance->quantizer.onotes.C = KEY_A_C;
+      instance->quantizer.onotes.Db = KEY_A_Db;
+      instance->quantizer.onotes.D = KEY_A_D;
+      instance->quantizer.onotes.Eb = KEY_A_Eb;
+      instance->quantizer.onotes.E = KEY_A_E;
+      instance->quantizer.onotes.F = KEY_A_F;
+      instance->quantizer.onotes.Gb = KEY_A_Gb;
+      instance->quantizer.onotes.G = KEY_A_G;
+      instance->quantizer.onotes.Ab = KEY_A_Ab;
+  	  break;
+    case 'b':
+      instance->quantizer.onotes.A = KEY_Bb_A;
+      instance->quantizer.onotes.Bb = KEY_Bb_Bb;
+      instance->quantizer.onotes.B = KEY_Bb_B;
+      instance->quantizer.onotes.C = KEY_Bb_C;
+      instance->quantizer.onotes.Db = KEY_Bb_Db;
+      instance->quantizer.onotes.D = KEY_Bb_D;
+      instance->quantizer.onotes.Eb = KEY_Bb_Eb;
+      instance->quantizer.onotes.E = KEY_Bb_E;
+      instance->quantizer.onotes.F = KEY_Bb_F;
+      instance->quantizer.onotes.Gb = KEY_Bb_Gb;
+      instance->quantizer.onotes.G = KEY_Bb_G;
+      instance->quantizer.onotes.Ab = KEY_Bb_Ab;
+	  break;
+    case 'B':
+      instance->quantizer.onotes.A = KEY_B_A;
+      instance->quantizer.onotes.Bb = KEY_B_Bb;
+      instance->quantizer.onotes.B = KEY_B_B;
+      instance->quantizer.onotes.C = KEY_B_C;
+      instance->quantizer.onotes.Db = KEY_B_Db;
+      instance->quantizer.onotes.D = KEY_B_D;
+      instance->quantizer.onotes.Eb = KEY_B_Eb;
+      instance->quantizer.onotes.E = KEY_B_E;
+      instance->quantizer.onotes.F = KEY_B_F;
+      instance->quantizer.onotes.Gb = KEY_B_Gb;
+      instance->quantizer.onotes.G = KEY_B_G;
+      instance->quantizer.onotes.Ab = KEY_B_Ab;
+  	  break;
+    case 'C':
+      instance->quantizer.onotes.A = KEY_C_A;
+      instance->quantizer.onotes.Bb = KEY_C_Bb;
+      instance->quantizer.onotes.B = KEY_C_B;
+      instance->quantizer.onotes.C = KEY_C_C;
+      instance->quantizer.onotes.Db = KEY_C_Db;
+      instance->quantizer.onotes.D = KEY_C_D;
+      instance->quantizer.onotes.Eb = KEY_C_Eb;
+      instance->quantizer.onotes.E = KEY_C_E;
+      instance->quantizer.onotes.F = KEY_C_F;
+      instance->quantizer.onotes.Gb = KEY_C_Gb;
+      instance->quantizer.onotes.G = KEY_C_G;
+      instance->quantizer.onotes.Ab = KEY_C_Ab;
+	  break;
+    case 'd':
+      instance->quantizer.onotes.A = KEY_Db_A;
+      instance->quantizer.onotes.Bb = KEY_Db_Bb;
+      instance->quantizer.onotes.B = KEY_Db_B;
+      instance->quantizer.onotes.C = KEY_Db_C;
+      instance->quantizer.onotes.Db = KEY_Db_Db;
+      instance->quantizer.onotes.D = KEY_Db_D;
+      instance->quantizer.onotes.Eb = KEY_Db_Eb;
+      instance->quantizer.oinotes.E = KEY_Db_E;
+      instance->quantizer.onotes.F = KEY_Db_F;
+      instance->quantizer.onotes.Gb = KEY_Db_Gb;
+      instance->quantizer.onotes.G = KEY_Db_G;
+      instance->quantizer.onotes.Ab = KEY_Db_Ab;
+	  break;
+    case 'D':
+      instance->quantizer.onotes.A = KEY_D_A;
+      instance->quantizer.onotes.Bb = KEY_D_Bb;
+      instance->quantizer.onotes.B = KEY_D_B;
+      instance->quantizer.onotes.C = KEY_D_C;
+      instance->quantizer.onotes.Db = KEY_D_Db;
+      instance->quantizer.onotes.D = KEY_D_D;
+      instance->quantizer.onotes.Eb = KEY_D_Eb;
+      instance->quantizer.onotes.E = KEY_D_E;
+      instance->quantizer.onotes.F = KEY_D_F;
+      instance->quantizer.onotes.Gb = KEY_D_Gb;
+      instance->quantizer.onotes.G = KEY_D_G;
+      instance->quantizer.onotes.Ab = KEY_D_Ab;
+      break;
+    case 'e':
+      instance->quantizer.onotes.A = KEY_Eb_A;
+      instance->quantizer.onotes.Bb = KEY_Eb_Bb;
+      instance->quantizer.onotes.B = KEY_Eb_B;
+      instance->quantizer.onotes.C = KEY_Eb_C;
+      instance->quantizer.onotes.Db = KEY_Eb_Db;
+      instance->quantizer.onotes.D = KEY_Eb_D;
+      instance->quantizer.onotes.Eb = KEY_Eb_Eb;
+      instance->quantizer.onotes.E = KEY_Eb_E;
+      instance->quantizer.onotes.F = KEY_Eb_F;
+      instance->quantizer.onotes.Gb = KEY_Eb_Gb;
+      instance->quantizer.onotes.G = KEY_Eb_G;
+      instance->quantizer.onotes.Ab = KEY_Eb_Ab;
+	  break;
+    case 'E':
+      instance->quantizer.onotes.A = KEY_E_A;
+      instance->quantizer.onotes.Bb = KEY_E_Bb;
+      instance->quantizer.onotes.B = KEY_E_B;
+      instance->quantizer.onotes.C = KEY_E_C;
+      instance->quantizer.onotes.Db = KEY_E_Db;
+      instance->quantizer.onotes.D = KEY_E_D;
+      instance->quantizer.onotes.Eb = KEY_E_Eb;
+      instance->quantizer.onotes.E = KEY_E_E;
+      instance->quantizer.onotes.F = KEY_E_F;
+      instance->quantizer.onotes.Gb = KEY_E_Gb;
+      instance->quantizer.onotes.G = KEY_E_G;
+      instance->quantizer.onotes.Ab = KEY_E_Ab;
+	  break;
+    case 'F':
+      instance->quantizer.onotes.A = KEY_F_A;
+      instance->quantizer.onotes.Bb = KEY_F_Bb;
+      instance->quantizer.onotes.B = KEY_F_B;
+      instance->quantizer.onotes.C = KEY_F_C;
+      instance->quantizer.onotes.Db = KEY_F_Db;
+      instance->quantizer.onotes.D = KEY_F_D;
+      instance->quantizer.onotes.Eb = KEY_F_Eb;
+      instance->quantizer.onotes.E = KEY_F_E;
+      instance->quantizer.onotes.F = KEY_F_F;
+      instance->quantizer.onotes.Gb = KEY_F_Gb;
+      instance->quantizer.onotes.G = KEY_F_G;
+      instance->quantizer.onotes.Ab = KEY_F_Ab;
+	  break;
+    case 'g':
+      instance->quantizer.onotes.A = KEY_Gb_A;
+      instance->quantizer.onotes.Bb = KEY_Gb_Bb;
+      instance->quantizer.onotes.B = KEY_Gb_B;
+      instance->quantizer.onotes.C = KEY_Gb_C;
+      instance->quantizer.onotes.Db = KEY_Gb_Db;
+      instance->quantizer.onotes.D = KEY_Gb_D;
+      instance->quantizer.onotes.Eb = KEY_Gb_Eb;
+      instance->quantizer.onotes.E = KEY_Gb_E;
+      instance->quantizer.onotes.F = KEY_Gb_F;
+      instance->quantizer.onotes.Gb = KEY_Gb_Gb;
+      instance->quantizer.onotes.G = KEY_Gb_G;
+      instance->quantizer.onotes.Ab = KEY_Gb_Ab;
+	  break;
+    case 'G':
+      instance->quantizer.onotes.A = KEY_G_A;
+      instance->quantizer.onotes.Bb = KEY_G_Bb;
+      instance->quantizer.onotes.B = KEY_G_B;
+      instance->quantizer.onotes.C = KEY_G_C;
+      instance->quantizer.onotes.Db = KEY_G_Db;
+      instance->quantizer.onotes.D = KEY_G_D;
+      instance->quantizer.onotes.Eb = KEY_G_Eb;
+      instance->quantizer.onotes.E = KEY_G_E;
+      instance->quantizer.onotes.F = KEY_G_F;
+      instance->quantizer.onotes.Gb = KEY_G_Gb;
+      instance->quantizer.onotes.G = KEY_G_G;
+      instance->quantizer.onotes.Ab = KEY_G_Ab;
+	  break;
+    case 'X':
+      instance->quantizer.onotes.A = KEY_X_A;
+      instance->quantizer.onotes.Bb = KEY_X_Bb;
+      instance->quantizer.onotes.B = KEY_X_B;
+      instance->quantizer.onotes.C = KEY_X_C;
+      instance->quantizer.onotes.Db = KEY_X_Db;
+      instance->quantizer.onotes.D = KEY_X_D;
+      instance->quantizer.onotes.Eb = KEY_X_Eb;
+      instance->quantizer.onotes.E = KEY_X_E;
+      instance->quantizer.onotes.F = KEY_X_F;
+      instance->quantizer.onotes.Gb = KEY_X_Gb;
+      instance->quantizer.onotes.G = KEY_X_G;
+      instance->quantizer.onotes.Ab = KEY_X_Ab;
+	  break;
+  }
+
+  __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "A: %d, Bb: %d, B: %d, C: %d, Db: %d, D: %d, Eb: %d, E: %d, F: %d, Gb: %d, G: %d, Ab: %d",
+		  autotalent->m_pfKey[AT_A], autotalent->m_pfKey[AT_Bb], autotalent->m_pfKey[AT_B], autotalent->m_pfKey[AT_C], autotalent->m_pfKey[AT_Db], autotalent->m_pfKey[AT_D], autotalent->m_pfKey[AT_Eb], autotalent->m_pfKey[AT_E], autotalent->m_pfKey[AT_F], autotalent->m_pfKey[AT_Gb], autotalent->m_pfKey[AT_G], autotalent->m_pfKey[AT_Ab]);
+}
+
+// Set input and output buffers
+static void setTalentedHackBuffers(TalentedHack * instance, float * inputBuffer, float * outputBuffer) {
+	instance->p_InputBuffer = inputBuffer;
+	instance->p_OutputBuffer = outputBuffer;
+}
+
+static TalentedHack instantiateTalentedHack(double s_rate) {
 	TalentedHack *membvars = (TalentedHack *)malloc(sizeof(TalentedHack));
 	InstantiateCircularBuffer(&membvars->buffer,s_rate);
 	unsigned long N=membvars->buffer.cbsize;
@@ -212,7 +433,8 @@ static LV2_Handle instantiateTalentedHack(const LV2_Descriptor *descriptor,
 	
 	PitchShifterInit(&membvars->pshifter, s_rate,N);
 	InitializePitchSmoother(&membvars->psmoother, N, membvars->noverlap, s_rate);
-	QuantizerInit(&membvars->quantizer,features);
+	QuantizerInit(&membvars->quantizer);
+
 	return membvars;
 }
 
@@ -224,9 +446,8 @@ inline void IncrementPointer(CircularBuffer * buffer) {
 	}
 }
 
-static void runTalentedHack(LV2_Handle instance, uint32_t sample_count)
-{
-	TalentedHack* psTalentedHack = (TalentedHack *)instance;
+static void runTalentedHack(TalentedHack * instance, uint32_t sample_count) {
+	TalentedHack* psTalentedHack = instance;
 	
 	unsigned long N = psTalentedHack->buffer.cbsize;
 	unsigned long Nf = psTalentedHack->buffer.corrsize;
@@ -235,8 +456,6 @@ static void runTalentedHack(LV2_Handle instance, uint32_t sample_count)
 	UpdateFormantWarp(&psTalentedHack->fcorrector);
 	UpdateQuantizer(&psTalentedHack->quantizer);
 	UpdateLFO(&psTalentedHack->lfo,N,psTalentedHack->noverlap,fs);
-	lv2_event_begin(&psTalentedHack->quantizer.in_iterator, psTalentedHack->quantizer.MidiIn);
-	lv2_event_begin(&psTalentedHack->quantizer.out_iterator, psTalentedHack->quantizer.MidiOut);
 	
 	const float* pfInput=psTalentedHack->p_InputBuffer;
 	float* pfOutput=psTalentedHack->p_OutputBuffer;
@@ -319,17 +538,143 @@ static void runTalentedHack(LV2_Handle instance, uint32_t sample_count)
 	*(psTalentedHack->p_latency) = (N-1);
 }
 
-static void init()
-{
-	TalentedHackDescriptor =
-	 (LV2_Descriptor *)malloc(sizeof(LV2_Descriptor));
+static void cleanupTalentedHack(TalentedHack instance) {
+	TalentedHack * ATInstance = instance;
+	fft_des(ATInstance->fmembvars);
+ 	free(ATInstance->buffer.cbi);
+	free(ATInstance->buffer.cbf);
+	free(ATInstance->pshifter.cbo);
+	free(ATInstance->pdetector.cbwindow);
+	free(ATInstance->pshifter.hannwindow);
+	free(ATInstance->pdetector.acwinv);
+	free(ATInstance->pshifter.frag);
+	free(ATInstance->fcorrector.fk);
+	free(ATInstance->fcorrector.fb);
+ 	free(ATInstance->fcorrector.fc);
+ 	free(ATInstance->fcorrector.frb);
+ 	free(ATInstance->fcorrector.frc);
+ 	free(ATInstance->fcorrector.fsmooth);
+ 	free(ATInstance->fcorrector.fsig);
+	int i;
+  	for (i=0; i<ATInstance->fcorrector.ford; i++) {
+  		free(ATInstance->fcorrector.fbuff[i]);
+  	}
+  	free(ATInstance->fcorrector.fbuff);
+  	free(ATInstance->fcorrector.ftvec);
+	free(ATInstance);
+}
 
-	TalentedHackDescriptor->URI = TALENTEDHACK_URI;
-	TalentedHackDescriptor->activate = NULL;
-	TalentedHackDescriptor->cleanup = cleanupTalentedHack;
-	TalentedHackDescriptor->connect_port = connectPortTalentedHack;
-	TalentedHackDescriptor->deactivate = NULL;
-	TalentedHackDescriptor->instantiate = instantiateTalentedHack;
-	TalentedHackDescriptor->run = runTalentedHack;
-	TalentedHackDescriptor->extension_data = NULL;
+/********************
+ * HELPER FUNCTIONS *
+ ********************/
+
+float * getFloatBuffer(JNIEnv* env, jshortArray shortArray, jsize arraySize) {
+	int i;
+	short* shortBuffer = (short *)(*env)->GetPrimitiveArrayCritical(env, shortArray, 0);
+	float* floatBuffer = calloc(arraySize, sizeof(float));
+
+	for (i = 0; i < arraySize; i++) {
+	floatBuffer[i] = ((float)(shortBuffer[i])/32768.0f);
+	}
+
+	(*env)->ReleasePrimitiveArrayCritical(env, shortArray, shortBuffer, 0);
+
+	return floatBuffer;
+}
+
+
+jshort * getShortBuffer(float* floatBuffer, jsize size) {
+	int i;
+	jshort* shortBuffer = calloc(size, sizeof(jshort));
+
+	for (i = 0; i < size; i++) {
+	  shortBuffer[i] = (short)(floatBuffer[i]*32767.0f);
+	}
+
+	return shortBuffer;
+}
+
+/********************
+ *  JNI INTERFACE   *
+ ********************/
+
+static TalentedHack * instance;
+
+JNIEXPORT void JNICALL Java_com_intervigil_micdroid_pitch_TalentedHack_instantiateTalentedHack
+  (JNIEnv* env, jclass class, jint sampleRate) {
+  if (instance == NULL) {
+    instance = instantiateTalentedHack(sampleRate);
+    __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "instantiated autotalent at %d with sample rate: %d", instance, (instance->fs));
+  }
+}
+
+JNIEXPORT void JNICALL Java_com_intervigil_micdroid_pitch_TalentedHack_initializeTalentedHack
+  (JNIEnv* env, jclass class, jfloat concertA, jchar key,
+		  jfloat correctStrength, jfloat correctSmooth,
+		  jfloat lfoDepth, jfloat lfoRate, jfloat lfoShape, jfloat lfoSym, jint lfoQuant,
+		  jint formCorr, jfloat formWarp, jfloat mix) {
+  if (instance != NULL) {
+	// set our keys
+    setInputKey(instance, (char *)&key);
+    setOutputKey(instance, (char *)&key);
+
+    __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "setting parameters");
+
+    // set concert A
+    instance->quantizer.p_aref = (float)concertA;
+    __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "Concert A: %f", *(instance->m_pfTune));
+
+    // set pitch correction parameters
+    instance->quantizer.p_amount = (float)correctStrength;
+    instance->psmoother.p_pitchsmooth = (float)correctSmooth;
+    __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "FixedPitch: %f, FixedPull: %f, CorrectStr: %f, CorrectSmooth: %f, PitchShift: %f, ScaleRotate: %f", *(instance->m_pfFixed), *(instance->m_pfPull), *(instance->m_pfAmount), *(instance->m_pfSmooth), *(instance->m_pfShift), *(instance->m_pfScwarp));
+
+    // set LFO parameters
+    instance->lfo.p_amp = (float)lfoDepth;
+    instance->lfo.p_rate = (float)lfoRate;
+    instance->lfo.p_shape = (float)lfoShape;
+    instance->lfo.p_symm = (float)lfoSym;
+    instance->lfo.p_quant = (int)lfoQuant;
+
+    // set formant corrector parameters
+    instance->fcorrector.p_Fcorr = (int)formCorr;
+    instance->fcorrector.p_Fwarp = (float)formWarp;
+
+    // set mix parameter
+    instance->p_mix = (float)mix;
+
+    __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "LFODepth: %f, LFORate: %f, LFOShape %f, LFOSym: %f, LFOQuant: %d, FormCorr: %d, FormWarp: %f, Mix: %f", *(instance->m_pfLfoamp), *(instance->m_pfLforate), *(instance->m_pfLfoshape), *(instance->m_pfLfosymm), *(instance->m_pfLfoquant), *(instance->m_pfFcorr), *(instance->m_pfFwarp), *(instance->m_pfMix));
+  } else {
+    __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "No suitable autotalent instance found!");
+  }
+}
+
+JNIEXPORT void JNICALL Java_com_intervigil_micdroid_pitch_TalentedHack_processSamples
+	(JNIEnv* env , jclass class, jshortArray samples, jint sampleSize) {
+	if (instance != NULL) {
+		// copy buffers
+		float* sampleBuffer = getFloatBuffer(env, samples, sampleSize);
+		setTalentedHackBuffers(instance, sampleBuffer, sampleBuffer);
+
+		// process samples
+		runTalentedHack(instance, sampleSize);
+
+		// copy results back up to java array
+		short* shortBuffer = getShortBuffer(sampleBuffer, sampleSize);
+		(*env)->SetShortArrayRegion(env, samples, 0, sampleSize, shortBuffer);
+
+		free(shortBuffer);
+		free(sampleBuffer);
+	} else {
+		__android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "No suitable autotalent instance found!");
+	}
+}
+
+JNIEXPORT void JNICALL Java_com_intervigil_micdroid_pitch_TalentedHack_destroyTalentedHack
+	(JNIEnv* env, jclass class) {
+	if (instance != NULL) {
+		cleanupTalentedHack(instance);
+		__android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "cleaned up autotalent at %d", instance);
+		instance = NULL;
+	}
 }

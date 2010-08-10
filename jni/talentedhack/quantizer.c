@@ -2,23 +2,23 @@
 
 
 void CopyNotesToBuffer(Notes* notes, int buffer[12]) {
-	buffer[0] = (int) *(notes->A);
-	buffer[1] = (int) *(notes->Bb);
-	buffer[2] = (int) *(notes->B);
-	buffer[3] = (int) *(notes->C);
-	buffer[4] = (int) *(notes->Db);
-	buffer[5] = (int) *(notes->D);
-	buffer[6] = (int) *(notes->Eb);
-	buffer[7] = (int) *(notes->E);
-	buffer[8] = (int) *(notes->F);
-	buffer[9] = (int) *(notes->Gb);
-	buffer[10] = (int) *(notes->G);
-	buffer[11] = (int) *(notes->Ab);
+	buffer[0] = notes->A;
+	buffer[1] = notes->Bb;
+	buffer[2] = notes->B;
+	buffer[3] = notes->C;
+	buffer[4] = notes->Db;
+	buffer[5] = notes->D;
+	buffer[6] = notes->Eb;
+	buffer[7] = notes->E;
+	buffer[8] = notes->F;
+	buffer[9] = notes->Gb;
+	buffer[10] = notes->G;
+	buffer[11] = notes->Ab;
 }
 
 void UpdateQuantizer(Quantizer * q) {
-	CopyNotesToBuffer(&q->inotes,q->iNotes);
-	CopyNotesToBuffer(&q->onotes,q->oNotes);
+	CopyNotesToBuffer(q->inotes, q->iNotes);
+	CopyNotesToBuffer(q->onotes, q->oNotes);
 	int numin=0;
 	int numout=0;
 	int i;
@@ -43,13 +43,10 @@ void UpdateQuantizer(Quantizer * q) {
 		}
 	}
 }
+
 void PullToInTune(Quantizer* q, MidiPitch* pitch) {
 	pitch->pitchbend *=(1-(*q->p_amount));
 }
-
-//saved To later implement smooth gliding.
-
-
 
 MidiPitch semitones_to_midi(const int notes[12], float semitones) {
 	int prevsemitone=floor(semitones);
@@ -81,28 +78,9 @@ MidiPitch pperiod_to_midi(Quantizer* q, float pperiod) {
 	return semitones_to_midi(q->iNotes,semitones);
 }
 
-void QuantizerInit(Quantizer* q, const LV2_Feature * const * features) {
+void QuantizerInit(Quantizer* q) {
 	q->InPitch.note=0;
 	q->OutPitch.note=0;
-	q->midi_event_id = 0;
-	q->event_ref = 0;
-	LV2_URI_Map_Feature *map_feature;
-	const LV2_Feature * const *  i;
-	for (i = features; *i; i++) {
-    if (!strcmp((*i)->URI, "http://lv2plug.in/ns/ext/uri-map"))
-    {
-      map_feature = (*i)->data;
-      q->midi_event_id = map_feature->uri_to_id(map_feature->callback_data,
-                                                      "http://lv2plug.in/ns/ext/event",
-                                                      "http://lv2plug.in/ns/ext/midi#MidiEvent");
-    } else if (!strcmp((*i)->URI, "http://lv2plug.in/ns/ext/event")) {
-      q->event_ref = (*i)->data;
-    }
-  }
-  if (q->midi_event_id == 0 || q->event_ref == NULL)
-  {
-    fprintf(stderr, "autotalent LV2: MIDI support not supported in host... disabling.\n");
-  }
 }
 
 MidiPitch MixMidiIn(Quantizer* q, MidiPitch detected, MidiPitch in) {
@@ -112,7 +90,6 @@ MidiPitch MixMidiIn(Quantizer* q, MidiPitch detected, MidiPitch in) {
 		return detected;
 	}
 }
-
 
 int SnapToKey(int notes[12], int note, int snapup) {
 	int index=note -69;

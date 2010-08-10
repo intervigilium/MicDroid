@@ -1,8 +1,7 @@
 #ifndef AUTOTALENT_LADSPA_H
 #define AUTOTALENT_LADSPA_H
 
-//#define DEBUGPLOT
-
+#include <jni.h>
 #include "formant_corrector.h"
 #include "pitch_detector.h"
 #include "pitch_shifter.h"
@@ -64,12 +63,9 @@
  *************************/
 
 typedef struct {
-
 	float* p_mix;
 	float* p_InputBuffer;
 	float* p_OutputBuffer;
-	float* p_latency;
-	unsigned char* p_correct_midiout;
 	fft_vars* fmembvars; // member variables for fft routine
 
 	unsigned long fs; // Sample rate
@@ -82,8 +78,50 @@ typedef struct {
 	Quantizer quantizer;
 	LFO lfo;
 	CircularBuffer buffer;
-
-
 } TalentedHack
 ;
+
+/* Header for class com_intervigil_micdroid_AutoTalent */
+
+#ifndef _Included_com_intervigil_micdroid_pitch_TalentedHack
+#define _Included_com_intervigil_micdroid_pitch_TalentedHack
+#ifdef __cplusplus
+extern "C" {
+#endif
+/*
+ * Class:     com_intervigil_micdroid_TalentedHack
+ * Method:    instantiateTalentedHack
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_intervigil_micdroid_pitch_TalentedHack_instantiateTalentedHack
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_intervigil_micdroid_TalentedHack
+ * Method:    initializeTalentedHack
+ * Signature: (FCFFFFFFIIFF)V
+ */
+JNIEXPORT void JNICALL Java_com_intervigil_micdroid_pitch_TalentedHack_initializeTalentedHack
+  (JNIEnv *, jclass, jfloat, jchar, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jint, jint, jfloat, jfloat);
+
+/*
+ * Class:     com_intervigil_micdroid_TalentedHack
+ * Method:    processSamples
+ * Signature: ([SI)V
+ */
+JNIEXPORT void JNICALL Java_com_intervigil_micdroid_pitch_TalentedHack_processSamples
+  (JNIEnv *, jclass, jshortArray, jint);
+
+/*
+ * Class:     com_intervigil_micdroid_TalentedHack
+ * Method:    destroyTalentedHack
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_intervigil_micdroid_pitch_TalentedHack_destroyTalentedHack
+  (JNIEnv *, jclass);
+
+#ifdef __cplusplus
+}
+#endif
+#endif
 #endif

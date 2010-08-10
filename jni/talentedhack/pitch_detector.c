@@ -50,7 +50,6 @@ float get_pitch_period(PitchDetector * pdetector, const float* autocorr, unsigne
 		pdetector->ppickthresh=1;
 	}
 	
-	
 	//circular buffer of peaks.
 	const int numpeaks=2000;
 	const float* peaks[numpeaks];

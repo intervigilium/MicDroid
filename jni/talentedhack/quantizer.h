@@ -1,10 +1,6 @@
 #ifndef AUTOTALENT_QUANTIZER_H
 #define AUTOTALENT_QUANTIZER_H
 #include <math.h> 
-#include "event.h"
-#include "event-helpers.h"
-#include "lv2.h"
-#include "uri-map.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -13,18 +9,18 @@
 #define L2SC (float)3.32192809488736218171 
 
 typedef struct {
-	float* A;
-	float* Bb;
-	float* B;
-	float* C;
-	float* Db;
-	float* D;
-	float* Eb;
-	float* E;
-	float* F;
-	float* Gb;
-	float* G;
-	float* Ab;
+	int A;
+	int Bb;
+	int B;
+	int C;
+	int Db;
+	int D;
+	int Eb;
+	int E;
+	int F;
+	int Gb;
+	int G;
+	int Ab;
 } Notes;
 
 typedef struct {
@@ -38,7 +34,6 @@ typedef struct {
 	Notes onotes; //The set of notes to be output, i.e. the scale you want the output to be in.
 	
 	float* p_amount;
-	float* p_accept_midi;
 	
 	int iNotes[12];
 	int oNotes[127];
@@ -47,15 +42,6 @@ typedef struct {
 	
 	MidiPitch InPitch;
 	MidiPitch OutPitch;
-	
-	LV2_Event_Buffer *MidiIn;
-	LV2_Event_Iterator in_iterator;
-	LV2_Event_Feature* event_ref;
-	int midi_event_id;
-
-	LV2_Event_Buffer *MidiOut;
-	LV2_Event_Iterator out_iterator;
-
 } Quantizer;
 
 
@@ -72,6 +58,7 @@ MidiPitch FetchLatestMidiNote(Quantizer* q, int samplenum);
 MidiPitch pperiod_to_midi(Quantizer* q, float pperiod) ;
 
 float midi_to_semitones(MidiPitch pitch);
+
 float semitones_to_pperiod(Quantizer* q, float semitones);
 
 int SnapToKey(int notes[12], int note, int snapup);
