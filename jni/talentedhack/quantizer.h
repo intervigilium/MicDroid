@@ -34,6 +34,7 @@ typedef struct {
 	Notes onotes; //The set of notes to be output, i.e. the scale you want the output to be in.
 	
 	float* p_amount;
+	float* p_accept_midi;
 	
 	int iNotes[12];
 	int oNotes[127];
@@ -65,11 +66,9 @@ int SnapToKey(int notes[12], int note, int snapup);
 
 MidiPitch MixMidiIn(Quantizer* q, MidiPitch detected, MidiPitch in);
 
-void UnVoiceMidi(Quantizer* q, int samplenum);
-
 inline int positive_mod(int A, int B) {
-	int C=A%B;
-	if(C<0) {
+	int C = A%B;
+	if (C < 0) {
 		C+=B;
 	}
 	return C;

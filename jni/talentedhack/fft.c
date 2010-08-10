@@ -10,8 +10,8 @@ fft_vars* fft_con(int nfft) {
 
 	fftvars->ffttime = fftwf_malloc(nfft* sizeof(float));
 	fftvars->complex = fftwf_malloc(fftvars->numfreqs* sizeof(fftwf_complex));
-	fftvars->forwardplan=fftwf_plan_dft_r2c_1d(nfft,fftvars->ffttime, fftvars->complex, FFTW_ESTIMATE);
-	fftvars->reverseplan=fftwf_plan_dft_c2r_1d(nfft,fftvars->complex,fftvars->ffttime, FFTW_ESTIMATE);
+	fftvars->forwardplan = fftwf_plan_dft_r2c_1d(nfft,fftvars->ffttime, fftvars->complex, FFTW_ESTIMATE);
+	fftvars->reverseplan = fftwf_plan_dft_c2r_1d(nfft,fftvars->complex, fftvars->ffttime, FFTW_ESTIMATE);
 	return fftvars;
 }
 
@@ -35,9 +35,7 @@ void fft_des(fft_vars* fftvars)
 //     size nfft/2 + 1
 void fft_forward(fft_vars* fftvars)
 {
-
 	fftwf_execute(fftvars->forwardplan);
-
 }
 
 // Perform inverse FFT, returning real data
@@ -50,8 +48,6 @@ void fft_forward(fft_vars* fftvars)
 //   output - pointer to an array of (real) input values, size nfft
 void fft_inverse(fft_vars* fftvars)
 {
-
-
 	fftwf_execute(fftvars->reverseplan);
 }
 
