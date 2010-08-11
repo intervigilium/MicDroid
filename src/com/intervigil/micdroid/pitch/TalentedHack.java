@@ -1,4 +1,4 @@
-/* AutoTalent.java
+/* TalentedHack.java
 
    Copyright (c) 2010 Ethan Chen
 
