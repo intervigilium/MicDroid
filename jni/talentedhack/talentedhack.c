@@ -489,7 +489,6 @@ static void runTalentedHack(TalentedHack * instance, uint32_t sample_count) {
 				MidiPitch note;
 				//Now we begin to modify the note, to determine what pitch we want to shift to
 				MidiPitch input = psTalentedHack->quantizer.InPitch;
-				note = MixMidiIn(&psTalentedHack->quantizer, note, input);
 				note.note = SnapToKey(psTalentedHack->quantizer.oNotes, note.note, note.pitchbend > 0);
 
 				PullToInTune(&psTalentedHack->quantizer, &note);

@@ -82,14 +82,6 @@ void QuantizerInit(Quantizer * q) {
 	q->OutPitch.note = 0;
 }
 
-MidiPitch MixMidiIn(Quantizer * q, MidiPitch detected, MidiPitch in) {
-	if (*q->p_accept_midi > 0 && in.note > 0) {
-		return in;
-	} else {
-		return detected;
-	}
-}
-
 int SnapToKey(int notes[12], int note, int snapup) {
 	int index = note - 69;
 	if(notes[positive_mod(index,12)] >= 0) {

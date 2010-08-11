@@ -64,8 +64,6 @@ float semitones_to_pperiod(Quantizer * q, float semitones);
 
 int SnapToKey(int notes[12], int note, int snapup);
 
-MidiPitch MixMidiIn(Quantizer * q, MidiPitch detected, MidiPitch in);
-
 inline int positive_mod(int A, int B) {
 	int C = A%B;
 	if (C < 0) {
