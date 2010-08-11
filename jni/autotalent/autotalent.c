@@ -351,7 +351,6 @@ typedef struct {
   float* m_pfFwarp;
   float* m_pfMix;
 
-  float* m_pfConf;
   float* m_pfInputBuffer1;
   float* m_pfOutputBuffer1;
 
@@ -562,8 +561,6 @@ Autotalent * instantiateAutotalent(unsigned long SampleRate) {
   membvars->m_pfFcorr = malloc(sizeof(int));
   membvars->m_pfFwarp = malloc(sizeof(float));
   membvars->m_pfMix = malloc(sizeof(float));
-
-  membvars->m_pfConf = malloc(sizeof(float));
 
   return membvars;
 }
@@ -1073,8 +1070,6 @@ void runAutotalent(Autotalent * Instance, unsigned long SampleCount) {
       }
       psAutotalent->conf = conf;
 
-      *(psAutotalent->m_pfConf) = conf;
-
       //  ---- END Calculate pitch and confidence ----
 
       //  ---- Modify pitch in all kinds of ways! ----
@@ -1419,9 +1414,6 @@ void cleanupAutotalent(Autotalent* Instance) {
   }
   free(Instance->fbuff);
   free(Instance->ftvec);
-
-  // we allocated these since we just don't use them
-  free(Instance->m_pfConf);
 
   // we allocated these so it keeps the values properly
   free(Instance->m_pfTune);
