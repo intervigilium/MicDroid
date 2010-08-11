@@ -16,6 +16,11 @@ static void copyNotesToBuffer(Notes * notes, int buffer[12]) {
 	buffer[11] = notes->Ab;
 }
 
+void QuantizerInit(Quantizer * q) {
+	q->InPitch.note = 0;
+	q->OutPitch.note = 0;
+}
+
 void UpdateQuantizer(Quantizer * q) {
 	copyNotesToBuffer(&q->inotes, q->iNotes);
 	copyNotesToBuffer(&q->onotes, q->oNotes);
@@ -45,41 +50,6 @@ void UpdateQuantizer(Quantizer * q) {
 
 void PullToInTune(Quantizer * q, MidiPitch * pitch) {
 	pitch->pitchbend *= (1 - *q->p_amount);
-}
-
-MidiPitch semitones_to_midi(const int notes[12], float semitones) {
-	int prevsemitone = floor(semitones);
-	int nextsemitone = prevsemitone + 1;
-	while (notes[positive_mod(prevsemitone, 12)] < 0) {
-		prevsemitone--;
-	}
-	// finding next higher pitch in scale
-	while (notes[positive_mod(nextsemitone,12)] < 0) {
-		nextsemitone++;
-	}
-	float lowdiff = semitones - prevsemitone; //positive
-	float highdiff = semitones - nextsemitone; //negative
-	MidiPitch result;
-	//This is because midi pitch bend commands are not linear (!)  When you bend up, you can go to a value of 8191, but when you bend down, you can go to a value of -8192
-	if (lowdiff < (-highdiff)) {//jumping down
-		result.note = prevsemitone;
-		result.pitchbend = lowdiff/6;
-	} else {
-		result.note = nextsemitone;
-		result.pitchbend = highdiff/6;
-	}
-	result.note += 69;
-	return result;
-}
-
-MidiPitch pperiod_to_midi(Quantizer * q, float pperiod) {
-	float semitones = -12 * log10(((float) *q->p_aref) * pperiod) * L2SC;
-	return semitones_to_midi(q->iNotes, semitones);
-}
-
-void QuantizerInit(Quantizer * q) {
-	q->InPitch.note = 0;
-	q->OutPitch.note = 0;
 }
 
 int SnapToKey(int notes[12], int note, int snapup) {
