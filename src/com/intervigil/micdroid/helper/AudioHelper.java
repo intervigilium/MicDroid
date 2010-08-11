@@ -145,7 +145,7 @@ public class AudioHelper {
 				Constants.DEFAULT_CHANNEL_CONFIG,
 				Constants.DEFAULT_PCM_FORMAT,
 				bufferSize);
-		
+
 		return recorder;
 	}
 	
@@ -187,8 +187,8 @@ public class AudioHelper {
     					sampleRate, 
     					Constants.DEFAULT_CHANNEL_CONFIG, 
     					Constants.DEFAULT_PCM_FORMAT);
-    			
-    		} while (bufferSize == AudioRecord.ERROR_BAD_VALUE);
+
+    		} while (bufferSize == AudioRecord.ERROR_BAD_VALUE || bufferSize == AudioRecord.ERROR);
     		
     		// save the last known good sample rate
     		Log.i("AudioHelper", String.format("AudioRecord initially configured! sample rate: %d", sampleRate));
