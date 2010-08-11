@@ -161,44 +161,89 @@ public class AudioHelper {
 		int sampleRate = PreferenceHelper.getSampleRate(context);
 		
 		if (sampleRate < 0) {
-			// try a new sample rates until we find one that works  		
-    		do {
-    			switch (sampleRate) {
-	    			case -1:
-	    				// set the default to 22050Hz, so slower devices perform better
-	    				sampleRate = Constants.SAMPLE_RATE_22KHZ;
-	    				break;
-					case Constants.SAMPLE_RATE_44KHZ:
-						sampleRate = Constants.SAMPLE_RATE_22KHZ;
-						break;
-					case Constants.SAMPLE_RATE_22KHZ:
-						sampleRate = Constants.SAMPLE_RATE_11KHZ;
-						break;
-					case Constants.SAMPLE_RATE_11KHZ:
-						sampleRate = Constants.SAMPLE_RATE_8KHZ;
-						break;
-    				default:
-    					// start the loop over again with a larger buffer size
-    					bufferSizeAdjuster *= 2;
-    					sampleRate = Constants.SAMPLE_RATE_22KHZ;
-    					if (bufferSizeAdjuster > Constants.DEFAULT_BUFFER_LIMIT) {
-	    					Log.w("AudioHelper", String.format("Hardware does not support recording!"));
-	    					DialogHelper.showWarning(context, R.string.unable_to_configure_audio_title, R.string.unable_to_configure_audio_warning);
-	    					return;
-    					}
-    			}
-    			
-    			bufferSize = AudioRecord.getMinBufferSize(
-    					sampleRate,
-    					Constants.DEFAULT_CHANNEL_CONFIG, 
-    					Constants.DEFAULT_PCM_FORMAT) * bufferSizeAdjuster;
-
-    		} while (bufferSize == AudioRecord.ERROR_BAD_VALUE || bufferSize == AudioRecord.ERROR);
-    		
+			if (AudioHelper.isSamsungGalaxyS()) {
+				sampleRate = Constants.SAMPLE_RATE_44KHZ;
+				bufferSizeAdjuster = 16;
+			} else {
+				// try a new sample rates until we find one that works  		
+	    		do {
+	    			switch (sampleRate) {
+		    			case -1:
+		    				// set the default to 22050Hz, so slower devices perform better
+		    				sampleRate = Constants.SAMPLE_RATE_22KHZ;
+		    				break;
+						case Constants.SAMPLE_RATE_44KHZ:
+							sampleRate = Constants.SAMPLE_RATE_22KHZ;
+							break;
+						case Constants.SAMPLE_RATE_22KHZ:
+							sampleRate = Constants.SAMPLE_RATE_11KHZ;
+							break;
+						case Constants.SAMPLE_RATE_11KHZ:
+							sampleRate = Constants.SAMPLE_RATE_8KHZ;
+							break;
+	    				default:
+	    					// start the loop over again with a larger buffer size
+	    					bufferSizeAdjuster *= 2;
+	    					sampleRate = Constants.SAMPLE_RATE_22KHZ;
+	    					if (bufferSizeAdjuster > Constants.DEFAULT_BUFFER_LIMIT) {
+		    					Log.w("AudioHelper", String.format("Hardware does not support recording!"));
+		    					DialogHelper.showWarning(context, R.string.unable_to_configure_audio_title, R.string.unable_to_configure_audio_warning);
+		    					return;
+	    					}
+	    			}
+	    			
+	    			bufferSize = AudioRecord.getMinBufferSize(
+	    					sampleRate,
+	    					Constants.DEFAULT_CHANNEL_CONFIG, 
+	    					Constants.DEFAULT_PCM_FORMAT) * bufferSizeAdjuster;
+	
+	    		} while (bufferSize == AudioRecord.ERROR_BAD_VALUE || bufferSize == AudioRecord.ERROR);
+			}
     		// save the last known good sample rate
-    		Log.i("AudioHelper", String.format("AudioRecord initially configured! sample rate: %d, buffer size: %d", sampleRate, bufferSizeAdjuster));
+    		Log.i("AudioHelper", String.format("AudioRecord initially configured! sample rate: %d, buffer size adjuster: %d", sampleRate, bufferSizeAdjuster));
     		PreferenceHelper.setSampleRate(context, sampleRate);
     		PreferenceHelper.setBufferSizeAdjuster(context, bufferSizeAdjuster);
 		}
+	}
+	
+	/**
+     * Tries to figure out if the current phone is Galaxy S based, since it has recording issues
+     * 
+     * @param		
+     */
+	public static boolean isSamsungGalaxyS() {
+		String manufacturer = android.os.Build.MANUFACTURER.toLowerCase();
+		String model = android.os.Build.MODEL.toLowerCase();
+		String device = android.os.Build.DEVICE.toLowerCase();
+		String product = android.os.Build.PRODUCT.toLowerCase();
+		Log.i("AudioHelper", String.format("manufacturer: %s, model: %s, device: %s, product: %s", manufacturer, model, device, product));
+		
+		if (manufacturer.contains("samsung")) {
+			if (model.contains("galaxy") || device.contains("gt-i9000")) {
+				Log.i("AudioHelper", "Samsung Galaxy S detected");
+				return true;
+			}
+			
+			if (model.contains("captivate") || device.contains("sgh-i897")) {
+				Log.i("AudioHelper", "ATT, Samsung Captivate detected");
+				return true;
+			}
+			
+			if (model.contains("vibrant") || device.contains("sgh-t959")) {
+				Log.i("AudioHelper", "T-Mobile US, Samsung Vibrant detected");
+				return true;
+			}
+			
+			if (model.contains("epic") || device.contains("sph-d700")) {
+				Log.i("AudioHelper", "Sprint, Samsung Epic 4G detected");
+				return true;
+			}
+			
+			if (model.contains("fascinate") || device.contains("gt-i9000")) {
+				Log.i("AudioHelper", "Verizon, Samsung Fascinate detected");
+				return true;
+			}
+		}
+		return false;
 	}
 }
