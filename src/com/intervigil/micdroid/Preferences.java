@@ -19,12 +19,10 @@
 
 package com.intervigil.micdroid;
 
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
-public class Preferences extends PreferenceActivity implements OnSharedPreferenceChangeListener{
+public class Preferences extends PreferenceActivity {
 	/**
      * Called when the activity is starting.  This is where most
      * initialization should go: calling setContentView(int) to inflate
@@ -39,14 +37,4 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
         // Load the preferences from an XML resource.
         addPreferencesFromResource(R.xml.preferences);
     }
-
-	@Override
-	public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
-		if (key.equals(getString(R.string.prefs_buffer_size_adjuster_key))) {
-			
-		}
-		else if (key.equals(getString(R.string.prefs_sample_rate_key))) {
-			
-		}
-	}
 }
