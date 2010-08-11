@@ -489,7 +489,7 @@ static void runTalentedHack(TalentedHack * instance, uint32_t sample_count) {
 			if (pperiod > 0) {
 				MidiPitch note;
 				//Now we begin to modify the note, to determine what pitch we want to shift to
-				MidiPitch input = FetchLatestMidiNote(&psTalentedHack->quantizer, lSampleIndex);
+				MidiPitch input = psTalentedHack->quantizer.InPitch;
 				note = MixMidiIn(&psTalentedHack->quantizer, note, input);
 				note.note = SnapToKey(psTalentedHack->quantizer.oNotes, note.note, note.pitchbend>0);
 
@@ -497,16 +497,20 @@ static void runTalentedHack(TalentedHack * instance, uint32_t sample_count) {
 
 				note.note = addquantizedLFO(&psTalentedHack->lfo,psTalentedHack->quantizer.oNotes,note.note);
 				
-				float outpitch = midi_to_semitones(note);
+				float outpitch = note.note - 69 + (note.pitchbend * 6);
 				
 				outpitch = addunquantizedLFO(&psTalentedHack->lfo,outpitch);
 				outpitch = SmoothPitch(&psTalentedHack->psmoother,outpitch);
-				float outpperiod=semitones_to_pperiod(&psTalentedHack->quantizer, outpitch);
+				float outpperiod = pow(2, -1 * (outpitch)/12)/(*(psTalentedHack->quantizer.p_aref));
 				// Compute variables for pitch shifter that depend on pitch
 				ComputePitchShifterVariables(&psTalentedHack->pshifter, pperiod,outpperiod,fs);
 				psTalentedHack->pshifter.active=1;
 			} else { 
-				UnVoiceMidi(&psTalentedHack->quantizer,lSampleIndex);
+				if (psTalentedHack->quantizer.OutPitch.note != 0) {
+					psTalentedHack->quantizer.OutPitch.note = 0;
+					psTalentedHack->quantizer.OutPitch.pitchbend = 0;
+				}
+
 				ResetPitchSmoother(&psTalentedHack->psmoother);
 				psTalentedHack->pshifter.active=0;
 			}
@@ -525,9 +529,7 @@ static void runTalentedHack(TalentedHack * instance, uint32_t sample_count) {
 		// Write audio to output of plugin
 		// Mix (blend between original (delayed) =0 and processed =1)
 		*(pfOutput++)=(*psTalentedHack->p_mix)*in + (1-(*psTalentedHack->p_mix))*psTalentedHack->buffer.cbi[twoahead];
-		
 	}
-	FetchLatestMidiNote(&psTalentedHack->quantizer,sample_count-1);
 }
 
 static void cleanupTalentedHack(TalentedHack* instance) {
