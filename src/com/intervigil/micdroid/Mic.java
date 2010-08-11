@@ -55,7 +55,7 @@ import com.intervigil.micdroid.helper.DialogHelper;
 import com.intervigil.micdroid.helper.MediaStoreHelper;
 import com.intervigil.micdroid.helper.PreferenceHelper;
 import com.intervigil.micdroid.model.Recording;
-import com.intervigil.micdroid.pitch.AutoTalent;
+import com.intervigil.micdroid.pitch.PitchCorrector;
 import com.intervigil.micdroid.wave.WaveReader;
 import com.intervigil.micdroid.wave.WaveWriter;
 
@@ -78,6 +78,7 @@ public class Mic extends Activity {
 	private StartupDialog startupDialog;
 	private Recorder recorder;
 	private Timer timer;
+	private PitchCorrector pitchCorrector;
 
 
     /** Called when the activity is first created. */
@@ -148,7 +149,9 @@ public class Mic extends Activity {
     	if (recorder != null) {
     		recorder.cleanup();
     	}
-    	AutoTalent.destroyAutoTalent();
+    	if (pitchCorrector != null) {
+    		pitchCorrector.cleanup();
+    	}
     }
 
     @Override
@@ -314,7 +317,7 @@ public class Mic extends Activity {
 				try {
 					int samplesRead = reader.readShort(buf, AUTOTALENT_CHUNK_SIZE);
 					if (samplesRead > 0) {
-						AutoTalent.processSamples(buf, samplesRead);
+						pitchCorrector.processSamples(buf, samplesRead);
 						writer.write(buf, samplesRead);
 					} else {
 						break;
@@ -329,7 +332,7 @@ public class Mic extends Activity {
 			try {
 				reader.closeWaveFile();
 				writer.closeWaveFile();
-				AutoTalent.destroyAutoTalent();
+				pitchCorrector.cleanup();
 			} catch (IOException e) {
 				// failed to close out our files correctly
 				// TODO: real error handling
@@ -398,8 +401,8 @@ public class Mic extends Activity {
     	float smooth = PreferenceHelper.getCorrectionSmoothness(Mic.this);
     	float mix = PreferenceHelper.getMix(Mic.this);
     	
-    	AutoTalent.instantiateAutoTalent(PreferenceHelper.getSampleRate(Mic.this));
-    	AutoTalent.initializeAutoTalent(CONCERT_A, key, fixedPitch, fixedPull, 
+    	pitchCorrector = new PitchCorrector(Constants.PITCH_CORRECTOR_AUTOTALENT, PreferenceHelper.getSampleRate(Mic.this));
+    	pitchCorrector.initialize(CONCERT_A, key, fixedPitch, fixedPull, 
     			strength, smooth, pitchShift, DEFAULT_SCALE_ROTATE, 
     			DEFAULT_LFO_DEPTH, DEFAULT_LFO_RATE, DEFAULT_LFO_SHAPE, DEFAULT_LFO_SYM, DEFAULT_LFO_QUANT, 
     			DEFAULT_FORM_CORR, DEFAULT_FORM_WARP, mix);

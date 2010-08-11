@@ -41,6 +41,7 @@ public class Constants {
 	
 	// result codes
 	public static final int RESULT_FILE_DELETED = 12770;
+	
 	// intent extras
 	public static final String PLAYER_INTENT_RECORDING = "PLAYER_RECORDING";
 	public static final String NAME_ENTRY_INTENT_RECORDING = "NAME_ENTRY_RECORDING";
@@ -59,4 +60,8 @@ public class Constants {
 	public static final int WRITER_OUT_OF_SPACE = 6;
 	public static final int UNABLE_TO_CREATE_RECORDING = 7;
 	public static final int RECORDING_GENERIC_EXCEPTION = 8;
+	
+	// pitch corrector types
+	public static final int PITCH_CORRECTOR_AUTOTALENT = 1;
+	public static final int PITCH_CORRECTOR_TALENTEDHACK = 2;
 }
