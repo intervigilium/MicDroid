@@ -6,13 +6,13 @@
 // Variables for FFT routine
 typedef struct
 {
-  int nfft;        // size of FFT
-  int numfreqs;    // number of frequencies represented (nfft/2 + 1)
-  float* ffttime;
-  fftwf_complex* complex;
+	int nfft;        // size of FFT
+	int numfreqs;    // number of frequencies represented (nfft/2 + 1)
+	float* ffttime;
+	fftwf_complex* complex;
 
-  fftwf_plan forwardplan;
-  fftwf_plan reverseplan;
+	fftwf_plan forwardplan;
+	fftwf_plan reverseplan;
 } fft_vars;
 
 fft_vars* fft_con(int nfft);

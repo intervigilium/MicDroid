@@ -4,33 +4,34 @@
 #include <math.h>
 #include <stdlib.h>
 #include "circular_buffer.h"
+
  // VARIABLES FOR FORMANT CORRECTOR
  typedef struct {
-  int* p_Fcorr;
-  float* p_Fwarp;
+	int* p_Fcorr;
+	float* p_Fwarp;
 	 
-  int ford;
-  float falph;
-  float flamb;
-  float frlamb;
-  float* fk;
-  float* fb;
-  float* fc;
-  float* frb;
-  float* frc;
-  float* fsig;
-  float* fsmooth;
-  float fhp;
-  float flp;
-  float flpa;
-  float** fbuff;
-  float* ftvec;
-  float fmute;
-  float fmutealph;
+	int ford;
+	float falph;
+	float flamb;
+	float frlamb;
+	float* fk;
+	float* fb;
+	float* fc;
+	float* frb;
+	float* frc;
+	float* fsig;
+	float* fsmooth;
+	float fhp;
+	float flp;
+	float flpa;
+	float** fbuff;
+	float* ftvec;
+	float fmute;
+	float fmutealph;
 } FormantCorrector;
 
-void FormantCorrectorInit(FormantCorrector * fcorrector, unsigned long SampleRate, int cbsize);
-void RemoveFormants(FormantCorrector * fcorrector, CircularBuffer* buffer, float tf);
-void UpdateFormantWarp(FormantCorrector* fcorrector);
+void FormantCorrectorInit(FormantCorrector * fcorrector, unsigned long sampleRate, int cbsize);
+void RemoveFormants(FormantCorrector * fcorrector, CircularBuffer * buffer, float tf);
+void UpdateFormantWarp(FormantCorrector * fcorrector);
 float AddFormants(FormantCorrector * fcorrector, float in, long int writepoint);
 #endif

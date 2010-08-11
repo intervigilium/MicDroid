@@ -1,7 +1,7 @@
 #include "quantizer.h"
 
 
-static void copyNotesToBuffer(Notes* notes, int buffer[12]) {
+static void copyNotesToBuffer(Notes * notes, int buffer[12]) {
 	buffer[0] = notes->A;
 	buffer[1] = notes->Bb;
 	buffer[2] = notes->B;
@@ -30,22 +30,21 @@ void UpdateQuantizer(Quantizer * q) {
 			numout++;
 		}
 	}
-	
 	// If no notes are selected as being in the scale, instead snap to all notes
 	if (numin == 0) {
-		for (i=0; i<12; i++) {
+		for (i = 0; i < 12; i++) {
 			q->iNotes[i] = 1;
 		}
 	}
 	if (numout == 0) {
-		for (i=0; i<12; i++) {
+		for (i = 0; i < 12; i++) {
 			q->oNotes[i] = 1;
 		}
 	}
 }
 
-void PullToInTune(Quantizer* q, MidiPitch* pitch) {
-	pitch->pitchbend *=(1-(*q->p_amount));
+void PullToInTune(Quantizer * q, MidiPitch * pitch) {
+	pitch->pitchbend *= (1 - *q->p_amount);
 }
 
 MidiPitch semitones_to_midi(const int notes[12], float semitones) {
@@ -69,21 +68,21 @@ MidiPitch semitones_to_midi(const int notes[12], float semitones) {
 		result.note = nextsemitone;
 		result.pitchbend = highdiff/6;
 	}
-	result.note+=69;
+	result.note += 69;
 	return result;
 }
 
-MidiPitch pperiod_to_midi(Quantizer* q, float pperiod) {
-	float semitones = -12*log10((float)(*q->p_aref)*pperiod)*L2SC;
+MidiPitch pperiod_to_midi(Quantizer * q, float pperiod) {
+	float semitones = -12 * log10(((float) *q->p_aref) * pperiod) * L2SC;
 	return semitones_to_midi(q->iNotes, semitones);
 }
 
-void QuantizerInit(Quantizer* q) {
+void QuantizerInit(Quantizer * q) {
 	q->InPitch.note = 0;
 	q->OutPitch.note = 0;
 }
 
-MidiPitch MixMidiIn(Quantizer* q, MidiPitch detected, MidiPitch in) {
+MidiPitch MixMidiIn(Quantizer * q, MidiPitch detected, MidiPitch in) {
 	if (*q->p_accept_midi > 0 && in.note > 0) {
 		return in;
 	} else {
@@ -98,22 +97,22 @@ int SnapToKey(int notes[12], int note, int snapup) {
 	}
 	int lower = index - 1;
 	int higher = index + 1;
-	while(notes[positive_mod(lower,12)] < 0) {
+	while (notes[positive_mod(lower,12)] < 0) {
 		lower--;
 	}
-	while(notes[positive_mod(higher,1)] < 0) {
+	while (notes[positive_mod(higher,1)] < 0) {
 		higher++;
 	}
-	if (higher-index<index-lower) {
+	if (higher - index < index - lower) {
 		return higher + 69;
 	}
-	if (higher-index>index-lower) {
+	if (higher - index > index - lower) {
 		return lower + 69;
 	}
-	if (notes[positive_mod(lower,12)] >= 1) {
+	if (notes[positive_mod(lower, 12)] >= 1) {
 		return lower + 69;
 	}
-	if (notes[positive_mod(higher,12)] >= 1) {
+	if (notes[positive_mod(higher, 12)] >= 1) {
 		return higher + 69;
 	}
 	if (snapup) {

@@ -421,17 +421,16 @@ static void setTalentedHackBuffers(TalentedHack * instance, float * inputBuffer,
 }
 
 static TalentedHack * instantiateTalentedHack(double s_rate) {
-	TalentedHack *membvars = (TalentedHack *)malloc(sizeof(TalentedHack));
-	InstantiateCircularBuffer(&membvars->buffer,s_rate);
-	unsigned long N=membvars->buffer.cbsize;
+	TalentedHack *membvars = (TalentedHack *) malloc(sizeof(TalentedHack));
+	InstantiateCircularBuffer(&membvars->buffer, s_rate);
+	unsigned long N = membvars->buffer.cbsize;
 	membvars->fmembvars = fft_con(N);
 	membvars->fs = s_rate;
 	membvars->noverlap = 4;
 	
     InstantiatePitchDetector(&membvars->pdetector, membvars->fmembvars, N, s_rate);
 	InstantiateLFO(&membvars->lfo);
-	FormantCorrectorInit(&membvars->fcorrector,s_rate,N);
-	
+	FormantCorrectorInit(&membvars->fcorrector, s_rate, N);
 	PitchShifterInit(&membvars->pshifter, s_rate,N);
 	InitializePitchSmoother(&membvars->psmoother, N, membvars->noverlap, s_rate);
 	QuantizerInit(&membvars->quantizer);
@@ -456,12 +455,12 @@ static void runTalentedHack(TalentedHack * instance, uint32_t sample_count) {
 	
 	UpdateFormantWarp(&psTalentedHack->fcorrector);
 	UpdateQuantizer(&psTalentedHack->quantizer);
-	UpdateLFO(&psTalentedHack->lfo,N,psTalentedHack->noverlap,fs);
+	UpdateLFO(&psTalentedHack->lfo, N, psTalentedHack->noverlap,fs);
 	
 	const float* pfInput=psTalentedHack->p_InputBuffer;
-	float* pfOutput=psTalentedHack->p_OutputBuffer;
+	float* pfOutput = psTalentedHack->p_OutputBuffer;
 	
-	int fcorr=*(psTalentedHack->fcorrector.p_Fcorr);
+	int fcorr = *(psTalentedHack->fcorrector.p_Fcorr);
 	
 	/*******************
 	 *  MAIN DSP LOOP  *
@@ -472,8 +471,8 @@ static void runTalentedHack(TalentedHack * instance, uint32_t sample_count) {
 		float in = (float) *(pfInput++);
 		
 		psTalentedHack->buffer.cbi[psTalentedHack->buffer.cbiwr] = in;
-		if (fcorr>=1) {
-			RemoveFormants(&psTalentedHack->fcorrector,&psTalentedHack->buffer,in);
+		if (fcorr >= 1) {
+			RemoveFormants(&psTalentedHack->fcorrector, &psTalentedHack->buffer,in);
 		}
 		else {
 			psTalentedHack->buffer.cbf[psTalentedHack->buffer.cbiwr] = in;
@@ -484,27 +483,27 @@ static void runTalentedHack(TalentedHack * instance, uint32_t sample_count) {
 		// Every N/noverlap samples, run pitch estimation / manipulation code
 		if ((psTalentedHack->buffer.cbiwr)%(N/psTalentedHack->noverlap) == 0) {
 			//  ---- Calculate pitch and confidence ----
-			float pperiod=get_pitch_period(&psTalentedHack->pdetector, obtain_autocovariance(&psTalentedHack->pdetector,psTalentedHack->fmembvars,&psTalentedHack->buffer,N),Nf,fs);
+			float pperiod = get_pitch_period(&psTalentedHack->pdetector, obtain_autocovariance(&psTalentedHack->pdetector, psTalentedHack->fmembvars, &psTalentedHack->buffer, N), Nf, fs);
 			
 			if (pperiod > 0) {
 				MidiPitch note;
 				//Now we begin to modify the note, to determine what pitch we want to shift to
 				MidiPitch input = psTalentedHack->quantizer.InPitch;
 				note = MixMidiIn(&psTalentedHack->quantizer, note, input);
-				note.note = SnapToKey(psTalentedHack->quantizer.oNotes, note.note, note.pitchbend>0);
+				note.note = SnapToKey(psTalentedHack->quantizer.oNotes, note.note, note.pitchbend > 0);
 
 				PullToInTune(&psTalentedHack->quantizer, &note);
 
-				note.note = addquantizedLFO(&psTalentedHack->lfo,psTalentedHack->quantizer.oNotes,note.note);
+				note.note = addquantizedLFO(&psTalentedHack->lfo, psTalentedHack->quantizer.oNotes, note.note);
 				
-				float outpitch = note.note - 69 + (note.pitchbend * 6);
+				float outpitch = (note.note - 69) + (note.pitchbend * 6);
 				
-				outpitch = addunquantizedLFO(&psTalentedHack->lfo,outpitch);
-				outpitch = SmoothPitch(&psTalentedHack->psmoother,outpitch);
-				float outpperiod = pow(2, -1 * (outpitch)/12)/(*(psTalentedHack->quantizer.p_aref));
+				outpitch = addunquantizedLFO(&psTalentedHack->lfo, outpitch);
+				outpitch = SmoothPitch(&psTalentedHack->psmoother, outpitch);
+				float outpperiod = pow(2, -outpitch/12)/(*(psTalentedHack->quantizer.p_aref));
 				// Compute variables for pitch shifter that depend on pitch
-				ComputePitchShifterVariables(&psTalentedHack->pshifter, pperiod,outpperiod,fs);
-				psTalentedHack->pshifter.active=1;
+				ComputePitchShifterVariables(&psTalentedHack->pshifter, pperiod, outpperiod, fs);
+				psTalentedHack->pshifter.active = 1;
 			} else { 
 				if (psTalentedHack->quantizer.OutPitch.note != 0) {
 					psTalentedHack->quantizer.OutPitch.note = 0;
@@ -512,7 +511,7 @@ static void runTalentedHack(TalentedHack * instance, uint32_t sample_count) {
 				}
 
 				ResetPitchSmoother(&psTalentedHack->psmoother);
-				psTalentedHack->pshifter.active=0;
+				psTalentedHack->pshifter.active = 0;
 			}
 		}
 		
@@ -520,42 +519,40 @@ static void runTalentedHack(TalentedHack * instance, uint32_t sample_count) {
 			in=ShiftPitch(&psTalentedHack->pshifter,&psTalentedHack->buffer, N);
 		}
 		unsigned int twoahead = (psTalentedHack->buffer.cbiwr + 2)%N;
-		if (*psTalentedHack->fcorrector.p_Fcorr>=1) {
-			in=AddFormants(&psTalentedHack->fcorrector,in,twoahead);
+		if (*psTalentedHack->fcorrector.p_Fcorr >= 1) {
+			in=AddFormants(&psTalentedHack->fcorrector, in, twoahead);
 		} else {
 			psTalentedHack->fcorrector.fmute = 0;
 		}
 
 		// Write audio to output of plugin
 		// Mix (blend between original (delayed) =0 and processed =1)
-		*(pfOutput++)=(*psTalentedHack->p_mix)*in + (1-(*psTalentedHack->p_mix))*psTalentedHack->buffer.cbi[twoahead];
+		*(pfOutput++) = (*psTalentedHack->p_mix) * in + (1 - (*psTalentedHack->p_mix)) * psTalentedHack->buffer.cbi[twoahead];
 	}
 }
 
 static void cleanupTalentedHack(TalentedHack* instance) {
-	TalentedHack * ATInstance = instance;
-	fft_des(ATInstance->fmembvars);
- 	free(ATInstance->buffer.cbi);
-	free(ATInstance->buffer.cbf);
-	free(ATInstance->pshifter.cbo);
-	free(ATInstance->pdetector.cbwindow);
-	free(ATInstance->pshifter.hannwindow);
-	free(ATInstance->pdetector.acwinv);
-	free(ATInstance->pshifter.frag);
-	free(ATInstance->fcorrector.fk);
-	free(ATInstance->fcorrector.fb);
- 	free(ATInstance->fcorrector.fc);
- 	free(ATInstance->fcorrector.frb);
- 	free(ATInstance->fcorrector.frc);
- 	free(ATInstance->fcorrector.fsmooth);
- 	free(ATInstance->fcorrector.fsig);
-	int i;
-  	for (i=0; i<ATInstance->fcorrector.ford; i++) {
-  		free(ATInstance->fcorrector.fbuff[i]);
+	fft_des(instance->fmembvars);
+ 	free(instance->buffer.cbi);
+	free(instance->buffer.cbf);
+	free(instance->pshifter.cbo);
+	free(instance->pdetector.cbwindow);
+	free(instance->pshifter.hannwindow);
+	free(instance->pdetector.acwinv);
+	free(instance->pshifter.frag);
+	free(instance->fcorrector.fk);
+	free(instance->fcorrector.fb);
+ 	free(instance->fcorrector.fc);
+ 	free(instance->fcorrector.frb);
+ 	free(instance->fcorrector.frc);
+ 	free(instance->fcorrector.fsmooth);
+ 	free(instance->fcorrector.fsig);
+  	for (int i = 0; i < instance->fcorrector.ford; i++) {
+  		free(instance->fcorrector.fbuff[i]);
   	}
-  	free(ATInstance->fcorrector.fbuff);
-  	free(ATInstance->fcorrector.ftvec);
-	free(ATInstance);
+  	free(instance->fcorrector.fbuff);
+  	free(instance->fcorrector.ftvec);
+	free(instance);
 }
 
 /********************
@@ -563,12 +560,11 @@ static void cleanupTalentedHack(TalentedHack* instance) {
  ********************/
 
 float * getFloatBuffer(JNIEnv* env, jshortArray shortArray, jsize arraySize) {
-	int i;
 	short* shortBuffer = (short *)(*env)->GetPrimitiveArrayCritical(env, shortArray, 0);
 	float* floatBuffer = calloc(arraySize, sizeof(float));
 
-	for (i = 0; i < arraySize; i++) {
-	floatBuffer[i] = ((float)(shortBuffer[i])/32768.0f);
+	for (int i = 0; i < arraySize; i++) {
+		floatBuffer[i] = ((float)(shortBuffer[i])/32768.0f);
 	}
 
 	(*env)->ReleasePrimitiveArrayCritical(env, shortArray, shortBuffer, 0);
@@ -578,11 +574,10 @@ float * getFloatBuffer(JNIEnv* env, jshortArray shortArray, jsize arraySize) {
 
 
 jshort * getShortBuffer(float* floatBuffer, jsize size) {
-	int i;
 	jshort* shortBuffer = calloc(size, sizeof(jshort));
 
-	for (i = 0; i < size; i++) {
-	  shortBuffer[i] = (short)(floatBuffer[i]*32767.0f);
+	for (int i = 0; i < size; i++) {
+		shortBuffer[i] = (short)(floatBuffer[i]*32767.0f);
 	}
 
 	return shortBuffer;
@@ -595,57 +590,57 @@ jshort * getShortBuffer(float* floatBuffer, jsize size) {
 static TalentedHack * instance;
 
 JNIEXPORT void JNICALL Java_com_intervigil_micdroid_pitch_TalentedHack_instantiateTalentedHack
-  (JNIEnv* env, jclass class, jint sampleRate) {
-  if (instance == NULL) {
-    instance = instantiateTalentedHack(sampleRate);
-    __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "instantiated autotalent at %d with sample rate: %d", instance, (instance->fs));
-  }
+		(JNIEnv* env, jclass class, jint sampleRate) {
+	if (instance == NULL) {
+		instance = instantiateTalentedHack(sampleRate);
+		__android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "instantiated autotalent at %d with sample rate: %d", instance, (instance->fs));
+	}
 }
 
 JNIEXPORT void JNICALL Java_com_intervigil_micdroid_pitch_TalentedHack_initializeTalentedHack
-  (JNIEnv* env, jclass class, jfloat concertA, jchar key,
-		  jfloat correctStrength, jfloat correctSmooth,
-		  jfloat lfoDepth, jfloat lfoRate, jfloat lfoShape, jfloat lfoSym, jint lfoQuant,
-		  jint formCorr, jfloat formWarp, jfloat mix) {
-  if (instance != NULL) {
-	// set our keys
-    setInputKey(instance, (char *)&key);
-    setOutputKey(instance, (char *)&key);
+		(JNIEnv* env, jclass class, jfloat concertA, jchar key,
+				jfloat correctStrength, jfloat correctSmooth,
+				jfloat lfoDepth, jfloat lfoRate, jfloat lfoShape, jfloat lfoSym, jint lfoQuant,
+				jint formCorr, jfloat formWarp, jfloat mix) {
+	if (instance != NULL) {
+		// set our keys
+		setInputKey(instance, (char *)&key);
+		setOutputKey(instance, (char *)&key);
 
-    __android_log_print(ANDROID_LOG_DEBUG, "libtalentedhack.so", "setting parameters");
+		__android_log_print(ANDROID_LOG_DEBUG, "libtalentedhack.so", "setting parameters");
 
-    // set concert A
-    *(instance->quantizer.p_aref) = (float)concertA;
-    __android_log_print(ANDROID_LOG_DEBUG, "libtalentedhack.so", "Concert A: %f", *(instance->quantizer.p_aref));
+		// set concert A
+		*(instance->quantizer.p_aref) = (float) concertA;
+		__android_log_print(ANDROID_LOG_DEBUG, "libtalentedhack.so", "Concert A: %f", *(instance->quantizer.p_aref));
 
-    // set pitch correction parameters
-    *(instance->quantizer.p_amount) = (float)correctStrength;
-    *(instance->psmoother.p_pitchsmooth) = (float)correctSmooth;
-    __android_log_print(ANDROID_LOG_DEBUG, "libtalentedhack.so", "CorrectStrength: %f, CorrectSmooth: %f", *(instance->quantizer.p_amount), *(instance->psmoother.p_pitchsmooth));
+		// set pitch correction parameters
+		*(instance->quantizer.p_amount) = (float) correctStrength;
+		*(instance->psmoother.p_pitchsmooth) = (float) correctSmooth;
+		__android_log_print(ANDROID_LOG_DEBUG, "libtalentedhack.so", "CorrectStrength: %f, CorrectSmooth: %f", *(instance->quantizer.p_amount), *(instance->psmoother.p_pitchsmooth));
 
-    // set LFO parameters
-    *(instance->lfo.p_amp) = (float)lfoDepth;
-    *(instance->lfo.p_rate) = (float)lfoRate;
-    *(instance->lfo.p_shape) = (float)lfoShape;
-    *(instance->lfo.p_symm) = (float)lfoSym;
-    *(instance->lfo.p_quant) = (int)lfoQuant;
+		// set LFO parameters
+		*(instance->lfo.p_amp) = (float) lfoDepth;
+		*(instance->lfo.p_rate) = (float) lfoRate;
+		*(instance->lfo.p_shape) = (float) lfoShape;
+		*(instance->lfo.p_symm) = (float) lfoSym;
+		*(instance->lfo.p_quant) = (int) lfoQuant;
 
-    // set formant corrector parameters
-    *(instance->fcorrector.p_Fcorr) = (int)formCorr;
-    *(instance->fcorrector.p_Fwarp) = (float)formWarp;
+		// set formant corrector parameters
+		*(instance->fcorrector.p_Fcorr) = (int) formCorr;
+		*(instance->fcorrector.p_Fwarp) = (float) formWarp;
 
-    // set mix parameter
-    *(instance->p_mix) = (float)mix;
+		// set mix parameter
+		*(instance->p_mix) = (float) mix;
 
-    __android_log_print(ANDROID_LOG_DEBUG, "libtalentedhack.so", "LFODepth: %f, LFORate: %f, LFOShape %f, LFOSym: %f, LFOQuant: %d, FormCorr: %d, FormWarp: %f, Mix: %f",
-    		*(instance->lfo.p_amp), *(instance->lfo.p_rate), *(instance->lfo.p_shape), *(instance->lfo.p_symm), *(instance->lfo.p_quant), *(instance->fcorrector.p_Fcorr), *(instance->fcorrector.p_Fwarp), *(instance->p_mix));
-  } else {
-    __android_log_print(ANDROID_LOG_DEBUG, "libtalentedhack.so", "No suitable autotalent instance found!");
-  }
+		__android_log_print(ANDROID_LOG_DEBUG, "libtalentedhack.so", "LFODepth: %f, LFORate: %f, LFOShape %f, LFOSym: %f, LFOQuant: %d, FormCorr: %d, FormWarp: %f, Mix: %f",
+				*(instance->lfo.p_amp), *(instance->lfo.p_rate), *(instance->lfo.p_shape), *(instance->lfo.p_symm), *(instance->lfo.p_quant), *(instance->fcorrector.p_Fcorr), *(instance->fcorrector.p_Fwarp), *(instance->p_mix));
+	} else {
+		__android_log_print(ANDROID_LOG_DEBUG, "libtalentedhack.so", "No suitable autotalent instance found!");
+	}
 }
 
 JNIEXPORT void JNICALL Java_com_intervigil_micdroid_pitch_TalentedHack_processSamples
-	(JNIEnv* env , jclass class, jshortArray samples, jint sampleSize) {
+		(JNIEnv* env , jclass class, jshortArray samples, jint sampleSize) {
 	if (instance != NULL) {
 		// copy buffers
 		float* sampleBuffer = getFloatBuffer(env, samples, sampleSize);
@@ -666,7 +661,7 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroid_pitch_TalentedHack_processSa
 }
 
 JNIEXPORT void JNICALL Java_com_intervigil_micdroid_pitch_TalentedHack_destroyTalentedHack
-	(JNIEnv* env, jclass class) {
+		(JNIEnv* env, jclass class) {
 	if (instance != NULL) {
 		cleanupTalentedHack(instance);
 		__android_log_print(ANDROID_LOG_DEBUG, "libtalentedhack.so", "cleaned up talentedhack at %d", instance);
