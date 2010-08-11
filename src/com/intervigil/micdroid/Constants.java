@@ -26,6 +26,7 @@ public class Constants {
 	// default recording parameters
 	public static final int DEFAULT_CHANNEL_CONFIG = AudioFormat.CHANNEL_CONFIGURATION_MONO;
 	public static final int DEFAULT_PCM_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
+	public static final int DEFAULT_BUFFER_LIMIT = 32;
 	
 	// sample rates
 	public static final int SAMPLE_RATE_44KHZ = 44100;
@@ -36,8 +37,10 @@ public class Constants {
 	// intent codes
 	public static final int FILENAME_ENTRY_INTENT_CODE = 12768;
 	public static final int PLAYER_INTENT_CODE = 12769;
-	public static final int RESULT_FILE_DELETED = 12770;
+	public static final int PREFERENCE_INTENT_CODE = 12771;
 	
+	// result codes
+	public static final int RESULT_FILE_DELETED = 12770;
 	// intent extras
 	public static final String PLAYER_INTENT_RECORDING = "PLAYER_RECORDING";
 	public static final String NAME_ENTRY_INTENT_RECORDING = "NAME_ENTRY_RECORDING";
