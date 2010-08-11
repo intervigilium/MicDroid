@@ -164,7 +164,8 @@ public class AudioHelper {
     		do {
     			switch (sampleRate) {
 	    			case -1:
-	    				sampleRate = Constants.SAMPLE_RATE_44KHZ;
+	    				// set the default to 22050Hz, so slower devices perform better
+	    				sampleRate = Constants.SAMPLE_RATE_22KHZ;
 	    				break;
 					case Constants.SAMPLE_RATE_44KHZ:
 						sampleRate = Constants.SAMPLE_RATE_22KHZ;
