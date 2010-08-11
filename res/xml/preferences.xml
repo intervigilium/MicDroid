@@ -20,6 +20,15 @@
                 android:entryValues="@array/prefs_sample_rate_values"
                 android:dialogTitle="@string/prefs_sample_rate_title"
                 android:defaultValue="@string/prefs_sample_rate_default" />
+
+		<ListPreference
+				android:key="@string/prefs_buffer_size_adjuster_key"
+				android:title="@string/prefs_buffer_size_adjuster"
+				android:summary="@string/prefs_buffer_size_adjuster_summary"
+                android:entries="@array/prefs_buffer_size_adjuster_entries"
+                android:entryValues="@array/prefs_buffer_size_adjuster_values"
+                android:dialogTitle="@string/prefs_buffer_size_adjuster_title"
+                android:defaultValue="@string/prefs_buffer_size_adjuster_default" />
                 
 	</PreferenceCategory>
     

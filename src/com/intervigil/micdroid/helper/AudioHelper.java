@@ -131,14 +131,14 @@ public class AudioHelper {
      */
 	public static AudioRecord getRecorder(Context context) throws IllegalArgumentException {
 		AudioRecord recorder = null;
-		int bufferSize = 0;
 		int sampleRate = PreferenceHelper.getSampleRate(context);
+		int bufferSizeAdjuster = PreferenceHelper.getBufferSizeAdjuster(context);
 
-		Log.i("AudioHelper", String.format("AudioRecord initialized with saved configuration! sample rate: %d", sampleRate));
+		Log.i("AudioHelper", String.format("AudioRecord initialized with saved configuration! sample rate: %d, buffer size adjuster: %d", sampleRate, bufferSizeAdjuster));
 		
-		bufferSize = AudioRecord.getMinBufferSize(sampleRate, 
+		int bufferSize = AudioRecord.getMinBufferSize(sampleRate, 
 				Constants.DEFAULT_CHANNEL_CONFIG, 
-				Constants.DEFAULT_PCM_FORMAT);
+				Constants.DEFAULT_PCM_FORMAT) * bufferSizeAdjuster;
 
 		recorder = new AudioRecord(AudioSource.MIC,
 				sampleRate, 
@@ -157,6 +157,7 @@ public class AudioHelper {
      */
 	public static void configureRecorder(Context context) {
 		int bufferSize = 0;
+		int bufferSizeAdjuster = 1;
 		int sampleRate = PreferenceHelper.getSampleRate(context);
 		
 		if (sampleRate < 0) {
@@ -177,22 +178,27 @@ public class AudioHelper {
 						sampleRate = Constants.SAMPLE_RATE_8KHZ;
 						break;
     				default:
-    					// show some kind of error pop-up
-    					Log.w("AudioHelper", String.format("Hardware does not support recording!"));
-    					DialogHelper.showWarning(context, R.string.unable_to_configure_audio_title, R.string.unable_to_configure_audio_warning);
-    					return;
+    					// start the loop over again with a larger buffer size
+    					bufferSizeAdjuster *= 2;
+    					sampleRate = Constants.SAMPLE_RATE_22KHZ;
+    					if (bufferSizeAdjuster > Constants.DEFAULT_BUFFER_LIMIT) {
+	    					Log.w("AudioHelper", String.format("Hardware does not support recording!"));
+	    					DialogHelper.showWarning(context, R.string.unable_to_configure_audio_title, R.string.unable_to_configure_audio_warning);
+	    					return;
+    					}
     			}
     			
     			bufferSize = AudioRecord.getMinBufferSize(
-    					sampleRate, 
+    					sampleRate,
     					Constants.DEFAULT_CHANNEL_CONFIG, 
-    					Constants.DEFAULT_PCM_FORMAT);
+    					Constants.DEFAULT_PCM_FORMAT) * bufferSizeAdjuster;
 
     		} while (bufferSize == AudioRecord.ERROR_BAD_VALUE || bufferSize == AudioRecord.ERROR);
     		
     		// save the last known good sample rate
-    		Log.i("AudioHelper", String.format("AudioRecord initially configured! sample rate: %d", sampleRate));
+    		Log.i("AudioHelper", String.format("AudioRecord initially configured! sample rate: %d, buffer size: %d", sampleRate, bufferSizeAdjuster));
     		PreferenceHelper.setSampleRate(context, sampleRate);
+    		PreferenceHelper.setBufferSizeAdjuster(context, bufferSizeAdjuster);
 		}
 	}
 }
