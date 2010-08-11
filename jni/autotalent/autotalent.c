@@ -90,16 +90,16 @@ void fft_forward(fft_vars* membvars, float* input, float* output_re, float* outp
   hnfft = nfft/2;
   numfreqs = membvars->numfreqs;
 
-  for (ti=0; ti<nfft; ti++) {
+  for (ti = 0; ti < nfft; ti++) {
     membvars->fft_data[ti] = input[ti];
   }
 
   mayer_realfft(nfft, membvars->fft_data);
 
   output_im[0] = 0;
-  for (ti=0; ti<hnfft; ti++) {
+  for (ti = 0; ti < hnfft; ti++) {
     output_re[ti] = membvars->fft_data[ti];
-    output_im[ti+1] = membvars->fft_data[nfft-1-ti];
+    output_im[ti+1] = membvars->fft_data[nfft - 1 - ti];
   }
   output_re[hnfft] = membvars->fft_data[hnfft];
   output_im[hnfft] = 0;
@@ -124,15 +124,15 @@ void fft_inverse(fft_vars* membvars, float* input_re, float* input_im, float* ou
   hnfft = nfft/2;
   numfreqs = membvars->numfreqs;
 
-  for (ti=0; ti<hnfft; ti++) {
+  for (ti = 0; ti < hnfft; ti++) {
     membvars->fft_data[ti] = input_re[ti];
-    membvars->fft_data[nfft-1-ti] = input_im[ti+1];
+    membvars->fft_data[nfft - 1 - ti] = input_im[ti + 1];
   }
   membvars->fft_data[hnfft] = input_re[hnfft];
 
   mayer_realifft(nfft, membvars->fft_data);
 
-  for (ti=0; ti<nfft; ti++) {
+  for (ti = 0; ti < nfft; ti++) {
     output[ti] = membvars->fft_data[ti];
   }
 }
@@ -351,12 +351,8 @@ typedef struct {
   float* m_pfFwarp;
   float* m_pfMix;
 
-  // don't know what these are yet
-  float* m_pfPitch;
-  float* m_pfConf;
   float* m_pfInputBuffer1;
   float* m_pfOutputBuffer1;
-  long int* m_pfLatency;
 
   fft_vars* fmembvars; // member variables for fft routine
 
@@ -434,7 +430,6 @@ typedef struct {
    ********************/
 
 Autotalent * instantiateAutotalent(unsigned long SampleRate) {
-
   unsigned long ti;
 
   Autotalent* membvars = malloc(sizeof(Autotalent));
@@ -443,7 +438,7 @@ Autotalent * instantiateAutotalent(unsigned long SampleRate) {
   
   membvars->fs = SampleRate;
 
-  if (SampleRate>=88200) {
+  if (SampleRate >= 88200) {
     membvars->cbsize = 4096;
   }
   else {
@@ -472,7 +467,7 @@ Autotalent * instantiateAutotalent(unsigned long SampleRate) {
   // Initialize formant corrector
   membvars->ford = 7; // should be sufficient to capture formants
   membvars->falph = pow(0.001, (float) 80 / (SampleRate));
-  membvars->flamb = -(0.8517*sqrt(atan(0.06583*SampleRate))-0.1916); // or about -0.88 @ 44.1kHz
+  membvars->flamb = -(0.8517 * sqrt(atan(0.06583 * SampleRate)) - 0.1916); // or about -0.88 @ 44.1kHz
   membvars->fk = calloc(membvars->ford, sizeof(float));
   membvars->fb = calloc(membvars->ford, sizeof(float));
   membvars->fc = calloc(membvars->ford, sizeof(float));
@@ -482,48 +477,48 @@ Autotalent * instantiateAutotalent(unsigned long SampleRate) {
   membvars->fsmooth = calloc(membvars->ford, sizeof(float));
   membvars->fhp = 0;
   membvars->flp = 0;
-  membvars->flpa = pow(0.001, (float) 10 / (SampleRate));
-  membvars->fbuff = (float**) malloc((membvars->ford)*sizeof(float*));
-  for (ti=0; ti<membvars->ford; ti++) {
+  membvars->flpa = pow(0.001, (float) 10/(SampleRate));
+  membvars->fbuff = (float**) malloc((membvars->ford) * sizeof(float*));
+
+  for (ti = 0; ti < membvars->ford; ti++) {
     membvars->fbuff[ti] = calloc(membvars->cbsize, sizeof(float));
   }
+
   membvars->ftvec = calloc(membvars->ford, sizeof(float));
   membvars->fmute = 1;
-  membvars->fmutealph = pow(0.001, (float)1 / (SampleRate));
+  membvars->fmutealph = pow(0.001, (float) 1/(SampleRate));
 
   // Standard raised cosine window, max height at N/2
   membvars->hannwindow = calloc(membvars->cbsize, sizeof(float));
-  for (ti=0; ti<membvars->cbsize; ti++) {
-    membvars->hannwindow[ti] = -0.5*cos(2*PI*ti/membvars->cbsize) + 0.5;
+  for (ti = 0; ti < membvars->cbsize; ti++) {
+    membvars->hannwindow[ti] = -0.5 * cos(2 * PI * ti/membvars->cbsize) + 0.5;
   }
 
   // Generate a window with a single raised cosine from N/4 to 3N/4
   membvars->cbwindow = calloc(membvars->cbsize, sizeof(float));
-  for (ti=0; ti<(membvars->cbsize / 2); ti++) {
-    membvars->cbwindow[ti+membvars->cbsize/4] = -0.5*cos(4*PI*ti/(membvars->cbsize - 1)) + 0.5;
+  for (ti = 0; ti < (membvars->cbsize/2); ti++) {
+    membvars->cbwindow[ti+membvars->cbsize/4] = -0.5 * cos(4 * PI * ti/(membvars->cbsize - 1)) + 0.5;
   }
 
   membvars->noverlap = 4;
-
   membvars->fmembvars = fft_con(membvars->cbsize);
-
   membvars->ffttime = calloc(membvars->cbsize, sizeof(float));
   membvars->fftfreqre = calloc(membvars->corrsize, sizeof(float));
   membvars->fftfreqim = calloc(membvars->corrsize, sizeof(float));
 
-
   // ---- Calculate autocorrelation of window ----
   membvars->acwinv = calloc(membvars->cbsize, sizeof(float));
-  for (ti=0; ti<membvars->cbsize; ti++) {
+
+  for (ti = 0; ti < membvars->cbsize; ti++) {
     membvars->ffttime[ti] = membvars->cbwindow[ti];
   }
   fft_forward(membvars->fmembvars, membvars->cbwindow, membvars->fftfreqre, membvars->fftfreqim);
-  for (ti=0; ti<membvars->corrsize; ti++) {
+  for (ti = 0; ti < membvars->corrsize; ti++) {
     membvars->fftfreqre[ti] = (membvars->fftfreqre[ti])*(membvars->fftfreqre[ti]) + (membvars->fftfreqim[ti])*(membvars->fftfreqim[ti]);
     membvars->fftfreqim[ti] = 0;
   }
   fft_inverse(membvars->fmembvars, membvars->fftfreqre, membvars->fftfreqim, membvars->ffttime);
-  for (ti=1; ti<membvars->cbsize; ti++) {
+  for (ti = 1; ti < membvars->cbsize; ti++) {
     membvars->acwinv[ti] = membvars->ffttime[ti]/membvars->ffttime[0];
     if (membvars->acwinv[ti] > 0.000001) {
       membvars->acwinv[ti] = (float)1/membvars->acwinv[ti];
@@ -539,7 +534,6 @@ Autotalent * instantiateAutotalent(unsigned long SampleRate) {
   membvars->lrshift = 0;
   membvars->ptarget = 0;
   membvars->sptarget = 0;
-
   membvars->vthresh = 0.7;  //  The voiced confidence (unbiased peak) threshold level
 
   // Pitch shifter initialization
@@ -567,11 +561,6 @@ Autotalent * instantiateAutotalent(unsigned long SampleRate) {
   membvars->m_pfFcorr = malloc(sizeof(int));
   membvars->m_pfFwarp = malloc(sizeof(float));
   membvars->m_pfMix = malloc(sizeof(float));
-
-  // set output parameters, note these aren't used by us
-  membvars->m_pfPitch = malloc(sizeof(float));
-  membvars->m_pfConf = malloc(sizeof(float));
-  membvars->m_pfLatency = malloc(sizeof(long int));
 
   return membvars;
 }
@@ -899,8 +888,8 @@ void runAutotalent(Autotalent * Instance, unsigned long SampleCount) {
   // Some logic for the semitone->scale and scale->semitone conversion
   // If no notes are selected as being in the scale, instead snap to all notes
   ti2 = 0;
-  for (ti=0; ti<12; ti++) {
-    if (iNotes[ti]>=0) {
+  for (ti = 0; ti < 12; ti++) {
+    if (iNotes[ti] >= 0) {
       iPitch2Note[ti] = ti2;
       iNote2Pitch[ti2] = ti;
       ti2 = ti2 + 1;
@@ -910,26 +899,26 @@ void runAutotalent(Autotalent * Instance, unsigned long SampleCount) {
     }
   }
   numNotes = ti2;
-  while (ti2<12) {
+  while (ti2 < 12) {
     iNote2Pitch[ti2] = -1;
     ti2 = ti2 + 1;
   }
-  if (numNotes==0) {
-    for (ti=0; ti<12; ti++) {
+  if (numNotes == 0) {
+    for (ti = 0; ti < 12; ti++) {
       iNotes[ti] = 1;
       iPitch2Note[ti] = ti;
       iNote2Pitch[ti] = ti;
     }
     numNotes = 12;
   }
-  iScwarp = (iScwarp + numNotes*5)%numNotes;
+  iScwarp = (iScwarp + numNotes * 5)%numNotes;
 
   ford = psAutotalent->ford;
   falph = psAutotalent->falph;
-  foma = (float)1 - falph;
+  foma = (float) 1 - falph;
   flpa = psAutotalent->flpa;
   flamb = psAutotalent->flamb;
-  tf = pow((float)2,fFwarp/2)*(1+flamb)/(1-flamb);
+  tf = pow((float) 2, fFwarp/2) * (1 + flamb)/(1 - flamb);
   frlamb = (tf - 1)/(tf + 1);
 
   psAutotalent->aref = (float)fTune;
@@ -959,7 +948,7 @@ void runAutotalent(Autotalent * Instance, unsigned long SampleCount) {
     ti4 = psAutotalent->cbiwr;
     psAutotalent->cbi[ti4] = tf;
 
-    if (iFcorr>=1) {
+    if (iFcorr >= 1) {
       // Somewhat experimental formant corrector
       //  formants are removed using an adaptive pre-filter and
       //  re-introduced after pitch manipulation using post-filter
@@ -967,7 +956,7 @@ void runAutotalent(Autotalent * Instance, unsigned long SampleCount) {
       fa = tf - psAutotalent->fhp; // highpass pre-emphasis filter
       psAutotalent->fhp = tf;
       fb = fa;
-      for (ti=0; ti<ford; ti++) {
+      for (ti = 0; ti < ford; ti++) {
 	    psAutotalent->fsig[ti] = fa*fa*foma + psAutotalent->fsig[ti]*falph;
 	    fc = (fb-psAutotalent->fc[ti])*flamb + psAutotalent->fb[ti];
 	    psAutotalent->fc[ti] = fc;
@@ -978,8 +967,8 @@ void runAutotalent(Autotalent * Instance, unsigned long SampleCount) {
 	    tf = tf*foma + psAutotalent->fsmooth[ti]*falph;
 	    psAutotalent->fsmooth[ti] = tf;
 	    psAutotalent->fbuff[ti][ti4] = tf;
-	    fb = fc - tf*fa;
-	    fa = fa - tf*fc;
+	    fb = fc - (tf * fa);
+	    fa = fa - (tf * fc);
       }
       psAutotalent->cbf[ti4] = fa;
       // Now hopefully the formants are reduced
@@ -988,7 +977,6 @@ void runAutotalent(Autotalent * Instance, unsigned long SampleCount) {
     else {
       psAutotalent->cbf[ti4] = tf;
     }
-
 
     // Input write pointer logic
     psAutotalent->cbiwr++;
@@ -1006,8 +994,8 @@ void runAutotalent(Autotalent * Instance, unsigned long SampleCount) {
 
       // Window and fill FFT buffer
       ti2 = psAutotalent->cbiwr;
-      for (ti=0; ti<N; ti++) {
-	    psAutotalent->ffttime[ti] = (float)(psAutotalent->cbi[(ti2-ti+N)%N]*psAutotalent->cbwindow[ti]);
+      for (ti = 0; ti < N; ti++) {
+	    psAutotalent->ffttime[ti] = (float) (psAutotalent->cbi[(ti2 - ti + N)%N] * psAutotalent->cbwindow[ti]);
       }
 
       // Calculate FFT
@@ -1018,8 +1006,8 @@ void runAutotalent(Autotalent * Instance, unsigned long SampleCount) {
       psAutotalent->fftfreqim[0] = 0;
 
       // Take magnitude squared
-      for (ti=1; ti<Nf; ti++) {
-	    psAutotalent->fftfreqre[ti] = (psAutotalent->fftfreqre[ti])*(psAutotalent->fftfreqre[ti]) + (psAutotalent->fftfreqim[ti])*(psAutotalent->fftfreqim[ti]);
+      for (ti = 1; ti < Nf; ti++) {
+	    psAutotalent->fftfreqre[ti] = (psAutotalent->fftfreqre[ti]) * (psAutotalent->fftfreqre[ti]) + (psAutotalent->fftfreqim[ti]) * (psAutotalent->fftfreqim[ti]);
 	    psAutotalent->fftfreqim[ti] = 0;
       }
 
@@ -1028,7 +1016,7 @@ void runAutotalent(Autotalent * Instance, unsigned long SampleCount) {
 
       // Normalize
       tf = (float)1/psAutotalent->ffttime[0];
-      for (ti=1; ti<N; ti++) {
+      for (ti = 1; ti < N; ti++) {
 	    psAutotalent->ffttime[ti] = psAutotalent->ffttime[ti] * tf;
       }
       psAutotalent->ffttime[0] = 1;
@@ -1043,47 +1031,44 @@ void runAutotalent(Autotalent * Instance, unsigned long SampleCount) {
       //   Confidence is determined by the corresponding unbiased height
       tf2 = 0;
       pperiod = pmin;
-      for (ti=nmin; ti<nmax; ti++) {
-	    ti2 = ti-1;
-	    ti3 = ti+1;
-	    if (ti2<0) {
+      for (ti = nmin; ti < nmax; ti++) {
+	    ti2 = ti - 1;
+	    ti3 = ti + 1;
+	    if (ti2 < 0) {
 	      ti2 = 0;
 	    }
-	    if (ti3>Nf) {
+	    if (ti3 > Nf) {
 	      ti3 = Nf;
 	    }
 	    tf = psAutotalent->ffttime[ti];
 
-	    if (tf>psAutotalent->ffttime[ti2] && tf>=psAutotalent->ffttime[ti3] && tf>tf2) {
+	    if ((tf > psAutotalent->ffttime[ti2]) && (tf >= psAutotalent->ffttime[ti3]) && (tf > tf2)) {
 	      tf2 = tf;
 	      ti4 = ti;
 	    }
       }
-      if (tf2>0) {
-	    conf = tf2*psAutotalent->acwinv[ti4];
-	    if (ti4>0 && ti4<Nf) {
+      if (tf2 > 0) {
+	    conf = tf2 * psAutotalent->acwinv[ti4];
+	    if (ti4 > 0 && ti4 < Nf) {
 	      // Find the center of mass in the vicinity of the detected peak
-	      tf = psAutotalent->ffttime[ti4-1]*(ti4-1);
-	      tf = tf + psAutotalent->ffttime[ti4]*(ti4);
-	      tf = tf + psAutotalent->ffttime[ti4+1]*(ti4+1);
-	      tf = tf/(psAutotalent->ffttime[ti4-1] + psAutotalent->ffttime[ti4] + psAutotalent->ffttime[ti4+1]);
+	      tf = psAutotalent->ffttime[ti4-1] * (ti4 - 1);
+	      tf = tf + psAutotalent->ffttime[ti4] * ti4;
+	      tf = tf + psAutotalent->ffttime[ti4+1] * (ti4 + 1);
+	      tf = tf/(psAutotalent->ffttime[ti4-1] + psAutotalent->ffttime[ti4] + psAutotalent->ffttime[ti4 + 1]);
 	      pperiod = tf/fs;
 	    }
 	    else {
-	      pperiod = (float)ti4/fs;
+	      pperiod = (float) ti4/fs;
 	    }
       }
 
       // Convert to semitones
-      tf = (float) -12*log10((float)aref*pperiod)*L2SC;
-      if (conf>=psAutotalent->vthresh) {
+      tf = (float) -12 * log10((float) aref * pperiod) * L2SC;
+      if (conf >= psAutotalent->vthresh) {
 	    inpitch = tf;
 	    psAutotalent->inpitch = tf; // update pitch only if voiced
       }
       psAutotalent->conf = conf;
-
-      *(psAutotalent->m_pfPitch) = inpitch;
-      *(psAutotalent->m_pfConf) = conf;
 
       //  ---- END Calculate pitch and confidence ----
 
@@ -1092,144 +1077,155 @@ void runAutotalent(Autotalent * Instance, unsigned long SampleCount) {
       outpitch = inpitch;
 
       // Pull to fixed pitch
-      outpitch = (1-fPull)*outpitch + fPull*fFixed;
+      outpitch = ((1 - fPull) * outpitch) + (fPull * fFixed);
 
       // -- Convert from semitones to scale notes --
-      ti = (int)(outpitch/12 + 32) - 32; // octave
-      tf = outpitch - ti*12; // semitone in octave
-      ti2 = (int)tf;
+      ti = (int) (outpitch/12 + 32) - 32; // octave
+      tf = outpitch - (ti * 12); // semitone in octave
+      ti2 = (int) tf;
       ti3 = ti2 + 1;
       // a little bit of pitch correction logic, since it's a convenient place for it
-      if (iNotes[ti2%12]<0 || iNotes[ti3%12]<0) { // if between 2 notes that are more than a semitone apart
+      if (iNotes[ti2%12] < 0 || iNotes[ti3%12] < 0) { // if between 2 notes that are more than a semitone apart
 	    lowersnap = 1;
 	    uppersnap = 1;
       }
       else {
 	    lowersnap = 0;
 	    uppersnap = 0;
-	    if (iNotes[ti2%12]==1) { // if specified by user
+	    if (iNotes[ti2%12] == 1) { // if specified by user
 	      lowersnap = 1;
 	    }
-	    if (iNotes[ti3%12]==1) { // if specified by user
+	    if (iNotes[ti3%12] == 1) { // if specified by user
 	      uppersnap = 1;
 	    }
       }
       // (back to the semitone->scale conversion)
       // finding next lower pitch in scale
-      while (iNotes[(ti2+12)%12]<0) {
+      while (iNotes[(ti2 + 12)%12] < 0) {
       	ti2 = ti2 - 1;
       }
       // finding next higher pitch in scale
-      while (iNotes[ti3%12]<0) {
+      while (iNotes[ti3%12] < 0) {
       	ti3 = ti3 + 1;
       }
-      tf = (tf-ti2)/(ti3-ti2) + iPitch2Note[(ti2+12)%12];
-      if (ti2<0) {
+      tf = (tf - ti2)/(ti3 - ti2) + iPitch2Note[(ti2 + 12)%12];
+      if (ti2 < 0) {
       	tf = tf - numNotes;
       }
-      outpitch = tf + numNotes*ti;
+      outpitch = tf + (numNotes * ti);
       // -- Done converting to scale notes --
 
       // The actual pitch correction
-      ti = (int)(outpitch+128) - 128;
+      ti = (int) (outpitch + 128) - 128;
       tf = outpitch - ti - 0.5;
-      ti2 = ti3-ti2;
-      if (ti2>2) { // if more than 2 semitones apart, put a 2-semitone-like transition halfway between
-	    tf2 = (float)ti2/2;
+      ti2 = ti3 - ti2;
+      if (ti2 > 2) { // if more than 2 semitones apart, put a 2-semitone-like transition halfway between
+	    tf2 = (float) ti2/2;
       }
       else {
-	    tf2 = (float)1;
+	    tf2 = (float) 1;
       }
-      if (fSmooth<0.001) {
-	    tf2 = tf*tf2/0.001;
+      if (fSmooth < 0.001) {
+	    tf2 = (tf * tf2)/0.001;
       }
       else {
-	    tf2 = tf*tf2/fSmooth;
+	    tf2 = (tf * tf2)/fSmooth;
       }
-      if (tf2<-0.5) tf2 = -0.5;
-      if (tf2>0.5) tf2 = 0.5;
-      tf2 = 0.5*sin(PI*tf2) + 0.5; // jumping between notes using horizontally-scaled sine segment
+      if (tf2 < -0.5) tf2 = -0.5;
+      if (tf2 > 0.5) tf2 = 0.5;
+      tf2 = 0.5 * sin(PI * tf2) + 0.5; // jumping between notes using horizontally-scaled sine segment
       tf2 = tf2 + ti;
-      if ( (tf<0.5 && lowersnap) || (tf>=0.5 && uppersnap) ) {
-	    outpitch = fAmount*tf2 + ((float)1-fAmount)*outpitch;
+      if ( (tf < 0.5 && lowersnap) || (tf >= 0.5 && uppersnap) ) {
+	    outpitch = (fAmount * tf2) + ((float) 1 - fAmount) * outpitch;
       }
 
       // Add in pitch shift
       outpitch = outpitch + fShift;
 
       // LFO logic
-      tf = fLforate*N/(psAutotalent->noverlap*fs);
-      if (tf>1) tf=1;
+      tf = (fLforate * N)/(psAutotalent->noverlap*fs);
+      if (tf > 1) {
+        tf = 1;
+      }
       psAutotalent->lfophase = psAutotalent->lfophase + tf;
-      if (psAutotalent->lfophase>1) psAutotalent->lfophase = psAutotalent->lfophase-1;
+      if (psAutotalent->lfophase>1) {
+        psAutotalent->lfophase = psAutotalent->lfophase - 1;
+      }
       lfoval = psAutotalent->lfophase;
       tf = (fLfosymm + 1)/2;
-      if (tf<=0 || tf>=1) {
+      if (tf <= 0 || tf >= 1) {
 	    if (tf<=0) {
-	      lfoval = 1-lfoval;
+	      lfoval = 1 - lfoval;
 	    }
       }
       else {
-	    if (lfoval<=tf) {
+	    if (lfoval <= tf) {
 	      lfoval = lfoval/tf;
 	    }
 	    else {
-	      lfoval = 1 - (lfoval-tf)/(1-tf);
+	      lfoval = 1 - (lfoval - tf)/(1 - tf);
 	    }
       }
-      if (fLfoshape>=0) {
+      if (fLfoshape >= 0) {
 	    // linear combination of cos and line
-	    lfoval = (0.5 - 0.5*cos(lfoval*PI))*fLfoshape + lfoval*(1-fLfoshape);
-	    lfoval = fLfoamp*(lfoval*2 - 1);
+	    lfoval = (0.5 - 0.5 * cos(lfoval * PI)) * fLfoshape + lfoval * (1 - fLfoshape);
+	    lfoval = fLfoamp * (lfoval * 2 - 1);
       }
       else {
 	    // smoosh the sine horizontally until it's squarish
 	    tf = 1 + fLfoshape;
-	    if (tf<0.001) {
-	      lfoval = (lfoval - 0.5)*2/0.001;
+	    if (tf < 0.001) {
+	      lfoval = ((lfoval - 0.5) * 2)/0.001;
 	    }
 	    else {
-	      lfoval = (lfoval - 0.5)*2/tf;
+	      lfoval = ((lfoval - 0.5) * 2)/tf;
 	    }
-	    if (lfoval>1) lfoval = 1;
-	    if (lfoval<-1) lfoval = -1;
-	    lfoval = fLfoamp*sin(lfoval*PI*0.5);
+	    if (lfoval > 1) {
+	      lfoval = 1;
+	    }
+	    if (lfoval < -1) {
+          lfoval = -1;
+	    }
+	    lfoval = fLfoamp * sin(lfoval * PI * 0.5);
       }
       // add in quantized LFO
-      if (iLfoquant>=1) {
-	    outpitch = outpitch + (int)(numNotes*lfoval + numNotes + 0.5) - numNotes;
+      if (iLfoquant >= 1) {
+	    outpitch = outpitch + (int) (numNotes * lfoval + numNotes + 0.5) - numNotes;
       }
 
       // Convert back from scale notes to semitones
       outpitch = outpitch + iScwarp; // output scale rotate implemented here
-      ti = (int)(outpitch/numNotes + 32) - 32;
-      tf = outpitch - ti*numNotes;
-      ti2 = (int)tf;
+      ti = (int) (outpitch/numNotes + 32) - 32;
+      tf = outpitch - (ti * numNotes);
+      ti2 = (int) tf;
       ti3 = ti2 + 1;
       outpitch = iNote2Pitch[ti3%numNotes] - iNote2Pitch[ti2];
-      if (ti3>=numNotes) {
+      if (ti3 >= numNotes) {
 	    outpitch = outpitch + 12;
       }
-      outpitch = outpitch*(tf - ti2) + iNote2Pitch[ti2];
-      outpitch = outpitch + 12*ti;
+      outpitch = outpitch * (tf - ti2) + iNote2Pitch[ti2];
+      outpitch = outpitch + (12 * ti);
       outpitch = outpitch - (iNote2Pitch[iScwarp] - iNote2Pitch[0]); //more scale rotation here
 
       // add in unquantized LFO
-      if (iLfoquant<=0) {
-	    outpitch = outpitch + lfoval*2;
+      if (iLfoquant <= 0) {
+	    outpitch = outpitch + lfoval * 2;
       }
 
-
-      if (outpitch<-36) outpitch = -48;
-      if (outpitch>24) outpitch = 24;
+      if (outpitch < -36) {
+        outpitch = -48;
+      }
+      if (outpitch > 24) {
+        outpitch = 24;
+      }
 
       psAutotalent->outpitch = outpitch;
 
       //  ---- END Modify pitch in all kinds of ways! ----
 
       // Compute variables for pitch shifter that depend on pitch
-      psAutotalent->inphinc = aref*pow(2,inpitch/12)/fs;
-      psAutotalent->outphinc = aref*pow(2,outpitch/12)/fs;
+      psAutotalent->inphinc = aref * pow(2, inpitch/12)/fs;
+      psAutotalent->outphinc = aref * pow(2, outpitch/12)/fs;
       psAutotalent->phincfact = psAutotalent->outphinc/psAutotalent->inphinc;
     }
     // ************************
@@ -1248,41 +1244,41 @@ void runAutotalent(Autotalent * Instance, unsigned long SampleCount) {
     //   When input phase resets, take a snippet from N/2 samples in the past
     if (psAutotalent->phasein >= 1) {
       psAutotalent->phasein = psAutotalent->phasein - 1;
-      ti2 = psAutotalent->cbiwr - N/2;
-      for (ti=-N/2; ti<N/2; ti++) {
-	    psAutotalent->frag[(ti+N)%N] = psAutotalent->cbf[(ti + ti2 + N)%N];
+      ti2 = psAutotalent->cbiwr - (N/2);
+      for (ti = -N/2; ti < N/2; ti++) {
+	    psAutotalent->frag[(ti + N)%N] = psAutotalent->cbf[(ti + ti2 + N)%N];
       }
     }
 
     //   When output phase resets, put a snippet N/2 samples in the future
     if (psAutotalent->phaseout >= 1) {
-      psAutotalent->fragsize = psAutotalent->fragsize*2;
+      psAutotalent->fragsize = psAutotalent->fragsize * 2;
       if (psAutotalent->fragsize > N) {
 	    psAutotalent->fragsize = N;
       }
       psAutotalent->phaseout = psAutotalent->phaseout - 1;
-      ti2 = psAutotalent->cbord + N/2;
+      ti2 = psAutotalent->cbord + (N/2);
       ti3 = (long int)(((float)psAutotalent->fragsize) / psAutotalent->phincfact);
-      if (ti3>=N/2) {
+      if (ti3 >= N/2) {
 	    ti3 = N/2 - 1;
       }
-      for (ti=-ti3/2; ti<(ti3/2); ti++) {
-	    tf = psAutotalent->hannwindow[(long int)N/2 + ti*(long int)N/ti3];
+      for (ti = -ti3/2; ti < (ti3/2); ti++) {
+	    tf = psAutotalent->hannwindow[(long int) N/2 + ti * (long int) N/ti3];
 	    // 3rd degree polynomial interpolator - based on eqns from Hal Chamberlin's book
-	    indd = psAutotalent->phincfact*ti;
-	    ind1 = (int)indd;
-		ind2 = ind1+1;
-		ind3 = ind1+2;
-		ind0 = ind1-1;
-		val0 = psAutotalent->frag[(ind0+N)%N];
-		val1 = psAutotalent->frag[(ind1+N)%N];
-		val2 = psAutotalent->frag[(ind2+N)%N];
-		val3 = psAutotalent->frag[(ind3+N)%N];
+	    indd = psAutotalent->phincfact * ti;
+	    ind1 = (int) indd;
+		ind2 = ind1 + 1;
+		ind3 = ind1 + 2;
+		ind0 = ind1 - 1;
+		val0 = psAutotalent->frag[(ind0 + N)%N];
+		val1 = psAutotalent->frag[(ind1 + N)%N];
+		val2 = psAutotalent->frag[(ind2 + N)%N];
+		val3 = psAutotalent->frag[(ind3 + N)%N];
 		vald = 0;
-		vald = vald - (float)0.166666666667 * val0 * (indd - ind1) * (indd - ind2) * (indd - ind3);
-		vald = vald + (float)0.5 * val1 * (indd - ind0) * (indd - ind2) * (indd - ind3);
-		vald = vald - (float)0.5 * val2 * (indd - ind0) * (indd - ind1) * (indd - ind3);
-		vald = vald + (float)0.166666666667 * val3 * (indd - ind0) * (indd - ind1) * (indd - ind2);
+		vald = vald - (float) 0.166666666667 * val0 * (indd - ind1) * (indd - ind2) * (indd - ind3);
+		vald = vald + (float) 0.5 * val1 * (indd - ind0) * (indd - ind2) * (indd - ind3);
+		vald = vald - (float) 0.5 * val2 * (indd - ind0) * (indd - ind1) * (indd - ind3);
+		vald = vald + (float) 0.166666666667 * val3 * (indd - ind0) * (indd - ind1) * (indd - ind2);
 		psAutotalent->cbo[(ti + ti2 + N)%N] = psAutotalent->cbo[(ti + ti2 + N)%N] + vald*tf;
       }
       psAutotalent->fragsize = 0;
@@ -1303,7 +1299,7 @@ void runAutotalent(Autotalent * Instance, unsigned long SampleCount) {
     // *********************
 
     ti4 = (psAutotalent->cbiwr + 2)%N;
-    if (iFcorr>=1) {
+    if (iFcorr >= 1) {
       // The second part of the formant corrector
       // This is a post-filter that re-applies the formants, designed
       //   to result in the exact original signal when no pitch
@@ -1314,39 +1310,39 @@ void runAutotalent(Autotalent * Instance, unsigned long SampleCount) {
       tf2 = tf;
       fa = 0;
       fb = fa;
-      for (ti=0; ti<ford; ti++) {
-	    fc = (fb-psAutotalent->frc[ti])*frlamb + psAutotalent->frb[ti];
+      for (ti = 0; ti < ford; ti++) {
+	    fc = (fb-psAutotalent->frc[ti]) * frlamb + psAutotalent->frb[ti];
 		tf = psAutotalent->fbuff[ti][ti4];
-		fb = fc - tf*fa;
-		psAutotalent->ftvec[ti] = tf*fc;
+		fb = fc - (tf * fa);
+		psAutotalent->ftvec[ti] = (tf * fc);
 		fa = fa - psAutotalent->ftvec[ti];
       }
       tf = -fa;
-      for (ti=ford-1; ti>=0; ti--) {
+      for (ti = ford - 1; ti >= 0; ti--) {
 	    tf = tf + psAutotalent->ftvec[ti];
       }
       f0resp = tf;
       //  second time: compute 1-response
       fa = 1;
       fb = fa;
-      for (ti=0; ti<ford; ti++) {
-	    fc = (fb-psAutotalent->frc[ti])*frlamb + psAutotalent->frb[ti];
+      for (ti = 0; ti < ford; ti++) {
+	    fc = (fb - psAutotalent->frc[ti]) * frlamb + psAutotalent->frb[ti];
 		tf = psAutotalent->fbuff[ti][ti4];
-		fb = fc - tf*fa;
+		fb = fc - (tf * fa);
 		psAutotalent->ftvec[ti] = tf*fc;
 		fa = fa - psAutotalent->ftvec[ti];
       }
       tf = -fa;
-      for (ti=ford-1; ti>=0; ti--) {
+      for (ti = ford - 1; ti >= 0; ti--) {
 	    tf = tf + psAutotalent->ftvec[ti];
       }
       f1resp = tf;
       //  now solve equations for output, based on 0-response and 1-response
-      tf = (float)2*tf2;
+      tf = ((float) 2) * tf2;
       tf2 = tf;
-      tf = ((float)1 - f1resp + f0resp);
-      if (tf!=0) {
-	    tf2 = (tf2 + f0resp) / tf;
+      tf = (((float) 1) - f1resp + f0resp);
+      if (tf != 0) {
+	    tf2 = (tf2 + f0resp)/tf;
       }
       else {
 	    tf2 = 0;
@@ -1354,27 +1350,27 @@ void runAutotalent(Autotalent * Instance, unsigned long SampleCount) {
       //  third time: update delay registers
       fa = tf2;
       fb = fa;
-      for (ti=0; ti<ford; ti++) {
-	    fc = (fb-psAutotalent->frc[ti])*frlamb + psAutotalent->frb[ti];
+      for (ti = 0; ti < ford; ti++) {
+	    fc = (fb - psAutotalent->frc[ti]) * frlamb + psAutotalent->frb[ti];
 		psAutotalent->frc[ti] = fc;
 		psAutotalent->frb[ti] = fb;
 		tf = psAutotalent->fbuff[ti][ti4];
-		fb = fc - tf*fa;
-		fa = fa - tf*fc;
+		fb = fc - (tf * fa);
+		fa = fa - (tf * fc);
       }
       tf = tf2;
-      tf = tf + flpa*psAutotalent->flp;  // lowpass post-emphasis filter
+      tf = tf + (flpa * psAutotalent->flp);  // lowpass post-emphasis filter
       psAutotalent->flp = tf;
       // Bring up the gain slowly when formant correction goes from disabled
       // to enabled, while things stabilize.
-      if (psAutotalent->fmute>0.5) {
-	    tf = tf*(psAutotalent->fmute - 0.5)*2;
+      if (psAutotalent->fmute > 0.5) {
+	    tf = tf * (psAutotalent->fmute - 0.5) * 2;
       }
       else {
 	    tf = 0;
       }
       tf2 = psAutotalent->fmutealph;
-      psAutotalent->fmute = (1-tf2) + tf2*psAutotalent->fmute;
+      psAutotalent->fmute = (1 - tf2) + (tf2 * psAutotalent->fmute);
       // now tf is signal output
       // ...and we're done messing with formants
     }
@@ -1384,11 +1380,8 @@ void runAutotalent(Autotalent * Instance, unsigned long SampleCount) {
 
     // Write audio to output of plugin
     // Mix (blend between original (delayed) =0 and processed =1)
-    *(pfOutput++) =  fMix*tf + (1-fMix)*psAutotalent->cbi[ti4];
+    *(pfOutput++) =  (fMix * tf) + (1 - fMix) * psAutotalent->cbi[ti4];
   }
-
-  // Tell the host the algorithm latency
-  *(psAutotalent->m_pfLatency) = (N-1);
 }
 
 
@@ -1421,11 +1414,6 @@ void cleanupAutotalent(Autotalent* Instance) {
   }
   free(Instance->fbuff);
   free(Instance->ftvec);
-
-  // we allocated these since we just don't use them
-  free(Instance->m_pfPitch);
-  free(Instance->m_pfConf);
-  free(Instance->m_pfLatency);
 
   // we allocated these so it keeps the values properly
   free(Instance->m_pfTune);

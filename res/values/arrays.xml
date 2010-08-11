@@ -17,6 +17,26 @@
 		<item>8000</item>
 	</string-array>
     
+    <!-- Recording buffer size multipliers. -->
+	<string-array name="prefs_buffer_size_adjuster_entries">
+		<item>1 (default)</item>
+		<item>2</item>
+		<item>4</item>
+		<item>8</item>
+		<item>16</item>
+		<item>32</item>
+	</string-array>
+	
+	<!-- Values for recording buffer size multiplier menu. -->
+	<string-array name="prefs_buffer_size_adjuster_values">
+		<item>1</item>
+		<item>2</item>
+		<item>4</item>
+		<item>8</item>
+		<item>16</item>
+		<item>32</item>
+	</string-array>
+    
     <!-- Entry names for the key menu. -->
     <string-array name="prefs_key_entries">
     	<item>Chromatic</item>

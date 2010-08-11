@@ -198,7 +198,7 @@ public class Mic extends Activity {
         switch (item.getItemId()) {
             case R.id.options:
             	Intent preferencesIntent = new Intent(getBaseContext(), Preferences.class);
-            	startActivity(preferencesIntent);
+            	startActivityForResult(preferencesIntent, Constants.PREFERENCE_INTENT_CODE);
             	break;
             case R.id.about:
             	DialogHelper.showWarning(Mic.this, R.string.about_title, R.string.about_text);
@@ -221,6 +221,12 @@ public class Mic extends Activity {
 	    			new ProcessAutotalentTask().execute(fileName);
 	    		} else if (resultCode == Activity.RESULT_CANCELED) {
 	    			Toast.makeText(Mic.this, R.string.recording_save_canceled, Toast.LENGTH_SHORT).show();
+	    		}
+	    		break;
+	    	case Constants.PREFERENCE_INTENT_CODE:
+	    		if (recorder != null && !recorder.isRunning()) {
+	    			recorder.cleanup();
+	    			recorder = null;
 	    		}
 	    		break;
     		default:

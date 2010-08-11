@@ -100,6 +100,12 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
     <string name="prefs_sample_rate_summary">Recording sample rate is device dependent, if you have trouble recording try changing this.</string>
     <string name="prefs_sample_rate_title">Change Recording Sample Rate</string>
     <string name="prefs_sample_rate_default">22050</string>
+    
+    <string name="prefs_buffer_size_adjuster_key">buffer_size_adjuster</string>
+    <string name="prefs_buffer_size_adjuster">Change Buffer Size</string>
+    <string name="prefs_buffer_size_adjuster_summary">Recording buffer size is device dependent, if you have trouble recording try changing this.</string>
+    <string name="prefs_buffer_size_adjuster_title">Change Buffer Size</string>
+    <string name="prefs_buffer_size_adjuster_default">1</string>
 
     <string name="prefs_cat_key">Key Settings</string>
     <string name="prefs_key_key">key</string>
