@@ -356,7 +356,6 @@ typedef struct {
   float* m_pfConf;
   float* m_pfInputBuffer1;
   float* m_pfOutputBuffer1;
-  long int* m_pfLatency;
 
   fft_vars* fmembvars; // member variables for fft routine
 
@@ -569,7 +568,6 @@ Autotalent * instantiateAutotalent(unsigned long SampleRate) {
   // set output parameters, note these aren't used by us
   membvars->m_pfPitch = malloc(sizeof(float));
   membvars->m_pfConf = malloc(sizeof(float));
-  membvars->m_pfLatency = malloc(sizeof(long int));
 
   return membvars;
 }
@@ -1394,9 +1392,6 @@ void runAutotalent(Autotalent * Instance, unsigned long SampleCount) {
     // Mix (blend between original (delayed) =0 and processed =1)
     *(pfOutput++) =  (fMix * tf) + (1 - fMix) * psAutotalent->cbi[ti4];
   }
-
-  // Tell the host the algorithm latency
-  *(psAutotalent->m_pfLatency) = (N-1);
 }
 
 
@@ -1433,7 +1428,6 @@ void cleanupAutotalent(Autotalent* Instance) {
   // we allocated these since we just don't use them
   free(Instance->m_pfPitch);
   free(Instance->m_pfConf);
-  free(Instance->m_pfLatency);
 
   // we allocated these so it keeps the values properly
   free(Instance->m_pfTune);
