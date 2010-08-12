@@ -29,6 +29,7 @@ import com.intervigil.micdroid.Constants;
 import com.intervigil.micdroid.R;
 
 public class AudioHelper {
+	private static String MANUFACTURER_SAMSUNG = "samsung";
 	private static String DEVICE_ID_GALAXY_S = "gt-i9000";
 	private static String DEVICE_ID_CAPTIVATE = "sgh-i897";
 	private static String DEVICE_ID_VIBRANT = "sgh-t959";
@@ -223,7 +224,7 @@ public class AudioHelper {
 		String device = android.os.Build.DEVICE.toLowerCase();
 		Log.i("AudioHelper", String.format("manufacturer: %s, model: %s, device: %s", manufacturer, model, device));
 		
-		if (manufacturer.contains("samsung")) {
+		if (manufacturer.equals(MANUFACTURER_SAMSUNG)) {
 			if (model.contains("galaxy") || device.equals(DEVICE_ID_GALAXY_S)) {
 				Log.i("AudioHelper", "Samsung Galaxy S detected");
 				return true;
