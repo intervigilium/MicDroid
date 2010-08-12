@@ -4,7 +4,7 @@
     <string name="default_recording_name">recording.wav</string>
 
     <string name="startup_dialog_title">What\'s new in this version?</string>
-    <string name="startup_dialog_text">1. Galaxy S support (finally!)\n\
+    <string name="startup_dialog_text">1. Galaxy S, Captivate, Vibrant support\n\
 2. Speedup using armeabi-v7a for those phones that support it\n\
 3. Confirm delete recording dialog\n\
 4. New UI for recording screen\n\
@@ -116,13 +116,6 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
     <string name="prefs_key_title">Change Key</string>
     <string name="prefs_key_default">C</string>
 
-    <string name="prefs_cat_pitch">Pitch Settings</string>
-    <string name="prefs_fixed_pitch_key">fixed_pitch</string>
-    <string name="prefs_fixed_pitch">Fixed Pitch</string>
-    <string name="prefs_fixed_pitch_summary">The pitch which input pitch will be pulled to</string>
-    <string name="prefs_fixed_pitch_title">Fixed Pitch</string>
-    <string name="prefs_fixed_pitch_default">0.0</string>
-
     <string name="prefs_pitch_pull_key">pitch_pull</string>
     <string name="prefs_pitch_pull">Pull to Fixed Pitch</string>
     <string name="prefs_pitch_pull_summary">The degree that pitch is pulled towards</string>
@@ -230,8 +223,8 @@ How to Change Settings\n\
 \n\
 Problems Recording?\n\
 1. Try changing the sample rate from the settings\n\
-2. Try re-installing the application\n\
-3. If you have a Samsung Galaxy, or any derivative phone, recording and playback are known issues!\n\
+2. Try changing the buffer multiplier from the settings\n\
+3. Try re-installing the application\n\
 4. Send me an email with your problems/questions\n\
     </string>
 </resources>

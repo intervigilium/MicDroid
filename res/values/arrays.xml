@@ -70,16 +70,6 @@
         <item>g</item>
         <item>G</item>
     </string-array>
-    
-    <!-- Entry names for the fixed pitch menu. -->
-    <string-array name="prefs_fixed_pitch_entries">
-        <item>0.0 (middle A)</item> 
-    </string-array>
-
-    <!-- Values for the fixed pitch menu. -->
-    <string-array name="prefs_fixed_pitch_values">
-        <item>0.0</item>
-    </string-array>
       
     <!-- Entry names for the pitch pull menu. -->
     <string-array name="prefs_pitch_pull_entries">
