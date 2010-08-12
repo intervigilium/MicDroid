@@ -201,6 +201,13 @@ public class Mic extends Activity {
             	Intent preferencesIntent = new Intent(getBaseContext(), Preferences.class);
             	startActivityForResult(preferencesIntent, Constants.PREFERENCE_INTENT_CODE);
             	break;
+            case R.id.donate:
+            	Intent marketSearchIntent = new Intent(Intent.ACTION_SEARCH);
+            	marketSearchIntent.setPackage("com.android.vending");
+            	marketSearchIntent.putExtra("query", "micdroid donate");
+            	marketSearchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            	startActivity(marketSearchIntent);
+            	break;
             case R.id.about:
             	DialogHelper.showWarning(Mic.this, R.string.about_title, R.string.about_text);
             	break;
