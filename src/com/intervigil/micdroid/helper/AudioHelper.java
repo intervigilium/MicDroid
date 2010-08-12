@@ -29,6 +29,11 @@ import com.intervigil.micdroid.Constants;
 import com.intervigil.micdroid.R;
 
 public class AudioHelper {
+	private static String DEVICE_ID_GALAXY_S = "gt-i9000";
+	private static String DEVICE_ID_CAPTIVATE = "sgh-i897";
+	private static String DEVICE_ID_VIBRANT = "sgh-t959";
+	private static String DEVICE_ID_FASCINATE = "gt-i9000";
+	private static String DEVICE_ID_EPIC = "sph-d700";
 	
 	/**
      * Convert Android AudioFormat.CHANNEL_CONFIGURATION constants to integers
@@ -208,6 +213,7 @@ public class AudioHelper {
 	
 	/**
      * Tries to figure out if the current phone is Galaxy S based, since it has recording issues
+     * This is pretty nasty since we are string matching, but unless I can get a better way to do it...
      * 
      * @param		
      */
@@ -218,27 +224,27 @@ public class AudioHelper {
 		Log.i("AudioHelper", String.format("manufacturer: %s, model: %s, device: %s", manufacturer, model, device));
 		
 		if (manufacturer.contains("samsung")) {
-			if (model.contains("galaxy") || device.contains("gt-i9000")) {
+			if (model.contains("galaxy") || device.equals(DEVICE_ID_GALAXY_S)) {
 				Log.i("AudioHelper", "Samsung Galaxy S detected");
 				return true;
 			}
 			
-			if (model.contains("samsung sgh-i897") || device.contains("sgh-i897")) {
+			if (device.equals(DEVICE_ID_CAPTIVATE)) {
 				Log.i("AudioHelper", "ATT, Samsung Captivate detected");
 				return true;
 			}
 			
-			if (model.contains("vibrant") || device.contains("sgh-t959")) {
+			if (model.contains("vibrant") || device.equals(DEVICE_ID_VIBRANT)) {
 				Log.i("AudioHelper", "T-Mobile US, Samsung Vibrant detected");
 				return true;
 			}
 			
-			if (model.contains("epic") || device.contains("sph-d700")) {
+			if (model.contains("epic") || device.equals(DEVICE_ID_EPIC)) {
 				Log.i("AudioHelper", "Sprint, Samsung Epic 4G detected");
 				return true;
 			}
 			
-			if (model.contains("fascinate") || device.contains("gt-i9000")) {
+			if (model.contains("fascinate") || device.equals(DEVICE_ID_FASCINATE)) {
 				Log.i("AudioHelper", "Verizon, Samsung Fascinate detected");
 				return true;
 			}
