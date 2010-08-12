@@ -137,8 +137,6 @@ void fft_inverse(fft_vars* membvars, float* input_re, float* input_im, float* ou
   }
 }
 
-#define CONCERT_A (float)440.0
-
 #define AT_A 0
 #define AT_Bb 1
 #define AT_B 2

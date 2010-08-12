@@ -66,6 +66,7 @@ public class Mic extends Activity {
 	private static final float CONCERT_A = 440.0f;
 
 	private static final int DEFAULT_SCALE_ROTATE = 0;
+	private static final float DEFAULT_FIXED_PITCH = 0.0f;
 	private static final float DEFAULT_LFO_DEPTH = 0.0f;
 	private static final float DEFAULT_LFO_RATE = 5.0f;
 	private static final float DEFAULT_LFO_SHAPE = 0.0f;
@@ -199,6 +200,13 @@ public class Mic extends Activity {
             case R.id.options:
             	Intent preferencesIntent = new Intent(getBaseContext(), Preferences.class);
             	startActivityForResult(preferencesIntent, Constants.PREFERENCE_INTENT_CODE);
+            	break;
+            case R.id.donate:
+            	Intent marketSearchIntent = new Intent(Intent.ACTION_SEARCH);
+            	marketSearchIntent.setPackage("com.android.vending");
+            	marketSearchIntent.putExtra("query", "micdroid donate");
+            	marketSearchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            	startActivity(marketSearchIntent);
             	break;
             case R.id.about:
             	DialogHelper.showWarning(Mic.this, R.string.about_title, R.string.about_text);
@@ -391,7 +399,6 @@ public class Mic extends Activity {
     
     private void updateAutoTalentPreferences() {
     	char key = PreferenceHelper.getKey(Mic.this);
-    	float fixedPitch = PreferenceHelper.getFixedPitch(Mic.this);
     	float fixedPull = PreferenceHelper.getPullToFixedPitch(Mic.this);
     	float pitchShift = PreferenceHelper.getPitchShift(Mic.this);
     	float strength = PreferenceHelper.getCorrectionStrength(Mic.this);
@@ -399,7 +406,7 @@ public class Mic extends Activity {
     	float mix = PreferenceHelper.getMix(Mic.this);
     	
     	AutoTalent.instantiateAutoTalent(PreferenceHelper.getSampleRate(Mic.this));
-    	AutoTalent.initializeAutoTalent(CONCERT_A, key, fixedPitch, fixedPull, 
+    	AutoTalent.initializeAutoTalent(CONCERT_A, key, DEFAULT_FIXED_PITCH, fixedPull, 
     			strength, smooth, pitchShift, DEFAULT_SCALE_ROTATE, 
     			DEFAULT_LFO_DEPTH, DEFAULT_LFO_RATE, DEFAULT_LFO_SHAPE, DEFAULT_LFO_SYM, DEFAULT_LFO_QUANT, 
     			DEFAULT_FORM_CORR, DEFAULT_FORM_WARP, mix);
