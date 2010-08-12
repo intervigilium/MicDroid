@@ -46,15 +46,6 @@
     </PreferenceCategory>
   
     <PreferenceCategory android:title="@string/prefs_cat_pitch">
-
-        <ListPreference
-                android:key="@string/prefs_fixed_pitch_key"
-                android:title="@string/prefs_fixed_pitch"
-                android:summary="@string/prefs_fixed_pitch_summary"
-                android:entries="@array/prefs_fixed_pitch_entries"
-                android:entryValues="@array/prefs_fixed_pitch_values"
-                android:dialogTitle="@string/prefs_fixed_pitch_title"
-                android:defaultValue="@string/prefs_fixed_pitch_default" />
         
         <ListPreference
                 android:key="@string/prefs_pitch_pull_key"

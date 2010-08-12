@@ -116,6 +116,7 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
     <string name="prefs_key_title">Change Key</string>
     <string name="prefs_key_default">C</string>
 
+    <string name="prefs_cat_pitch">Pitch Settings</string>
     <string name="prefs_pitch_pull_key">pitch_pull</string>
     <string name="prefs_pitch_pull">Pull to Fixed Pitch</string>
     <string name="prefs_pitch_pull_summary">The degree that pitch is pulled towards</string>
