@@ -163,15 +163,20 @@ public class AudioHelper {
      */
 	public static void configureRecorder(Context context) {
 		int bufferSize = 0;
-		int bufferSizeAdjuster = 1;
+		int bufferSizeAdjuster = PreferenceHelper.getBufferSizeAdjuster(context);
 		int sampleRate = PreferenceHelper.getSampleRate(context);
 		
-		if (sampleRate < 0) {
+		if (sampleRate < 0 || bufferSizeAdjuster < 0) {
+			if (bufferSizeAdjuster < 1) {
+				// clamp buffer size adjuster to minimum of 1
+				bufferSizeAdjuster = 1;
+			}
+			
 			if (AudioHelper.isSamsungGalaxyS()) {
 				sampleRate = Constants.SAMPLE_RATE_22KHZ;
 				bufferSizeAdjuster = 16;
 			} else {
-				// try a new sample rates until we find one that works  		
+				// try a new sample rates until we find one that works
 	    		do {
 	    			switch (sampleRate) {
 		    			case -1:
