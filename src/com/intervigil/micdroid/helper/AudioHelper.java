@@ -162,7 +162,7 @@ public class AudioHelper {
 		
 		if (sampleRate < 0) {
 			if (AudioHelper.isSamsungGalaxyS()) {
-				sampleRate = Constants.SAMPLE_RATE_44KHZ;
+				sampleRate = Constants.SAMPLE_RATE_22KHZ;
 				bufferSizeAdjuster = 16;
 			} else {
 				// try a new sample rates until we find one that works  		
@@ -215,8 +215,7 @@ public class AudioHelper {
 		String manufacturer = android.os.Build.MANUFACTURER.toLowerCase();
 		String model = android.os.Build.MODEL.toLowerCase();
 		String device = android.os.Build.DEVICE.toLowerCase();
-		String product = android.os.Build.PRODUCT.toLowerCase();
-		Log.i("AudioHelper", String.format("manufacturer: %s, model: %s, device: %s, product: %s", manufacturer, model, device, product));
+		Log.i("AudioHelper", String.format("manufacturer: %s, model: %s, device: %s", manufacturer, model, device));
 		
 		if (manufacturer.contains("samsung")) {
 			if (model.contains("galaxy") || device.contains("gt-i9000")) {
@@ -224,7 +223,7 @@ public class AudioHelper {
 				return true;
 			}
 			
-			if (model.contains("captivate") || device.contains("sgh-i897")) {
+			if (model.contains("samsung sgh-i897") || device.contains("sgh-i897")) {
 				Log.i("AudioHelper", "ATT, Samsung Captivate detected");
 				return true;
 			}
