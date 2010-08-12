@@ -5,7 +5,7 @@
 
     <string name="startup_dialog_title">What\'s new in this version?</string>
     <string name="startup_dialog_text">1. Galaxy S, Captivate, Vibrant support\n\
-2. Speedup using armeabi-v7a for those phones that support it\n\
+2. Speedup using armeabi-v7a if possible\n\
 3. Confirm delete recording dialog\n\
 4. New UI for recording screen\n\
 5. Fix Droid X sound quality issues\n\
