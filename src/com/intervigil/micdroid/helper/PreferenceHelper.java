@@ -49,12 +49,6 @@ public class PreferenceHelper {
 		return pref.charAt(0);
 	}
 	
-	public static float getFixedPitch(Context context) {
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-		String pref = prefs.getString(context.getString(R.string.prefs_fixed_pitch_key), context.getString(R.string.prefs_fixed_pitch_default));
-		return Float.valueOf(pref);
-	}
-	
 	public static float getPullToFixedPitch(Context context) {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		String pref = prefs.getString(context.getString(R.string.prefs_pitch_pull_key), context.getString(R.string.prefs_pitch_pull_default));

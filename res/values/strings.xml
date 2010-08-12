@@ -4,11 +4,13 @@
     <string name="default_recording_name">recording.wav</string>
 
     <string name="startup_dialog_title">What\'s new in this version?</string>
-    <string name="startup_dialog_text">1. Confirm delete recording dialog\n\
-2. New UI for recording screen\n\
-3. Fix Droid X sound quality issues\n\
-4. Allow recordings to be set as notifications\n\
-5. Add setting to prevent screen locking while recording\n\
+    <string name="startup_dialog_text">1. Fix crash on record when upgrading from 0.30\n\
+2. Galaxy S, Captivate, Vibrant support\n\
+3. Speedup using armeabi-v7a if possible\n\
+4. Confirm delete recording dialog\n\
+5. New UI for recording screen\n\
+6. Fix Droid X sound quality issues\n\
+7. Allow recordings to be set as notifications\n\
 \n\
 DISCLAIMER: This is beta software! May be buggy and force close on you! Author is aware and working on issues!\n\
     </string>
@@ -115,12 +117,6 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
     <string name="prefs_key_default">C</string>
 
     <string name="prefs_cat_pitch">Pitch Settings</string>
-    <string name="prefs_fixed_pitch_key">fixed_pitch</string>
-    <string name="prefs_fixed_pitch">Fixed Pitch</string>
-    <string name="prefs_fixed_pitch_summary">The pitch which input pitch will be pulled to</string>
-    <string name="prefs_fixed_pitch_title">Fixed Pitch</string>
-    <string name="prefs_fixed_pitch_default">0.0</string>
-
     <string name="prefs_pitch_pull_key">pitch_pull</string>
     <string name="prefs_pitch_pull">Pull to Fixed Pitch</string>
     <string name="prefs_pitch_pull_summary">The degree that pitch is pulled towards</string>
@@ -152,7 +148,7 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
     <string name="prefs_corr_mix_title">Mix</string>
     <string name="prefs_corr_mix_default">1.0</string>
 
-    <string name="about_title">About MicDroid Version 0.30</string>
+    <string name="about_title">About MicDroid Version 0.32</string>
     <string name="about_text">Graphics work courtesy of Peng X. Wang: http://pengxwang.com\n\
 \n\
 MicDroid is licensed under the GPL2 License\n\
@@ -228,8 +224,8 @@ How to Change Settings\n\
 \n\
 Problems Recording?\n\
 1. Try changing the sample rate from the settings\n\
-2. Try re-installing the application\n\
-3. If you have a Samsung Galaxy, or any derivative phone, recording and playback are known issues!\n\
+2. Try changing the buffer multiplier from the settings\n\
+3. Try re-installing the application\n\
 4. Send me an email with your problems/questions\n\
     </string>
 </resources>
