@@ -230,7 +230,7 @@ public class AudioHelper {
 		Log.i("AudioHelper", String.format("manufacturer: %s, model: %s, device: %s", manufacturer, model, device));
 		
 		if (manufacturer.equals(MANUFACTURER_SAMSUNG)) {
-			if (model.contains("galaxy") || device.equals(DEVICE_ID_GALAXY_S)) {
+			if (device.equals(DEVICE_ID_GALAXY_S)) {
 				Log.i("AudioHelper", "Samsung Galaxy S detected");
 				return true;
 			}
