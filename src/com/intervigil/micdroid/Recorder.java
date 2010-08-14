@@ -38,7 +38,7 @@ public class Recorder {
 	private final Handler errorHandler;
 	private final WaveWriter writer;
 
-	public Recorder(Context context, Handler errorHandler, int bufferSize) {
+	public Recorder(Context context, Handler errorHandler) {
 		this.errorHandler = errorHandler;
 		this.writer = new WaveWriter(
 				ApplicationHelper.getOutputDirectory(),
@@ -46,7 +46,7 @@ public class Recorder {
 				PreferenceHelper.getSampleRate(context), 
 				AudioHelper.getChannelConfig(Constants.DEFAULT_CHANNEL_CONFIG), 
 				AudioHelper.getPcmEncoding(Constants.DEFAULT_PCM_FORMAT));
-		this.audioRecord = new AudioRecordWrapper(context, errorHandler, bufferSize);
+		this.audioRecord = new AudioRecordWrapper(context, errorHandler, AudioHelper.getRecorderBufferSize(context));
 	}
 	
 	public void start() {
