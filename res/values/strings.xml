@@ -98,10 +98,10 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
 
     <string name="prefs_cat_recording">Recording Settings</string>
     <string name="prefs_live_mode_key">live_mode</string>
-    <string name="prefs_live_mode">Enable Real Time Pitch-Correction</string>
+    <string name="prefs_live_mode">Enable Live Correction</string>
     <string name="prefs_live_mode_summary_on">Real time pitch-correction is enabled.</string>
     <string name="prefs_live_mode_summary_off">Real time pitch-correction is disabled.</string>
-    <string name="prefs_live_mode_title">Enable Real Time Pitch-Correction</string>
+    <string name="prefs_live_mode_title">Enable Live Correction</string>
     <string name="prefs_live_mode_default">false</string>
     
     <string name="prefs_sample_rate_key">sample_rate</string>
