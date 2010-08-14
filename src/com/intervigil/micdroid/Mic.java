@@ -282,10 +282,12 @@ public class Mic extends Activity {
     	private WaveReader reader;
     	private WaveWriter writer;
     	private ProgressDialog spinner;
+    	private boolean isLiveMode;
     	
     	public ProcessAutotalentTask() {
     		spinner = new ProgressDialog(Mic.this);
     		spinner.setCancelable(false);
+    		isLiveMode = PreferenceHelper.getLiveMode(Mic.this);
     	}
     	
     	@Override
@@ -299,51 +301,56 @@ public class Mic extends Activity {
 			// maybe ugly but we only pass one string in anyway
 			String fileName = params[0];
 
-			try {
-				reader = new WaveReader(
-						ApplicationHelper.getOutputDirectory(), 
-						getString(R.string.default_recording_name));
-				reader.openWave();
-				writer = new WaveWriter(
-						ApplicationHelper.getLibraryDirectory(), 
-						fileName,
-						reader.getSampleRate(), reader.getChannels(), reader.getPcmFormat());
-				writer.createWaveFile();
-			} catch (IOException e) {
-				// can't create our readers and writers for some reason!
-				// TODO: real error handling
-				e.printStackTrace();
-			}
-			
-			updateAutoTalentPreferences();
-			
-			short[] buf = new short[AUTOTALENT_CHUNK_SIZE];
-			while (true) {
+			if (isLiveMode) {
+				File recording = new File(ApplicationHelper.getOutputDirectory() + File.separator + "recording.wav");
+				File destination = new File(ApplicationHelper.getLibraryDirectory() + File.separator + fileName);
+				recording.renameTo(destination);
+			} else {
 				try {
-					int samplesRead = reader.readShort(buf, AUTOTALENT_CHUNK_SIZE);
-					if (samplesRead > 0) {
-						AutoTalent.processSamples(buf, samplesRead);
-						writer.write(buf, samplesRead);
-					} else {
-						break;
-					}
+					reader = new WaveReader(
+							ApplicationHelper.getOutputDirectory(), 
+							getString(R.string.default_recording_name));
+					reader.openWave();
+					writer = new WaveWriter(
+							ApplicationHelper.getLibraryDirectory(), 
+							fileName,
+							reader.getSampleRate(), reader.getChannels(), reader.getPcmFormat());
+					writer.createWaveFile();
 				} catch (IOException e) {
-					// failed to read/write to wave file
+					// can't create our readers and writers for some reason!
+					// TODO: real error handling
+					e.printStackTrace();
+				}
+				
+				updateAutoTalentPreferences();
+				
+				short[] buf = new short[AUTOTALENT_CHUNK_SIZE];
+				while (true) {
+					try {
+						int samplesRead = reader.readShort(buf, AUTOTALENT_CHUNK_SIZE);
+						if (samplesRead > 0) {
+							AutoTalent.processSamples(buf, samplesRead);
+							writer.write(buf, samplesRead);
+						} else {
+							break;
+						}
+					} catch (IOException e) {
+						// failed to read/write to wave file
+						// TODO: real error handling
+						e.printStackTrace();
+					}
+				}
+				
+				try {
+					reader.closeWaveFile();
+					writer.closeWaveFile();
+					AutoTalent.destroyAutoTalent();
+				} catch (IOException e) {
+					// failed to close out our files correctly
 					// TODO: real error handling
 					e.printStackTrace();
 				}
 			}
-			
-			try {
-				reader.closeWaveFile();
-				writer.closeWaveFile();
-				AutoTalent.destroyAutoTalent();
-			} catch (IOException e) {
-				// failed to close out our files correctly
-				// TODO: real error handling
-				e.printStackTrace();
-			}
-
 			return null;
 		}
 		
@@ -376,8 +383,12 @@ public class Mic extends Activity {
     		}
     		else {
 				if (btn.isChecked()) {
+					boolean isLiveMode = PreferenceHelper.getLiveMode(Mic.this);
+					if (isLiveMode) {
+						updateAutoTalentPreferences();
+					}
 					if (recorder == null) {
-						recorder = new Recorder(Mic.this, recordingErrorHandler, PreferenceHelper.getLiveMode(Mic.this));
+						recorder = new Recorder(Mic.this, recordingErrorHandler, isLiveMode);
 					}
 					recorder.start();
 		        	timer.reset();
