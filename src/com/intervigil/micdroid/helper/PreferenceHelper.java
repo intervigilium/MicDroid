@@ -43,6 +43,12 @@ public class PreferenceHelper {
 		return pref;
 	}
 	
+	public static boolean getLiveMode(Context context) {
+		SharedPreferences prefReader = PreferenceManager.getDefaultSharedPreferences(context);
+		boolean pref = prefReader.getBoolean(context.getString(R.string.prefs_live_mode_key), Boolean.parseBoolean(context.getString(R.string.prefs_live_mode_default)));
+		return pref;
+	}
+	
 	public static char getKey(Context context) {
 		SharedPreferences prefReader = PreferenceManager.getDefaultSharedPreferences(context);
 		String pref = prefReader.getString(context.getString(R.string.prefs_key_key), context.getString(R.string.prefs_key_default));

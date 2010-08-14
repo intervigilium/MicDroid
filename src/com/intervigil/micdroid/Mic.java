@@ -377,7 +377,7 @@ public class Mic extends Activity {
     		else {
 				if (btn.isChecked()) {
 					if (recorder == null) {
-						recorder = new Recorder(Mic.this, recordingErrorHandler, false);
+						recorder = new Recorder(Mic.this, recordingErrorHandler, PreferenceHelper.getLiveMode(Mic.this));
 					}
 					recorder.start();
 		        	timer.reset();
