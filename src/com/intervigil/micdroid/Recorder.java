@@ -61,8 +61,10 @@ public class Recorder {
 		try {
 			writer.createWaveFile();
 			audioRecord.start();
-			audioTrack.play();
 			writerThread.start();
+			if (isLiveMode) {
+				audioTrack.play();
+			}
 		} catch (IOException e) {
 			// problem writing to file, unable to create file?
 			e.printStackTrace();
@@ -80,8 +82,10 @@ public class Recorder {
 	
 	public void stop() {
 		if (isRunning()) {
+			if (isLiveMode) {
+				audioTrack.stop();
+			}
 			audioRecord.stop();
-			audioTrack.stop();
 			writerThread.interrupt();
 			try {
 				writerThread.join();
