@@ -23,6 +23,7 @@ package com.intervigil.micdroid;
 import java.io.IOException;
 
 import android.content.Context;
+import android.media.AudioTrack;
 import android.os.Handler;
 import android.os.Message;
 
@@ -30,23 +31,29 @@ import com.intervigil.micdroid.helper.ApplicationHelper;
 import com.intervigil.micdroid.helper.AudioHelper;
 import com.intervigil.micdroid.helper.PreferenceHelper;
 import com.intervigil.micdroid.model.Sample;
+import com.intervigil.micdroid.pitch.AutoTalent;
 import com.intervigil.micdroid.wave.WaveWriter;
 
 public class Recorder {
 	private MicWriter writerThread;
+	
 	private final AudioRecordWrapper audioRecord;
+	private final AudioTrack audioTrack;
 	private final Handler errorHandler;
 	private final WaveWriter writer;
+	private final boolean isLiveMode;
 
-	public Recorder(Context context, Handler errorHandler) {
+	public Recorder(Context context, Handler errorHandler, boolean isLiveMode) {
 		this.errorHandler = errorHandler;
+		this.isLiveMode = isLiveMode;
 		this.writer = new WaveWriter(
 				ApplicationHelper.getOutputDirectory(),
 				context.getString(R.string.default_recording_name), 
 				PreferenceHelper.getSampleRate(context), 
 				AudioHelper.getChannelConfig(Constants.DEFAULT_CHANNEL_CONFIG), 
 				AudioHelper.getPcmEncoding(Constants.DEFAULT_PCM_FORMAT));
-		this.audioRecord = new AudioRecordWrapper(context, errorHandler, AudioHelper.getRecorderBufferSize(context));
+		this.audioRecord = new AudioRecordWrapper(context, errorHandler);
+		this.audioTrack = AudioHelper.getPlayer(context);
 	}
 	
 	public void start() {
@@ -54,9 +61,16 @@ public class Recorder {
 		try {
 			writer.createWaveFile();
 			audioRecord.start();
+			audioTrack.play();
 			writerThread.start();
 		} catch (IOException e) {
 			// problem writing to file, unable to create file?
+			e.printStackTrace();
+			
+			Message msg = errorHandler.obtainMessage(Constants.UNABLE_TO_CREATE_RECORDING);
+			errorHandler.sendMessage(msg);
+		} catch (IllegalStateException e) {
+			// problem starting playback from audiotrack
 			e.printStackTrace();
 			
 			Message msg = errorHandler.obtainMessage(Constants.UNABLE_TO_CREATE_RECORDING);
@@ -67,6 +81,7 @@ public class Recorder {
 	public void stop() {
 		if (isRunning()) {
 			audioRecord.stop();
+			audioTrack.stop();
 			writerThread.interrupt();
 			try {
 				writerThread.join();
@@ -84,6 +99,7 @@ public class Recorder {
 	public void cleanup() {
 		stop();
 		audioRecord.cleanup();
+		audioTrack.release();
 	}
 	
 	public boolean isRunning() {
@@ -98,6 +114,10 @@ public class Recorder {
 			while (!Thread.interrupted()) {
 				Sample sample = audioRecord.poll();
 				if (sample != null) {
+					if (isLiveMode) {
+						AutoTalent.processSamples(sample.buffer, sample.bufferSize);
+						audioTrack.write(sample.buffer, 0, sample.bufferSize);
+					}
 					try {
 						writer.write(sample.buffer, sample.bufferSize);
 					} catch (IOException e) {
