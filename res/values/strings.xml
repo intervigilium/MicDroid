@@ -52,6 +52,7 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
     <string name="invalid_name_alert_message">Invalid filename detected, please enter a new one</string>
 
     <string name="autotalent_progress_msg">Pitch correction in progress...</string>
+    <string name="saving_recording_progress_msg">Saving recording...</string>
 
     <string name="recording_library">Recordings</string>
     <string name="recording_library_title">Recorded Clips</string>

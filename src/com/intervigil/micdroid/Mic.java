@@ -292,7 +292,11 @@ public class Mic extends Activity {
     	
     	@Override
     	protected void onPreExecute() {
-    		spinner.setMessage(getString(R.string.autotalent_progress_msg));
+    		if (isLiveMode) {
+    			spinner.setMessage(getString(R.string.saving_recording_progress_msg));
+    		} else {
+    			spinner.setMessage(getString(R.string.autotalent_progress_msg));
+    		}
     		spinner.show();
     	}
     	
