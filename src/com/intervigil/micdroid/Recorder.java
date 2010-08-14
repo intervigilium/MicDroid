@@ -37,8 +37,8 @@ import com.intervigil.micdroid.wave.WaveWriter;
 public class Recorder {
 	private MicWriter writerThread;
 	
+	private AudioTrack audioTrack;
 	private final AudioRecordWrapper audioRecord;
-	private final AudioTrack audioTrack;
 	private final Handler errorHandler;
 	private final WaveWriter writer;
 	private final boolean isLiveMode;
@@ -53,7 +53,16 @@ public class Recorder {
 				AudioHelper.getChannelConfig(Constants.DEFAULT_CHANNEL_CONFIG), 
 				AudioHelper.getPcmEncoding(Constants.DEFAULT_PCM_FORMAT));
 		this.audioRecord = new AudioRecordWrapper(context, errorHandler);
-		this.audioTrack = AudioHelper.getPlayer(context);
+		
+		try {
+			this.audioTrack = AudioHelper.getPlayer(context);
+		} catch (IllegalArgumentException e) {
+			// problem with audiotrack being given a bad sample rate/buffer size
+			e.printStackTrace();
+			
+			Message msg = errorHandler.obtainMessage(Constants.AUDIOTRACK_ILLEGAL_ARGUMENT);
+			errorHandler.sendMessage(msg);
+		}
 	}
 	
 	public void start() {
@@ -75,7 +84,7 @@ public class Recorder {
 			// problem starting playback from audiotrack
 			e.printStackTrace();
 			
-			Message msg = errorHandler.obtainMessage(Constants.UNABLE_TO_CREATE_RECORDING);
+			Message msg = errorHandler.obtainMessage(Constants.AUDIOTRACK_ILLEGAL_STATE);
 			errorHandler.sendMessage(msg);
 		}
 	}

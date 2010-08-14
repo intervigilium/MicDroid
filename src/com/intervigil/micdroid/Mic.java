@@ -262,6 +262,14 @@ public class Mic extends Activity {
 	    			// received error message that AudioRecord was started with bad sample rate/buffer size
 	    			DialogHelper.showWarning(Mic.this, R.string.audiorecord_exception_title, R.string.audiorecord_exception_warning);
 	    			break;
+	    		case Constants.AUDIOTRACK_ILLEGAL_STATE:
+	    			// received error message that AudioTrack was started without being properly initialized
+	    			DialogHelper.showWarning(Mic.this, R.string.audiorecord_exception_title, R.string.audiorecord_exception_warning);
+	    			break;
+	    		case Constants.AUDIOTRACK_ILLEGAL_ARGUMENT:
+	    			// received error message that AudioTrack was started with bad sample rate/buffer size
+	    			DialogHelper.showWarning(Mic.this, R.string.audiorecord_exception_title, R.string.audiorecord_exception_warning);
+	    			break;
 	    		case Constants.WRITER_OUT_OF_SPACE:
 	    			// received error that the writer is out of SD card space
 	    			DialogHelper.showWarning(Mic.this, R.string.writer_out_of_space_title, R.string.writer_out_of_space_warning);
