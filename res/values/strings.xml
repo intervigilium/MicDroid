@@ -4,13 +4,12 @@
     <string name="default_recording_name">recording.wav</string>
 
     <string name="startup_dialog_title">What\'s new in this version?</string>
-    <string name="startup_dialog_text">1. Fix crash on record when upgrading from 0.30\n\
+    <string name="startup_dialog_text">1. Live pitch-correction option\n\
 2. Galaxy S, Captivate, Vibrant support\n\
 3. Speedup using armeabi-v7a if possible\n\
-4. Confirm delete recording dialog\n\
-5. New UI for recording screen\n\
-6. Fix Droid X sound quality issues\n\
-7. Allow recordings to be set as notifications\n\
+4. New UI for recording screen\n\
+5. Fix Droid X sound quality issues\n\
+6. Allow recordings to be set as notifications\n\
 \n\
 DISCLAIMER: This is beta software! May be buggy and force close on you! Author is aware and working on issues!\n\
     </string>
@@ -159,7 +158,7 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
     <string name="prefs_corr_mix_title">Mix</string>
     <string name="prefs_corr_mix_default">1.0</string>
 
-    <string name="about_title">About MicDroid Version 0.32</string>
+    <string name="about_title">About MicDroid Version 0.33</string>
     <string name="about_text">Graphics work courtesy of Peng X. Wang: http://pengxwang.com\n\
 \n\
 MicDroid is licensed under the GPL2 License\n\
