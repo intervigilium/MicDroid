@@ -242,9 +242,11 @@ public class Mic extends Activity {
     	public void handleMessage(Message msg) {
     		ToggleButton recordingButton = (ToggleButton)findViewById(R.id.recording_button);
     		
+    		if (recorder != null) {
+	    		recorder.cleanup();
+	    		recorder = null;
+    		}
     		timer.stop();
-    		recorder.cleanup();
-    		recorder = null;
     		recordingButton.setChecked(false);
     		
     		switch (msg.what) {
