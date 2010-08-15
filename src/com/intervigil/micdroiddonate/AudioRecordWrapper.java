@@ -43,7 +43,7 @@ public class AudioRecordWrapper {
 	private final Handler errorHandler;
 	private final int bufferSize;
 	
-	public AudioRecordWrapper(Context context, Handler errorHandler, int bufferSize) {
+	public AudioRecordWrapper(Context context, Handler errorHandler) {
 		try {
 			this.audioRecord = AudioHelper.getRecorder(context);
 		} catch (IllegalArgumentException e) {
@@ -55,7 +55,7 @@ public class AudioRecordWrapper {
 		}
 		this.queue = new SynchronousQueue<Sample>();
 		this.errorHandler = errorHandler;
-		this.bufferSize = bufferSize;
+		this.bufferSize = AudioHelper.getRecorderBufferSize(context);
 	}
 	
 	public void start() {
@@ -95,7 +95,7 @@ public class AudioRecordWrapper {
 		return queue.poll();
 	}
 	
-	public Sample take() throws InterruptedException{
+	public Sample take() throws InterruptedException {
 		return queue.take();
 	}
 	

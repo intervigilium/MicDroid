@@ -21,7 +21,9 @@ package com.intervigil.micdroiddonate.helper;
 
 import android.content.Context;
 import android.media.AudioFormat;
+import android.media.AudioManager;
 import android.media.AudioRecord;
+import android.media.AudioTrack;
 import android.media.MediaRecorder.AudioSource;
 import android.util.Log;
 
@@ -101,6 +103,32 @@ public class AudioHelper {
 	}
 	
 	/**
+     * Gets an AudioTrack object using the current playback settings
+     * 
+     * @param		context				Context which we are getting recorder for
+     */
+	public static AudioTrack getPlayer(Context context) throws IllegalArgumentException {
+		AudioTrack player = null;
+		int sampleRate = PreferenceHelper.getSampleRate(context);
+		int bufferSizeAdjuster = PreferenceHelper.getBufferSizeAdjuster(context);
+
+		Log.i("AudioHelper", String.format("AudioTrack initialized with saved configuration! sample rate: %d, buffer size adjuster: %d", sampleRate, bufferSizeAdjuster));
+		
+		int bufferSize = AudioTrack.getMinBufferSize(sampleRate, 
+				Constants.DEFAULT_CHANNEL_CONFIG, 
+				Constants.DEFAULT_PCM_FORMAT) * bufferSizeAdjuster;
+
+		player = new AudioTrack(AudioManager.STREAM_MUSIC,
+				sampleRate, 
+				Constants.DEFAULT_CHANNEL_CONFIG,
+				Constants.DEFAULT_PCM_FORMAT,
+				bufferSize,
+				AudioTrack.MODE_STREAM);
+
+		return player;
+	}
+	
+	/**
      * Gets the validity of the current recorder settings, particularly sample rate;
      * This function wraps getRecorderBufferSize(Context)
      * 
@@ -141,7 +169,7 @@ public class AudioHelper {
 		int bufferSizeAdjuster = PreferenceHelper.getBufferSizeAdjuster(context);
 
 		Log.i("AudioHelper", String.format("AudioRecord initialized with saved configuration! sample rate: %d, buffer size adjuster: %d", sampleRate, bufferSizeAdjuster));
-		
+
 		int bufferSize = AudioRecord.getMinBufferSize(sampleRate, 
 				Constants.DEFAULT_CHANNEL_CONFIG, 
 				Constants.DEFAULT_PCM_FORMAT) * bufferSizeAdjuster;
@@ -230,7 +258,7 @@ public class AudioHelper {
 		Log.i("AudioHelper", String.format("manufacturer: %s, model: %s, device: %s", manufacturer, model, device));
 		
 		if (manufacturer.equals(MANUFACTURER_SAMSUNG)) {
-			if (model.contains("galaxy") || device.equals(DEVICE_ID_GALAXY_S)) {
+			if (device.equals(DEVICE_ID_GALAXY_S)) {
 				Log.i("AudioHelper", "Samsung Galaxy S detected");
 				return true;
 			}

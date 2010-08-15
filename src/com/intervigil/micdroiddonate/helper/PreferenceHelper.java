@@ -43,6 +43,12 @@ public class PreferenceHelper {
 		return pref;
 	}
 	
+	public static boolean getLiveMode(Context context) {
+		SharedPreferences prefReader = PreferenceManager.getDefaultSharedPreferences(context);
+		boolean pref = prefReader.getBoolean(context.getString(R.string.prefs_live_mode_key), Boolean.parseBoolean(context.getString(R.string.prefs_live_mode_default)));
+		return pref;
+	}
+	
 	public static char getKey(Context context) {
 		SharedPreferences prefReader = PreferenceManager.getDefaultSharedPreferences(context);
 		String pref = prefReader.getString(context.getString(R.string.prefs_key_key), context.getString(R.string.prefs_key_default));
@@ -71,6 +77,12 @@ public class PreferenceHelper {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		String pref = prefs.getString(context.getString(R.string.prefs_corr_smooth_key), context.getString(R.string.prefs_corr_smooth_default));
 		return Float.valueOf(pref);
+	}
+	
+	public static boolean getFormantCorrection(Context context) {
+		SharedPreferences prefReader = PreferenceManager.getDefaultSharedPreferences(context);
+		boolean pref = prefReader.getBoolean(context.getString(R.string.prefs_live_mode_key), Boolean.parseBoolean(context.getString(R.string.prefs_live_mode_default)));
+		return pref;
 	}
 	
 	public static float getMix(Context context) {

@@ -12,6 +12,14 @@
 
 	<PreferenceCategory android:title="@string/prefs_cat_recording">
 	
+		<CheckBoxPreference
+				android:key="@string/prefs_live_mode_key"
+				android:title="@string/prefs_live_mode"
+				android:summaryOff="@string/prefs_live_mode_summary_off"
+				android:summaryOn="@string/prefs_live_mode_summary_on"
+				android:dialogTitle="@string/prefs_live_mode_title"
+				android:defaultValue="@string/prefs_live_mode_default" />
+				
 		<ListPreference
 				android:key="@string/prefs_sample_rate_key"
 				android:title="@string/prefs_sample_rate"
@@ -86,6 +94,14 @@
                 android:entryValues="@array/prefs_corr_smooth_values"
                 android:dialogTitle="@string/prefs_corr_smooth_title"
                 android:defaultValue="@string/prefs_corr_smooth_default" />
+
+		<CheckBoxPreference
+				android:key="@string/prefs_formant_corr_key"
+				android:title="@string/prefs_formant_corr"
+				android:summaryOff="@string/prefs_formant_corr_summary_off"
+				android:summaryOn="@string/prefs_formant_corr_summary_on"
+				android:dialogTitle="@string/prefs_formant_corr_title"
+				android:defaultValue="@string/prefs_formant_corr_default" />
 
 		<ListPreference
                 android:key="@string/prefs_corr_mix_key"

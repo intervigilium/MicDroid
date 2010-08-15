@@ -49,6 +49,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
+<<<<<<< HEAD:src/com/intervigil/micdroiddonate/Mic.java
 import com.intervigil.micdroiddonate.helper.ApplicationHelper;
 import com.intervigil.micdroiddonate.helper.AudioHelper;
 import com.intervigil.micdroiddonate.helper.DialogHelper;
@@ -58,6 +59,18 @@ import com.intervigil.micdroiddonate.model.Recording;
 import com.intervigil.micdroiddonate.pitch.AutoTalent;
 import com.intervigil.micdroiddonate.wave.WaveReader;
 import com.intervigil.micdroiddonate.wave.WaveWriter;
+=======
+import com.intervigil.micdroid.helper.ApplicationHelper;
+import com.intervigil.micdroid.helper.AudioHelper;
+import com.intervigil.micdroid.helper.DialogHelper;
+import com.intervigil.micdroid.helper.HeadsetHelper;
+import com.intervigil.micdroid.helper.MediaStoreHelper;
+import com.intervigil.micdroid.helper.PreferenceHelper;
+import com.intervigil.micdroid.model.Recording;
+import com.intervigil.micdroid.pitch.AutoTalent;
+import com.intervigil.micdroid.wave.WaveReader;
+import com.intervigil.micdroid.wave.WaveWriter;
+>>>>>>> master:src/com/intervigil/micdroid/Mic.java
 
 public class Mic extends Activity {
 
@@ -72,7 +85,6 @@ public class Mic extends Activity {
 	private static final float DEFAULT_LFO_SHAPE = 0.0f;
 	private static final float DEFAULT_LFO_SYM = 0.0f;
 	private static final int DEFAULT_LFO_QUANT = 0;
-	private static final int DEFAULT_FORM_CORR = 0;
 	private static final float DEFAULT_FORM_WARP = 0.0f;
 	
 	private WakeLock wakeLock;
@@ -255,6 +267,14 @@ public class Mic extends Activity {
 	    			// received error message that AudioRecord was started with bad sample rate/buffer size
 	    			DialogHelper.showWarning(Mic.this, R.string.audiorecord_exception_title, R.string.audiorecord_exception_warning);
 	    			break;
+	    		case Constants.AUDIOTRACK_ILLEGAL_STATE:
+	    			// received error message that AudioTrack was started without being properly initialized
+	    			DialogHelper.showWarning(Mic.this, R.string.audiorecord_exception_title, R.string.audiorecord_exception_warning);
+	    			break;
+	    		case Constants.AUDIOTRACK_ILLEGAL_ARGUMENT:
+	    			// received error message that AudioTrack was started with bad sample rate/buffer size
+	    			DialogHelper.showWarning(Mic.this, R.string.audiorecord_exception_title, R.string.audiorecord_exception_warning);
+	    			break;
 	    		case Constants.WRITER_OUT_OF_SPACE:
 	    			// received error that the writer is out of SD card space
 	    			DialogHelper.showWarning(Mic.this, R.string.writer_out_of_space_title, R.string.writer_out_of_space_warning);
@@ -275,15 +295,21 @@ public class Mic extends Activity {
     	private WaveReader reader;
     	private WaveWriter writer;
     	private ProgressDialog spinner;
+    	private boolean isLiveMode;
     	
     	public ProcessAutotalentTask() {
     		spinner = new ProgressDialog(Mic.this);
     		spinner.setCancelable(false);
+    		isLiveMode = PreferenceHelper.getLiveMode(Mic.this);
     	}
     	
     	@Override
     	protected void onPreExecute() {
-    		spinner.setMessage(getString(R.string.autotalent_progress_msg));
+    		if (isLiveMode) {
+    			spinner.setMessage(getString(R.string.saving_recording_progress_msg));
+    		} else {
+    			spinner.setMessage(getString(R.string.autotalent_progress_msg));
+    		}
     		spinner.show();
     	}
     	
@@ -292,51 +318,56 @@ public class Mic extends Activity {
 			// maybe ugly but we only pass one string in anyway
 			String fileName = params[0];
 
-			try {
-				reader = new WaveReader(
-						ApplicationHelper.getOutputDirectory(), 
-						getString(R.string.default_recording_name));
-				reader.openWave();
-				writer = new WaveWriter(
-						ApplicationHelper.getLibraryDirectory(), 
-						fileName,
-						reader.getSampleRate(), reader.getChannels(), reader.getPcmFormat());
-				writer.createWaveFile();
-			} catch (IOException e) {
-				// can't create our readers and writers for some reason!
-				// TODO: real error handling
-				e.printStackTrace();
-			}
-			
-			updateAutoTalentPreferences();
-			
-			short[] buf = new short[AUTOTALENT_CHUNK_SIZE];
-			while (true) {
+			if (isLiveMode) {
+				File recording = new File(ApplicationHelper.getOutputDirectory() + File.separator + "recording.wav");
+				File destination = new File(ApplicationHelper.getLibraryDirectory() + File.separator + fileName);
+				recording.renameTo(destination);
+			} else {
 				try {
-					int samplesRead = reader.readShort(buf, AUTOTALENT_CHUNK_SIZE);
-					if (samplesRead > 0) {
-						AutoTalent.processSamples(buf, samplesRead);
-						writer.write(buf, samplesRead);
-					} else {
-						break;
-					}
+					reader = new WaveReader(
+							ApplicationHelper.getOutputDirectory(), 
+							getString(R.string.default_recording_name));
+					reader.openWave();
+					writer = new WaveWriter(
+							ApplicationHelper.getLibraryDirectory(), 
+							fileName,
+							reader.getSampleRate(), reader.getChannels(), reader.getPcmFormat());
+					writer.createWaveFile();
 				} catch (IOException e) {
-					// failed to read/write to wave file
+					// can't create our readers and writers for some reason!
+					// TODO: real error handling
+					e.printStackTrace();
+				}
+				
+				updateAutoTalentPreferences();
+				
+				short[] buf = new short[AUTOTALENT_CHUNK_SIZE];
+				while (true) {
+					try {
+						int samplesRead = reader.readShort(buf, AUTOTALENT_CHUNK_SIZE);
+						if (samplesRead > 0) {
+							AutoTalent.processSamples(buf, samplesRead);
+							writer.write(buf, samplesRead);
+						} else {
+							break;
+						}
+					} catch (IOException e) {
+						// failed to read/write to wave file
+						// TODO: real error handling
+						e.printStackTrace();
+					}
+				}
+				
+				try {
+					reader.closeWaveFile();
+					writer.closeWaveFile();
+					AutoTalent.destroyAutoTalent();
+				} catch (IOException e) {
+					// failed to close out our files correctly
 					// TODO: real error handling
 					e.printStackTrace();
 				}
 			}
-			
-			try {
-				reader.closeWaveFile();
-				writer.closeWaveFile();
-				AutoTalent.destroyAutoTalent();
-			} catch (IOException e) {
-				// failed to close out our files correctly
-				// TODO: real error handling
-				e.printStackTrace();
-			}
-
 			return null;
 		}
 		
@@ -369,13 +400,23 @@ public class Mic extends Activity {
     		}
     		else {
 				if (btn.isChecked()) {
-					if (recorder == null) {
-						recorder = new Recorder(Mic.this, recordingErrorHandler, AudioHelper.getRecorderBufferSize(Mic.this));
+					boolean isLiveMode = PreferenceHelper.getLiveMode(Mic.this);
+					if (isLiveMode && !HeadsetHelper.isHeadsetPluggedIn(Mic.this)) {
+						btn.setChecked(false);
+						DialogHelper.showWarning(Mic.this, R.string.no_headset_plugged_in_title, R.string.no_headset_plugged_in_warning);
 					}
-					recorder.start();
-		        	timer.reset();
-		        	timer.start();
-		        	Toast.makeText(getBaseContext(), R.string.recording_started_toast, Toast.LENGTH_SHORT).show();
+					else {
+						if (isLiveMode) {
+							updateAutoTalentPreferences();
+						}
+						if (recorder == null) {
+							recorder = new Recorder(Mic.this, recordingErrorHandler, isLiveMode);
+						}
+						recorder.start();
+			        	timer.reset();
+			        	timer.start();
+			        	Toast.makeText(getBaseContext(), R.string.recording_started_toast, Toast.LENGTH_SHORT).show();
+					}
 				} else {
 					if (recorder != null && recorder.isRunning()) {
 						// only do this if it was running, otherwise an error message triggered the check state change
@@ -396,13 +437,14 @@ public class Mic extends Activity {
     	float pitchShift = PreferenceHelper.getPitchShift(Mic.this);
     	float strength = PreferenceHelper.getCorrectionStrength(Mic.this);
     	float smooth = PreferenceHelper.getCorrectionSmoothness(Mic.this);
+    	int formantCorrection = PreferenceHelper.getFormantCorrection(Mic.this) ? 1 : 0;
     	float mix = PreferenceHelper.getMix(Mic.this);
     	
     	AutoTalent.instantiateAutoTalent(PreferenceHelper.getSampleRate(Mic.this));
     	AutoTalent.initializeAutoTalent(CONCERT_A, key, DEFAULT_FIXED_PITCH, fixedPull, 
     			strength, smooth, pitchShift, DEFAULT_SCALE_ROTATE, 
     			DEFAULT_LFO_DEPTH, DEFAULT_LFO_RATE, DEFAULT_LFO_SHAPE, DEFAULT_LFO_SYM, DEFAULT_LFO_QUANT, 
-    			DEFAULT_FORM_CORR, DEFAULT_FORM_WARP, mix);
+    			formantCorrection, DEFAULT_FORM_WARP, mix);
     }
     
     private void migrateOldRecordings() {
