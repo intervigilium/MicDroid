@@ -5,11 +5,12 @@
 
     <string name="startup_dialog_title">What\'s new in this version?</string>
     <string name="startup_dialog_text">1. Live pitch-correction option\n\
-2. Galaxy S, Captivate, Vibrant support\n\
-3. Speedup using armeabi-v7a if possible\n\
-4. New UI for recording screen\n\
-5. Fix Droid X sound quality issues\n\
-6. Allow recordings to be set as notifications\n\
+2. Formant correction option\n\
+3. Galaxy S, Captivate, Vibrant support\n\
+4. Speedup using armeabi-v7a if possible\n\
+5. New UI for recording screen\n\
+6. Fix Droid X sound quality issues\n\
+7. Allow recordings to be set as notifications\n\
 \n\
 DISCLAIMER: This is beta software! May be buggy and force close on you! Author is aware and working on issues!\n\
     </string>
