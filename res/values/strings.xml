@@ -37,7 +37,7 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
     <string name="recording_exception_warning">An unknown exception occurred while recording! Please check your settings and make sure your device is able to record audio!</string>
 
 	<string name="no_headset_plugged_in_title">WARNING!</string>
-    <string name="no_headset_plugged_in_warning">You must plug in headphones to record in live correction mode!</string>
+    <string name="no_headset_plugged_in_warning">Live correction mode requires headphones!</string>
 
     <string name="recording_started_toast">Recording started! Press power button to stop recording!</string>
     <string name="recording_finished_toast">Recording finished!</string>
