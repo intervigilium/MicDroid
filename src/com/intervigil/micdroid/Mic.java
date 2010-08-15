@@ -398,6 +398,7 @@ public class Mic extends Activity {
 				if (btn.isChecked()) {
 					boolean isLiveMode = PreferenceHelper.getLiveMode(Mic.this);
 					if (isLiveMode && !HeadsetHelper.isHeadsetPluggedIn(Mic.this)) {
+						btn.setChecked(false);
 						DialogHelper.showWarning(Mic.this, R.string.no_headset_plugged_in_title, R.string.no_headset_plugged_in_warning);
 					}
 					else {
