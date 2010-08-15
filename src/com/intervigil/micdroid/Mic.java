@@ -52,6 +52,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import com.intervigil.micdroid.helper.ApplicationHelper;
 import com.intervigil.micdroid.helper.AudioHelper;
 import com.intervigil.micdroid.helper.DialogHelper;
+import com.intervigil.micdroid.helper.HeadsetHelper;
 import com.intervigil.micdroid.helper.MediaStoreHelper;
 import com.intervigil.micdroid.helper.PreferenceHelper;
 import com.intervigil.micdroid.model.Recording;
@@ -396,16 +397,21 @@ public class Mic extends Activity {
     		else {
 				if (btn.isChecked()) {
 					boolean isLiveMode = PreferenceHelper.getLiveMode(Mic.this);
-					if (isLiveMode) {
-						updateAutoTalentPreferences();
+					if (isLiveMode && !HeadsetHelper.isHeadsetPluggedIn(Mic.this)) {
+						DialogHelper.showWarning(Mic.this, R.string.no_headset_plugged_in_title, R.string.no_headset_plugged_in_warning);
 					}
-					if (recorder == null) {
-						recorder = new Recorder(Mic.this, recordingErrorHandler, isLiveMode);
+					else {
+						if (isLiveMode) {
+							updateAutoTalentPreferences();
+						}
+						if (recorder == null) {
+							recorder = new Recorder(Mic.this, recordingErrorHandler, isLiveMode);
+						}
+						recorder.start();
+			        	timer.reset();
+			        	timer.start();
+			        	Toast.makeText(getBaseContext(), R.string.recording_started_toast, Toast.LENGTH_SHORT).show();
 					}
-					recorder.start();
-		        	timer.reset();
-		        	timer.start();
-		        	Toast.makeText(getBaseContext(), R.string.recording_started_toast, Toast.LENGTH_SHORT).show();
 				} else {
 					if (recorder != null && recorder.isRunning()) {
 						// only do this if it was running, otherwise an error message triggered the check state change
