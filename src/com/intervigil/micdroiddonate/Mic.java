@@ -49,28 +49,17 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
-<<<<<<< HEAD:src/com/intervigil/micdroiddonate/Mic.java
 import com.intervigil.micdroiddonate.helper.ApplicationHelper;
 import com.intervigil.micdroiddonate.helper.AudioHelper;
 import com.intervigil.micdroiddonate.helper.DialogHelper;
+import com.intervigil.micdroiddonate.helper.HeadsetHelper;
 import com.intervigil.micdroiddonate.helper.MediaStoreHelper;
 import com.intervigil.micdroiddonate.helper.PreferenceHelper;
 import com.intervigil.micdroiddonate.model.Recording;
 import com.intervigil.micdroiddonate.pitch.AutoTalent;
 import com.intervigil.micdroiddonate.wave.WaveReader;
 import com.intervigil.micdroiddonate.wave.WaveWriter;
-=======
-import com.intervigil.micdroid.helper.ApplicationHelper;
-import com.intervigil.micdroid.helper.AudioHelper;
-import com.intervigil.micdroid.helper.DialogHelper;
-import com.intervigil.micdroid.helper.HeadsetHelper;
-import com.intervigil.micdroid.helper.MediaStoreHelper;
-import com.intervigil.micdroid.helper.PreferenceHelper;
-import com.intervigil.micdroid.model.Recording;
-import com.intervigil.micdroid.pitch.AutoTalent;
-import com.intervigil.micdroid.wave.WaveReader;
-import com.intervigil.micdroid.wave.WaveWriter;
->>>>>>> master:src/com/intervigil/micdroid/Mic.java
+
 
 public class Mic extends Activity {
 

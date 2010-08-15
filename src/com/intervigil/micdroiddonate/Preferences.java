@@ -25,8 +25,9 @@ import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.util.Log;
 
-import com.intervigil.micdroid.helper.DialogHelper;
-import com.intervigil.micdroid.helper.PreferenceHelper;
+import com.intervigil.micdroiddonate.helper.DialogHelper;
+import com.intervigil.micdroiddonate.helper.PreferenceHelper;
+
 
 public class Preferences extends PreferenceActivity implements OnSharedPreferenceChangeListener {
 	/**

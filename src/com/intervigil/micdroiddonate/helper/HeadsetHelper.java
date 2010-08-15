@@ -17,7 +17,7 @@
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.intervigil.micdroid.helper;
+package com.intervigil.micdroiddonate.helper;
 
 import android.content.Context;
 import android.content.Intent;

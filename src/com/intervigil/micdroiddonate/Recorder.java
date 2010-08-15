@@ -27,20 +27,12 @@ import android.media.AudioTrack;
 import android.os.Handler;
 import android.os.Message;
 
-<<<<<<< HEAD:src/com/intervigil/micdroiddonate/Recorder.java
 import com.intervigil.micdroiddonate.helper.ApplicationHelper;
 import com.intervigil.micdroiddonate.helper.AudioHelper;
 import com.intervigil.micdroiddonate.helper.PreferenceHelper;
 import com.intervigil.micdroiddonate.model.Sample;
+import com.intervigil.micdroiddonate.pitch.AutoTalent;
 import com.intervigil.micdroiddonate.wave.WaveWriter;
-=======
-import com.intervigil.micdroid.helper.ApplicationHelper;
-import com.intervigil.micdroid.helper.AudioHelper;
-import com.intervigil.micdroid.helper.PreferenceHelper;
-import com.intervigil.micdroid.model.Sample;
-import com.intervigil.micdroid.pitch.AutoTalent;
-import com.intervigil.micdroid.wave.WaveWriter;
->>>>>>> master:src/com/intervigil/micdroid/Recorder.java
 
 public class Recorder {
 	private MicWriter writerThread;
