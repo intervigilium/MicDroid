@@ -30,7 +30,10 @@ public class HeadsetHelper {
 
 	public static boolean isHeadsetPluggedIn(Context context) {
 		Intent headsetIntent = context.registerReceiver(null, new IntentFilter(Intent.ACTION_HEADSET_PLUG));
-		Bundle extraData = headsetIntent.getExtras();
-		return !(extraData.getInt(EXTRA_HEADSET_STATE_KEY) == 0);
+		if (headsetIntent != null) {
+			Bundle extraData = headsetIntent.getExtras();
+			return !(extraData.getInt(EXTRA_HEADSET_STATE_KEY) == 0);
+		}
+		return false;
 	}
 }
