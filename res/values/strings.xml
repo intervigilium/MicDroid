@@ -154,6 +154,13 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
     <string name="prefs_corr_smooth_summary">Smoothness of correction transition</string>
     <string name="prefs_corr_smooth_title">Correction Smoothness</string>
     <string name="prefs_corr_smooth_default">0.0</string>
+    
+    <string name="prefs_formant_corr_key">formant_correction</string>
+    <string name="prefs_formant_corr">Enable Formant Correction</string>
+    <string name="prefs_formant_corr_summary_on">Formant correction is enabled.</string>
+    <string name="prefs_formant_corr_summary_off">Formant correction is disabled.</string>
+    <string name="prefs_formant_corr_title">Enable Formant Correction</string>
+    <string name="prefs_formant_corr_default">false</string>
 
     <string name="prefs_corr_mix_key">mix</string>
     <string name="prefs_corr_mix">Mix</string>
