@@ -1,5 +1,6 @@
 This Android application pitch corrects your voice, using the effect made famous by T-Pain!
-Now available under GPLv2 license.
+This project is licensed under GPLv2, for further licensing information see the
+LICENSE file.
 
 Build Instructions:
 Import project into Eclipse, since I have not created Ant makefiles for this project.
