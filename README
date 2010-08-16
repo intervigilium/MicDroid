@@ -1,6 +1,5 @@
 This Android application pitch corrects your voice, using the effect made famous by T-Pain!
-Now available under MIT license, excepting the modified Autotalent plugin,
-which is still under GPL2
+Now available under GPLv2 license.
 
 Build Instructions:
 Import project into Eclipse, since I have not created Ant makefiles for this project.
