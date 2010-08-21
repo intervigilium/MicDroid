@@ -85,6 +85,12 @@ public class PreferenceHelper {
 		return pref;
 	}
 	
+	public static float getFormantWarp(Context context) {
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+		String pref = prefs.getString(context.getString(R.string.prefs_formant_warp_key), context.getString(R.string.prefs_formant_warp_default));
+		return Float.valueOf(pref);
+	}
+	
 	public static float getMix(Context context) {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		String pref = prefs.getString(context.getString(R.string.prefs_corr_mix_key), context.getString(R.string.prefs_corr_mix_default));

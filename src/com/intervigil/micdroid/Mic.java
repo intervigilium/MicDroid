@@ -73,7 +73,6 @@ public class Mic extends Activity {
 	private static final float DEFAULT_LFO_SHAPE = 0.0f;
 	private static final float DEFAULT_LFO_SYM = 0.0f;
 	private static final int DEFAULT_LFO_QUANT = 0;
-	private static final float DEFAULT_FORM_WARP = 0.0f;
 	
 	private WakeLock wakeLock;
 	private StartupDialog startupDialog;
@@ -435,13 +434,14 @@ public class Mic extends Activity {
     	float strength = PreferenceHelper.getCorrectionStrength(Mic.this);
     	float smooth = PreferenceHelper.getCorrectionSmoothness(Mic.this);
     	int formantCorrection = PreferenceHelper.getFormantCorrection(Mic.this) ? 1 : 0;
+    	float formantWarp = PreferenceHelper.getFormantWarp(Mic.this);
     	float mix = PreferenceHelper.getMix(Mic.this);
     	
     	AutoTalent.instantiateAutoTalent(PreferenceHelper.getSampleRate(Mic.this));
     	AutoTalent.initializeAutoTalent(CONCERT_A, key, DEFAULT_FIXED_PITCH, fixedPull, 
     			strength, smooth, pitchShift, DEFAULT_SCALE_ROTATE, 
     			DEFAULT_LFO_DEPTH, DEFAULT_LFO_RATE, DEFAULT_LFO_SHAPE, DEFAULT_LFO_SYM, DEFAULT_LFO_QUANT, 
-    			formantCorrection, DEFAULT_FORM_WARP, mix);
+    			formantCorrection, formantWarp, mix);
     }
     
     private void migrateOldRecordings() {
