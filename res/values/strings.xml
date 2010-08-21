@@ -166,7 +166,7 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
     <string name="prefs_formant_warp">Formant Warp</string>
     <string name="prefs_formant_warp_summary">Warp formant frequencies (can helps prevent chipmunk effect)</string>
     <string name="prefs_formant_warp_title">Formant Frequency Warp</string>
-    <string name="prefs_formant_warp_default">-1.0</string>
+    <string name="prefs_formant_warp_default">-0.5</string>
 
     <string name="prefs_corr_mix_key">mix</string>
     <string name="prefs_corr_mix">Mix</string>
