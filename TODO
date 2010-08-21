@@ -2,7 +2,7 @@ There are a lot of things left to do, and many features to add.
 
 To Do:
 Implement some kind of testing or QA routine
-Expose formant warp option to user, set default to -1 to correct chipmunk effect a bit
+Add some kind of help to the app
 Share as MMS
 Integrate MP3 encoder
 Integrate automatic log collector: http://code.google.com/p/android-send-me-logs/
