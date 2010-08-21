@@ -331,8 +331,10 @@ public class Mic extends Activity {
 					writer.createWaveFile();
 				} catch (IOException e) {
 					// can't create our readers and writers for some reason!
-					// TODO: real error handling
 					e.printStackTrace();
+					Message msg = recordingErrorHandler.obtainMessage(Constants.UNABLE_TO_CREATE_RECORDING);
+					recordingErrorHandler.sendMessage(msg);
+					return null;
 				}
 				
 				updateAutoTalentPreferences();
@@ -349,8 +351,10 @@ public class Mic extends Activity {
 						}
 					} catch (IOException e) {
 						// failed to read/write to wave file
-						// TODO: real error handling
 						e.printStackTrace();
+						Message msg = recordingErrorHandler.obtainMessage(Constants.WRITER_OUT_OF_SPACE);
+						recordingErrorHandler.sendMessage(msg);
+						break;
 					}
 				}
 				
