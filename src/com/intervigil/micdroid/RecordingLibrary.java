@@ -259,7 +259,7 @@ public class RecordingLibrary extends Activity {
     
     private class LoadRecordingsTask extends AsyncTask<Void, Void, Void> {
     	// Async load all the recordings already in the directory
-    	private final ProgressDialog spinner = new ProgressDialog(RecordingLibrary.this);
+    	private final ProgressDialog spinner = new ProgressDialog(getApplicationContext());
     	
     	@Override
     	protected void onPreExecute() {
