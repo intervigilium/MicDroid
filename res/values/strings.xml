@@ -5,7 +5,7 @@
 
     <string name="startup_dialog_title">What\'s new in this version?</string>
     <string name="startup_dialog_text">1. Live pitch-correction option\n\
-2. Formant correction option\n\
+2. Formant correction and warp options\n\
 3. Galaxy S, Captivate, Vibrant support\n\
 4. Speedup using armeabi-v7a if possible\n\
 5. New UI for recording screen\n\
@@ -175,7 +175,7 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
     <string name="prefs_corr_mix_title">Mix</string>
     <string name="prefs_corr_mix_default">1.0</string>
 
-    <string name="about_title">About MicDroid Version 0.33</string>
+    <string name="about_title">About MicDroid Version 0.34</string>
     <string name="about_text">Graphics work courtesy of Peng X. Wang: http://pengxwang.com\n\
 \n\
 MicDroid is licensed under the GPL2 License\n\
