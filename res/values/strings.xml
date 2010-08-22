@@ -86,6 +86,11 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
     <string name="confirm_delete_btn_yes">Delete</string>
     <string name="confirm_delete_btn_no">Cancel</string>
     
+    <string name="confirm_reset_prefs_title">Reset to Default</string>
+    <string name="confirm_reset_prefs_message">Are you sure you want to reset all settings to default?</string>
+    <string name="confirm_reset_prefs_btn_yes">Reset</string>
+    <string name="confirm_reset_prefs_btn_no">Cancel</string>
+    
     <string name="live_mode_enable_title">WARNING!</string>
     <string name="live_mode_enable_warning">Live pitch-correction mode requires a powerful phone and headphones in order to function properly.\n\ Motorola Droid or better is recommended!\n\ Enable at your own risk!</string>
 
@@ -173,6 +178,13 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
     <string name="prefs_corr_mix_summary">Blend between wet and dry signal</string>
     <string name="prefs_corr_mix_title">Mix</string>
     <string name="prefs_corr_mix_default">1.0</string>
+    
+    <string name="prefs_cat_reset_default">Default Settings</string>
+    <string name="prefs_reset_default_key">reset_default</string>
+    <string name="prefs_reset_default">Reset to Default</string>
+    <string name="prefs_reset_default_summary">Reset all settings to default.</string>
+    <string name="prefs_reset_default_title">Reset to Default</string>
+    <string name="prefs_reset_default_default">false</string>
 
     <string name="about_title">About MicDroid Version 0.34</string>
     <string name="about_text">Graphics work courtesy of Peng X. Wang: http://pengxwang.com\n\

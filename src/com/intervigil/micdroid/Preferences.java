@@ -19,10 +19,14 @@
 
 package com.intervigil.micdroid;
 
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.Preference.OnPreferenceClickListener;
 import android.util.Log;
 
 import com.intervigil.micdroid.helper.DialogHelper;
@@ -42,6 +46,9 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
         
         // Load the preferences from an XML resource.
         addPreferencesFromResource(R.xml.preferences);
+        
+        Preference resetDefault = (Preference) findPreference(getString(R.string.prefs_reset_default_key));
+        resetDefault.setOnPreferenceClickListener(resetListener);
     }
     
     @Override
@@ -55,7 +62,7 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
     	Log.i("Preferences", "onResume()");
         super.onResume();
         
-        // Set up a listener whenever a key changes            
+        // Set up a listener whenever a key changes      
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
     }
 
@@ -88,4 +95,29 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
 			}
 		}
 	}
+	
+	private OnPreferenceClickListener resetListener = new OnPreferenceClickListener() {
+
+		@Override
+		public boolean onPreferenceClick(Preference preference) {
+			Builder confirmDialogBuilder = new Builder(Preferences.this);
+    		confirmDialogBuilder.setTitle(R.string.confirm_reset_prefs_title)
+    			.setMessage(R.string.confirm_reset_prefs_message)
+    			.setPositiveButton(R.string.confirm_reset_prefs_btn_yes, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						PreferenceHelper.setDefaultPreferences(Preferences.this);
+		    			dialog.dismiss();
+					}
+				})
+    			.setNegativeButton(R.string.confirm_reset_prefs_btn_no, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+					}
+				});
+    		confirmDialogBuilder.create().show();
+    		return true;
+		}
+	};
 }

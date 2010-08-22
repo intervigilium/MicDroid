@@ -122,5 +122,15 @@
                 android:defaultValue="@string/prefs_corr_mix_default" />
                 
     </PreferenceCategory>
+    
+    <PreferenceCategory android:title="@string/prefs_cat_reset_default">
+    	<Preference
+    			android:key="@string/prefs_reset_default_key"
+    			android:title="@string/prefs_reset_default"
+    			android:summary="@string/prefs_reset_default_summary"
+    			android:dialogTitle="@string/prefs_reset_default_title" 
+    			android:defaultValue="@string/prefs_reset_default_default" />
+    			
+    </PreferenceCategory>
   
 </PreferenceScreen>
