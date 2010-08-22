@@ -104,6 +104,7 @@
 				android:defaultValue="@string/prefs_formant_corr_default" />
 				
 		<ListPreference
+				android:dependency="@string/prefs_formant_corr_key"
                 android:key="@string/prefs_formant_warp_key"
                 android:title="@string/prefs_formant_warp"
                 android:summary="@string/prefs_formant_warp_summary"
