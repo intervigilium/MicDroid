@@ -171,8 +171,6 @@
     
     <!-- Entry names for the formant warp menu. -->
     <string-array name="prefs_formant_warp_entries">
-        <item>-2.00</item>
-        <item>-1.50</item>
         <item>-1.00</item>
         <item>-0.75</item>
         <item>-0.50</item>
@@ -182,21 +180,19 @@
         <item> 0.50</item>
         <item> 0.75</item>
         <item> 1.00</item>
-        <item> 1.50</item>
-        <item> 2.00</item>
     </string-array>
     
     <!-- Values for formant warp menu. -->
     <string-array name="prefs_formant_warp_values">
-        <item>-2.0</item>
-        <item>-1.5</item>
-        <item>-1.0</item>
-        <item>-0.5</item>
-        <item> 0.0</item>
-        <item> 0.5</item>
-        <item> 1.0</item>
-        <item> 1.5</item>
-        <item> 2.0</item>
+        <item>-1.00</item>
+        <item>-0.75</item>
+        <item>-0.50</item>
+        <item>-0.25</item>
+        <item> 0.00</item>
+        <item> 0.25</item>
+        <item> 0.50</item>
+        <item> 0.75</item>
+        <item> 1.00</item>
     </string-array>
     
     <!-- Entry names for the mix menu. -->
