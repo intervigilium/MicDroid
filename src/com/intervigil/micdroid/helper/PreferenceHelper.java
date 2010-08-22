@@ -151,6 +151,12 @@ public class PreferenceHelper {
 		prefEditor.putBoolean(context.getString(R.string.prefs_formant_corr_key), Boolean.parseBoolean(context.getString(R.string.prefs_formant_corr_default)));
 		prefEditor.putString(context.getString(R.string.prefs_formant_warp_key), context.getString(R.string.prefs_formant_warp_default));
 		prefEditor.putString(context.getString(R.string.prefs_corr_mix_key), context.getString(R.string.prefs_corr_mix_default));
+		
+		prefEditor.putString(context.getString(R.string.prefs_sample_rate_key), String.format("%d", -1));
+		prefEditor.putString(context.getString(R.string.prefs_buffer_size_adjuster_key), String.format("%d", -1));
+		
 		prefEditor.commit();
+		
+		AudioHelper.configureRecorder(context);
 	}
 }
