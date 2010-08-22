@@ -160,17 +160,17 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
     <string name="prefs_corr_smooth_default">0.0</string>
     
     <string name="prefs_formant_corr_key">formant_correction</string>
-    <string name="prefs_formant_corr">Enable Formant Correction</string>
+    <string name="prefs_formant_corr">Formant Correction</string>
     <string name="prefs_formant_corr_summary_on">Formant correction is enabled.</string>
     <string name="prefs_formant_corr_summary_off">Formant correction is disabled.</string>
-    <string name="prefs_formant_corr_title">Enable Formant Correction</string>
-    <string name="prefs_formant_corr_default">false</string>
+    <string name="prefs_formant_corr_title">Formant Correction</string>
+    <string name="prefs_formant_corr_default">true</string>
     
     <string name="prefs_formant_warp_key">formant_warp</string>
-    <string name="prefs_formant_warp">Formant Warp</string>
+    <string name="prefs_formant_warp">Correction Warp Amount</string>
     <string name="prefs_formant_warp_summary">Warp formant frequencies (can helps prevent chipmunk effect)</string>
     <string name="prefs_formant_warp_title">Formant Frequency Warp</string>
-    <string name="prefs_formant_warp_default">-0.5</string>
+    <string name="prefs_formant_warp_default">-0.25</string>
 
     <string name="prefs_corr_mix_key">mix</string>
     <string name="prefs_corr_mix">Mix</string>
