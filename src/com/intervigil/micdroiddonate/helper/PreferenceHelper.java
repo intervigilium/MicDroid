@@ -81,8 +81,14 @@ public class PreferenceHelper {
 	
 	public static boolean getFormantCorrection(Context context) {
 		SharedPreferences prefReader = PreferenceManager.getDefaultSharedPreferences(context);
-		boolean pref = prefReader.getBoolean(context.getString(R.string.prefs_live_mode_key), Boolean.parseBoolean(context.getString(R.string.prefs_live_mode_default)));
+		boolean pref = prefReader.getBoolean(context.getString(R.string.prefs_formant_corr_key), Boolean.parseBoolean(context.getString(R.string.prefs_formant_corr_default)));
 		return pref;
+	}
+	
+	public static float getFormantWarp(Context context) {
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+		String pref = prefs.getString(context.getString(R.string.prefs_formant_warp_key), context.getString(R.string.prefs_formant_warp_default));
+		return Float.valueOf(pref);
 	}
 	
 	public static float getMix(Context context) {
@@ -133,5 +139,24 @@ public class PreferenceHelper {
 		Editor prefEditor = PreferenceManager.getDefaultSharedPreferences(context).edit();
 		prefEditor.putString(context.getString(R.string.prefs_buffer_size_adjuster_key), String.format("%d", bufferSizeAdjuster));
 		prefEditor.commit();
+	}
+	
+	public static void setDefaultPreferences(Context context) {
+		Editor prefEditor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+		prefEditor.putString(context.getString(R.string.prefs_key_key), context.getString(R.string.prefs_key_default));
+		prefEditor.putString(context.getString(R.string.prefs_pitch_pull_key), context.getString(R.string.prefs_pitch_pull_default));
+		prefEditor.putString(context.getString(R.string.prefs_pitch_shift_key), context.getString(R.string.prefs_pitch_shift_default));
+		prefEditor.putString(context.getString(R.string.prefs_corr_str_key), context.getString(R.string.prefs_corr_str_default));
+		prefEditor.putString(context.getString(R.string.prefs_corr_smooth_key), context.getString(R.string.prefs_corr_smooth_default));
+		prefEditor.putBoolean(context.getString(R.string.prefs_formant_corr_key), Boolean.parseBoolean(context.getString(R.string.prefs_formant_corr_default)));
+		prefEditor.putString(context.getString(R.string.prefs_formant_warp_key), context.getString(R.string.prefs_formant_warp_default));
+		prefEditor.putString(context.getString(R.string.prefs_corr_mix_key), context.getString(R.string.prefs_corr_mix_default));
+		
+		prefEditor.putString(context.getString(R.string.prefs_sample_rate_key), String.format("%d", -1));
+		prefEditor.putString(context.getString(R.string.prefs_buffer_size_adjuster_key), String.format("%d", -1));
+		
+		prefEditor.commit();
+		
+		AudioHelper.configureRecorder(context);
 	}
 }

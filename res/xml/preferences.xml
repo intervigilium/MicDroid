@@ -102,6 +102,15 @@
 				android:summaryOn="@string/prefs_formant_corr_summary_on"
 				android:dialogTitle="@string/prefs_formant_corr_title"
 				android:defaultValue="@string/prefs_formant_corr_default" />
+				
+		<ListPreference
+                android:key="@string/prefs_formant_warp_key"
+                android:title="@string/prefs_formant_warp"
+                android:summary="@string/prefs_formant_warp_summary"
+                android:entries="@array/prefs_formant_warp_entries"
+                android:entryValues="@array/prefs_formant_warp_values"
+                android:dialogTitle="@string/prefs_formant_warp_title"
+                android:defaultValue="@string/prefs_formant_warp_default" />
 
 		<ListPreference
                 android:key="@string/prefs_corr_mix_key"
@@ -112,6 +121,16 @@
                 android:dialogTitle="@string/prefs_corr_mix_title"
                 android:defaultValue="@string/prefs_corr_mix_default" />
                 
+    </PreferenceCategory>
+    
+    <PreferenceCategory android:title="@string/prefs_cat_reset_default">
+    	<Preference
+    			android:key="@string/prefs_reset_default_key"
+    			android:title="@string/prefs_reset_default"
+    			android:summary="@string/prefs_reset_default_summary"
+    			android:dialogTitle="@string/prefs_reset_default_title" 
+    			android:defaultValue="@string/prefs_reset_default_default" />
+    			
     </PreferenceCategory>
   
 </PreferenceScreen>

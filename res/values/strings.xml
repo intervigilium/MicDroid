@@ -5,12 +5,10 @@
 
     <string name="startup_dialog_title">What\'s new in this version?</string>
     <string name="startup_dialog_text">1. Live pitch-correction option\n\
-2. Formant correction option\n\
-3. Galaxy S, Captivate, Vibrant support\n\
-4. Speedup using armeabi-v7a if possible\n\
-5. New UI for recording screen\n\
-6. Fix Droid X sound quality issues\n\
-7. Allow recordings to be set as notifications\n\
+2. Fix several crashes\n\
+3. Reset default settings option\n\
+4. Formant correction and warp options\n\
+5. Galaxy S, Captivate, Vibrant support\n\
 \n\
 DISCLAIMER: This is beta software! May be buggy and force close on you! Author is aware and working on issues!\n\
     </string>
@@ -87,6 +85,11 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
     <string name="confirm_delete_btn_yes">Delete</string>
     <string name="confirm_delete_btn_no">Cancel</string>
     
+    <string name="confirm_reset_prefs_title">Reset to Default</string>
+    <string name="confirm_reset_prefs_message">Are you sure you want to reset all settings to default?</string>
+    <string name="confirm_reset_prefs_btn_yes">Reset</string>
+    <string name="confirm_reset_prefs_btn_no">Cancel</string>
+    
     <string name="live_mode_enable_title">WARNING!</string>
     <string name="live_mode_enable_warning">Live pitch-correction mode requires a powerful phone and headphones in order to function properly.\n\ Motorola Droid or better is recommended!\n\ Enable at your own risk!</string>
 
@@ -162,14 +165,27 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
     <string name="prefs_formant_corr_summary_off">Formant correction is disabled.</string>
     <string name="prefs_formant_corr_title">Enable Formant Correction</string>
     <string name="prefs_formant_corr_default">false</string>
+    
+    <string name="prefs_formant_warp_key">formant_warp</string>
+    <string name="prefs_formant_warp">Formant Warp</string>
+    <string name="prefs_formant_warp_summary">Warp formant frequencies (can helps prevent chipmunk effect)</string>
+    <string name="prefs_formant_warp_title">Formant Frequency Warp</string>
+    <string name="prefs_formant_warp_default">-0.5</string>
 
     <string name="prefs_corr_mix_key">mix</string>
     <string name="prefs_corr_mix">Mix</string>
     <string name="prefs_corr_mix_summary">Blend between wet and dry signal</string>
     <string name="prefs_corr_mix_title">Mix</string>
     <string name="prefs_corr_mix_default">1.0</string>
+    
+    <string name="prefs_cat_reset_default">Default Settings</string>
+    <string name="prefs_reset_default_key">reset_default</string>
+    <string name="prefs_reset_default">Reset to Default</string>
+    <string name="prefs_reset_default_summary">Reset all settings to default.</string>
+    <string name="prefs_reset_default_title">Reset to Default</string>
+    <string name="prefs_reset_default_default">false</string>
 
-    <string name="about_title">About MicDroid Version 0.33</string>
+    <string name="about_title">About MicDroid Version 0.34</string>
     <string name="about_text">Graphics work courtesy of Peng X. Wang: http://pengxwang.com\n\
 \n\
 MicDroid is licensed under the GPL2 License\n\

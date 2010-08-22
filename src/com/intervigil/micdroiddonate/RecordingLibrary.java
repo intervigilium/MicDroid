@@ -54,10 +54,15 @@ import com.intervigil.micdroiddonate.wave.WaveReader;
 
 public class RecordingLibrary extends Activity {
 
+	private static final String STATE_LOAD_IN_PROGRESS = "load_recordings_in_progress";
+	
 	private ListView library;
 	private RecordingAdapter libraryAdapter;
 	private ArrayList<Recording> recordings;
-
+	private LoadRecordingsTask loadRecordingsTask;
+	
+	private ProgressDialog loadRecordingSpinner;
+	
 	/**
      * Called when the activity is starting.  This is where most
      * initialization should go: calling setContentView(int) to inflate
@@ -80,7 +85,7 @@ public class RecordingLibrary extends Activity {
 	        recordings = new ArrayList<Recording>();
 	        this.libraryAdapter = new RecordingAdapter(this, R.layout.library_row, recordings);
 	        library.setAdapter(libraryAdapter);
-			new LoadRecordingsTask().execute((Void)null);
+			loadRecordingsTask = (LoadRecordingsTask) new LoadRecordingsTask().execute((Void)null);
         } else {
         	recordings = (ArrayList<Recording>)savedRecordings;
         	this.libraryAdapter = new RecordingAdapter(this, R.layout.library_row, recordings);
@@ -117,18 +122,24 @@ public class RecordingLibrary extends Activity {
     protected void onDestroy() {
     	Log.i(getPackageName(), "onDestroy()");
     	super.onDestroy();
+    	
+    	onCancelLoadRecordings();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         Log.i(getPackageName(), "onSaveInstanceState()");
         super.onSaveInstanceState(outState);
+        
+        saveLoadRecordingsTask(outState);
     }
     
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
     	Log.i(getPackageName(), "onRestoreInstanceState()");
     	super.onRestoreInstanceState(savedInstanceState);
+    	
+    	restoreLoadRecordingsTask(savedInstanceState);
     }
     
     @Override
@@ -158,7 +169,7 @@ public class RecordingLibrary extends Activity {
 	    			MediaStoreHelper.removeRecording(RecordingLibrary.this, r);
 	    			r.moveTo(destination);
 	    			// refresh recordings list since something was renamed
-	    			new LoadRecordingsTask().execute((Void)null);
+	    			loadRecordingsTask = (LoadRecordingsTask) new LoadRecordingsTask().execute((Void)null);
 	    		}
 	    		break;
     		default:
@@ -257,16 +268,37 @@ public class RecordingLibrary extends Activity {
         }
     }
     
+    private void onCancelLoadRecordings() {
+    	if (loadRecordingsTask != null && loadRecordingsTask.getStatus() == AsyncTask.Status.RUNNING) {
+    		loadRecordingsTask.cancel(true);
+    		loadRecordingsTask = null;
+    	}
+    }
+    
+    private void saveLoadRecordingsTask(Bundle outState) {
+    	final LoadRecordingsTask task = loadRecordingsTask;
+    	if (task != null && task.getStatus() != AsyncTask.Status.FINISHED) {
+    		task.cancel(true);
+    		outState.putBoolean(STATE_LOAD_IN_PROGRESS, true);
+    	}
+    }
+    
+    private void restoreLoadRecordingsTask(Bundle savedInstanceState) {
+    	if (savedInstanceState.getBoolean(STATE_LOAD_IN_PROGRESS)) {
+    		loadRecordingsTask = (LoadRecordingsTask) new LoadRecordingsTask().execute((Void)null);
+    	}
+    }
+    
     private class LoadRecordingsTask extends AsyncTask<Void, Void, Void> {
     	// Async load all the recordings already in the directory
-    	private final ProgressDialog spinner = new ProgressDialog(RecordingLibrary.this);
     	
     	@Override
     	protected void onPreExecute() {
     		library.setVisibility(View.INVISIBLE);
     		recordings.clear();
-    		this.spinner.setMessage("Loading recordings");
-    		this.spinner.show();
+    		loadRecordingSpinner = new ProgressDialog(RecordingLibrary.this);
+    		loadRecordingSpinner.setMessage("Loading recordings");
+    		loadRecordingSpinner.show();
     	}
     	
 		@Override
@@ -308,7 +340,7 @@ public class RecordingLibrary extends Activity {
 		protected void onPostExecute(Void result) {
 			library.setVisibility(View.VISIBLE);
 			libraryAdapter.notifyDataSetChanged();
-			this.spinner.dismiss();
+			loadRecordingSpinner.dismiss();
 		}
     }
 }
