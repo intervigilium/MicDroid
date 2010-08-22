@@ -81,7 +81,7 @@ public class PreferenceHelper {
 	
 	public static boolean getFormantCorrection(Context context) {
 		SharedPreferences prefReader = PreferenceManager.getDefaultSharedPreferences(context);
-		boolean pref = prefReader.getBoolean(context.getString(R.string.prefs_live_mode_key), Boolean.parseBoolean(context.getString(R.string.prefs_live_mode_default)));
+		boolean pref = prefReader.getBoolean(context.getString(R.string.prefs_formant_corr_key), Boolean.valueOf(context.getString(R.string.prefs_formant_corr_default)));
 		return pref;
 	}
 	
@@ -138,6 +138,19 @@ public class PreferenceHelper {
 	public static void setBufferSizeAdjuster(Context context, int bufferSizeAdjuster) {
 		Editor prefEditor = PreferenceManager.getDefaultSharedPreferences(context).edit();
 		prefEditor.putString(context.getString(R.string.prefs_buffer_size_adjuster_key), String.format("%d", bufferSizeAdjuster));
+		prefEditor.commit();
+	}
+	
+	public static void setDefaultPreferences(Context context) {
+		Editor prefEditor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+		prefEditor.putString(context.getString(R.string.prefs_key_key), context.getString(R.string.prefs_key_default));
+		prefEditor.putString(context.getString(R.string.prefs_pitch_pull_key), context.getString(R.string.prefs_pitch_pull_default));
+		prefEditor.putString(context.getString(R.string.prefs_pitch_shift_key), context.getString(R.string.prefs_pitch_shift_default));
+		prefEditor.putString(context.getString(R.string.prefs_corr_str_key), context.getString(R.string.prefs_corr_str_default));
+		prefEditor.putString(context.getString(R.string.prefs_corr_smooth_key), context.getString(R.string.prefs_corr_smooth_default));
+		prefEditor.putString(context.getString(R.string.prefs_formant_corr_key), context.getString(R.string.prefs_formant_corr_default));
+		prefEditor.putString(context.getString(R.string.prefs_formant_warp_key), context.getString(R.string.prefs_formant_warp_default));
+		prefEditor.putString(context.getString(R.string.prefs_corr_mix_key), context.getString(R.string.prefs_corr_mix_default));
 		prefEditor.commit();
 	}
 }
