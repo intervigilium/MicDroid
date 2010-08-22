@@ -108,6 +108,7 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
 					public void onClick(DialogInterface dialog, int which) {
 						PreferenceHelper.setDefaultPreferences(Preferences.this);
 		    			dialog.dismiss();
+		    			finish();
 					}
 				})
     			.setNegativeButton(R.string.confirm_reset_prefs_btn_no, new DialogInterface.OnClickListener() {
