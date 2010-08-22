@@ -171,15 +171,15 @@
     
     <!-- Entry names for the formant warp menu. -->
     <string-array name="prefs_formant_warp_entries">
-        <item>-1.00</item>
-        <item>-0.75</item>
+        <item>-1.00 (lowest sound)</item>
+        <item>-0.75 (lower sound)</item>
         <item>-0.50</item>
         <item>-0.25 (default)</item>
         <item> 0.00</item>
         <item> 0.25</item>
         <item> 0.50</item>
-        <item> 0.75</item>
-        <item> 1.00</item>
+        <item> 0.75 (higher sound)</item>
+        <item> 1.00 (highest sound)</item>
     </string-array>
     
     <!-- Values for formant warp menu. -->
