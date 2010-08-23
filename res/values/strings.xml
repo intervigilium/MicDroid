@@ -145,7 +145,7 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
     <string name="prefs_pitch_shift">Pitch Shift</string>
     <string name="prefs_pitch_shift_summary">Number of notes in scale which pitch is shifted</string>
     <string name="prefs_pitch_shift_title">Pitch Shift</string>
-    <string name="prefs_pitch_shift_default">0.0</string>
+    <string name="prefs_pitch_shift_default">-1.0</string>
 
     <string name="prefs_cat_correction">Correction Settings</string>
     <string name="prefs_corr_str_key">strength</string>

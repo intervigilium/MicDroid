@@ -135,6 +135,12 @@ public class PreferenceHelper {
 		editor.remove(context.getString(R.string.prefs_formant_corr_key));
 		editor.commit();
 	}
+	
+	public static void resetPitchShiftDefault(Context context) {
+		Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+		editor.remove(context.getString(R.string.prefs_pitch_shift_key));
+		editor.commit();
+	}
 
 	public static void unsetRecordingSettings(Context context) {
 		Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();

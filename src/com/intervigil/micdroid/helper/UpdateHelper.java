@@ -37,6 +37,7 @@ public class UpdateHelper {
 	public static void onAppUpdate(Context context) {
 		resetRecordingSettings(context);
 		resetFormantCorrection(context);
+		resetPitchShift(context);
 		showStartupDialog(context);
 		
 		// update the version code so we know not to do this again next time
@@ -52,6 +53,10 @@ public class UpdateHelper {
 	private static void resetRecordingSettings(Context context) {
 		PreferenceHelper.unsetRecordingSettings(context);
 		AudioHelper.configureRecorder(context);
+	}
+	
+	private static void resetPitchShift(Context context) {
+		PreferenceHelper.resetPitchShiftDefault(context);
 	}
 	
 	private static void resetFormantCorrection(Context context) {
