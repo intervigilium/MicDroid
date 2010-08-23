@@ -4,12 +4,13 @@
     <string name="default_recording_name">recording.wav</string>
 
     <string name="startup_dialog_title">What\'s new in this version?</string>
-    <string name="startup_dialog_text">1. Reset formant, pitch shift settings\n\
-2. Live pitch-correction option\n\
-3. Fix several crashes\n\
-4. Reset default settings option\n\
-5. Formant correction and warp options\n\
-6. Galaxy S, Captivate, Vibrant support\n\
+    <string name="startup_dialog_text">1. Fix force close on exit\n\
+2. Reset formant, pitch shift settings\n\
+3. Live pitch-correction option\n\
+4. Fix several crashes\n\
+5. Reset default settings option\n\
+6. Formant correction and warp options\n\
+7. Galaxy S, Captivate, Vibrant support\n\
 \n\
 DISCLAIMER: This is beta software! May be buggy and force close on you! Author is aware and working on issues!\n\
     </string>
@@ -186,7 +187,7 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
     <string name="prefs_reset_default_title">Reset to Default</string>
     <string name="prefs_reset_default_default">false</string>
 
-    <string name="about_title">About MicDroid Version 0.38</string>
+    <string name="about_title">About MicDroid Version 0.39</string>
     <string name="about_text">Graphics work courtesy of Peng X. Wang: http://pengxwang.com\n\
 \n\
 MicDroid is licensed under the GPL2 License\n\

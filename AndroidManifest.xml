@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.intervigil.micdroid"
-      android:versionCode="28"
-      android:versionName="0.38"
+      android:versionCode="29"
+      android:versionName="0.39"
       android:installLocation="auto">
     <application android:icon="@drawable/micdroid_icon" android:label="@string/app_name" android:name="com.intervigil.micdroid.MicApplication">
         <activity android:label="@string/app_name" android:name=".Mic" android:screenOrientation="portrait" android:configChanges="keyboard|keyboardHidden|orientation" >
