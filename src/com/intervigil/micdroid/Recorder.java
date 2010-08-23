@@ -54,14 +54,16 @@ public class Recorder {
 				AudioHelper.getPcmEncoding(Constants.DEFAULT_PCM_FORMAT));
 		this.audioRecord = new AudioRecordWrapper(context, errorHandler);
 		
-		try {
-			this.audioTrack = AudioHelper.getPlayer(context);
-		} catch (IllegalArgumentException e) {
-			// problem with audiotrack being given a bad sample rate/buffer size
-			e.printStackTrace();
-			
-			Message msg = errorHandler.obtainMessage(Constants.AUDIOTRACK_ILLEGAL_ARGUMENT);
-			errorHandler.sendMessage(msg);
+		if (isLiveMode) {
+			try {
+				this.audioTrack = AudioHelper.getPlayer(context);
+			} catch (IllegalArgumentException e) {
+				// problem with audiotrack being given a bad sample rate/buffer size
+				e.printStackTrace();
+				
+				Message msg = errorHandler.obtainMessage(Constants.AUDIOTRACK_ILLEGAL_ARGUMENT);
+				errorHandler.sendMessage(msg);
+			}
 		}
 	}
 	
@@ -112,7 +114,9 @@ public class Recorder {
 	public void cleanup() {
 		stop();
 		audioRecord.cleanup();
-		audioTrack.release();
+		if (isLiveMode) {
+			audioTrack.release();
+		}
 	}
 	
 	public boolean isRunning() {
