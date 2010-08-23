@@ -105,6 +105,8 @@ public class Mic extends Activity {
     	
     	if (UpdateHelper.isAppUpdated(Mic.this)) {
     		UpdateHelper.onAppUpdate(Mic.this);
+    	} else {
+    		AudioHelper.configureRecorder(Mic.this);
     	}
     }
     
