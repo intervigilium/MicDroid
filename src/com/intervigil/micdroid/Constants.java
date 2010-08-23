@@ -47,8 +47,7 @@ public class Constants {
 	public static final String NAME_ENTRY_INTENT_FILE_NAME = "NAME_ENTRY_FILENAME_RESULT";
 	
 	// shared preference keys
-	public static final String KEY_SEEN_STARTUP_DIALOG = "prefs_seen_startup_dialog";
-	public static final String KEY_MOVED_OLD_LIBRARY = "prefs_moved_old_library";
+	public static final String KEY_LAST_VERSION_CODE = "prefs_last_version_code";
 	
 	// mime type
 	public static final String AUDIO_WAVE = "audio/wav";

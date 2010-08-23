@@ -54,6 +54,7 @@ import com.intervigil.micdroid.helper.AudioHelper;
 import com.intervigil.micdroid.helper.DialogHelper;
 import com.intervigil.micdroid.helper.HeadsetHelper;
 import com.intervigil.micdroid.helper.MediaStoreHelper;
+import com.intervigil.micdroid.helper.UpdateHelper;
 import com.intervigil.micdroid.helper.PreferenceHelper;
 import com.intervigil.micdroid.model.Recording;
 import com.intervigil.micdroid.pitch.AutoTalent;
@@ -75,7 +76,6 @@ public class Mic extends Activity {
 	private static final int DEFAULT_LFO_QUANT = 0;
 	
 	private WakeLock wakeLock;
-	private StartupDialog startupDialog;
 	private Recorder recorder;
 	private Timer timer;
 
@@ -97,17 +97,15 @@ public class Mic extends Activity {
         timerDisplay.setTypeface(timerFont);
         
         timer = new Timer(timerDisplay);
-        startupDialog = new StartupDialog(this, R.string.startup_dialog_title, R.string.startup_dialog_text, R.string.startup_dialog_accept_btn);
-    	
+
     	if (PreferenceHelper.getScreenLock(Mic.this)) {
     		PowerManager pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
     		wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "recordingWakeLock");
     	}
     	
-    	startupDialog.show();
-    	AudioHelper.configureRecorder(Mic.this);
-    	PreferenceHelper.resetKeyDefault(Mic.this);
-    	migrateOldRecordings();
+    	if (UpdateHelper.isAppUpdated(Mic.this)) {
+    		UpdateHelper.onAppUpdate(Mic.this);
+    	}
     }
     
     @Override
@@ -447,32 +445,7 @@ public class Mic extends Activity {
     			DEFAULT_LFO_DEPTH, DEFAULT_LFO_RATE, DEFAULT_LFO_SHAPE, DEFAULT_LFO_SYM, DEFAULT_LFO_QUANT, 
     			formantCorrection, formantWarp, mix);
     }
-    
-    private void migrateOldRecordings() {
-    	// this is a oneshot, only done on upgrade/new install
-    	if (PreferenceHelper.getMovedOldLibrary(Mic.this) != ApplicationHelper.getPackageVersion(Mic.this)) {
-			File oldLibraryDir = new File(ApplicationHelper.getOldLibraryDirectory());
-			File[] waveFiles = oldLibraryDir.listFiles();
-			
-			if (waveFiles != null) {
-				for (int i = 0; i < waveFiles.length; i++) {
-					if (waveFiles[i].isFile() && waveFiles[i].getName().contains(".wav")) {
-						try {
-							Recording r = new Recording(waveFiles[i]);
-							MediaStoreHelper.removeRecording(Mic.this, r);
-							File destination = new File(ApplicationHelper.getLibraryDirectory() + File.separator + waveFiles[i].getName());
-							r.moveTo(destination);
-							MediaStoreHelper.insertRecording(Mic.this, r);
-						} catch (IOException e) {
-							// don't do anything since it's not a wave file, yes using exceptions for control flow is bad
-						}
-					}
-				}
-			}
-			PreferenceHelper.setMovedOldLibrary(Mic.this, ApplicationHelper.getPackageVersion(Mic.this));
-    	}
-	}
-    
+
     private static boolean canWriteToSdCard() {
     	return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
     }
