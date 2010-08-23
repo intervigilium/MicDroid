@@ -144,6 +144,10 @@ public class Mic extends Activity {
     protected void onDestroy() {
     	Log.i(getPackageName(), "onDestroy()");
     	super.onStop();
+    	
+    	if (wakeLock != null) {
+    		wakeLock.release();
+    	}
 
     	if (recorder != null) {
     		recorder.cleanup();
