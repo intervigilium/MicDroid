@@ -144,7 +144,7 @@ public class Mic extends Activity {
     	Log.i(getPackageName(), "onDestroy()");
     	super.onStop();
     	
-    	if (wakeLock != null) {
+    	if (wakeLock != null && wakeLock.isHeld()) {
     		wakeLock.release();
     	}
 
