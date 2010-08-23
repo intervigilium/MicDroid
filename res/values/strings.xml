@@ -164,7 +164,7 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
     <string name="prefs_formant_corr_summary_on">Formant correction is enabled.</string>
     <string name="prefs_formant_corr_summary_off">Formant correction is disabled.</string>
     <string name="prefs_formant_corr_title">Formant Correction</string>
-    <string name="prefs_formant_corr_default">true</string>
+    <string name="prefs_formant_corr_default">false</string>
     
     <string name="prefs_formant_warp_key">formant_warp</string>
     <string name="prefs_formant_warp">Correction Warp Amount</string>
