@@ -4,8 +4,8 @@
     <string name="default_recording_name">recording.wav</string>
 
     <string name="startup_dialog_title">What\'s new in this version?</string>
-    <string name="startup_dialog_text">1. Live pitch-correction option\n\
-2. Reset some settings\n\
+    <string name="startup_dialog_text">1. Reset formant, pitch shift settings\n\
+2. Live pitch-correction option\n\
 3. Fix several crashes\n\
 4. Reset default settings option\n\
 5. Formant correction and warp options\n\
