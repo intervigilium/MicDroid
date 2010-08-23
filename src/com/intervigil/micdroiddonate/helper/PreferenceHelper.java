@@ -28,15 +28,7 @@ import com.intervigil.micdroiddonate.Constants;
 import com.intervigil.micdroiddonate.R;
 
 public class PreferenceHelper {
-	
-	public static void resetKeyDefault(Context context) {
-		if (getKey(context) == 'c') {
-			Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-	        editor.putString(context.getString(R.string.prefs_key_key), "C");
-	        editor.commit();
-		}
-	}
-	
+
 	public static boolean getScreenLock(Context context) {
 		SharedPreferences prefReader = PreferenceManager.getDefaultSharedPreferences(context);
 		boolean pref = prefReader.getBoolean(context.getString(R.string.prefs_prevent_screen_lock_key), Boolean.parseBoolean(context.getString(R.string.prefs_prevent_screen_lock_default)));
@@ -97,26 +89,6 @@ public class PreferenceHelper {
 		return Float.valueOf(pref);
 	}
 	
-	public static int getSeenStartupDialog(Context context) {
-		return PreferenceManager.getDefaultSharedPreferences(context).getInt(Constants.KEY_SEEN_STARTUP_DIALOG, -1);
-	}
-	
-	public static void setSeenStartupDialog(Context context, int value) {
-		Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-        editor.putInt(Constants.KEY_SEEN_STARTUP_DIALOG, value);
-        editor.commit();
-	}
-	
-	public static int getMovedOldLibrary(Context context) {
-		return PreferenceManager.getDefaultSharedPreferences(context).getInt(Constants.KEY_MOVED_OLD_LIBRARY, -1);
-	}
-
-	public static void setMovedOldLibrary(Context context, int value) {
-		Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-        editor.putInt(Constants.KEY_MOVED_OLD_LIBRARY, value);
-        editor.commit();
-	}
-	
 	public static int getSampleRate(Context context) {
 		SharedPreferences prefReader = PreferenceManager.getDefaultSharedPreferences(context);
 		String sampleRate = prefReader.getString(context.getString(R.string.prefs_sample_rate_key), "-1");
@@ -141,22 +113,39 @@ public class PreferenceHelper {
 		prefEditor.commit();
 	}
 	
+	public static int getLastVersionCode(Context context) {
+		return PreferenceManager.getDefaultSharedPreferences(context).getInt(Constants.KEY_LAST_VERSION_CODE, -1);
+	}
+	
+	public static void setLastVersionCode(Context context, int value) {
+		Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+        editor.putInt(Constants.KEY_LAST_VERSION_CODE, value);
+        editor.commit();
+	}
+
 	public static void setDefaultPreferences(Context context) {
 		Editor prefEditor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-		prefEditor.putString(context.getString(R.string.prefs_key_key), context.getString(R.string.prefs_key_default));
-		prefEditor.putString(context.getString(R.string.prefs_pitch_pull_key), context.getString(R.string.prefs_pitch_pull_default));
-		prefEditor.putString(context.getString(R.string.prefs_pitch_shift_key), context.getString(R.string.prefs_pitch_shift_default));
-		prefEditor.putString(context.getString(R.string.prefs_corr_str_key), context.getString(R.string.prefs_corr_str_default));
-		prefEditor.putString(context.getString(R.string.prefs_corr_smooth_key), context.getString(R.string.prefs_corr_smooth_default));
-		prefEditor.putBoolean(context.getString(R.string.prefs_formant_corr_key), Boolean.parseBoolean(context.getString(R.string.prefs_formant_corr_default)));
-		prefEditor.putString(context.getString(R.string.prefs_formant_warp_key), context.getString(R.string.prefs_formant_warp_default));
-		prefEditor.putString(context.getString(R.string.prefs_corr_mix_key), context.getString(R.string.prefs_corr_mix_default));
-		
-		prefEditor.putString(context.getString(R.string.prefs_sample_rate_key), String.format("%d", -1));
-		prefEditor.putString(context.getString(R.string.prefs_buffer_size_adjuster_key), String.format("%d", -1));
-		
-		prefEditor.commit();
+		prefEditor.clear().commit();
 		
 		AudioHelper.configureRecorder(context);
+	}
+
+	public static void resetFormantCorrectionDefault(Context context) {
+		Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+		editor.remove(context.getString(R.string.prefs_formant_corr_key));
+		editor.commit();
+	}
+	
+	public static void resetPitchShiftDefault(Context context) {
+		Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+		editor.remove(context.getString(R.string.prefs_pitch_shift_key));
+		editor.commit();
+	}
+
+	public static void unsetRecordingSettings(Context context) {
+		Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+		editor.remove(context.getString(R.string.prefs_sample_rate_key));
+		editor.remove(context.getString(R.string.prefs_buffer_size_adjuster_key));
+        editor.commit();
 	}
 }

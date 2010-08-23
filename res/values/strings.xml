@@ -4,11 +4,12 @@
     <string name="default_recording_name">recording.wav</string>
 
     <string name="startup_dialog_title">What\'s new in this version?</string>
-    <string name="startup_dialog_text">1. Live pitch-correction option\n\
-2. Fix several crashes\n\
-3. Reset default settings option\n\
-4. Formant correction and warp options\n\
-5. Galaxy S, Captivate, Vibrant support\n\
+    <string name="startup_dialog_text">1. Reset formant, pitch shift settings\n\
+2. Live pitch-correction option\n\
+3. Fix several crashes\n\
+4. Reset default settings option\n\
+5. Formant correction and warp options\n\
+6. Galaxy S, Captivate, Vibrant support\n\
 \n\
 DISCLAIMER: This is beta software! May be buggy and force close on you! Author is aware and working on issues!\n\
     </string>
@@ -144,7 +145,7 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
     <string name="prefs_pitch_shift">Pitch Shift</string>
     <string name="prefs_pitch_shift_summary">Number of notes in scale which pitch is shifted</string>
     <string name="prefs_pitch_shift_title">Pitch Shift</string>
-    <string name="prefs_pitch_shift_default">0.0</string>
+    <string name="prefs_pitch_shift_default">-1.0</string>
 
     <string name="prefs_cat_correction">Correction Settings</string>
     <string name="prefs_corr_str_key">strength</string>
@@ -164,13 +165,13 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
     <string name="prefs_formant_corr_summary_on">Formant correction is enabled.</string>
     <string name="prefs_formant_corr_summary_off">Formant correction is disabled.</string>
     <string name="prefs_formant_corr_title">Formant Correction</string>
-    <string name="prefs_formant_corr_default">true</string>
+    <string name="prefs_formant_corr_default">false</string>
     
     <string name="prefs_formant_warp_key">formant_warp</string>
     <string name="prefs_formant_warp">Correction Warp Amount</string>
     <string name="prefs_formant_warp_summary">Warp formant frequencies (can helps prevent chipmunk effect)</string>
     <string name="prefs_formant_warp_title">Formant Frequency Warp</string>
-    <string name="prefs_formant_warp_default">-0.25</string>
+    <string name="prefs_formant_warp_default">-0.10</string>
 
     <string name="prefs_corr_mix_key">mix</string>
     <string name="prefs_corr_mix">Mix</string>
@@ -185,7 +186,7 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
     <string name="prefs_reset_default_title">Reset to Default</string>
     <string name="prefs_reset_default_default">false</string>
 
-    <string name="about_title">About MicDroid Version 0.37</string>
+    <string name="about_title">About MicDroid Version 0.38</string>
     <string name="about_text">Graphics work courtesy of Peng X. Wang: http://pengxwang.com\n\
 \n\
 MicDroid is licensed under the GPL2 License\n\

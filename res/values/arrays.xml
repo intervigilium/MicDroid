@@ -108,8 +108,8 @@
         <item>-8.0</item>
         <item>-4.0</item>
         <item>-2.0</item>
-        <item>-1.0</item>
-        <item>0.0 (default)</item>
+        <item>-1.0 (default)</item>
+        <item>0.0</item>
         <item>1.0</item>
         <item>2.0</item>
         <item>4.0</item>
@@ -172,27 +172,41 @@
     <!-- Entry names for the formant warp menu. -->
     <string-array name="prefs_formant_warp_entries">
         <item>-1.00 (lowest sound)</item>
-        <item>-0.75 (lower sound)</item>
+        <item>-0.90</item>
+        <item>-0.80</item>
+        <item>-0.70 (lower sound)</item>
+        <item>-0.60</item>
         <item>-0.50</item>
-        <item>-0.25 (default)</item>
+        <item>-0.40</item>
+        <item>-0.30</item>
+        <item>-0.20</item>
+        <item>-0.10 (default)</item>
         <item> 0.00</item>
-        <item> 0.25</item>
-        <item> 0.50</item>
-        <item> 0.75 (higher sound)</item>
-        <item> 1.00 (highest sound)</item>
+        <item> 0.10</item>
+        <item> 0.20</item>
+        <item> 0.30 (higher sound)</item>
+        <item> 0.40</item>
+        <item> 0.50 (highest sound)</item>
     </string-array>
     
     <!-- Values for formant warp menu. -->
     <string-array name="prefs_formant_warp_values">
         <item>-1.00</item>
-        <item>-0.75</item>
+        <item>-0.90</item>
+        <item>-0.80</item>
+        <item>-0.70</item>
+        <item>-0.60</item>
         <item>-0.50</item>
-        <item>-0.25</item>
-        <item> 0.00</item>
-        <item> 0.25</item>
-        <item> 0.50</item>
-        <item> 0.75</item>
-        <item> 1.00</item>
+        <item>-0.40</item>
+        <item>-0.30</item>
+        <item>-0.20</item>
+        <item>-0.10</item>
+        <item>0.00</item>
+        <item>0.10</item>
+        <item>0.20</item>
+        <item>0.30</item>
+        <item>0.40</item>
+        <item>0.50</item>
     </string-array>
     
     <!-- Entry names for the mix menu. -->

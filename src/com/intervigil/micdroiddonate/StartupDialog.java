@@ -27,9 +27,6 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.intervigil.micdroiddonate.helper.ApplicationHelper;
-import com.intervigil.micdroiddonate.helper.PreferenceHelper;
-
 public class StartupDialog extends Dialog {
 
 	private Context context;
@@ -85,27 +82,11 @@ public class StartupDialog extends Dialog {
         btn.setText(buttonLabelId);
         btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                okButtonPressed();
+                dismiss();
             }
         });
         buttonHolder.addView(btn, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
 
         return layout;
-    }
-	
-	public void show() {
-		if (!isAccepted()) {
-			// check to see if this is first run
-			super.show();
-		}
-	}
-	
-	protected void okButtonPressed() {
-		PreferenceHelper.setSeenStartupDialog(context, ApplicationHelper.getPackageVersion(context));
-		dismiss();
-	}
-
-    private boolean isAccepted() {
-        return PreferenceHelper.getSeenStartupDialog(context) == ApplicationHelper.getPackageVersion(context);
     }
 }
