@@ -19,6 +19,9 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
     <string name="recording_button_label">My Recordings</string>
     <string name="instrumental_button_label">Instrumentals</string>
     
+    <string name="instrumental_library_row_label_1">Instrumental Name</string>
+    <string name="instrumental_library_row_label_2">Instrumental Length</string>
+    
     <string name="recording_library_row_label_1">Recording Name</string>
     <string name="recording_library_row_label_2">Recording Length</string>
 
@@ -62,6 +65,10 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
 
     <string name="autotalent_progress_msg">Pitch correction in progress...</string>
     <string name="saving_recording_progress_msg">Saving recording...</string>
+
+	<string name="instrumental_library">Instrumentals</string>
+    <string name="instrumental_library_title">Instrumental Tracks</string>
+    <string name="instrumental_library_empty">No Instrumentals</string>
 
     <string name="recording_library">Recordings</string>
     <string name="recording_library_title">Recorded Clips</string>
