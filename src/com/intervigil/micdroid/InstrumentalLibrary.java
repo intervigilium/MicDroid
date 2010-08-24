@@ -239,8 +239,8 @@ public class InstrumentalLibrary extends Activity {
     	
 		@Override
 		protected Void doInBackground(Void... params) {
-			File libraryDir = new File(ApplicationHelper.getLibraryDirectory());
-			File[] waveFiles = libraryDir.listFiles();
+			File instrumentalDir = new File(ApplicationHelper.getInstrumentalDirectory());
+			File[] waveFiles = instrumentalDir.listFiles();
 			
 			if (waveFiles != null) {
 				for (int i = 0; i < waveFiles.length; i++) {
@@ -249,7 +249,7 @@ public class InstrumentalLibrary extends Activity {
 						
 						try {
 							reader.openWave();
-							Instrumental r = new Instrumental(libraryDir.getAbsolutePath(), waveFiles[i].getName(), reader.getLength(), reader.getDataSize() + Recording.WAVE_HEADER_SIZE, false);
+							Instrumental r = new Instrumental(instrumentalDir.getAbsolutePath(), waveFiles[i].getName(), reader.getLength(), reader.getDataSize() + Recording.WAVE_HEADER_SIZE, false);
 							reader.closeWaveFile();
 							reader = null;
 							
