@@ -83,12 +83,12 @@ public class RecordingLibrary extends Activity {
         Object savedRecordings = getLastNonConfigurationInstance();
         if (savedRecordings == null) {
 	        recordings = new ArrayList<Recording>();
-	        this.libraryAdapter = new RecordingAdapter(this, R.layout.library_row, recordings);
+	        this.libraryAdapter = new RecordingAdapter(this, R.layout.recording_library_row, recordings);
 	        library.setAdapter(libraryAdapter);
 			loadRecordingsTask = (LoadRecordingsTask) new LoadRecordingsTask().execute((Void)null);
         } else {
         	recordings = (ArrayList<Recording>)savedRecordings;
-        	this.libraryAdapter = new RecordingAdapter(this, R.layout.library_row, recordings);
+        	this.libraryAdapter = new RecordingAdapter(this, R.layout.recording_library_row, recordings);
 	        library.setAdapter(libraryAdapter);
 	        this.libraryAdapter.notifyDataSetChanged();
         }
@@ -255,13 +255,13 @@ public class RecordingLibrary extends Activity {
             View view = convertView;
             if (view == null) {
                 LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = vi.inflate(R.layout.library_row, parent, false);
+                view = vi.inflate(R.layout.recording_library_row, parent, false);
             }
             
             Recording r = this.getItem(position);
             if (r != null) {
-            	((TextView)view.findViewById(R.id.row_first_line)).setText("Name: " + r.getName());
-                ((TextView)view.findViewById(R.id.row_second_line)).setText("Length: " + r.getLength());
+            	((TextView)view.findViewById(R.id.recording_row_first_line)).setText("Name: " + r.getName());
+                ((TextView)view.findViewById(R.id.recording_row_second_line)).setText("Length: " + r.getLength());
             }
 
             return view;

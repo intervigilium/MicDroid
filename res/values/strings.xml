@@ -18,6 +18,9 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
     
     <string name="recording_button_label">My Recordings</string>
     <string name="instrumental_button_label">Instrumentals</string>
+    
+    <string name="recording_library_row_label_1">Recording Name</string>
+    <string name="recording_library_row_label_2">Recording Length</string>
 
     <string name="no_external_storage_title">WARNING!</string>
     <string name="no_external_storage_warning">This app requires a mounted SD card to function properly! Make sure there is an SD card properly inserted and mounted before recording!</string>
