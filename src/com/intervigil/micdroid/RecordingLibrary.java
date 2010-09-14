@@ -289,13 +289,12 @@ public class RecordingLibrary extends Activity {
     	}
     }
     
-    private class LoadRecordingsTask extends AsyncTask<Void, Void, Void> {
+    private class LoadRecordingsTask extends AsyncTask<Void, Recording, Void> {
     	// Async load all the recordings already in the directory
     	
     	@Override
     	protected void onPreExecute() {
-    		library.setVisibility(View.INVISIBLE);
-    		recordings.clear();
+    		libraryAdapter.clear();
     		loadRecordingSpinner = new ProgressDialog(RecordingLibrary.this);
     		loadRecordingSpinner.setMessage("Loading recordings");
     		loadRecordingSpinner.show();
@@ -317,7 +316,7 @@ public class RecordingLibrary extends Activity {
 							reader.closeWaveFile();
 							reader = null;
 							
-							recordings.add(r);
+							publishProgress(r);
 					    	
 					    	// check to see if this exists in the media store, if it doesn't insert it
 							if (!MediaStoreHelper.isInserted(RecordingLibrary.this, r)) {
@@ -337,9 +336,15 @@ public class RecordingLibrary extends Activity {
 		}
 		
 		@Override
+		protected void onProgressUpdate(Recording... values) {
+			Recording r = values[0];
+			if (r != null) {
+				libraryAdapter.add(r);
+			}
+		}
+		
+		@Override
 		protected void onPostExecute(Void result) {
-			library.setVisibility(View.VISIBLE);
-			libraryAdapter.notifyDataSetChanged();
 			loadRecordingSpinner.dismiss();
 		}
     }
