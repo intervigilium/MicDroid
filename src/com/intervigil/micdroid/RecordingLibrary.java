@@ -156,7 +156,7 @@ public class RecordingLibrary extends Activity {
 	    	case Constants.PLAYER_INTENT_CODE:
 	    		if (resultCode == Constants.RESULT_FILE_DELETED) {
 	    			// refresh recordings list since something was removed
-	    			new LoadRecordingsTask().execute((Void)null);
+	    			loadRecordingsTask = (LoadRecordingsTask) new LoadRecordingsTask().execute((Void)null);
 	    		}
 	    		break;
 	    	case Constants.FILENAME_ENTRY_INTENT_CODE:
