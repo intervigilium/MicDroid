@@ -268,7 +268,7 @@ public class AudioHelper {
 				return true;
 			}
 			
-			if (model.contains("vibrant") || device.equals(DEVICE_ID_VIBRANT)) {
+			if (device.equals(DEVICE_ID_VIBRANT)) {
 				Log.i("AudioHelper", "T-Mobile US, Samsung Vibrant detected");
 				return true;
 			}
