@@ -48,6 +48,9 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
 
 	<string name="no_headset_plugged_in_title">WARNING!</string>
     <string name="no_headset_plugged_in_warning">Live correction mode requires headphones!</string>
+    
+    <string name="galaxy_s_live_mode_title">ERROR!</string>
+    <string name="galaxy_s_live_mode_error"></string>
 
     <string name="recording_started_toast">Recording started! Press power button to stop recording!</string>
     <string name="recording_finished_toast">Recording finished!</string>
