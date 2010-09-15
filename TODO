@@ -2,11 +2,12 @@ There are a lot of things left to do, and many features to add.
 
 To Do:
 Implement some kind of testing or QA routine
+Block usage of live mode if buffer is too large
+Solve Galaxy S static issues perhaps
 Add some kind of help to the app
-Share as MMS
+Share as MMS, depends on MP3 encoder
 Integrate MP3 encoder
 Integrate automatic log collector: http://code.google.com/p/android-send-me-logs/
 Make preferences seekbar based: http://www.mail-archive.com/android-developers@googlegroups.com/msg19042.html
-Add option to play instrumental tracks --cannot download random songs cuz of copyright
-
+Add option to play instrumental backing track 
 
