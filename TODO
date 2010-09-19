@@ -1,9 +1,10 @@
 There are a lot of things left to do, and many features to add. 
 
 To Do:
+Integrate optional ads, default disabled
 Implement some kind of testing or QA routine
 Block usage of live mode if buffer is too large
-Solve Galaxy S static issues perhaps
+Solve Galaxy S static issues
 Add some kind of help to the app
 Share as MMS, depends on MP3 encoder
 Integrate MP3 encoder
