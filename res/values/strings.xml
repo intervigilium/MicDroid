@@ -120,6 +120,8 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
     <string name="mic_label">Power Button</string>
     <string name="mic_toggle_off">On</string>
     <string name="mic_toggle_on">Off</string>
+    
+    <string name="prefs_instrumental_track_key">instrumental_track</string>
 
     <string name="prefs_cat_screen">Screen Settings</string>
     <string name="prefs_prevent_screen_lock_key">screen_lock</string>

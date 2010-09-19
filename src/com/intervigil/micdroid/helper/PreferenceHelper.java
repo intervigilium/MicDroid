@@ -28,7 +28,7 @@ import com.intervigil.micdroid.Constants;
 import com.intervigil.micdroid.R;
 
 public class PreferenceHelper {
-
+	
 	public static boolean getScreenLock(Context context) {
 		SharedPreferences prefReader = PreferenceManager.getDefaultSharedPreferences(context);
 		boolean pref = prefReader.getBoolean(context.getString(R.string.prefs_prevent_screen_lock_key), Boolean.parseBoolean(context.getString(R.string.prefs_prevent_screen_lock_default)));
@@ -110,6 +110,18 @@ public class PreferenceHelper {
 	public static void setBufferSizeAdjuster(Context context, int bufferSizeAdjuster) {
 		Editor prefEditor = PreferenceManager.getDefaultSharedPreferences(context).edit();
 		prefEditor.putString(context.getString(R.string.prefs_buffer_size_adjuster_key), String.format("%d", bufferSizeAdjuster));
+		prefEditor.commit();
+	}
+	
+	public static String getInstrumentalTrack(Context context) {
+		SharedPreferences prefReader = PreferenceManager.getDefaultSharedPreferences(context);
+		String pref = prefReader.getString(context.getString(R.string.prefs_instrumental_track_key), null);
+		return pref;
+	}
+
+	public static void setInstrumentalTrack(Context context, String instrumentalName) {
+		Editor prefEditor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+		prefEditor.putString(context.getString(R.string.prefs_instrumental_track_key), instrumentalName);
 		prefEditor.commit();
 	}
 	

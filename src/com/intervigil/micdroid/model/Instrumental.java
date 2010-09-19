@@ -40,7 +40,6 @@ public class Instrumental implements Parcelable {
 	private String instrumentalName;
 	private int instrumentalLength;
 	private int instrumentalSize;
-	private boolean currentlySelected;
 	
 	public static final Parcelable.Creator<Instrumental> CREATOR = new Parcelable.Creator<Instrumental>() {
 		public Instrumental createFromParcel(Parcel in) {
@@ -62,7 +61,6 @@ public class Instrumental implements Parcelable {
 		this.instrumentalName = file.getName();
 		this.instrumentalLength = reader.getLength();
 		this.instrumentalSize = reader.getDataSize() + WAVE_HEADER_SIZE;
-		this.currentlySelected = false;
 		reader.closeWaveFile();
 		reader = null;
 	}
@@ -72,17 +70,13 @@ public class Instrumental implements Parcelable {
 		this.instrumentalName = in.readString();
 		this.instrumentalLength = in.readInt();
 		this.instrumentalSize = in.readInt();
-		boolean arr[] = new boolean[1];
-		in.readBooleanArray(arr);
-		this.currentlySelected = arr[0];
 	}
 	
-	public Instrumental(String path, String name, int length, int size, boolean currentlySelected) {
+	public Instrumental(String path, String name, int length, int size) {
 		this.instrumentalPath = path;
 		this.instrumentalName = name;
 		this.instrumentalLength = length;
 		this.instrumentalSize = size;
-		this.currentlySelected = currentlySelected;
 	}
 
 	public int describeContents() {
@@ -94,7 +88,6 @@ public class Instrumental implements Parcelable {
 		out.writeString(instrumentalName);
 		out.writeInt(instrumentalLength);
 		out.writeInt(instrumentalSize);
-		out.writeBooleanArray(new boolean[] { currentlySelected });
 	}
 	
 	public File asFile() {
@@ -142,13 +135,5 @@ public class Instrumental implements Parcelable {
 	
 	public void setSize(int size) {
 		instrumentalSize = size;
-	}
-	
-	public boolean isSelected() {
-		return currentlySelected;
-	}
-	
-	public void setSelected(boolean selected) {
-		currentlySelected = selected;
 	}
 }
