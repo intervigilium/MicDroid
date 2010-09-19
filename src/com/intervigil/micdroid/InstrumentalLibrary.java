@@ -225,13 +225,12 @@ public class InstrumentalLibrary extends Activity {
     	}
     }
     
-    private class LoadInstrumentalsTask extends AsyncTask<Void, Void, Void> {
-    	// Async load all the recordings already in the directory
+    private class LoadInstrumentalsTask extends AsyncTask<Void, Instrumental, Void> {
+    	// Async load all the instrumentals already in the directory
     	
     	@Override
-    	protected void onPreExecute() {
-    		library.setVisibility(View.INVISIBLE);
-    		instrumentals.clear();
+    	protected void onPreExecute() {	
+    		libraryAdapter.clear();
     		loadInstrumentalSpinner = new ProgressDialog(InstrumentalLibrary.this);
     		loadInstrumentalSpinner.setMessage("Loading instrumentals");
     		loadInstrumentalSpinner.show();
@@ -253,11 +252,11 @@ public class InstrumentalLibrary extends Activity {
 							reader.closeWaveFile();
 							reader = null;
 							
-							instrumentals.add(r);
+							publishProgress(r);
 					    	
 						} catch (IOException e) {
 							// yes I know it sucks that we do control flow with an exception here, fix it later
-							Log.i("InstrumentalLibrary", String.format("Non-wave file %s found in library directory!", waveFiles[i].getName()));
+							Log.i("InstrumentalLibrary", String.format("Non-wave file %s found in instrumental directory!", waveFiles[i].getName()));
 						}
 					}
 				}
@@ -267,9 +266,15 @@ public class InstrumentalLibrary extends Activity {
 		}
 		
 		@Override
+		protected void onProgressUpdate(Instrumental... values) {
+			Instrumental r = values[0];
+			if (r != null) {
+				libraryAdapter.add(r);
+			}
+		}
+		
+		@Override
 		protected void onPostExecute(Void result) {
-			library.setVisibility(View.VISIBLE);
-			libraryAdapter.notifyDataSetChanged();
 			loadInstrumentalSpinner.dismiss();
 		}
     }
