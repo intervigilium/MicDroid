@@ -163,7 +163,7 @@ public class InstrumentalLibrary extends Activity {
 	    	case R.string.instrumental_options_unset:
 	    		String selectedTrack = PreferenceHelper.getInstrumentalTrack(InstrumentalLibrary.this);
 	    		if (selectedTrack.equals(track.getName())) {
-	    			PreferenceHelper.setInstrumentalTrack(InstrumentalLibrary.this, "");
+	    			PreferenceHelper.setInstrumentalTrack(InstrumentalLibrary.this, Constants.EMPTY_STRING);
 	    			Toast.makeText(InstrumentalLibrary.this, R.string.instrumental_options_track_unset, Toast.LENGTH_SHORT).show();
 	    		} else {
 	    			Toast.makeText(InstrumentalLibrary.this, R.string.instrumental_options_track_unset_error, Toast.LENGTH_SHORT).show();

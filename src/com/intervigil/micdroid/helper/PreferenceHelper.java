@@ -115,7 +115,7 @@ public class PreferenceHelper {
 	
 	public static String getInstrumentalTrack(Context context) {
 		SharedPreferences prefReader = PreferenceManager.getDefaultSharedPreferences(context);
-		String pref = prefReader.getString(context.getString(R.string.prefs_instrumental_track_key), "");
+		String pref = prefReader.getString(context.getString(R.string.prefs_instrumental_track_key), Constants.EMPTY_STRING);
 		return pref;
 	}
 
