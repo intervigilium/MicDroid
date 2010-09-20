@@ -1542,6 +1542,28 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroid_pitch_AutoTalent_processSamp
 }
 
 
+JNIEXPORT void JNICALL Java_com_intervigil_micdroid_pitch_AutoTalent_processMixSamples
+  (JNIEnv* env , jclass class, jshortArray samples, jshortArray mixSamples, jint sampleSize) {
+  if (instance != NULL) {
+	// copy buffers
+    float* sampleBuffer = getFloatBuffer(env, samples, sampleSize);
+    setAutotalentBuffers(instance, sampleBuffer, sampleBuffer);
+
+    // process samples
+    runAutotalent(instance, sampleSize);
+
+    // copy results back up to java array
+    short* shortBuffer = getShortBuffer(sampleBuffer, sampleSize);
+    (*env)->SetShortArrayRegion(env, samples, 0, sampleSize, shortBuffer);
+
+    free(shortBuffer);
+    free(sampleBuffer);
+  } else {
+    __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "No suitable autotalent instance found!");
+  }
+}
+
+
 JNIEXPORT void JNICALL Java_com_intervigil_micdroid_pitch_AutoTalent_destroyAutoTalent
   (JNIEnv* env, jclass class) {
   if (instance != NULL) {
