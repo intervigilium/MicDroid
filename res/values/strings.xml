@@ -77,6 +77,11 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
 	<string name="instrumental_options_set">Set Instrumental as backing track</string>
 	<string name="instrumental_options_unset">Unset Instrumental as backing track</string>
 	<string name="instrumental_options_remove">Delete Instrumental from library</string>
+	
+	<string name="instrumental_options_track_set">Instrumental set as backing track!</string>
+	<string name="instrumental_options_track_unset">Instrumental unset!</string>
+	<string name="instrumental_options_track_unset_error">Instrumental not set as backing track!</string>
+	<string name="instrumental_options_track_deleted">Instrumental track deleted!</string>
 
     <string name="recording_library">Recordings</string>
     <string name="recording_library_title">Recorded Clips</string>

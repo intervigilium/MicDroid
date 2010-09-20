@@ -27,24 +27,29 @@ import java.util.List;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View.OnCreateContextMenuListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.intervigil.micdroid.helper.ApplicationHelper;
+import com.intervigil.micdroid.helper.PreferenceHelper;
 import com.intervigil.micdroid.model.Instrumental;
 import com.intervigil.micdroid.model.Recording;
 import com.intervigil.micdroid.wave.WaveReader;
@@ -75,7 +80,7 @@ public class InstrumentalLibrary extends Activity {
 
         library = (ListView)findViewById(R.id.recording_library_list);
         library.setOnItemClickListener(libraryClickListener);
-        registerForContextMenu(library);
+        library.setOnCreateContextMenuListener(instrumentalItemListener);
         
         Object savedInstrumentals = getLastNonConfigurationInstance();
         if (savedInstrumentals == null) {
@@ -146,40 +151,60 @@ public class InstrumentalLibrary extends Activity {
     }
     
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    	super.onActivityResult(requestCode, resultCode, data);
-    	
-    	switch (requestCode) {
-	    	
-    		default:
-    			break;
-    	}
-    }
-    
-    @Override
     public boolean onContextItemSelected(MenuItem item) {
     	AdapterContextMenuInfo info = (AdapterContextMenuInfo)item.getMenuInfo();
     	Instrumental track = (Instrumental) libraryAdapter.getItem(info.position); 
     	
     	switch (item.getItemId()) {
-			
+	    	case R.string.instrumental_options_set:
+	    		PreferenceHelper.setInstrumentalTrack(InstrumentalLibrary.this, track.getName());
+	    		Toast.makeText(InstrumentalLibrary.this, R.string.instrumental_options_track_set, Toast.LENGTH_SHORT).show();
+	    		break;
+	    	case R.string.instrumental_options_unset:
+	    		String selectedTrack = PreferenceHelper.getInstrumentalTrack(InstrumentalLibrary.this);
+	    		if (selectedTrack.equals(track.getName())) {
+	    			PreferenceHelper.setInstrumentalTrack(InstrumentalLibrary.this, "");
+	    			Toast.makeText(InstrumentalLibrary.this, R.string.instrumental_options_track_unset, Toast.LENGTH_SHORT).show();
+	    		} else {
+	    			Toast.makeText(InstrumentalLibrary.this, R.string.instrumental_options_track_unset_error, Toast.LENGTH_SHORT).show();
+	    		}
+	    		break;
+	    	case R.string.instrumental_options_remove:
+	    		if (track.asFile().delete()) {
+	    			Toast.makeText(InstrumentalLibrary.this, R.string.instrumental_options_track_deleted, Toast.LENGTH_SHORT).show();
+	    		}
+	    		break;
 			default:
 				break;
 		}
+    	// force a reload of all instrumentals
+    	loadInstrumentalsTask = (LoadInstrumentalsTask) new LoadInstrumentalsTask().execute((Void)null);
     	return true;
     }
     
     private OnItemClickListener libraryClickListener = new OnItemClickListener() {
+    	@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			Instrumental track = (Instrumental)parent.getItemAtPosition(position);
-			
-	    	
+			view.showContextMenu();	
 		}
 	};
+	
+	private OnCreateContextMenuListener instrumentalItemListener = new OnCreateContextMenuListener() {
+		@Override
+		public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+			menu.setHeaderTitle(R.string.instrumental_options_title);
+			menu.add(Menu.NONE, R.string.instrumental_options_set, Menu.NONE, R.string.instrumental_options_set);
+			menu.add(Menu.NONE, R.string.instrumental_options_unset, Menu.NONE, R.string.instrumental_options_unset);
+			menu.add(Menu.NONE, R.string.instrumental_options_remove, Menu.NONE, R.string.instrumental_options_remove);
+		}
+    };
     
-    private class InstrumentalAdapter extends ArrayAdapter<Instrumental> {		
+    private class InstrumentalAdapter extends ArrayAdapter<Instrumental> {
+    	private String selectedTrack;
+    	
 		public InstrumentalAdapter(Context context, int textViewResourceId, List<Instrumental> objects) {
 			super(context, textViewResourceId, objects);
+			selectedTrack = PreferenceHelper.getInstrumentalTrack(InstrumentalLibrary.this);
 		}
 
 		@Override
@@ -192,7 +217,7 @@ public class InstrumentalLibrary extends Activity {
             
             Instrumental track = this.getItem(position);
             if (track != null) {
-            	Drawable rowIcon = track.isSelected() ? 
+            	Drawable rowIcon = selectedTrack.equals(track.getName()) ? 
             			getResources().getDrawable(R.drawable.android_music) : getResources().getDrawable(R.drawable.android_music);
 
             	((ImageView)view.findViewById(R.id.instrumental_row_icon)).setImageDrawable(rowIcon);
@@ -248,7 +273,7 @@ public class InstrumentalLibrary extends Activity {
 						
 						try {
 							reader.openWave();
-							Instrumental r = new Instrumental(instrumentalDir.getAbsolutePath(), waveFiles[i].getName(), reader.getLength(), reader.getDataSize() + Recording.WAVE_HEADER_SIZE, false);
+							Instrumental r = new Instrumental(instrumentalDir.getAbsolutePath(), waveFiles[i].getName(), reader.getLength(), reader.getDataSize() + Recording.WAVE_HEADER_SIZE);
 							reader.closeWaveFile();
 							reader = null;
 							
