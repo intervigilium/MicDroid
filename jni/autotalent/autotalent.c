@@ -1543,7 +1543,7 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroid_pitch_AutoTalent_processSamp
 
 
 JNIEXPORT void JNICALL Java_com_intervigil_micdroid_pitch_AutoTalent_processMixSamples
-  (JNIEnv* env , jclass class, jshortArray samples, jshortArray mixSamples, jint sampleSize) {
+  (JNIEnv* env , jclass class, jshortArray samples, jshortArray instrumentalSamples, jint sampleSize) {
   if (instance != NULL) {
 	// copy buffers
     float* sampleBuffer = getFloatBuffer(env, samples, sampleSize);
