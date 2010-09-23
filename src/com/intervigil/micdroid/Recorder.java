@@ -20,6 +20,7 @@
 
 package com.intervigil.micdroid;
 
+import java.io.File;
 import java.io.IOException;
 
 import android.content.Context;
@@ -32,12 +33,14 @@ import com.intervigil.micdroid.helper.AudioHelper;
 import com.intervigil.micdroid.helper.PreferenceHelper;
 import com.intervigil.micdroid.model.Sample;
 import com.intervigil.micdroid.pitch.AutoTalent;
+import com.intervigil.micdroid.wave.WaveReader;
 import com.intervigil.micdroid.wave.WaveWriter;
 
 public class Recorder {
 	private MicWriter writerThread;
 	
 	private AudioTrack audioTrack;
+	private WaveReader instrumentalReader;
 	private final AudioRecordWrapper audioRecord;
 	private final Handler errorHandler;
 	private final WaveWriter writer;
@@ -65,6 +68,13 @@ public class Recorder {
 				errorHandler.sendMessage(msg);
 			}
 		}
+		
+		String trackName = PreferenceHelper.getInstrumentalTrack(context);
+		if (!trackName.equals(Constants.EMPTY_STRING)) {
+			// start reading from instrumental track
+			File instrumentalFile = new File(ApplicationHelper.getInstrumentalDirectory() + File.separator + trackName);
+			instrumentalReader = new WaveReader(instrumentalFile);			
+		}
 	}
 	
 	public void start() {
@@ -75,6 +85,9 @@ public class Recorder {
 			writerThread.start();
 			if (isLiveMode) {
 				audioTrack.play();
+			}
+			if (instrumentalReader != null) {
+				instrumentalReader.openWave();
 			}
 		} catch (IOException e) {
 			// problem writing to file, unable to create file?
@@ -95,6 +108,14 @@ public class Recorder {
 		if (isRunning()) {
 			if (isLiveMode) {
 				audioTrack.stop();
+			}
+			if (instrumentalReader != null) {
+				try {
+					instrumentalReader.closeWaveFile();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			audioRecord.stop();
 			writerThread.interrupt();
@@ -131,11 +152,17 @@ public class Recorder {
 			while (!Thread.interrupted()) {
 				Sample sample = audioRecord.poll();
 				if (sample != null) {
-					if (isLiveMode) {
-						AutoTalent.processSamples(sample.buffer, sample.bufferSize);
-						audioTrack.write(sample.buffer, 0, sample.bufferSize);
-					}
-					try {
+					try {	
+						if (isLiveMode) {
+							if (instrumentalReader != null) {
+								short[] instrumentalBuf = new short[sample.bufferSize];
+								instrumentalReader.readShort(instrumentalBuf, sample.bufferSize);
+								AutoTalent.processMixSamples(sample.buffer, instrumentalBuf, sample.bufferSize);
+							} else {
+								AutoTalent.processSamples(sample.buffer, sample.bufferSize);
+							}
+							audioTrack.write(sample.buffer, 0, sample.bufferSize);
+						}
 						writer.write(sample.buffer, sample.bufferSize);
 					} catch (IOException e) {
 						// problem writing to the buffer, usually means we're out of space
