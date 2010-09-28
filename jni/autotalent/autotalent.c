@@ -1441,11 +1441,7 @@ void mixBuffers(float* outBuf, float* buf1, float* buf2, int bufSize) {
   int i;
   for (i = 0; i < bufSize; i++) {
 	  // formula for mixing from: http://www.vttoth.com/digimix.htm
-	  if (buf1[i] < 0.5f && buf2[i] < 0.5f) {
-	    outBuf[i] = 2 * buf1[i] * buf2[i];
-	  } else {
-		  outBuf[i] = 2 * (buf1[i] + buf2[i]) - 2 * (buf1[i] * buf2[i]) - 1.0f;
-	  }
+	  outBuf[i] = (buf1[i] + buf2[i]) - (buf1[i] * buf2[i]);
   }
 }
 
