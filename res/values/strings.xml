@@ -17,7 +17,6 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
     <string name="startup_dialog_accept_btn">Accept</string>
     
     <string name="recording_button_label">My Recordings</string>
-    <string name="instrumental_button_label">Instrumentals</string>
     
     <string name="instrumental_library_row_label_1">Instrumental Name</string>
     <string name="instrumental_library_row_label_2">Instrumental Length</string>

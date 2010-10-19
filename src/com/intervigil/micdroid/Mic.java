@@ -53,10 +53,8 @@ import com.intervigil.micdroid.helper.ApplicationHelper;
 import com.intervigil.micdroid.helper.AudioHelper;
 import com.intervigil.micdroid.helper.DialogHelper;
 import com.intervigil.micdroid.helper.HeadsetHelper;
-import com.intervigil.micdroid.helper.MediaStoreHelper;
-import com.intervigil.micdroid.helper.UpdateHelper;
 import com.intervigil.micdroid.helper.PreferenceHelper;
-import com.intervigil.micdroid.model.Recording;
+import com.intervigil.micdroid.helper.UpdateHelper;
 import com.intervigil.micdroid.pitch.AutoTalent;
 import com.intervigil.micdroid.wave.WaveReader;
 import com.intervigil.micdroid.wave.WaveWriter;
@@ -89,13 +87,11 @@ public class Mic extends Activity {
         Typeface timerFont = Typeface.createFromAsset(getAssets(), "fonts/Clockopia.ttf");
         ToggleButton recordingButton = ((ToggleButton)findViewById(R.id.recording_button));
         Button libraryButton = ((Button)findViewById(R.id.library_button));
-        Button instrumentalButton = ((Button)findViewById(R.id.instrumental_button));
         TextView timerDisplay = (TextView)findViewById(R.id.recording_timer);
         
         recordingButton.setChecked(false);
         recordingButton.setOnCheckedChangeListener(mPowerBtnListener);
         libraryButton.setOnClickListener(mLibraryBtnListener);
-        instrumentalButton.setOnClickListener(mInstrumentalBtnListener);
         timerDisplay.setTypeface(timerFont);
         
         timer = new Timer(timerDisplay);
@@ -388,14 +384,6 @@ public class Mic extends Activity {
 		public void onClick(View v) {
 			Intent libraryIntent = new Intent(getBaseContext(), RecordingLibrary.class);
         	startActivity(libraryIntent);
-		}
-	};
-	
-	private OnClickListener mInstrumentalBtnListener = new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			Intent instrumentalIntent = new Intent(getBaseContext(), InstrumentalLibrary.class);
-			startActivity(instrumentalIntent);
 		}
 	};
     
