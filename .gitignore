@@ -4,3 +4,6 @@ libs/*
 obj/*
 screenshots/*
 *.apk
+*.iws
+*.ipr
+*.iml
