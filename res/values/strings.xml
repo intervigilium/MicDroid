@@ -126,13 +126,20 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
     
     <string name="prefs_instrumental_track_key">instrumental_track</string>
 
-    <string name="prefs_cat_screen">Screen Settings</string>
+    <string name="prefs_cat_screen">Android Settings</string>
     <string name="prefs_prevent_screen_lock_key">screen_lock</string>
     <string name="prefs_prevent_screen_lock">Prevent Screen Lock</string>
     <string name="prefs_prevent_screen_lock_summary_on">Screen will not dim or lock when recording</string>
     <string name="prefs_prevent_screen_lock_summary_off">Screen will dim or lock when recording</string>
     <string name="prefs_prevent_screen_lock_title">Prevent Screen from Dimming</string>
     <string name="prefs_prevent_screen_lock_default">true</string>
+    
+    <string name="prefs_enable_ads_key">enable_ads</string>
+    <string name="prefs_enable_ads">Enable Ads</string>
+    <string name="prefs_enable_ads_summary_on">Thanks for supporting the developer!</string>
+    <string name="prefs_enable_ads_summary_off">Please consider showing ads to support the developer!</string>
+    <string name="prefs_enable_ads_title">Enable Mobile Ads</string>
+    <string name="prefs_enable_ads_default">true</string>
 
     <string name="prefs_cat_recording">Recording Settings</string>
     <string name="prefs_live_mode_key">live_mode</string>

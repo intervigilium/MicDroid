@@ -46,8 +46,10 @@ import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
+import com.admob.android.ads.AdView;
 import com.intervigil.micdroid.helper.ApplicationHelper;
 import com.intervigil.micdroid.helper.MediaStoreHelper;
+import com.intervigil.micdroid.helper.PreferenceHelper;
 import com.intervigil.micdroid.helper.RecordingOptionsHelper;
 import com.intervigil.micdroid.model.Recording;
 import com.intervigil.micdroid.wave.WaveReader;
@@ -56,6 +58,8 @@ public class RecordingLibrary extends Activity {
 
 	private static final String STATE_LOAD_IN_PROGRESS = "load_recordings_in_progress";
 	
+	private Boolean showAds;
+	private AdView ad;
 	private ListView library;
 	private RecordingAdapter libraryAdapter;
 	private ArrayList<Recording> recordings;
@@ -75,7 +79,12 @@ public class RecordingLibrary extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recording_library);
+        
+        showAds = PreferenceHelper.getShowAds(RecordingLibrary.this);
 
+        ad = (AdView)findViewById(R.id.recording_ad);
+        ad.setEnabled(showAds);
+        
         library = (ListView)findViewById(R.id.recording_library_list);
         library.setOnItemClickListener(libraryClickListener);
         registerForContextMenu(library);

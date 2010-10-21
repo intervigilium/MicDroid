@@ -88,6 +88,6 @@
             android:shadowDy="-1"
             android:shadowRadius="1"
             android:background="@drawable/base_button" />
-        
     </LinearLayout>
+			
 </RelativeLayout>

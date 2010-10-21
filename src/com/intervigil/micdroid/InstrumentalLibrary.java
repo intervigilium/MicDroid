@@ -48,6 +48,7 @@ import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
+import com.admob.android.ads.AdView;
 import com.intervigil.micdroid.helper.ApplicationHelper;
 import com.intervigil.micdroid.helper.PreferenceHelper;
 import com.intervigil.micdroid.model.Instrumental;
@@ -58,6 +59,8 @@ public class InstrumentalLibrary extends Activity {
 
 	private static final String STATE_LOAD_IN_PROGRESS = "load_instrumentals_in_progress";
 	
+	private Boolean showAds;
+	private AdView ad;
 	private ListView library;
 	private InstrumentalAdapter libraryAdapter;
 	private ArrayList<Instrumental> instrumentals;
@@ -77,6 +80,11 @@ public class InstrumentalLibrary extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recording_library);
+        
+        showAds = PreferenceHelper.getShowAds(InstrumentalLibrary.this);
+
+        ad = (AdView)findViewById(R.id.instrumental_ad);
+        ad.setEnabled(showAds);
 
         library = (ListView)findViewById(R.id.recording_library_list);
         library.setOnItemClickListener(libraryClickListener);

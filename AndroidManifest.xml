@@ -17,9 +17,12 @@
 		<activity android:label="@string/recording_library" android:name=".RecordingLibrary" />
 		<activity android:label="@string/recording_player" android:name=".RecordingPlayer" android:configChanges="keyboard|keyboardHidden|orientation" android:theme="@android:/style/Theme.Dialog" />
 		<activity android:label="@string/instrumental_library" android:name=".InstrumentalLibrary" />
+		
+		<meta-data android:value="a14cbf73c14c77d" android:name="ADMOB_PUBLISHER_ID" />
 
     </application>
     <uses-sdk android:minSdkVersion="4" />
+    <uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.RECORD_AUDIO" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.WRITE_SETTINGS" />

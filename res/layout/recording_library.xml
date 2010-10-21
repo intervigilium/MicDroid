@@ -2,6 +2,7 @@
 
 <LinearLayout android:id="@+id/recording_library_layout" 
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:admobsdk="http://schemas.android.com/apk/res/com.intervigil.micdroid"
 	android:orientation="vertical" 
 	android:gravity="center" 
 	android:layout_width="fill_parent" 
@@ -12,6 +13,14 @@
 			android:layout_height="wrap_content"
 			android:focusable="false"
 			android:text="@string/recording_library_title" />
+			
+	<com.admob.android.ads.AdView
+			android:id="@+id/recording_ad" 
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content"
+			admobsdk:backgroundColor="#000000"
+			admobsdk:primaryTextColor="#FFFFFF"
+			admobsdk:keywords="android music t-pain autotune" />
 			
 	<ListView android:id="@+id/recording_library_list" 
 			android:layout_width="fill_parent" 
