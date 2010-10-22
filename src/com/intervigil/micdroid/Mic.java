@@ -49,7 +49,6 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
-import com.admob.android.ads.AdManager;
 import com.intervigil.micdroid.helper.ApplicationHelper;
 import com.intervigil.micdroid.helper.AudioHelper;
 import com.intervigil.micdroid.helper.DialogHelper;
