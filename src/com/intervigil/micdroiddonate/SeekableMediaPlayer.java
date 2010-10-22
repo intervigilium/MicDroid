@@ -71,6 +71,7 @@ public class SeekableMediaPlayer {
 	
 	public void bindSeekBar(SeekBar seekBar) {
 		this.seekBar = seekBar;
+		this.seekBar.setOnSeekBarChangeListener(mediaSeekListener);
 	}
 	
 	public void play() {

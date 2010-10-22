@@ -1433,6 +1433,17 @@ void cleanupAutotalent(Autotalent* Instance) {
   free(Instance);
 }
 
+/********************
+ * MIXING FUNCTIONS *
+ ********************/
+
+void mixBuffers(float* outBuf, float* buf1, float* buf2, int bufSize) {
+  int i;
+  for (i = 0; i < bufSize; i++) {
+	  // formula for mixing from: http://www.vttoth.com/digimix.htm
+	  outBuf[i] = (buf1[i] + buf2[i]) - (buf1[i] * buf2[i]);
+  }
+}
 
 /********************
  * HELPER FUNCTIONS *
@@ -1537,6 +1548,33 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroiddonate_pitch_AutoTalent_proce
 
     free(shortBuffer);
     free(sampleBuffer);
+  } else {
+    __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "No suitable autotalent instance found!");
+  }
+}
+
+
+JNIEXPORT void JNICALL Java_com_intervigil_micdroiddonate_pitch_AutoTalent_processMixSamples
+  (JNIEnv* env , jclass class, jshortArray samples, jshortArray instrumentalSamples, jint sampleSize) {
+  if (instance != NULL) {
+	// copy buffers
+    float* sampleBuffer = getFloatBuffer(env, samples, sampleSize);
+    float* instrumentalBuffer = getFloatBuffer(env, instrumentalSamples, sampleSize);
+    setAutotalentBuffers(instance, sampleBuffer, sampleBuffer);
+
+    // process samples
+    runAutotalent(instance, sampleSize);
+
+    // mix instrumental samples with tuned recorded samples
+    mixBuffers(sampleBuffer, sampleBuffer, instrumentalBuffer, sampleSize);
+
+    // copy results back up to java array
+    short* shortBuffer = getShortBuffer(sampleBuffer, sampleSize);
+    (*env)->SetShortArrayRegion(env, samples, 0, sampleSize, shortBuffer);
+
+    free(shortBuffer);
+    free(sampleBuffer);
+    free(instrumentalBuffer);
   } else {
     __android_log_print(ANDROID_LOG_DEBUG, "libautotalent.so", "No suitable autotalent instance found!");
   }

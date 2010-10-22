@@ -46,16 +46,21 @@ import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
+import com.admob.android.ads.AdView;
 import com.intervigil.micdroiddonate.helper.ApplicationHelper;
 import com.intervigil.micdroiddonate.helper.MediaStoreHelper;
+import com.intervigil.micdroiddonate.helper.PreferenceHelper;
 import com.intervigil.micdroiddonate.helper.RecordingOptionsHelper;
 import com.intervigil.micdroiddonate.model.Recording;
 import com.intervigil.micdroiddonate.wave.WaveReader;
+
 
 public class RecordingLibrary extends Activity {
 
 	private static final String STATE_LOAD_IN_PROGRESS = "load_recordings_in_progress";
 	
+	private Boolean showAds;
+	private AdView ad;
 	private ListView library;
 	private RecordingAdapter libraryAdapter;
 	private ArrayList<Recording> recordings;
@@ -75,7 +80,12 @@ public class RecordingLibrary extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recording_library);
+        
+        showAds = PreferenceHelper.getShowAds(RecordingLibrary.this);
 
+        ad = (AdView)findViewById(R.id.recording_ad);
+        ad.setEnabled(showAds);
+        
         library = (ListView)findViewById(R.id.recording_library_list);
         library.setOnItemClickListener(libraryClickListener);
         registerForContextMenu(library);
@@ -83,12 +93,12 @@ public class RecordingLibrary extends Activity {
         Object savedRecordings = getLastNonConfigurationInstance();
         if (savedRecordings == null) {
 	        recordings = new ArrayList<Recording>();
-	        this.libraryAdapter = new RecordingAdapter(this, R.layout.library_row, recordings);
+	        this.libraryAdapter = new RecordingAdapter(this, R.layout.recording_library_row, recordings);
 	        library.setAdapter(libraryAdapter);
 			loadRecordingsTask = (LoadRecordingsTask) new LoadRecordingsTask().execute((Void)null);
         } else {
         	recordings = (ArrayList<Recording>)savedRecordings;
-        	this.libraryAdapter = new RecordingAdapter(this, R.layout.library_row, recordings);
+        	this.libraryAdapter = new RecordingAdapter(this, R.layout.recording_library_row, recordings);
 	        library.setAdapter(libraryAdapter);
 	        this.libraryAdapter.notifyDataSetChanged();
         }
@@ -156,7 +166,7 @@ public class RecordingLibrary extends Activity {
 	    	case Constants.PLAYER_INTENT_CODE:
 	    		if (resultCode == Constants.RESULT_FILE_DELETED) {
 	    			// refresh recordings list since something was removed
-	    			new LoadRecordingsTask().execute((Void)null);
+	    			loadRecordingsTask = (LoadRecordingsTask) new LoadRecordingsTask().execute((Void)null);
 	    		}
 	    		break;
 	    	case Constants.FILENAME_ENTRY_INTENT_CODE:
@@ -255,13 +265,13 @@ public class RecordingLibrary extends Activity {
             View view = convertView;
             if (view == null) {
                 LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = vi.inflate(R.layout.library_row, parent, false);
+                view = vi.inflate(R.layout.recording_library_row, parent, false);
             }
             
             Recording r = this.getItem(position);
             if (r != null) {
-            	((TextView)view.findViewById(R.id.row_first_line)).setText("Name: " + r.getName());
-                ((TextView)view.findViewById(R.id.row_second_line)).setText("Length: " + r.getLength());
+            	((TextView)view.findViewById(R.id.recording_row_first_line)).setText("Name: " + r.getName());
+                ((TextView)view.findViewById(R.id.recording_row_second_line)).setText("Length: " + r.getLength());
             }
 
             return view;
@@ -289,13 +299,12 @@ public class RecordingLibrary extends Activity {
     	}
     }
     
-    private class LoadRecordingsTask extends AsyncTask<Void, Void, Void> {
+    private class LoadRecordingsTask extends AsyncTask<Void, Recording, Void> {
     	// Async load all the recordings already in the directory
     	
     	@Override
     	protected void onPreExecute() {
-    		library.setVisibility(View.INVISIBLE);
-    		recordings.clear();
+    		libraryAdapter.clear();
     		loadRecordingSpinner = new ProgressDialog(RecordingLibrary.this);
     		loadRecordingSpinner.setMessage("Loading recordings");
     		loadRecordingSpinner.show();
@@ -317,7 +326,7 @@ public class RecordingLibrary extends Activity {
 							reader.closeWaveFile();
 							reader = null;
 							
-							recordings.add(r);
+							publishProgress(r);
 					    	
 					    	// check to see if this exists in the media store, if it doesn't insert it
 							if (!MediaStoreHelper.isInserted(RecordingLibrary.this, r)) {
@@ -337,9 +346,15 @@ public class RecordingLibrary extends Activity {
 		}
 		
 		@Override
+		protected void onProgressUpdate(Recording... values) {
+			Recording r = values[0];
+			if (r != null) {
+				libraryAdapter.add(r);
+			}
+		}
+		
+		@Override
 		protected void onPostExecute(Void result) {
-			library.setVisibility(View.VISIBLE);
-			libraryAdapter.notifyDataSetChanged();
 			loadRecordingSpinner.dismiss();
 		}
     }

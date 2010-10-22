@@ -8,7 +8,7 @@
     android:padding="6dip">
 
     <ImageView
-        android:id="@+id/row_icon"
+        android:id="@+id/instrumental_row_icon"
 
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
@@ -20,30 +20,30 @@
         android:src="@drawable/android_music" />
 
     <TextView
-        android:id="@+id/row_second_line"
+        android:id="@+id/instrumental_row_second_line"
 
         android:layout_width="fill_parent"
-        android:layout_height="26dip" 
+        android:layout_height="26dip"
 
-        android:layout_toRightOf="@id/row_icon"
+        android:layout_toRightOf="@id/instrumental_row_icon"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
 
         android:singleLine="true"
-        android:text="Recording Length" />
+        android:text="@string/instrumental_library_row_label_2" />
 
     <TextView
-    	android:id="@+id/row_first_line"
+    	android:id="@+id/instrumental_row_first_line"
     	
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
 
-        android:layout_toRightOf="@id/row_icon"
+        android:layout_toRightOf="@id/instrumental_row_icon"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_above="@id/row_second_line"
+        android:layout_above="@id/instrumental_row_second_line"
         android:layout_alignWithParentIfMissing="true"
 
-        android:text="Recording Name" />
+        android:text="@string/instrumental_library_row_label_1" />
 
 </RelativeLayout>

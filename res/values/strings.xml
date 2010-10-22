@@ -4,17 +4,24 @@
     <string name="default_recording_name">recording.wav</string>
 
     <string name="startup_dialog_title">What\'s new in this version?</string>
-    <string name="startup_dialog_text">1. Fix force close on exit\n\
-2. Reset formant, pitch shift settings\n\
-3. Live pitch-correction option\n\
-4. Fix several crashes\n\
-5. Reset default settings option\n\
-6. Formant correction and warp options\n\
-7. Galaxy S, Captivate, Vibrant support\n\
+    <string name="startup_dialog_text">1. Fix old force closes\n\
+2. Add optional ads\n\
+3. Add exit menu option\n\
+4. Reset formant, pitch shift settings\n\
+5. Live pitch-correction option\n\
+6. Reset default settings option\n\
 \n\
 DISCLAIMER: This is beta software! May be buggy and force close on you! Author is aware and working on issues!\n\
     </string>
     <string name="startup_dialog_accept_btn">Accept</string>
+    
+    <string name="recording_button_label">My Recordings</string>
+    
+    <string name="instrumental_library_row_label_1">Instrumental Name</string>
+    <string name="instrumental_library_row_label_2">Instrumental Length</string>
+    
+    <string name="recording_library_row_label_1">Recording Name</string>
+    <string name="recording_library_row_label_2">Recording Length</string>
 
     <string name="no_external_storage_title">WARNING!</string>
     <string name="no_external_storage_warning">This app requires a mounted SD card to function properly! Make sure there is an SD card properly inserted and mounted before recording!</string>
@@ -39,6 +46,9 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
 
 	<string name="no_headset_plugged_in_title">WARNING!</string>
     <string name="no_headset_plugged_in_warning">Live correction mode requires headphones!</string>
+    
+    <string name="galaxy_s_live_mode_title">ERROR!</string>
+    <string name="galaxy_s_live_mode_error">Samsung Galaxy S phones (Captivate, Vibrant, Epic, Fascinate) do not support live mode.</string>
 
     <string name="recording_started_toast">Recording started! Press power button to stop recording!</string>
     <string name="recording_finished_toast">Recording finished!</string>
@@ -56,6 +66,20 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
 
     <string name="autotalent_progress_msg">Pitch correction in progress...</string>
     <string name="saving_recording_progress_msg">Saving recording...</string>
+
+	<string name="instrumental_library">Instrumentals</string>
+    <string name="instrumental_library_title">Instrumental Tracks</string>
+    <string name="instrumental_library_empty">No Instrumentals</string>
+    
+    <string name="instrumental_options_title">Instrumental Options</string>
+	<string name="instrumental_options_set">Set Instrumental as backing track</string>
+	<string name="instrumental_options_unset">Unset Instrumental as backing track</string>
+	<string name="instrumental_options_remove">Delete Instrumental from library</string>
+	
+	<string name="instrumental_options_track_set">Instrumental set as backing track!</string>
+	<string name="instrumental_options_track_unset">Instrumental unset!</string>
+	<string name="instrumental_options_track_unset_error">Instrumental not set as backing track!</string>
+	<string name="instrumental_options_track_deleted">Instrumental track deleted!</string>
 
     <string name="recording_library">Recordings</string>
     <string name="recording_library_title">Recorded Clips</string>
@@ -99,14 +123,23 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
     <string name="mic_label">Power Button</string>
     <string name="mic_toggle_off">On</string>
     <string name="mic_toggle_on">Off</string>
+    
+    <string name="prefs_instrumental_track_key">instrumental_track</string>
 
-    <string name="prefs_cat_screen">Screen Settings</string>
+    <string name="prefs_cat_screen">Android Settings</string>
     <string name="prefs_prevent_screen_lock_key">screen_lock</string>
     <string name="prefs_prevent_screen_lock">Prevent Screen Lock</string>
     <string name="prefs_prevent_screen_lock_summary_on">Screen will not dim or lock when recording</string>
     <string name="prefs_prevent_screen_lock_summary_off">Screen will dim or lock when recording</string>
     <string name="prefs_prevent_screen_lock_title">Prevent Screen from Dimming</string>
     <string name="prefs_prevent_screen_lock_default">true</string>
+    
+    <string name="prefs_enable_ads_key">enable_ads</string>
+    <string name="prefs_enable_ads">Enable Ads</string>
+    <string name="prefs_enable_ads_summary_on">Thanks for supporting the developer!</string>
+    <string name="prefs_enable_ads_summary_off">Please consider showing ads to support the developer!</string>
+    <string name="prefs_enable_ads_title">Enable Mobile Ads</string>
+    <string name="prefs_enable_ads_default">false</string>
 
     <string name="prefs_cat_recording">Recording Settings</string>
     <string name="prefs_live_mode_key">live_mode</string>
@@ -187,7 +220,7 @@ DISCLAIMER: This is beta software! May be buggy and force close on you! Author i
     <string name="prefs_reset_default_title">Reset to Default</string>
     <string name="prefs_reset_default_default">false</string>
 
-    <string name="about_title">About MicDroid Version 0.39</string>
+    <string name="about_title">About MicDroid Version 0.40</string>
     <string name="about_text">Graphics work courtesy of Peng X. Wang: http://pengxwang.com\n\
 \n\
 MicDroid is licensed under the GPL2 License\n\

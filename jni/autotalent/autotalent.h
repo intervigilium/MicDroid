@@ -33,6 +33,14 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroiddonate_pitch_AutoTalent_proce
 
 /*
  * Class:     com_intervigil_micdroid_AutoTalent
+ * Method:    processMixSamples
+ * Signature: ([S[SI)V
+ */
+JNIEXPORT void JNICALL Java_com_intervigil_micdroid_pitch_AutoTalent_processMixSamples
+  (JNIEnv *, jclass, jshortArray, jshortArray, jint);
+
+/*
+ * Class:     com_intervigil_micdroid_AutoTalent
  * Method:    destroyAutoTalent
  * Signature: ()V
  */

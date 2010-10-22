@@ -47,8 +47,8 @@ public class MediaStoreHelper {
 	        int count = 0;
 	        if (results != null) {
 	        	count = results.getCount();
+	        	results.close();
 	        }
-	        results.close();
 	
 	        return (count > 0);
 		}

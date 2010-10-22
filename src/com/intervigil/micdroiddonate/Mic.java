@@ -203,11 +203,14 @@ public class Mic extends Activity {
             	Intent preferencesIntent = new Intent(getBaseContext(), Preferences.class);
             	startActivityForResult(preferencesIntent, Constants.PREFERENCE_INTENT_CODE);
             	break;
+            case R.id.help:
+            	DialogHelper.showWarning(Mic.this, R.string.help_title, R.string.help_text);
+            	break;
             case R.id.about:
             	DialogHelper.showWarning(Mic.this, R.string.about_title, R.string.about_text);
             	break;
-            case R.id.help:
-            	DialogHelper.showWarning(Mic.this, R.string.help_title, R.string.help_text);
+            case R.id.quit:
+            	finish();
             	break;
         }
         return true;
@@ -376,8 +379,8 @@ public class Mic extends Activity {
     
     private OnClickListener mLibraryBtnListener = new OnClickListener() {
 		public void onClick(View v) {
-			Intent playbackIntent = new Intent(getBaseContext(), RecordingLibrary.class);
-        	startActivity(playbackIntent);
+			Intent libraryIntent = new Intent(getBaseContext(), RecordingLibrary.class);
+        	startActivity(libraryIntent);
 		}
 	};
     
@@ -400,8 +403,10 @@ public class Mic extends Activity {
 					if (isLiveMode && !HeadsetHelper.isHeadsetPluggedIn(Mic.this)) {
 						btn.setChecked(false);
 						DialogHelper.showWarning(Mic.this, R.string.no_headset_plugged_in_title, R.string.no_headset_plugged_in_warning);
-					}
-					else {
+					} else if (isLiveMode && HeadsetHelper.isHeadsetPluggedIn(Mic.this) && AudioHelper.isSamsungGalaxyS()) {
+						btn.setChecked(false);
+						DialogHelper.showWarning(Mic.this, R.string.galaxy_s_live_mode_title, R.string.galaxy_s_live_mode_error);
+					} else {
 						if (isLiveMode) {
 							updateAutoTalentPreferences();
 						}

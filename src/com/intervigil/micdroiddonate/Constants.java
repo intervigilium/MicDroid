@@ -28,6 +28,9 @@ public class Constants {
 	public static final int DEFAULT_PCM_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
 	public static final int DEFAULT_BUFFER_LIMIT = 32;
 	
+	// string parameters
+	public static final String EMPTY_STRING = "";
+	
 	// sample rates
 	public static final int SAMPLE_RATE_44KHZ = 44100;
 	public static final int SAMPLE_RATE_22KHZ = 22050;

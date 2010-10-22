@@ -67,9 +67,9 @@
         </RelativeLayout>
     </RelativeLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/navigation_area"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:gravity="center"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -81,14 +81,13 @@
             android:id="@+id/library_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="My Recordings" 
+            android:text="@string/recording_button_label"
             android:textSize="15sp"
             android:textColor="#fff"
             android:shadowColor="#000"
             android:shadowDy="-1"
             android:shadowRadius="1"
             android:background="@drawable/base_button" />
-        
-    </RelativeLayout>
+    </LinearLayout>
+			
 </RelativeLayout>
