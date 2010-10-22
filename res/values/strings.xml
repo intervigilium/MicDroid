@@ -6,11 +6,10 @@
     <string name="startup_dialog_title">What\'s new in this version?</string>
     <string name="startup_dialog_text">1. Fix old force closes\n\
 2. Add optional ads\n\
-3. Reset formant, pitch shift settings\n\
-4. Live pitch-correction option\n\
-5. Reset default settings option\n\
-6. Formant correction and warp options\n\
-7. Galaxy S, Captivate, Vibrant support\n\
+3. Add exit menu option\n\
+4. Reset formant, pitch shift settings\n\
+5. Live pitch-correction option\n\
+6. Reset default settings option\n\
 \n\
 DISCLAIMER: This is beta software! May be buggy and force close on you! Author is aware and working on issues!\n\
     </string>
