@@ -209,12 +209,13 @@ public class Mic extends Activity {
             	marketSearchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             	startActivity(marketSearchIntent);
             	break;
-            case R.id.about:
-            	DialogHelper.showWarning(Mic.this, R.string.about_title, R.string.about_text);
-            	break;
             case R.id.help:
             	DialogHelper.showWarning(Mic.this, R.string.help_title, R.string.help_text);
             	break;
+            case R.id.about:
+            	DialogHelper.showWarning(Mic.this, R.string.about_title, R.string.about_text);
+            	break;
+            
         }
         return true;
     }
