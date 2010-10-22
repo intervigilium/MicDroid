@@ -37,6 +37,7 @@ public class AudioHelper {
 	private static String DEVICE_ID_VIBRANT = "sgh-t959";
 	private static String DEVICE_ID_FASCINATE = "gt-i9000";
 	private static String DEVICE_ID_EPIC = "sph-d700";
+	private static String DEVICE_ID_G2 = "vision";
 	
 	/**
      * Convert Android AudioFormat.CHANNEL_CONFIGURATION constants to integers
@@ -167,6 +168,7 @@ public class AudioHelper {
 		AudioRecord recorder = null;
 		int sampleRate = PreferenceHelper.getSampleRate(context);
 		int bufferSizeAdjuster = PreferenceHelper.getBufferSizeAdjuster(context);
+		int audioSource = AudioSource.MIC;
 
 		Log.i("AudioHelper", String.format("AudioRecord initialized with saved configuration! sample rate: %d, buffer size adjuster: %d", sampleRate, bufferSizeAdjuster));
 
@@ -174,7 +176,13 @@ public class AudioHelper {
 				Constants.DEFAULT_CHANNEL_CONFIG, 
 				Constants.DEFAULT_PCM_FORMAT) * bufferSizeAdjuster;
 
-		recorder = new AudioRecord(AudioSource.MIC,
+		if (isTmobileG2()) {
+			// G2 doesn't route AudioSource.MIC correctly for some reason
+			// tell it to use camcorder (AudioSource.CAMCORDER if API7+) instead and it works
+			audioSource = 5;
+		}
+		
+		recorder = new AudioRecord(audioSource,
 				sampleRate, 
 				Constants.DEFAULT_CHANNEL_CONFIG,
 				Constants.DEFAULT_PCM_FORMAT,
@@ -284,5 +292,10 @@ public class AudioHelper {
 			}
 		}
 		return false;
+	}
+	
+	public static boolean isTmobileG2() {
+		String device = android.os.Build.DEVICE.toLowerCase();
+		return device.equals(DEVICE_ID_G2);
 	}
 }
