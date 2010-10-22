@@ -215,7 +215,9 @@ public class Mic extends Activity {
             case R.id.about:
             	DialogHelper.showWarning(Mic.this, R.string.about_title, R.string.about_text);
             	break;
-            
+            case R.id.quit:
+            	finish();
+            	break;
         }
         return true;
     }
