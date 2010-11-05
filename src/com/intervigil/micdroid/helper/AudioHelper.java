@@ -35,7 +35,7 @@ public class AudioHelper {
 	private static String DEVICE_ID_GALAXY_S = "gt-i9000";
 	private static String DEVICE_ID_CAPTIVATE = "sgh-i897";
 	private static String DEVICE_ID_VIBRANT = "sgh-t959";
-	private static String DEVICE_ID_FASCINATE = "gt-i9000";
+	private static String DEVICE_ID_FASCINATE = "sch-i500";
 	private static String DEVICE_ID_EPIC = "sph-d700";
 	private static String DEVICE_ID_G2 = "vision";
 	
@@ -281,12 +281,12 @@ public class AudioHelper {
 				return true;
 			}
 			
-			if (model.contains("epic") || device.equals(DEVICE_ID_EPIC)) {
+			if (device.equals(DEVICE_ID_EPIC)) {
 				Log.i("AudioHelper", "Sprint, Samsung Epic 4G detected");
 				return true;
 			}
 			
-			if (model.contains("fascinate") || device.equals(DEVICE_ID_FASCINATE)) {
+			if (device.equals(DEVICE_ID_FASCINATE)) {
 				Log.i("AudioHelper", "Verizon, Samsung Fascinate detected");
 				return true;
 			}
