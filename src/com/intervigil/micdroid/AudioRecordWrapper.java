@@ -103,6 +103,7 @@ public class AudioRecordWrapper {
         stop();
         if (audioRecord != null) {
             audioRecord.release();
+            audioRecord = null;
         }
     }
 
