@@ -47,7 +47,8 @@ public class Recorder {
     private final WaveWriter writer;
     private final boolean isLiveMode;
 
-    public Recorder(Context context, Handler errorHandler, boolean isLiveMode) {
+    public Recorder(Context context, Handler errorHandler, boolean isLiveMode)
+            throws IllegalArgumentException {
         this.errorHandler = errorHandler;
         this.isLiveMode = isLiveMode;
         this.writer = new WaveWriter(ApplicationHelper.getOutputDirectory(),
@@ -55,30 +56,10 @@ public class Recorder {
                 PreferenceHelper.getSampleRate(context), AudioHelper
                         .getChannelConfig(Constants.DEFAULT_CHANNEL_CONFIG),
                 AudioHelper.getPcmEncoding(Constants.DEFAULT_PCM_FORMAT));
-        try {
-            this.audioRecord = new AudioRecordWrapper(context);
-        } catch (IllegalArgumentException e) {
-            // problem with audiorecord being given a bad sample rate/buffer
-            // size
-            e.printStackTrace();
-
-            Message msg = errorHandler
-                    .obtainMessage(Constants.AUDIORECORD_ILLEGAL_ARGUMENT);
-            errorHandler.sendMessage(msg);
-        }
+        this.audioRecord = new AudioRecordWrapper(context);
 
         if (isLiveMode) {
-            try {
-                this.audioTrack = AudioHelper.getPlayer(context);
-            } catch (IllegalArgumentException e) {
-                // problem with audiotrack being given a bad sample rate/buffer
-                // size
-                e.printStackTrace();
-
-                Message msg = errorHandler
-                        .obtainMessage(Constants.AUDIOTRACK_ILLEGAL_ARGUMENT);
-                errorHandler.sendMessage(msg);
-            }
+            this.audioTrack = AudioHelper.getPlayer(context);
         }
 
         String trackName = PreferenceHelper.getInstrumentalTrack(context);
@@ -91,59 +72,18 @@ public class Recorder {
         }
     }
 
-    public void start() {
+    public void start()
+            throws IllegalStateException, FileNotFoundException, IOException {
         writerThread = new MicWriter();
-        try {
-            writer.createWaveFile();
-            writerThread.start();
-        } catch (IOException e) {
-            // problem writing to file, unable to create file?
-            e.printStackTrace();
-
-            Message msg = errorHandler
-                    .obtainMessage(Constants.UNABLE_TO_CREATE_RECORDING);
-            errorHandler.sendMessage(msg);
-        }
+        writer.createWaveFile();
+        writerThread.start();
         if (instrumentalReader != null) {
-            try {
-                instrumentalReader.openWave();
-            } catch (FileNotFoundException e) {
-                // could not find recording??
-                e.printStackTrace();
-
-                Message msg = errorHandler
-                    .obtainMessage(Constants.INSTRUMENTAL_NOT_FOUND);
-                errorHandler.sendMessage(msg);
-            } catch (IOException e) {
-                // not a wave file
-                e.printStackTrace();
-
-                Message msg = errorHandler
-                    .obtainMessage(Constants.INSTRUMENTAL_NOT_WAVE);
-                errorHandler.sendMessage(msg);
-            }
+            instrumentalReader.openWave();
         }
         if (isLiveMode) {
-            try {
-                audioTrack.play();
-            } catch (IllegalStateException e) {
-                // audiotrack failed to initialize properly
-                e.printStackTrace();
-
-                Message msg = errorHandler
-                    .obtainMessage(Constants.AUDIOTRACK_ILLEGAL_STATE);
-                errorHandler.sendMessage(msg);
-            }
+            audioTrack.play();
         }
-        try {
-            audioRecord.start();
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-
-            Message msg = errorHandler
-                .obtainMessage(Constants.AUDIORECORD_ILLEGAL_STATE);
-            errorHandler.sendMessage(msg);
-        }
+        audioRecord.start();
     }
 
     public void stop() {
