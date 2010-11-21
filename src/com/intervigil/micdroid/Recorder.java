@@ -218,7 +218,7 @@ public class Recorder {
             }
             // close file
             try {
-                writer.closeFile();
+                writer.closeWaveFile();
             } catch (IOException e) {
                 e.printStackTrace();
             }
