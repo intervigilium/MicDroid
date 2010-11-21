@@ -317,6 +317,16 @@ public class Mic extends Activity {
                         R.string.recording_exception_title,
                         R.string.recording_exception_warning);
                 break;
+            case Constants.INSTRUMENTAL_NOT_FOUND:
+                DialogHelper.showWarning(Mic.this,
+                        R.string.instrumental_not_found_title,
+                        R.string.instrumental_not_found_warning);
+                break;
+            case Constants.INSTRUMENTAL_NOT_WAVE:
+                DialogHelper.showWarning(Mic.this,
+                        R.string.instrumental_not_wave_title,
+                        R.string.instrumental_not_wave_warning);
+                break;
             }
         }
     };
