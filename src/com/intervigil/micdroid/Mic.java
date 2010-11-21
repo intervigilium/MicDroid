@@ -271,34 +271,6 @@ public class Mic extends Activity {
             recordingButton.setChecked(false);
 
             switch (msg.what) {
-            case Constants.AUDIORECORD_ILLEGAL_STATE:
-                // received error message that AudioRecord was started without
-                // being properly initialized
-                DialogHelper.showWarning(Mic.this,
-                        R.string.audiorecord_exception_title,
-                        R.string.audiorecord_exception_warning);
-                break;
-            case Constants.AUDIORECORD_ILLEGAL_ARGUMENT:
-                // received error message that AudioRecord was started with bad
-                // sample rate/buffer size
-                DialogHelper.showWarning(Mic.this,
-                        R.string.audiorecord_exception_title,
-                        R.string.audiorecord_exception_warning);
-                break;
-            case Constants.AUDIOTRACK_ILLEGAL_STATE:
-                // received error message that AudioTrack was started without
-                // being properly initialized
-                DialogHelper.showWarning(Mic.this,
-                        R.string.audiorecord_exception_title,
-                        R.string.audiorecord_exception_warning);
-                break;
-            case Constants.AUDIOTRACK_ILLEGAL_ARGUMENT:
-                // received error message that AudioTrack was started with bad
-                // sample rate/buffer size
-                DialogHelper.showWarning(Mic.this,
-                        R.string.audiorecord_exception_title,
-                        R.string.audiorecord_exception_warning);
-                break;
             case Constants.WRITER_OUT_OF_SPACE:
                 // received error that the writer is out of SD card space
                 DialogHelper.showWarning(Mic.this,
@@ -310,23 +282,6 @@ public class Mic extends Activity {
                 DialogHelper.showWarning(Mic.this,
                         R.string.unable_to_create_recording_title,
                         R.string.unable_to_create_recording_warning);
-                break;
-            case Constants.RECORDING_GENERIC_EXCEPTION:
-                // some sort of error occurred in the threads, don't know what
-                // yet, send a log!
-                DialogHelper.showWarning(Mic.this,
-                        R.string.recording_exception_title,
-                        R.string.recording_exception_warning);
-                break;
-            case Constants.INSTRUMENTAL_NOT_FOUND:
-                DialogHelper.showWarning(Mic.this,
-                        R.string.instrumental_not_found_title,
-                        R.string.instrumental_not_found_warning);
-                break;
-            case Constants.INSTRUMENTAL_NOT_WAVE:
-                DialogHelper.showWarning(Mic.this,
-                        R.string.instrumental_not_wave_title,
-                        R.string.instrumental_not_wave_warning);
                 break;
             }
         }
@@ -482,8 +437,8 @@ public class Mic extends Activity {
                             } catch (IllegalArgumentException e) {
                                 btn.setChecked(false);
                                 DialogHelper.showWarning(Mic.this,
-                                        R.string.audiorecord_exception_title,
-                                        R.string.audiorecord_exception_warning);
+                                        R.string.audio_record_exception_title,
+                                        R.string.audio_record_exception_warning);
                                 return;
                             }
                         }
@@ -497,8 +452,8 @@ public class Mic extends Activity {
                             btn.setChecked(false);
                             recorder.cleanup();
                             DialogHelper.showWarning(Mic.this,
-                                    R.string.audiorecord_exception_title,
-                                    R.string.audiorecord_exception_warning);
+                                    R.string.audio_record_exception_title,
+                                    R.string.audio_record_exception_warning);
                             return;
                         } catch (FileNotFoundException e) {
                             btn.setChecked(false);

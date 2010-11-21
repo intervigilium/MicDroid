@@ -47,22 +47,13 @@
 	<string name="unable_to_create_recording_warning">Writer cannot create recording! Please make sure
 		your SD card is inserted and is writable!</string>
 
-	<string name="audiorecord_exception_title">ERROR!</string>
-	<string name="audiorecord_exception_warning">An error has occurred while recording! Please check
+	<string name="audio_record_exception_title">ERROR!</string>
+	<string name="audio_record_exception_warning">An error has occurred while recording! Please check
 		your settings and make sure your device is able to record audio!</string>
-
-	<string name="recording_exception_title">ERROR!</string>
-	<string name="recording_exception_warning">An unknown exception occurred while recording!
-		Please check your settings and make sure your device is able to record
-		audio!</string>
 
 	<string name="instrumental_not_found_title">ERROR!</string>
 	<string name="instrumental_not_found_warning">Instrumental file not found!
 		Please check to see that instrumental file exists and is acccessible!</string>
-
-	<string name="instrumental_not_wave_title">ERROR!</string>
-	<string name="instrumental_not_wave_warning">Instrumental file format unknown!
-		Please re-import instrumental file!</string>
 
 	<string name="no_headset_plugged_in_title">WARNING!</string>
 	<string name="no_headset_plugged_in_warning">Live correction mode requires headphones!</string>

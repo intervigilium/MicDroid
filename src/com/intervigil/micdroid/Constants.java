@@ -56,13 +56,6 @@ public class Constants {
     public static final String AUDIO_WAVE = "audio/wav";
 
     // recording error handler codes
-    public static final int AUDIORECORD_ILLEGAL_STATE = 4;
-    public static final int AUDIORECORD_ILLEGAL_ARGUMENT = 5;
-    public static final int AUDIOTRACK_ILLEGAL_STATE = 9;
-    public static final int AUDIOTRACK_ILLEGAL_ARGUMENT = 10;
     public static final int WRITER_OUT_OF_SPACE = 6;
     public static final int UNABLE_TO_CREATE_RECORDING = 7;
-    public static final int RECORDING_GENERIC_EXCEPTION = 8;
-    public static final int INSTRUMENTAL_NOT_FOUND = 11;
-    public static final int INSTRUMENTAL_NOT_WAVE = 12;
 }
