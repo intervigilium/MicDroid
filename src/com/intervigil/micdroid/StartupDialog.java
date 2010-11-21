@@ -29,37 +29,40 @@ import android.widget.TextView;
 
 public class StartupDialog extends Dialog {
 
-	private Context context;
-	private TextView textView;
-	private LinearLayout buttonHolder;
-	private int titleId;
-	private int textId;
-	private int buttonLabelId;
-	
-	public StartupDialog(Context context, int titleId, int textId, int buttonLabelId) {
-		super(context);
-		this.context = context;
-		this.titleId = titleId;
-		this.textId = textId;
-		this.buttonLabelId = buttonLabelId;
-		
-		View dialog = createDialog();
-		setContentView(dialog);
-	}
-	
-	private View createDialog() { 
-		// Set title text
-		setTitle(titleId);
-		
+    private Context context;
+    private TextView textView;
+    private LinearLayout buttonHolder;
+    private int titleId;
+    private int textId;
+    private int buttonLabelId;
+
+    public StartupDialog(Context context, int titleId, int textId,
+            int buttonLabelId) {
+        super(context);
+        this.context = context;
+        this.titleId = titleId;
+        this.textId = textId;
+        this.buttonLabelId = buttonLabelId;
+
+        View dialog = createDialog();
+        setContentView(dialog);
+    }
+
+    private View createDialog() {
+        // Set title text
+        setTitle(titleId);
+
         // Create the overall layout.
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.setPadding(6, 6, 6, 6);
 
-        // Create a ScrollView to put the text in.  Shouldn't be necessary...
+        // Create a ScrollView to put the text in. Shouldn't be necessary...
         ScrollView tscroll = new ScrollView(context);
         tscroll.setVerticalScrollBarEnabled(true);
-        tscroll.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
+        tscroll.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT, 1));
         layout.addView(tscroll);
 
         // Now create the text view and add it to the scroller.
@@ -67,7 +70,9 @@ public class StartupDialog extends Dialog {
         textView.setTextSize(16);
         textView.setTextColor(0xffffffff);
         textView.setText(textId);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT));
+        textView.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.FILL_PARENT,
+                LinearLayout.LayoutParams.FILL_PARENT));
         tscroll.addView(textView);
 
         // Add a layout to hold the buttons.
@@ -75,8 +80,10 @@ public class StartupDialog extends Dialog {
         buttonHolder.setBackgroundColor(0xf08080);
         buttonHolder.setOrientation(LinearLayout.HORIZONTAL);
         buttonHolder.setPadding(6, 3, 3, 3);
-        layout.addView(buttonHolder, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-        
+        layout.addView(buttonHolder, new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.FILL_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT));
+
         // Add the OK button.
         Button btn = new Button(context);
         btn.setText(buttonLabelId);
@@ -85,7 +92,9 @@ public class StartupDialog extends Dialog {
                 dismiss();
             }
         });
-        buttonHolder.addView(btn, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
+        buttonHolder.addView(btn, new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT, 1));
 
         return layout;
     }

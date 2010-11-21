@@ -25,15 +25,16 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 
 public class HeadsetHelper {
-	
-	private static final String EXTRA_HEADSET_STATE_KEY = "state";
 
-	public static boolean isHeadsetPluggedIn(Context context) {
-		Intent headsetIntent = context.registerReceiver(null, new IntentFilter(Intent.ACTION_HEADSET_PLUG));
-		if (headsetIntent != null) {
-			Bundle extraData = headsetIntent.getExtras();
-			return !(extraData.getInt(EXTRA_HEADSET_STATE_KEY) == 0);
-		}
-		return false;
-	}
+    private static final String EXTRA_HEADSET_STATE_KEY = "state";
+
+    public static boolean isHeadsetPluggedIn(Context context) {
+        Intent headsetIntent = context.registerReceiver(null, new IntentFilter(
+                Intent.ACTION_HEADSET_PLUG));
+        if (headsetIntent != null) {
+            Bundle extraData = headsetIntent.getExtras();
+            return !(extraData.getInt(EXTRA_HEADSET_STATE_KEY) == 0);
+        }
+        return false;
+    }
 }

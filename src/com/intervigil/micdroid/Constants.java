@@ -22,45 +22,45 @@ package com.intervigil.micdroid;
 import android.media.AudioFormat;
 
 public class Constants {
-	
-	// default recording parameters
-	public static final int DEFAULT_CHANNEL_CONFIG = AudioFormat.CHANNEL_CONFIGURATION_MONO;
-	public static final int DEFAULT_PCM_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
-	public static final int DEFAULT_BUFFER_LIMIT = 32;
-	
-	// string parameters
-	public static final String EMPTY_STRING = "";
-	
-	// sample rates
-	public static final int SAMPLE_RATE_44KHZ = 44100;
-	public static final int SAMPLE_RATE_22KHZ = 22050;
-	public static final int SAMPLE_RATE_11KHZ = 11025;
-	public static final int SAMPLE_RATE_8KHZ = 8000;
-	
-	// intent codes
-	public static final int FILENAME_ENTRY_INTENT_CODE = 12768;
-	public static final int PLAYER_INTENT_CODE = 12769;
-	public static final int PREFERENCE_INTENT_CODE = 12771;
-	
-	// result codes
-	public static final int RESULT_FILE_DELETED = 12770;
-	// intent extras
-	public static final String PLAYER_INTENT_RECORDING = "PLAYER_RECORDING";
-	public static final String NAME_ENTRY_INTENT_RECORDING = "NAME_ENTRY_RECORDING";
-	public static final String NAME_ENTRY_INTENT_FILE_NAME = "NAME_ENTRY_FILENAME_RESULT";
-	
-	// shared preference keys
-	public static final String KEY_LAST_VERSION_CODE = "prefs_last_version_code";
-	
-	// mime type
-	public static final String AUDIO_WAVE = "audio/wav";
-	
-	// recording error handler codes
-	public static final int AUDIORECORD_ILLEGAL_STATE = 4;
-	public static final int AUDIORECORD_ILLEGAL_ARGUMENT = 5;
-	public static final int AUDIOTRACK_ILLEGAL_STATE = 9;
-	public static final int AUDIOTRACK_ILLEGAL_ARGUMENT = 10;
-	public static final int WRITER_OUT_OF_SPACE = 6;
-	public static final int UNABLE_TO_CREATE_RECORDING = 7;
-	public static final int RECORDING_GENERIC_EXCEPTION = 8;
+
+    // default recording parameters
+    public static final int DEFAULT_CHANNEL_CONFIG = AudioFormat.CHANNEL_CONFIGURATION_MONO;
+    public static final int DEFAULT_PCM_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
+    public static final int DEFAULT_BUFFER_LIMIT = 32;
+
+    // string parameters
+    public static final String EMPTY_STRING = "";
+
+    // sample rates
+    public static final int SAMPLE_RATE_44KHZ = 44100;
+    public static final int SAMPLE_RATE_22KHZ = 22050;
+    public static final int SAMPLE_RATE_11KHZ = 11025;
+    public static final int SAMPLE_RATE_8KHZ = 8000;
+
+    // intent codes
+    public static final int FILENAME_ENTRY_INTENT_CODE = 12768;
+    public static final int PLAYER_INTENT_CODE = 12769;
+    public static final int PREFERENCE_INTENT_CODE = 12771;
+
+    // result codes
+    public static final int RESULT_FILE_DELETED = 12770;
+    // intent extras
+    public static final String PLAYER_INTENT_RECORDING = "PLAYER_RECORDING";
+    public static final String NAME_ENTRY_INTENT_RECORDING = "NAME_ENTRY_RECORDING";
+    public static final String NAME_ENTRY_INTENT_FILE_NAME = "NAME_ENTRY_FILENAME_RESULT";
+
+    // shared preference keys
+    public static final String KEY_LAST_VERSION_CODE = "prefs_last_version_code";
+
+    // mime type
+    public static final String AUDIO_WAVE = "audio/wav";
+
+    // recording error handler codes
+    public static final int AUDIORECORD_ILLEGAL_STATE = 4;
+    public static final int AUDIORECORD_ILLEGAL_ARGUMENT = 5;
+    public static final int AUDIOTRACK_ILLEGAL_STATE = 9;
+    public static final int AUDIOTRACK_ILLEGAL_ARGUMENT = 10;
+    public static final int WRITER_OUT_OF_SPACE = 6;
+    public static final int UNABLE_TO_CREATE_RECORDING = 7;
+    public static final int RECORDING_GENERIC_EXCEPTION = 8;
 }

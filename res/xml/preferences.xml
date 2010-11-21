@@ -1,146 +1,113 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
 	<PreferenceCategory android:title="@string/prefs_cat_screen">
-		<CheckBoxPreference
-				android:key="@string/prefs_prevent_screen_lock_key"
-				android:title="@string/prefs_prevent_screen_lock"
-				android:summaryOff="@string/prefs_prevent_screen_lock_summary_off"
-				android:summaryOn="@string/prefs_prevent_screen_lock_summary_on"
-				android:dialogTitle="@string/prefs_prevent_screen_lock_title"
-				android:defaultValue="@string/prefs_prevent_screen_lock_default" />
-				
-		<CheckBoxPreference
-				android:key="@string/prefs_enable_ads_key"
-				android:title="@string/prefs_enable_ads"
-				android:summaryOff="@string/prefs_enable_ads_summary_off"
-				android:summaryOn="@string/prefs_enable_ads_summary_on"
-				android:dialogTitle="@string/prefs_enable_ads_title"
-				android:defaultValue="@string/prefs_enable_ads_default" />
-				
+		<CheckBoxPreference android:key="@string/prefs_prevent_screen_lock_key"
+			android:title="@string/prefs_prevent_screen_lock" android:summaryOff="@string/prefs_prevent_screen_lock_summary_off"
+			android:summaryOn="@string/prefs_prevent_screen_lock_summary_on"
+			android:dialogTitle="@string/prefs_prevent_screen_lock_title"
+			android:defaultValue="@string/prefs_prevent_screen_lock_default" />
+
+		<CheckBoxPreference android:key="@string/prefs_enable_ads_key"
+			android:title="@string/prefs_enable_ads" android:summaryOff="@string/prefs_enable_ads_summary_off"
+			android:summaryOn="@string/prefs_enable_ads_summary_on"
+			android:dialogTitle="@string/prefs_enable_ads_title"
+			android:defaultValue="@string/prefs_enable_ads_default" />
+
 	</PreferenceCategory>
 
 	<PreferenceCategory android:title="@string/prefs_cat_recording">
-	
-		<CheckBoxPreference
-				android:key="@string/prefs_live_mode_key"
-				android:title="@string/prefs_live_mode"
-				android:summaryOff="@string/prefs_live_mode_summary_off"
-				android:summaryOn="@string/prefs_live_mode_summary_on"
-				android:dialogTitle="@string/prefs_live_mode_title"
-				android:defaultValue="@string/prefs_live_mode_default" />
-				
-		<ListPreference
-				android:key="@string/prefs_sample_rate_key"
-				android:title="@string/prefs_sample_rate"
-				android:summary="@string/prefs_sample_rate_summary"
-                android:entries="@array/prefs_sample_rate_entries"
-                android:entryValues="@array/prefs_sample_rate_values"
-                android:dialogTitle="@string/prefs_sample_rate_title"
-                android:defaultValue="@string/prefs_sample_rate_default" />
 
-		<ListPreference
-				android:key="@string/prefs_buffer_size_adjuster_key"
-				android:title="@string/prefs_buffer_size_adjuster"
-				android:summary="@string/prefs_buffer_size_adjuster_summary"
-                android:entries="@array/prefs_buffer_size_adjuster_entries"
-                android:entryValues="@array/prefs_buffer_size_adjuster_values"
-                android:dialogTitle="@string/prefs_buffer_size_adjuster_title"
-                android:defaultValue="@string/prefs_buffer_size_adjuster_default" />
-                
-	</PreferenceCategory>
-    
-    <PreferenceCategory android:title="@string/prefs_cat_key">
+		<CheckBoxPreference android:key="@string/prefs_live_mode_key"
+			android:title="@string/prefs_live_mode" android:summaryOff="@string/prefs_live_mode_summary_off"
+			android:summaryOn="@string/prefs_live_mode_summary_on"
+			android:dialogTitle="@string/prefs_live_mode_title"
+			android:defaultValue="@string/prefs_live_mode_default" />
 
-        <ListPreference
-                android:key="@string/prefs_key_key"
-                android:title="@string/prefs_key"
-                android:summary="@string/prefs_key_summary"
-                android:entries="@array/prefs_key_entries"
-                android:entryValues="@array/prefs_key_values"
-                android:dialogTitle="@string/prefs_key_title"
-                android:defaultValue="@string/prefs_key_default" />
+		<ListPreference android:key="@string/prefs_sample_rate_key"
+			android:title="@string/prefs_sample_rate" android:summary="@string/prefs_sample_rate_summary"
+			android:entries="@array/prefs_sample_rate_entries"
+			android:entryValues="@array/prefs_sample_rate_values"
+			android:dialogTitle="@string/prefs_sample_rate_title"
+			android:defaultValue="@string/prefs_sample_rate_default" />
 
-    </PreferenceCategory>
-  
-    <PreferenceCategory android:title="@string/prefs_cat_pitch">
-        
-        <ListPreference
-                android:key="@string/prefs_pitch_pull_key"
-                android:title="@string/prefs_pitch_pull"
-                android:summary="@string/prefs_pitch_pull_summary"
-                android:entries="@array/prefs_pitch_pull_entries"
-                android:entryValues="@array/prefs_pitch_pull_values"
-                android:dialogTitle="@string/prefs_pitch_pull_title"
-                android:defaultValue="@string/prefs_pitch_pull_default" />
-
-		<ListPreference
-                android:key="@string/prefs_pitch_shift_key"
-                android:title="@string/prefs_pitch_shift"
-                android:summary="@string/prefs_pitch_shift_summary"
-                android:entries="@array/prefs_pitch_shift_entries"
-                android:entryValues="@array/prefs_pitch_shift_values"
-                android:dialogTitle="@string/prefs_pitch_shift_title"
-                android:defaultValue="@string/prefs_pitch_shift_default" />
+		<ListPreference android:key="@string/prefs_buffer_size_adjuster_key"
+			android:title="@string/prefs_buffer_size_adjuster" android:summary="@string/prefs_buffer_size_adjuster_summary"
+			android:entries="@array/prefs_buffer_size_adjuster_entries"
+			android:entryValues="@array/prefs_buffer_size_adjuster_values"
+			android:dialogTitle="@string/prefs_buffer_size_adjuster_title"
+			android:defaultValue="@string/prefs_buffer_size_adjuster_default" />
 
 	</PreferenceCategory>
-    
-    <PreferenceCategory android:title="@string/prefs_cat_correction">
 
-        <ListPreference
-                android:key="@string/prefs_corr_str_key"
-                android:title="@string/prefs_corr_str"
-                android:summary="@string/prefs_corr_str_summary"
-                android:entries="@array/prefs_corr_str_entries"
-                android:entryValues="@array/prefs_corr_str_values"
-                android:dialogTitle="@string/prefs_corr_str_title"
-                android:defaultValue="@string/prefs_corr_str_default" />
-                
-        <ListPreference
-                android:key="@string/prefs_corr_smooth_key"
-                android:title="@string/prefs_corr_smooth"
-                android:summary="@string/prefs_corr_smooth_summary"
-                android:entries="@array/prefs_corr_smooth_entries"
-                android:entryValues="@array/prefs_corr_smooth_values"
-                android:dialogTitle="@string/prefs_corr_smooth_title"
-                android:defaultValue="@string/prefs_corr_smooth_default" />
+	<PreferenceCategory android:title="@string/prefs_cat_key">
 
-		<CheckBoxPreference
-				android:key="@string/prefs_formant_corr_key"
-				android:title="@string/prefs_formant_corr"
-				android:summaryOff="@string/prefs_formant_corr_summary_off"
-				android:summaryOn="@string/prefs_formant_corr_summary_on"
-				android:dialogTitle="@string/prefs_formant_corr_title"
-				android:defaultValue="@string/prefs_formant_corr_default" />
-				
-		<ListPreference
-				android:dependency="@string/prefs_formant_corr_key"
-                android:key="@string/prefs_formant_warp_key"
-                android:title="@string/prefs_formant_warp"
-                android:summary="@string/prefs_formant_warp_summary"
-                android:entries="@array/prefs_formant_warp_entries"
-                android:entryValues="@array/prefs_formant_warp_values"
-                android:dialogTitle="@string/prefs_formant_warp_title"
-                android:defaultValue="@string/prefs_formant_warp_default" />
+		<ListPreference android:key="@string/prefs_key_key"
+			android:title="@string/prefs_key" android:summary="@string/prefs_key_summary"
+			android:entries="@array/prefs_key_entries" android:entryValues="@array/prefs_key_values"
+			android:dialogTitle="@string/prefs_key_title" android:defaultValue="@string/prefs_key_default" />
 
-		<ListPreference
-                android:key="@string/prefs_corr_mix_key"
-                android:title="@string/prefs_corr_mix"
-                android:summary="@string/prefs_corr_mix_summary"
-                android:entries="@array/prefs_corr_mix_entries"
-                android:entryValues="@array/prefs_corr_mix_values"
-                android:dialogTitle="@string/prefs_corr_mix_title"
-                android:defaultValue="@string/prefs_corr_mix_default" />
-                
-    </PreferenceCategory>
-    
-    <PreferenceCategory android:title="@string/prefs_cat_reset_default">
-    	<Preference
-    			android:key="@string/prefs_reset_default_key"
-    			android:title="@string/prefs_reset_default"
-    			android:summary="@string/prefs_reset_default_summary"
-    			android:dialogTitle="@string/prefs_reset_default_title" 
-    			android:defaultValue="@string/prefs_reset_default_default" />
-    			
-    </PreferenceCategory>
-  
+	</PreferenceCategory>
+
+	<PreferenceCategory android:title="@string/prefs_cat_pitch">
+
+		<ListPreference android:key="@string/prefs_pitch_pull_key"
+			android:title="@string/prefs_pitch_pull" android:summary="@string/prefs_pitch_pull_summary"
+			android:entries="@array/prefs_pitch_pull_entries"
+			android:entryValues="@array/prefs_pitch_pull_values"
+			android:dialogTitle="@string/prefs_pitch_pull_title"
+			android:defaultValue="@string/prefs_pitch_pull_default" />
+
+		<ListPreference android:key="@string/prefs_pitch_shift_key"
+			android:title="@string/prefs_pitch_shift" android:summary="@string/prefs_pitch_shift_summary"
+			android:entries="@array/prefs_pitch_shift_entries"
+			android:entryValues="@array/prefs_pitch_shift_values"
+			android:dialogTitle="@string/prefs_pitch_shift_title"
+			android:defaultValue="@string/prefs_pitch_shift_default" />
+
+	</PreferenceCategory>
+
+	<PreferenceCategory android:title="@string/prefs_cat_correction">
+
+		<ListPreference android:key="@string/prefs_corr_str_key"
+			android:title="@string/prefs_corr_str" android:summary="@string/prefs_corr_str_summary"
+			android:entries="@array/prefs_corr_str_entries" android:entryValues="@array/prefs_corr_str_values"
+			android:dialogTitle="@string/prefs_corr_str_title"
+			android:defaultValue="@string/prefs_corr_str_default" />
+
+		<ListPreference android:key="@string/prefs_corr_smooth_key"
+			android:title="@string/prefs_corr_smooth" android:summary="@string/prefs_corr_smooth_summary"
+			android:entries="@array/prefs_corr_smooth_entries"
+			android:entryValues="@array/prefs_corr_smooth_values"
+			android:dialogTitle="@string/prefs_corr_smooth_title"
+			android:defaultValue="@string/prefs_corr_smooth_default" />
+
+		<CheckBoxPreference android:key="@string/prefs_formant_corr_key"
+			android:title="@string/prefs_formant_corr" android:summaryOff="@string/prefs_formant_corr_summary_off"
+			android:summaryOn="@string/prefs_formant_corr_summary_on"
+			android:dialogTitle="@string/prefs_formant_corr_title"
+			android:defaultValue="@string/prefs_formant_corr_default" />
+
+		<ListPreference android:dependency="@string/prefs_formant_corr_key"
+			android:key="@string/prefs_formant_warp_key" android:title="@string/prefs_formant_warp"
+			android:summary="@string/prefs_formant_warp_summary" android:entries="@array/prefs_formant_warp_entries"
+			android:entryValues="@array/prefs_formant_warp_values"
+			android:dialogTitle="@string/prefs_formant_warp_title"
+			android:defaultValue="@string/prefs_formant_warp_default" />
+
+		<ListPreference android:key="@string/prefs_corr_mix_key"
+			android:title="@string/prefs_corr_mix" android:summary="@string/prefs_corr_mix_summary"
+			android:entries="@array/prefs_corr_mix_entries" android:entryValues="@array/prefs_corr_mix_values"
+			android:dialogTitle="@string/prefs_corr_mix_title"
+			android:defaultValue="@string/prefs_corr_mix_default" />
+
+	</PreferenceCategory>
+
+	<PreferenceCategory android:title="@string/prefs_cat_reset_default">
+		<Preference android:key="@string/prefs_reset_default_key"
+			android:title="@string/prefs_reset_default" android:summary="@string/prefs_reset_default_summary"
+			android:dialogTitle="@string/prefs_reset_default_title"
+			android:defaultValue="@string/prefs_reset_default_default" />
+
+	</PreferenceCategory>
+
 </PreferenceScreen>

@@ -32,93 +32,104 @@ import android.util.Log;
 import com.intervigil.micdroid.helper.DialogHelper;
 import com.intervigil.micdroid.helper.PreferenceHelper;
 
-public class Preferences extends PreferenceActivity implements OnSharedPreferenceChangeListener {
-	/**
-     * Called when the activity is starting.  This is where most
-     * initialization should go: calling setContentView(int) to inflate
-     * the activity's UI, etc.
+public class Preferences extends PreferenceActivity implements
+        OnSharedPreferenceChangeListener {
+    /**
+     * Called when the activity is starting. This is where most initialization
+     * should go: calling setContentView(int) to inflate the activity's UI, etc.
      * 
-     * @param   icicle          Activity's saved state, if any.
+     * @param icicle
+     *            Activity's saved state, if any.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
         // Load the preferences from an XML resource.
         addPreferencesFromResource(R.xml.preferences);
-        
+
         Preference resetDefault = (Preference) findPreference(getString(R.string.prefs_reset_default_key));
         resetDefault.setOnPreferenceClickListener(resetListener);
     }
-    
+
     @Override
     protected void onStart() {
         Log.i("Preferences", "onStart()");
         super.onStart();
     }
-    
+
     @Override
     protected void onResume() {
-    	Log.i("Preferences", "onResume()");
+        Log.i("Preferences", "onResume()");
         super.onResume();
-        
-        // Set up a listener whenever a key changes      
-        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+
+        // Set up a listener whenever a key changes
+        getPreferenceScreen().getSharedPreferences()
+                .registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
     protected void onPause() {
-    	Log.i("Preferences", "onPause()");
+        Log.i("Preferences", "onPause()");
         super.onPause();
 
-        // Unregister the listener whenever a key changes            
-        getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);    
+        // Unregister the listener whenever a key changes
+        getPreferenceScreen().getSharedPreferences()
+                .unregisterOnSharedPreferenceChangeListener(this);
     }
-    
+
     @Override
     protected void onStop() {
-    	Log.i("Preferences", "onStop()");
-    	super.onStop();
+        Log.i("Preferences", "onStop()");
+        super.onStop();
     }
-    
+
     @Override
     protected void onDestroy() {
-    	Log.i("Preferences", "onDestroy()");
-    	super.onStop();
+        Log.i("Preferences", "onDestroy()");
+        super.onStop();
     }
 
-	@Override
-	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-		if (key.equals(getString(R.string.prefs_live_mode_key))) {
-			if (PreferenceHelper.getLiveMode(Preferences.this)) {
-				DialogHelper.showWarning(Preferences.this, R.string.live_mode_enable_title, R.string.live_mode_enable_warning);
-			}
-		}
-	}
-	
-	private OnPreferenceClickListener resetListener = new OnPreferenceClickListener() {
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+            String key) {
+        if (key.equals(getString(R.string.prefs_live_mode_key))) {
+            if (PreferenceHelper.getLiveMode(Preferences.this)) {
+                DialogHelper.showWarning(Preferences.this,
+                        R.string.live_mode_enable_title,
+                        R.string.live_mode_enable_warning);
+            }
+        }
+    }
 
-		@Override
-		public boolean onPreferenceClick(Preference preference) {
-			Builder confirmDialogBuilder = new Builder(Preferences.this);
-    		confirmDialogBuilder.setTitle(R.string.confirm_reset_prefs_title)
-    			.setMessage(R.string.confirm_reset_prefs_message)
-    			.setPositiveButton(R.string.confirm_reset_prefs_btn_yes, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						PreferenceHelper.setDefaultPreferences(Preferences.this);
-		    			dialog.dismiss();
-		    			finish();
-					}
-				})
-    			.setNegativeButton(R.string.confirm_reset_prefs_btn_no, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();
-					}
-				});
-    		confirmDialogBuilder.create().show();
-    		return true;
-		}
-	};
+    private OnPreferenceClickListener resetListener = new OnPreferenceClickListener() {
+
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+            Builder confirmDialogBuilder = new Builder(Preferences.this);
+            confirmDialogBuilder.setTitle(R.string.confirm_reset_prefs_title)
+                    .setMessage(R.string.confirm_reset_prefs_message)
+                    .setPositiveButton(R.string.confirm_reset_prefs_btn_yes,
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog,
+                                        int which) {
+                                    PreferenceHelper
+                                            .setDefaultPreferences(Preferences.this);
+                                    dialog.dismiss();
+                                    finish();
+                                }
+                            }).setNegativeButton(
+                            R.string.confirm_reset_prefs_btn_no,
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog,
+                                        int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+            confirmDialogBuilder.create().show();
+            return true;
+        }
+    };
 }

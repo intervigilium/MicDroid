@@ -36,59 +36,61 @@ import android.widget.EditText;
 import com.intervigil.micdroid.model.Recording;
 
 public class FileNameEntry extends Activity {
-	
-	private AlertDialog invalidNameAlert;
-	
-	/**
-     * Called when the activity is starting.  This is where most
-     * initialization should go: calling setContentView(int) to inflate
-     * the activity's UI, etc.
+
+    private AlertDialog invalidNameAlert;
+
+    /**
+     * Called when the activity is starting. This is where most initialization
+     * should go: calling setContentView(int) to inflate the activity's UI, etc.
      * 
-     * @param   savedInstanceState	Activity's saved state, if any.
+     * @param savedInstanceState
+     *            Activity's saved state, if any.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.filename_entry);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND, WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND,
+                WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH.mm.ss");
         String defaultName = formatter.format(new Date());
-        ((EditText)findViewById(R.id.filename_entry_field)).setText(defaultName);
-        
-        invalidNameAlert = new AlertDialog.Builder(this)
-        	.setTitle(getString(R.string.invalid_name_alert_title))
-        	.setMessage(getString(R.string.invalid_name_alert_message))
-        	.setNeutralButton("ok", 
-        		new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						invalidNameAlert.dismiss();
-					}
-				})
-        	.create();
-        
-        ((Button)findViewById(R.id.filename_entry_btn_ok)).setOnClickListener(mOkBtnListener);
+        ((EditText) findViewById(R.id.filename_entry_field))
+                .setText(defaultName);
+
+        invalidNameAlert = new AlertDialog.Builder(this).setTitle(
+                getString(R.string.invalid_name_alert_title)).setMessage(
+                getString(R.string.invalid_name_alert_message))
+                .setNeutralButton("ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        invalidNameAlert.dismiss();
+                    }
+                }).create();
+
+        ((Button) findViewById(R.id.filename_entry_btn_ok))
+                .setOnClickListener(mOkBtnListener);
     }
-    
-    private OnClickListener mOkBtnListener = new OnClickListener() {	
-		public void onClick(View v) {
-			EditText fileNameInput = (EditText)findViewById(R.id.filename_entry_field);
-			String fileName = fileNameInput.getText().toString();
-			Intent result = new Intent();
-			result.putExtra(Constants.NAME_ENTRY_INTENT_FILE_NAME, fileName);
-			
-			Bundle data = getIntent().getExtras();
-			if (data != null) {
-				Recording r = data.getParcelable(Constants.NAME_ENTRY_INTENT_RECORDING);
-				result.putExtra(Constants.NAME_ENTRY_INTENT_RECORDING, r);
-			}
-			
-			if (fileName == null || fileName.length() == 0) {
-				invalidNameAlert.show();
-			} else {
-				setResult(Activity.RESULT_OK, result);
-				finish();
-			}
-		}
-	};
+
+    private OnClickListener mOkBtnListener = new OnClickListener() {
+        public void onClick(View v) {
+            EditText fileNameInput = (EditText) findViewById(R.id.filename_entry_field);
+            String fileName = fileNameInput.getText().toString();
+            Intent result = new Intent();
+            result.putExtra(Constants.NAME_ENTRY_INTENT_FILE_NAME, fileName);
+
+            Bundle data = getIntent().getExtras();
+            if (data != null) {
+                Recording r = data
+                        .getParcelable(Constants.NAME_ENTRY_INTENT_RECORDING);
+                result.putExtra(Constants.NAME_ENTRY_INTENT_RECORDING, r);
+            }
+
+            if (fileName == null || fileName.length() == 0) {
+                invalidNameAlert.show();
+            } else {
+                setResult(Activity.RESULT_OK, result);
+                finish();
+            }
+        }
+    };
 }
