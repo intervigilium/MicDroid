@@ -90,7 +90,11 @@ public class AudioRecordWrapper {
             } catch (InterruptedException e) {
             }
             micRecorder = null;
+        }
+        if (audioRecord != null) {
             audioRecord.stop();
+        }
+        if (queue != null) {
             queue.clear();
         }
     }
