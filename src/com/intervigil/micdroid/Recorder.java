@@ -21,6 +21,7 @@
 package com.intervigil.micdroid;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import android.content.Context;
@@ -84,14 +85,7 @@ public class Recorder {
         writerThread = new MicWriter();
         try {
             writer.createWaveFile();
-            audioRecord.start();
             writerThread.start();
-            if (isLiveMode) {
-                audioTrack.play();
-            }
-            if (instrumentalReader != null) {
-                instrumentalReader.openWave();
-            }
         } catch (IOException e) {
             // problem writing to file, unable to create file?
             e.printStackTrace();
@@ -99,14 +93,39 @@ public class Recorder {
             Message msg = errorHandler
                     .obtainMessage(Constants.UNABLE_TO_CREATE_RECORDING);
             errorHandler.sendMessage(msg);
-        } catch (IllegalStateException e) {
-            // problem starting playback from audiotrack
-            e.printStackTrace();
-
-            Message msg = errorHandler
-                    .obtainMessage(Constants.AUDIOTRACK_ILLEGAL_STATE);
-            errorHandler.sendMessage(msg);
         }
+        if (instrumentalReader != null) {
+            try {
+                instrumentalReader.openWave();
+            } catch (FileNotFoundException e) {
+                // could not find recording??
+                e.printStackTrace();
+
+                Message msg = errorHandler
+                    .obtainMessage(Constants.INSTRUMENTAL_NOT_FOUND);
+                errorHandler.sendMessage(msg);
+            } catch (IOException e) {
+                // not a wave file
+                e.printStackTrace();
+
+                Message msg = errorHandler
+                    .obtainMessage(Constants.INSTRUMENTAL_NOT_WAVE);
+                errorHandler.sendMessage(msg);
+            }
+        }
+        if (isLiveMode) {
+            try {
+                audioTrack.play();
+            } catch (IllegalStateException e) {
+                // audiotrack failed to initialize properly
+                e.printStackTrace();
+
+                Message msg = errorHandler
+                    .obtainMessage(Constants.AUDIOTRACK_ILLEGAL_STATE);
+                errorHandler.sendMessage(msg);
+            }
+        }
+        audioRecord.start();
     }
 
     public void stop() {
@@ -153,7 +172,6 @@ public class Recorder {
     }
 
     private class MicWriter extends Thread {
-
         public void run() {
             while (!Thread.interrupted()) {
                 Sample sample = audioRecord.poll();
