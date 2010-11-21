@@ -60,7 +60,7 @@ public class AudioRecordWrapper {
         this.bufferSize = AudioHelper.getRecorderBufferSize(context);
     }
 
-    public void start() {
+    public synchronized void start() {
         if (audioRecord.getState() == AudioRecord.STATE_INITIALIZED) {
             try {
                 audioRecord.startRecording();
@@ -82,7 +82,7 @@ public class AudioRecordWrapper {
         }
     }
 
-    public void stop() {
+    public synchronized void stop() {
         if (micRecorder != null) {
             micRecorder.interrupt();
             try {
@@ -95,7 +95,7 @@ public class AudioRecordWrapper {
         }
     }
 
-    public void cleanup() {
+    public synchronized void cleanup() {
         stop();
         if (audioRecord != null) {
             audioRecord.release();
