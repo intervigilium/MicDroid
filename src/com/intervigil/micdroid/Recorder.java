@@ -42,7 +42,7 @@ public class Recorder {
 
     private AudioTrack audioTrack;
     private WaveReader instrumentalReader;
-    private final AudioRecordWrapper audioRecord;
+    private AudioRecordWrapper audioRecord;
     private final Handler errorHandler;
     private final WaveWriter writer;
     private final boolean isLiveMode;
@@ -55,7 +55,17 @@ public class Recorder {
                 PreferenceHelper.getSampleRate(context), AudioHelper
                         .getChannelConfig(Constants.DEFAULT_CHANNEL_CONFIG),
                 AudioHelper.getPcmEncoding(Constants.DEFAULT_PCM_FORMAT));
-        this.audioRecord = new AudioRecordWrapper(context, errorHandler);
+        try {
+            this.audioRecord = new AudioRecordWrapper(context);
+        } catch (IllegalArgumentException e) {
+            // problem with audiorecord being given a bad sample rate/buffer
+            // size
+            e.printStackTrace();
+
+            Message msg = errorHandler
+                    .obtainMessage(Constants.AUDIORECORD_ILLEGAL_ARGUMENT);
+            errorHandler.sendMessage(msg);
+        }
 
         if (isLiveMode) {
             try {
@@ -125,11 +135,20 @@ public class Recorder {
                 errorHandler.sendMessage(msg);
             }
         }
-        audioRecord.start();
+        try {
+            audioRecord.start();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+
+            Message msg = errorHandler
+                .obtainMessage(Constants.AUDIORECORD_ILLEGAL_STATE);
+            errorHandler.sendMessage(msg);
+        }
     }
 
     public void stop() {
         if (isRunning()) {
+            audioRecord.stop();
             if (isLiveMode) {
                 audioTrack.stop();
             }
