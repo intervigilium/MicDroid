@@ -40,39 +40,20 @@ public class AudioRecordWrapper {
     private MicRecorder micRecorder;
     private AudioRecord audioRecord;
     private final BlockingQueue<Sample> queue;
-    private final Handler errorHandler;
     private final int bufferSize;
 
-    public AudioRecordWrapper(Context context, Handler errorHandler) {
-        try {
-            this.audioRecord = AudioHelper.getRecorder(context);
-        } catch (IllegalArgumentException e) {
-            // problem with audiorecord being given a bad sample rate/buffer
-            // size
-            e.printStackTrace();
-
-            Message msg = errorHandler
-                    .obtainMessage(Constants.AUDIORECORD_ILLEGAL_ARGUMENT);
-            errorHandler.sendMessage(msg);
-        }
+    public AudioRecordWrapper(Context context) 
+            throws IllegalArgumentException {
+        this.audioRecord = AudioHelper.getRecorder(context);
         this.queue = new SynchronousQueue<Sample>();
-        this.errorHandler = errorHandler;
         this.bufferSize = AudioHelper.getRecorderBufferSize(context);
     }
 
-    public synchronized void start() {
-        try {
-            audioRecord.startRecording();
-            micRecorder = new MicRecorder();
-            micRecorder.start();
-        } catch (IllegalStateException e) {
-            // problem with audiorecord not being initialized properly
-            e.printStackTrace();
-
-            Message msg = errorHandler
-                    .obtainMessage(Constants.AUDIORECORD_ILLEGAL_STATE);
-            errorHandler.sendMessage(msg);
-        }
+    public synchronized void start() 
+            throws IllegalStateException {
+        audioRecord.startRecording();
+        micRecorder = new MicRecorder();
+        micRecorder.start();
     }
 
     public synchronized void stop() {
