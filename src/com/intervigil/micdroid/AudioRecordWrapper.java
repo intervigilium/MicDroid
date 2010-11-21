@@ -61,21 +61,14 @@ public class AudioRecordWrapper {
     }
 
     public synchronized void start() {
-        if (audioRecord.getState() == AudioRecord.STATE_INITIALIZED) {
-            try {
-                audioRecord.startRecording();
-                micRecorder = new MicRecorder();
-                micRecorder.start();
-            } catch (IllegalStateException e) {
-                // problem with audiorecord not being initialized properly
-                e.printStackTrace();
+        try {
+            audioRecord.startRecording();
+            micRecorder = new MicRecorder();
+            micRecorder.start();
+        } catch (IllegalStateException e) {
+            // problem with audiorecord not being initialized properly
+            e.printStackTrace();
 
-                Message msg = errorHandler
-                        .obtainMessage(Constants.AUDIORECORD_ILLEGAL_STATE);
-                errorHandler.sendMessage(msg);
-            }
-        } else {
-            // audio resources not allocated properly yet
             Message msg = errorHandler
                     .obtainMessage(Constants.AUDIORECORD_ILLEGAL_STATE);
             errorHandler.sendMessage(msg);
