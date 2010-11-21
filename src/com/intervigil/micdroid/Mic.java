@@ -21,6 +21,7 @@
 package com.intervigil.micdroid;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import android.app.Activity;
@@ -470,19 +471,50 @@ public class Mic extends Activity {
                                 R.string.galaxy_s_live_mode_title,
                                 R.string.galaxy_s_live_mode_error);
                     } else {
+                        timer.reset();
                         if (isLiveMode) {
                             updateAutoTalentPreferences();
                         }
                         if (recorder == null) {
-                            recorder = new Recorder(Mic.this,
-                                    recordingErrorHandler, isLiveMode);
+                            try {
+                                recorder = new Recorder(Mic.this,
+                                        recordingErrorHandler, isLiveMode);
+                            } catch (IllegalArgumentException e) {
+                                btn.setChecked(false);
+                                DialogHelper.showWarning(Mic.this,
+                                        R.string.audiorecord_exception_title,
+                                        R.string.audiorecord_exception_warning);
+                                return;
+                            }
                         }
-                        recorder.start();
-                        timer.reset();
-                        timer.start();
-                        Toast.makeText(getBaseContext(),
-                                R.string.recording_started_toast,
-                                Toast.LENGTH_SHORT).show();
+                        try {
+                            recorder.start();
+                            timer.start();
+                            Toast.makeText(getBaseContext(),
+                                    R.string.recording_started_toast,
+                                    Toast.LENGTH_SHORT).show();
+                        } catch (IllegalStateException e) {
+                            btn.setChecked(false);
+                            recorder.cleanup();
+                            DialogHelper.showWarning(Mic.this,
+                                    R.string.audiorecord_exception_title,
+                                    R.string.audiorecord_exception_warning);
+                            return;
+                        } catch (FileNotFoundException e) {
+                            btn.setChecked(false);
+                            recorder.cleanup();
+                            DialogHelper.showWarning(Mic.this,
+                                    R.string.instrumental_not_found_title,
+                                    R.string.instrumental_not_found_warning);
+                            return;
+                        } catch (IOException e) {
+                            btn.setChecked(false);
+                            recorder.cleanup();
+                            DialogHelper.showWarning(Mic.this,
+                                    R.string.unable_to_create_recording_title,
+                                    R.string.unable_to_create_recording_warning);
+                            return;
+                        }
                     }
                 } else {
                     if (recorder != null && recorder.isRunning()) {
