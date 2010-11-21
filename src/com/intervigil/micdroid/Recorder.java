@@ -141,18 +141,12 @@ public class Recorder {
                     e.printStackTrace();
                 }
             }
-            audioRecord.stop();
             writerThread.interrupt();
             try {
                 writerThread.join();
             } catch (InterruptedException e) {
             }
 
-            try {
-                writer.closeWaveFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
             writerThread = null;
         }
     }
@@ -202,6 +196,12 @@ public class Recorder {
                         errorHandler.sendMessage(msg);
                     }
                 }
+            }
+            // close file
+            try {
+                writer.closeFile();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
