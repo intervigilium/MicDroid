@@ -63,6 +63,6 @@ public class Constants {
     public static final int WRITER_OUT_OF_SPACE = 6;
     public static final int UNABLE_TO_CREATE_RECORDING = 7;
     public static final int RECORDING_GENERIC_EXCEPTION = 8;
-    public static final int INSTRUMENTAL_NOT_FOUND = 9;
-    public static final int INSTRUMENTAL_NOT_WAVE = 10;
+    public static final int INSTRUMENTAL_NOT_FOUND = 11;
+    public static final int INSTRUMENTAL_NOT_WAVE = 12;
 }
