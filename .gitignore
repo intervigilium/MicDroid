@@ -7,3 +7,4 @@ market/*
 *.iws
 *.ipr
 *.iml
+local.properties
