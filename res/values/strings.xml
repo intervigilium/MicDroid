@@ -4,12 +4,11 @@
 	<string name="default_recording_name">recording.wav</string>
 
 	<string name="startup_dialog_title">What\'s new in this version?</string>
-	<string name="startup_dialog_text">1. Fix old force closes\n\
-		2. Add optional ads\n\
-		3. Add exit menu option\n\
-		4. Reset formant, pitch shift settings\n\
-		5. Live pitch-correction option\n\
-		6. Reset default settings option\n\
+	<string name="startup_dialog_text">1. New icon\n\
+        2. Attempt to fix some crashes\n\
+        3. Better&faster error handling\n\
+		4. Add optional ads\n\
+		5. Add exit menu option\n\
 		\n\
 		DISCLAIMER: This is beta software! May be buggy and force close on you! Author is
 		aware and working on issues!\n\
@@ -240,7 +239,7 @@
 	<string name="prefs_reset_default_title">Reset to Default</string>
 	<string name="prefs_reset_default_default">false</string>
 
-	<string name="about_title">About MicDroid Version 0.40</string>
+	<string name="about_title">About MicDroid Version 0.41</string>
 	<string name="about_text">Graphics work courtesy of Peng X. Wang:
 		http://pengxwang.com\n\
 		\n\
