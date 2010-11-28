@@ -2,8 +2,10 @@ bin/*
 gen/*
 libs/armeabi*
 obj/*
-screenshots/*
+keys
+market/*
 *.apk
 *.iws
 *.ipr
 *.iml
+local.properties

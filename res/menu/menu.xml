@@ -1,6 +1,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-	<item android:id="@+id/options" android:title="Pitch-Correction Settings" android:icon="@drawable/android_settings"/>
-	<item android:id="@+id/help" android:title="Help" android:icon="@drawable/android_help" />
-	<item android:id="@+id/about" android:title="About" android:icon="@drawable/android_about" />
-	<item android:id="@+id/quit" android:title="Exit" android:icon="@drawable/android_close" />
+	<item android:id="@+id/options" android:title="Pitch-Correction Settings"
+		android:icon="@drawable/android_settings" />
+	<item android:id="@+id/help" android:title="Help"
+		android:icon="@drawable/android_help" />
+	<item android:id="@+id/about" android:title="About"
+		android:icon="@drawable/android_about" />
+	<item android:id="@+id/quit" android:title="Exit"
+		android:icon="@drawable/android_close" />
 </menu>

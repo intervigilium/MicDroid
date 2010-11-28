@@ -36,96 +36,80 @@ import com.intervigil.micdroiddonate.helper.AudioHelper;
 import com.intervigil.micdroiddonate.model.Sample;
 
 public class AudioRecordWrapper {
-	
-	private MicRecorder micRecorder;
-	private AudioRecord audioRecord;
-	private final BlockingQueue<Sample> queue;
-	private final Handler errorHandler;
-	private final int bufferSize;
-	
-	public AudioRecordWrapper(Context context, Handler errorHandler) {
-		try {
-			this.audioRecord = AudioHelper.getRecorder(context);
-		} catch (IllegalArgumentException e) {
-			// problem with audiorecord being given a bad sample rate/buffer size
-			e.printStackTrace();
-			
-			Message msg = errorHandler.obtainMessage(Constants.AUDIORECORD_ILLEGAL_ARGUMENT);
-			errorHandler.sendMessage(msg);
-		}
-		this.queue = new SynchronousQueue<Sample>();
-		this.errorHandler = errorHandler;
-		this.bufferSize = AudioHelper.getRecorderBufferSize(context);
-	}
-	
-	public void start() {
-		if (audioRecord.getState() == AudioRecord.STATE_INITIALIZED) {
-			try {
-				audioRecord.startRecording();
-				micRecorder = new MicRecorder();
-				micRecorder.start();
-			} catch (IllegalStateException e) {
-				// problem with audiorecord not being initialized properly
-				e.printStackTrace();
-				
-				Message msg = errorHandler.obtainMessage(Constants.AUDIORECORD_ILLEGAL_STATE);
-				errorHandler.sendMessage(msg);
-			}
-		} else {
-			// audio resources not allocated properly yet
-			Message msg = errorHandler.obtainMessage(Constants.AUDIORECORD_ILLEGAL_STATE);
-			errorHandler.sendMessage(msg);
-		}
-	}
-	
-	public void stop() {
-		if (micRecorder != null) {
-			micRecorder.interrupt();
-			try {
-				micRecorder.join();
-			} catch (InterruptedException e) { }
-			micRecorder = null;
-			audioRecord.stop();
-			queue.clear();
-		}
-	}
-	
-	public void cleanup() {
-		stop();
-		if (audioRecord != null) {
-			audioRecord.release();
-		}
-	}
-	
-	public Sample poll() {
-		return queue.poll();
-	}
-	
-	public Sample take() throws InterruptedException {
-		return queue.take();
-	}
-	
-	private class MicRecorder extends Thread {
-    	
-		@Override
-    	public void run() {
-    		Process.setThreadPriority(Process.THREAD_PRIORITY_URGENT_AUDIO);
-    		
-    		Sample s = new Sample(new short[bufferSize], bufferSize);
-    		Sample t = new Sample(new short[bufferSize], bufferSize);
 
-    		while (!Thread.interrupted()) {
-				s.bufferSize = audioRecord.read(s.buffer, 0, s.buffer.length);
-				try {
-					queue.put(s);
-				} catch (InterruptedException e) {
-					break;
-				}
-				
-				Sample tmp = s;
-	    		s = t;
-	    		t = tmp;
-    		}
-    	}
-	}
+    private MicRecorder micRecorder;
+    private AudioRecord audioRecord;
+    private final BlockingQueue<Sample> queue;
+    private final int bufferSize;
+
+    public AudioRecordWrapper(Context context) 
+            throws IllegalArgumentException {
+        this.audioRecord = AudioHelper.getRecorder(context);
+        this.queue = new SynchronousQueue<Sample>();
+        this.bufferSize = AudioHelper.getRecorderBufferSize(context);
+    }
+
+    public synchronized void start() 
+            throws IllegalStateException {
+        audioRecord.startRecording();
+        micRecorder = new MicRecorder();
+        micRecorder.start();
+    }
+
+    public synchronized void stop() {
+        if (micRecorder != null) {
+            micRecorder.interrupt();
+            try {
+                micRecorder.join();
+            } catch (InterruptedException e) {
+            }
+            micRecorder = null;
+        }
+        if (audioRecord != null) {
+            audioRecord.stop();
+        }
+        if (queue != null) {
+            queue.clear();
+        }
+    }
+
+    public synchronized void cleanup() {
+        stop();
+        if (audioRecord != null) {
+            audioRecord.release();
+            audioRecord = null;
+        }
+    }
+
+    public Sample poll() {
+        return queue.poll();
+    }
+
+    public Sample take() throws InterruptedException {
+        return queue.take();
+    }
+
+    private class MicRecorder extends Thread {
+
+        @Override
+        public void run() {
+            Process.setThreadPriority(Process.THREAD_PRIORITY_URGENT_AUDIO);
+
+            Sample s = new Sample(new short[bufferSize], bufferSize);
+            Sample t = new Sample(new short[bufferSize], bufferSize);
+
+            while (!Thread.interrupted()) {
+                s.bufferSize = audioRecord.read(s.buffer, 0, s.buffer.length);
+                try {
+                    queue.put(s);
+                } catch (InterruptedException e) {
+                    break;
+                }
+
+                Sample tmp = s;
+                s = t;
+                t = tmp;
+            }
+        }
+    }
 }

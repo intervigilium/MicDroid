@@ -32,109 +32,129 @@ import com.intervigil.micdroiddonate.model.Recording;
 
 public class MediaStoreHelper {
 
-	public static boolean isInserted(Context context, Recording r) {
-		ContentResolver resolver = context.getContentResolver();
-		if (resolver != null) {
-			ContentValues values = new ContentValues();
-			values.put(MediaStore.MediaColumns.DATA, r.getAbsolutePath());
-			values.put(MediaStore.MediaColumns.TITLE, r.getName());
-			values.put(MediaStore.MediaColumns.DISPLAY_NAME, r.getName());
-	
-			Uri contentUri = MediaStore.Audio.Media.getContentUriForPath(r.getAbsolutePath());
-	
-	        Cursor results = resolver.query(contentUri, new String[] { "_display_name" }, "_display_name=?", new String[] { r.getName() }, null);
-	
-	        int count = 0;
-	        if (results != null) {
-	        	count = results.getCount();
-	        	results.close();
-	        }
-	
-	        return (count > 0);
-		}
-		return false;
-	}
+    public static boolean isInserted(Context context, Recording r) {
+        ContentResolver resolver = context.getContentResolver();
+        if (resolver != null) {
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.MediaColumns.DATA, r.getAbsolutePath());
+            values.put(MediaStore.MediaColumns.TITLE, r.getName());
+            values.put(MediaStore.MediaColumns.DISPLAY_NAME, r.getName());
 
-	public static void insertRecording(Context context, Recording r) {
-		ContentResolver resolver = context.getContentResolver();
-		if (resolver != null) {
-			ContentValues values = new ContentValues();
-			values.put(MediaStore.MediaColumns.DATA, r.getAbsolutePath());
-	        values.put(MediaStore.MediaColumns.TITLE, r.getName());
-	        values.put(MediaStore.MediaColumns.DISPLAY_NAME, r.getName());
-	        values.put(MediaStore.MediaColumns.SIZE, r.getSize());
-	        values.put(MediaStore.MediaColumns.MIME_TYPE, Constants.AUDIO_WAVE);
-	
-	        values.put(MediaStore.Audio.Media.ARTIST, "MicDroid");
-	        values.put(MediaStore.Audio.Media.ALBUM, "MicDroid");
-	        values.put(MediaStore.Audio.Media.DURATION, r.getLengthInMs() * Recording.MILLISECONDS_IN_SECOND);
-	
-	        values.put(MediaStore.Audio.Media.IS_RINGTONE, true);
-	        values.put(MediaStore.Audio.Media.IS_NOTIFICATION, true);
-	        values.put(MediaStore.Audio.Media.IS_ALARM, false);
-	        values.put(MediaStore.Audio.Media.IS_MUSIC, true);
-	
-	        Uri contentUri = MediaStore.Audio.Media.getContentUriForPath(r.getAbsolutePath());
-	
-	        Cursor results = resolver.query(contentUri, new String[] { "_display_name" }, "_display_name=?", new String[] { r.getName() }, null);
-	        if (results != null && results.getCount() > 0) {
-	        	resolver.delete(contentUri, "_display_name=?", new String[] { r.getName() });  
-	        	results.close();
-	        }
-	        
-	        Log.i("MediaStoreHelper", String.format("is contentUri null? %b", contentUri == null));
-	        Log.i("MediaStoreHelper", String.format("is values null? %b", values == null));
-	        Log.i("MediaStoreHelper", String.format("is resolver null? %b", resolver == null));
+            Uri contentUri = MediaStore.Audio.Media.getContentUriForPath(r
+                    .getAbsolutePath());
 
-	        resolver.insert(contentUri, values);
-	        resolver = null;
-		}
-	}
+            Cursor results = resolver.query(contentUri,
+                    new String[] { "_display_name" }, "_display_name=?",
+                    new String[] { r.getName() }, null);
 
-	public static void removeRecording(Context context, Recording r) {
-		ContentResolver resolver = context.getContentResolver();
-		if (resolver != null) {
-			ContentValues values = new ContentValues();
-			values.put(MediaStore.MediaColumns.DATA, r.getAbsolutePath());
-			values.put(MediaStore.MediaColumns.TITLE, r.getName());
-			values.put(MediaStore.MediaColumns.DISPLAY_NAME, r.getName());
-	
-			Uri contentUri = MediaStore.Audio.Media.getContentUriForPath(r.getAbsolutePath());
-	
-	        Cursor results = resolver.query(contentUri, new String[] { "_display_name" }, "_display_name=?", new String[] { r.getName() }, null);
-	        if (results != null && results.getCount() > 0) {
-	        	resolver.delete(contentUri, "_display_name=?", new String[] { r.getName() });
-	        	results.close();
-	        }
-	        resolver = null;
-		}
-	}
+            int count = 0;
+            if (results != null) {
+                count = results.getCount();
+                results.close();
+            }
 
-	public static Uri getRecordingUri(Context context, Recording recording) {
-		ContentResolver resolver = context.getContentResolver();
-		if (resolver != null) {
-	    	ContentValues values = new ContentValues();
-			values.put(MediaStore.MediaColumns.DATA, recording.getAbsolutePath());
-	        values.put(MediaStore.MediaColumns.TITLE, recording.getName());
-	        values.put(MediaStore.MediaColumns.DISPLAY_NAME, recording.getName());
-	        values.put(MediaStore.MediaColumns.SIZE, recording.getSize());
-	        values.put(MediaStore.MediaColumns.MIME_TYPE, Constants.AUDIO_WAVE);
-	
-	        values.put(MediaStore.Audio.Media.ARTIST, "MicDroid");
-	        values.put(MediaStore.Audio.Media.ALBUM, "MicDroid");
-	        values.put(MediaStore.Audio.Media.DURATION, recording.getLengthInMs());
-	
-	        values.put(MediaStore.Audio.Media.IS_RINGTONE, true);
-	        values.put(MediaStore.Audio.Media.IS_NOTIFICATION, true);
-	        values.put(MediaStore.Audio.Media.IS_ALARM, false);
-	        values.put(MediaStore.Audio.Media.IS_MUSIC, true);
-	
-	        Uri contentUri = MediaStore.Audio.Media.getContentUriForPath(recording.getAbsolutePath());
-	        resolver.delete(contentUri, "_display_name=?", new String[] { recording.getName() });
-	        Uri recordingUri = resolver.insert(contentUri, values);
-	        resolver = null;
-	        return recordingUri;
-		}
-		return null;
-	}
+            return (count > 0);
+        }
+        return false;
+    }
+
+    public static void insertRecording(Context context, Recording r) {
+        ContentResolver resolver = context.getContentResolver();
+        if (resolver != null) {
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.MediaColumns.DATA, r.getAbsolutePath());
+            values.put(MediaStore.MediaColumns.TITLE, r.getName());
+            values.put(MediaStore.MediaColumns.DISPLAY_NAME, r.getName());
+            values.put(MediaStore.MediaColumns.SIZE, r.getSize());
+            values.put(MediaStore.MediaColumns.MIME_TYPE, Constants.AUDIO_WAVE);
+
+            values.put(MediaStore.Audio.Media.ARTIST, "MicDroid");
+            values.put(MediaStore.Audio.Media.ALBUM, "MicDroid");
+            values.put(MediaStore.Audio.Media.DURATION, r.getLengthInMs()
+                    * Recording.MILLISECONDS_IN_SECOND);
+
+            values.put(MediaStore.Audio.Media.IS_RINGTONE, true);
+            values.put(MediaStore.Audio.Media.IS_NOTIFICATION, true);
+            values.put(MediaStore.Audio.Media.IS_ALARM, false);
+            values.put(MediaStore.Audio.Media.IS_MUSIC, true);
+
+            Uri contentUri = MediaStore.Audio.Media.getContentUriForPath(r
+                    .getAbsolutePath());
+
+            Cursor results = resolver.query(contentUri,
+                    new String[] { "_display_name" }, "_display_name=?",
+                    new String[] { r.getName() }, null);
+            if (results != null && results.getCount() > 0) {
+                resolver.delete(contentUri, "_display_name=?", new String[] { r
+                        .getName() });
+                results.close();
+            }
+
+            Log.i("MediaStoreHelper", String.format("is contentUri null? %b",
+                    contentUri == null));
+            Log.i("MediaStoreHelper", String.format("is values null? %b",
+                    values == null));
+            Log.i("MediaStoreHelper", String.format("is resolver null? %b",
+                    resolver == null));
+
+            resolver.insert(contentUri, values);
+            resolver = null;
+        }
+    }
+
+    public static void removeRecording(Context context, Recording r) {
+        ContentResolver resolver = context.getContentResolver();
+        if (resolver != null) {
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.MediaColumns.DATA, r.getAbsolutePath());
+            values.put(MediaStore.MediaColumns.TITLE, r.getName());
+            values.put(MediaStore.MediaColumns.DISPLAY_NAME, r.getName());
+
+            Uri contentUri = MediaStore.Audio.Media.getContentUriForPath(r
+                    .getAbsolutePath());
+
+            Cursor results = resolver.query(contentUri,
+                    new String[] { "_display_name" }, "_display_name=?",
+                    new String[] { r.getName() }, null);
+            if (results != null && results.getCount() > 0) {
+                resolver.delete(contentUri, "_display_name=?", new String[] { r
+                        .getName() });
+                results.close();
+            }
+            resolver = null;
+        }
+    }
+
+    public static Uri getRecordingUri(Context context, Recording recording) {
+        ContentResolver resolver = context.getContentResolver();
+        if (resolver != null) {
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.MediaColumns.DATA, recording
+                    .getAbsolutePath());
+            values.put(MediaStore.MediaColumns.TITLE, recording.getName());
+            values.put(MediaStore.MediaColumns.DISPLAY_NAME, recording
+                    .getName());
+            values.put(MediaStore.MediaColumns.SIZE, recording.getSize());
+            values.put(MediaStore.MediaColumns.MIME_TYPE, Constants.AUDIO_WAVE);
+
+            values.put(MediaStore.Audio.Media.ARTIST, "MicDroid");
+            values.put(MediaStore.Audio.Media.ALBUM, "MicDroid");
+            values.put(MediaStore.Audio.Media.DURATION, recording
+                    .getLengthInMs());
+
+            values.put(MediaStore.Audio.Media.IS_RINGTONE, true);
+            values.put(MediaStore.Audio.Media.IS_NOTIFICATION, true);
+            values.put(MediaStore.Audio.Media.IS_ALARM, false);
+            values.put(MediaStore.Audio.Media.IS_MUSIC, true);
+
+            Uri contentUri = MediaStore.Audio.Media
+                    .getContentUriForPath(recording.getAbsolutePath());
+            resolver.delete(contentUri, "_display_name=?",
+                    new String[] { recording.getName() });
+            Uri recordingUri = resolver.insert(contentUri, values);
+            resolver = null;
+            return recordingUri;
+        }
+        return null;
+    }
 }

@@ -27,34 +27,40 @@ import android.os.Environment;
 
 public class ApplicationHelper {
 
-	public static int getPackageVersion(Context context) {
-    	int versionCode = -1;
-    	try {
-			versionCode = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
-		} catch (NameNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return versionCode;
+    public static int getPackageVersion(Context context) {
+        int versionCode = -1;
+        try {
+            versionCode = context.getPackageManager().getPackageInfo(
+                    context.getPackageName(), 0).versionCode;
+        } catch (NameNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return versionCode;
     }
-	
-	private static String getApplicationDirectory() {
-		return Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "Android" + File.separator + "data" + File.separator + "com.intervigil.micdroid";
-	}
-	
-	public static String getOldLibraryDirectory() {
-		return Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "Music";
-	}
-	
-	public static String getOutputDirectory() {
-		return getApplicationDirectory() + File.separator + "temp";
-	}
-	
-	public static String getLibraryDirectory() {
-		return Environment.getExternalStorageDirectory() + File.separator + "MicDroid" + File.separator + "recordings";
-	}
-	
-	public static String getInstrumentalDirectory() {
-		return Environment.getExternalStorageDirectory() + File.separator + "MicDroid" + File.separator + "instrumental";
-	}
+
+    private static String getApplicationDirectory() {
+        return Environment.getExternalStorageDirectory().getAbsolutePath()
+                + File.separator + "Android" + File.separator + "data"
+                + File.separator + "com.intervigil.micdroid";
+    }
+
+    public static String getOldLibraryDirectory() {
+        return Environment.getExternalStorageDirectory().getAbsolutePath()
+                + File.separator + "Music";
+    }
+
+    public static String getOutputDirectory() {
+        return getApplicationDirectory() + File.separator + "temp";
+    }
+
+    public static String getLibraryDirectory() {
+        return Environment.getExternalStorageDirectory() + File.separator
+                + "MicDroid" + File.separator + "recordings";
+    }
+
+    public static String getInstrumentalDirectory() {
+        return Environment.getExternalStorageDirectory() + File.separator
+                + "MicDroid" + File.separator + "instrumental";
+    }
 }

@@ -22,14 +22,14 @@ package com.intervigil.micdroiddonate.model;
 
 /** Packet of audio to pass between reader and writer threads. */
 public class Sample {
-	public short[] buffer;
-	public int bufferSize;
-	
-	public Sample(short[] buffer, int bufferSize) {
-		this.buffer = buffer;
-		this.bufferSize = bufferSize;
-	}
-	
-	public Sample() {
-	}
+    public short[] buffer;
+    public int bufferSize;
+
+    public Sample(short[] buffer, int bufferSize) {
+        this.buffer = buffer;
+        this.bufferSize = bufferSize;
+    }
+
+    public Sample() {
+    }
 }

@@ -2,53 +2,39 @@
 
 <RelativeLayout android:id="@+id/recording_player_layout"
 	xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
 
-    android:padding="6dip">
-    
-    <TextView android:id="@+id/recording_player_file_name"
-    		android:layout_width="wrap_content"
-    		android:layout_height="wrap_content"
-    		android:layout_alignParentTop="true"
-    		android:layout_centerHorizontal="true"
-    		android:text="@string/recording_player_file_name" />
-    		
-    <SeekBar android:id="@+id/recording_player_seekbar"
-    		android:layout_width="fill_parent"
-    		android:layout_height="wrap_content"
-    		android:layout_below="@id/recording_player_file_name" />
-    		
-    <LinearLayout android:id="@+id/recording_player_buttons"
-    		android:layout_width="wrap_content"
-    		android:layout_height="wrap_content"
-    		android:layout_below="@id/recording_player_seekbar"
-    		android:layout_centerHorizontal="true"
-    		android:orientation="horizontal">
-    		
-    		<Button android:id="@+id/recording_player_btn_play" 
-		    		android:onClick="recordingPlayerClickHandler"
-		    		android:layout_width="wrap_content" 
-		    		android:layout_height="wrap_content"
-		    		android:text="@string/recording_player_btn_play" />
-		    		
-		    <Button android:id="@+id/recording_player_btn_stop" 
-					android:onClick="recordingPlayerClickHandler"
-					android:layout_width="wrap_content" 
-					android:layout_height="wrap_content"
-					android:text="@string/recording_player_btn_stop" />
-    		
-    		<Button android:id="@+id/recording_player_btn_delete"
-					android:onClick="recordingPlayerClickHandler" 
-					android:layout_width="wrap_content" 
-					android:layout_height="wrap_content"
-					android:text="@string/recording_player_btn_delete" />
+	android:padding="6dip">
 
-			<Button android:id="@+id/recording_player_btn_close"
-					android:onClick="recordingPlayerClickHandler"
-					android:layout_width="wrap_content" 
-					android:layout_height="wrap_content"
-					android:text="@string/recording_player_btn_close" />
-    </LinearLayout>
-    
+	<TextView android:id="@+id/recording_player_file_name"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:layout_alignParentTop="true" android:layout_centerHorizontal="true"
+		android:text="@string/recording_player_file_name" />
+
+	<SeekBar android:id="@+id/recording_player_seekbar"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:layout_below="@id/recording_player_file_name" />
+
+	<LinearLayout android:id="@+id/recording_player_buttons"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:layout_below="@id/recording_player_seekbar"
+		android:layout_centerHorizontal="true" android:orientation="horizontal">
+
+		<Button android:id="@+id/recording_player_btn_play"
+			android:onClick="recordingPlayerClickHandler" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="@string/recording_player_btn_play" />
+
+		<Button android:id="@+id/recording_player_btn_stop"
+			android:onClick="recordingPlayerClickHandler" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="@string/recording_player_btn_stop" />
+
+		<Button android:id="@+id/recording_player_btn_delete"
+			android:onClick="recordingPlayerClickHandler" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="@string/recording_player_btn_delete" />
+
+		<Button android:id="@+id/recording_player_btn_close"
+			android:onClick="recordingPlayerClickHandler" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="@string/recording_player_btn_close" />
+	</LinearLayout>
+
 </RelativeLayout>

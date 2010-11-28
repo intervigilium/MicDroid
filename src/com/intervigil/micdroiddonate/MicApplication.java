@@ -28,31 +28,35 @@ import com.intervigil.micdroiddonate.helper.ApplicationHelper;
 
 public class MicApplication extends Application {
 
-	@Override
-	public void onCreate() {
-		super.onCreate();
-		File outputDir = new File(ApplicationHelper.getOutputDirectory());
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        File outputDir = new File(ApplicationHelper.getOutputDirectory());
         if (!outputDir.exists()) {
-        	outputDir.mkdirs();
-        	try {
-        		// it's ok if this fails, all it's supposed to do is prevent the user from seeing the temp file
-				new File(ApplicationHelper.getOutputDirectory() + File.separator + ".nomedia").createNewFile();
-			} catch (IOException e) { }
+            outputDir.mkdirs();
+            try {
+                // it's ok if this fails, all it's supposed to do is prevent the
+                // user from seeing the temp file
+                new File(ApplicationHelper.getOutputDirectory()
+                        + File.separator + ".nomedia").createNewFile();
+            } catch (IOException e) {
+            }
         }
-        
+
         File libraryDir = new File(ApplicationHelper.getLibraryDirectory());
         if (!libraryDir.exists()) {
-        	libraryDir.mkdirs();
+            libraryDir.mkdirs();
         }
-        
-        File instrumentalDir = new File(ApplicationHelper.getInstrumentalDirectory());
+
+        File instrumentalDir = new File(ApplicationHelper
+                .getInstrumentalDirectory());
         if (!instrumentalDir.exists()) {
-        	instrumentalDir.mkdirs();
+            instrumentalDir.mkdirs();
         }
-	}
-	
-	@Override
-	public void onTerminate() {
-		super.onTerminate();
-	}
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+    }
 }
