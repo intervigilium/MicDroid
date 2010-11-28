@@ -6,7 +6,7 @@
 	<string name="startup_dialog_title">What\'s new in this version?</string>
 	<string name="startup_dialog_text">1. New icon\n\
         2. Attempt to fix some crashes\n\
-        3. Better&faster error handling\n\
+        3. Better+faster error handling\n\
 		4. Add optional ads\n\
 		5. Add exit menu option\n\
 		\n\
