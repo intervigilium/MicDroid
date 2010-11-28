@@ -2,6 +2,7 @@ bin/*
 gen/*
 libs/armeabi*
 obj/*
+keys
 market/*
 *.apk
 *.iws
