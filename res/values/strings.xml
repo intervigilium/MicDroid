@@ -239,7 +239,7 @@
 	<string name="prefs_reset_default_title">Reset to Default</string>
 	<string name="prefs_reset_default_default">false</string>
 
-	<string name="about_title">About MicDroid Version 0.42</string>
+	<string name="about_title">About MicDroid Version 0.43</string>
 	<string name="about_text">Graphics work courtesy of Peng X. Wang:
 		http://pengxwang.com\n\
 		\n\
