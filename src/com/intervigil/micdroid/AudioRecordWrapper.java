@@ -65,7 +65,8 @@ public class AudioRecordWrapper {
             }
             micRecorder = null;
         }
-        if (audioRecord != null) {
+        if (audioRecord != null && 
+                audioRecord.getRecordingState() == AudioRecord.RECORDSTATE_RECORDING) {
             audioRecord.stop();
         }
         if (queue != null) {
