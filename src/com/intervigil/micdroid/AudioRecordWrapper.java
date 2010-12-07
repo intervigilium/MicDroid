@@ -28,8 +28,6 @@ import java.util.concurrent.SynchronousQueue;
 
 import android.content.Context;
 import android.media.AudioRecord;
-import android.os.Handler;
-import android.os.Message;
 import android.os.Process;
 
 import com.intervigil.micdroid.helper.AudioHelper;
