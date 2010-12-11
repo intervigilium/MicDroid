@@ -4,11 +4,12 @@
 	<string name="default_recording_name">recording.wav</string>
 
 	<string name="startup_dialog_title">What\'s new in this version?</string>
-    <string name="startup_dialog_text">1. Fix a force-close\n\
-        2. New icon\n\
-        3. Attempt to fix some crashes\n\
-        4. Better+faster error handling\n\
-		5. Add optional ads\n\
+    <string name="startup_dialog_text">1. Fix Galaxy S support
+        2. Fix a force-close\n\
+        3. New icon\n\
+        4. Attempt to fix some crashes\n\
+        5. Better+faster error handling\n\
+		6. Add optional ads\n\
 		\n\
 		DISCLAIMER: This is beta software! May be buggy and force close on you! Author is
 		aware and working on issues!\n\
@@ -239,7 +240,7 @@
 	<string name="prefs_reset_default_title">Reset to Default</string>
 	<string name="prefs_reset_default_default">false</string>
 
-	<string name="about_title">About MicDroid Version 0.43</string>
+	<string name="about_title">About MicDroid Version 0.44</string>
 	<string name="about_text">Graphics work courtesy of Peng X. Wang:
 		http://pengxwang.com\n\
 		\n\
