@@ -31,15 +31,15 @@ import com.intervigil.micdroid.Constants;
 import com.intervigil.micdroid.R;
 
 public class AudioHelper {
-    private static String TAG_AUDIOHELPER = "AudioHelper";
-    private static String MANUFACTURER_SAMSUNG = "samsung";
-    private static String DEVICE_ID_GALAXY_S = "gt-i9000";
-    private static String DEVICE_ID_CAPTIVATE = "sgh-i897";
-    private static String DEVICE_ID_VIBRANT = "sgh-t959";
-    private static String DEVICE_ID_FASCINATE = "sch-i500";
-    private static String DEVICE_ID_EPIC = "sph-d700";
-    private static String DEVICE_ID_MESMERIZE = "sch-i500";
-    private static String DEVICE_ID_G2 = "vision";
+    private static final String TAG_AUDIOHELPER = "AudioHelper";
+    private static final String MANUFACTURER_SAMSUNG = "samsung";
+    private static final String DEVICE_ID_GALAXY_S = "gt-i9000";
+    private static final String DEVICE_ID_CAPTIVATE = "sgh-i897";
+    private static final String DEVICE_ID_VIBRANT = "sgh-t959";
+    private static final String DEVICE_ID_FASCINATE = "sch-i500";
+    private static final String DEVICE_ID_EPIC = "sph-d700";
+    private static final String DEVICE_ID_MESMERIZE = "sch-i500";
+    private static final String DEVICE_ID_G2 = "vision";
 
     /**
      * Convert Android AudioFormat.CHANNEL_CONFIGURATION constants to integers
