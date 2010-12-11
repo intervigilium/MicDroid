@@ -37,6 +37,7 @@ public class AudioHelper {
     private static String DEVICE_ID_VIBRANT = "sgh-t959";
     private static String DEVICE_ID_FASCINATE = "sch-i500";
     private static String DEVICE_ID_EPIC = "sph-d700";
+    private static String DEVICE_ID_MESMERIZE = "sch-i500";
     private static String DEVICE_ID_G2 = "vision";
 
     /**
@@ -321,6 +322,11 @@ public class AudioHelper {
 
             if (device.equals(DEVICE_ID_FASCINATE)) {
                 Log.i("AudioHelper", "Verizon, Samsung Fascinate detected");
+                return true;
+            }
+
+            if (device.equals(DEVICE_ID_MESMERIZE)) {
+                Log.i("AudioHelper", "Samsung Mesmerize detected");
                 return true;
             }
         }
