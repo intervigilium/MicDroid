@@ -260,11 +260,6 @@ public class AudioHelper {
                         bufferSizeAdjuster *= 2;
                         sampleRate = Constants.SAMPLE_RATE_22KHZ;
                         if (bufferSizeAdjuster > Constants.DEFAULT_BUFFER_LIMIT) {
-                            Log
-                                    .w(
-                                            "AudioHelper",
-                                            String
-                                                    .format("Hardware does not support recording!"));
                             DialogHelper.showWarning(context,
                                     R.string.unable_to_configure_audio_title,
                                     R.string.unable_to_configure_audio_warning);
@@ -281,13 +276,9 @@ public class AudioHelper {
                         || bufferSize == AudioRecord.ERROR);
             }
             // save the last known good sample rate
-            Log
-                    .i(
-                            "AudioHelper",
-                            String
-                                    .format(
-                                            "AudioRecord initially configured! sample rate: %d, buffer size adjuster: %d",
-                                            sampleRate, bufferSizeAdjuster));
+            Log.i("AudioHelper",
+                    String.format("AudioRecord initially configured! sample rate: %d, buffer size adjuster: %d",
+                            sampleRate, bufferSizeAdjuster));
             PreferenceHelper.setSampleRate(context, sampleRate);
             PreferenceHelper.setBufferSizeAdjuster(context, bufferSizeAdjuster);
         }
@@ -305,8 +296,7 @@ public class AudioHelper {
         String model = android.os.Build.MODEL.toLowerCase();
         String device = android.os.Build.DEVICE.toLowerCase();
         Log.i("AudioHelper", String.format(
-                "manufacturer: %s, model: %s, device: %s", manufacturer, model,
-                device));
+                "manufacturer: %s, model: %s, device: %s", manufacturer, model, device));
 
         if (manufacturer.equals(MANUFACTURER_SAMSUNG)) {
             if (device.equals(DEVICE_ID_GALAXY_S)) {
