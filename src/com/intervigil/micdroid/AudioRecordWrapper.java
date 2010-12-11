@@ -28,13 +28,16 @@ import java.util.concurrent.SynchronousQueue;
 
 import android.content.Context;
 import android.media.AudioRecord;
+import android.media.MediaPlayer;
 import android.os.Process;
+import android.util.Log;
 
 import com.intervigil.micdroid.helper.AudioHelper;
 import com.intervigil.micdroid.model.Sample;
 
 public class AudioRecordWrapper {
 
+    private Context context;
     private MicRecorder micRecorder;
     private AudioRecord audioRecord;
     private final BlockingQueue<Sample> queue;
@@ -42,6 +45,7 @@ public class AudioRecordWrapper {
 
     public AudioRecordWrapper(Context context) 
             throws IllegalArgumentException {
+        this.context = context;
         this.audioRecord = AudioHelper.getRecorder(context);
         this.queue = new SynchronousQueue<Sample>();
         this.bufferSize = AudioHelper.getRecorderBufferSize(context);
@@ -49,6 +53,7 @@ public class AudioRecordWrapper {
 
     public synchronized void start() 
             throws IllegalStateException {
+        avoidClickHack(context);
         audioRecord.startRecording();
         micRecorder = new MicRecorder();
         micRecorder.start();
@@ -109,6 +114,21 @@ public class AudioRecordWrapper {
                 s = t;
                 t = tmp;
             }
+        }
+    }
+
+    // weird little hack; eliminates the nasty click when AudioTrack (dis)engages by playing
+    // a few milliseconds of silence before starting AudioTrack
+    // This quirky hack taken from PdCore of pd-for-android project
+    private void avoidClickHack(Context context) {
+        try {
+            MediaPlayer mp = MediaPlayer.create(context, R.raw.silence);
+            mp.start();
+            Thread.sleep(10);
+            mp.stop();
+            mp.release();
+        } catch (Exception e) {
+            Log.e("AudioRecordWrapper", e.toString());
         }
     }
 }
