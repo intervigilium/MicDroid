@@ -31,6 +31,7 @@ import com.intervigil.micdroid.Constants;
 import com.intervigil.micdroid.R;
 
 public class AudioHelper {
+    private static String TAG_AUDIOHELPER = "AudioHelper";
     private static String MANUFACTURER_SAMSUNG = "samsung";
     private static String DEVICE_ID_GALAXY_S = "gt-i9000";
     private static String DEVICE_ID_CAPTIVATE = "sgh-i897";
@@ -121,7 +122,7 @@ public class AudioHelper {
         int bufferSizeAdjuster = PreferenceHelper
                 .getBufferSizeAdjuster(context);
 
-        Log.i("AudioHelper",
+        Log.i(TAG_AUDIOHELPER,
                 String.format("AudioTrack initialized with saved configuration! sample rate: %d, buffer adjuster: %d",
                         sampleRate, bufferSizeAdjuster));
 
@@ -189,7 +190,7 @@ public class AudioHelper {
                 .getBufferSizeAdjuster(context);
         int audioSource = AudioSource.MIC;
 
-        Log.i("AudioHelper",
+        Log.i(TAG_AUDIOHELPER,
                 String.format("AudioRecord initialized with saved configuration! sample rate: %d, buffer adjuster: %d",
                         sampleRate, bufferSizeAdjuster));
 
@@ -277,7 +278,7 @@ public class AudioHelper {
                         || bufferSize == AudioRecord.ERROR);
             }
             // save the last known good sample rate
-            Log.i("AudioHelper",
+            Log.i(TAG_AUDIOHELPER,
                     String.format("AudioRecord initially configured! sample rate: %d, buffer size adjuster: %d",
                             sampleRate, bufferSizeAdjuster));
             PreferenceHelper.setSampleRate(context, sampleRate);
@@ -296,37 +297,37 @@ public class AudioHelper {
         String manufacturer = android.os.Build.MANUFACTURER.toLowerCase();
         String model = android.os.Build.MODEL.toLowerCase();
         String device = android.os.Build.DEVICE.toLowerCase();
-        Log.i("AudioHelper", String.format(
+        Log.i(TAG_AUDIOHELPER, String.format(
                 "manufacturer: %s, model: %s, device: %s", manufacturer, model, device));
 
         if (manufacturer.equals(MANUFACTURER_SAMSUNG)) {
             if (device.equals(DEVICE_ID_GALAXY_S)) {
-                Log.i("AudioHelper", "Samsung Galaxy S detected");
+                Log.i(TAG_AUDIOHELPER, "Samsung Galaxy S detected");
                 return true;
             }
 
             if (device.equals(DEVICE_ID_CAPTIVATE)) {
-                Log.i("AudioHelper", "ATT, Samsung Captivate detected");
+                Log.i(TAG_AUDIOHELPER, "ATT, Samsung Captivate detected");
                 return true;
             }
 
             if (device.equals(DEVICE_ID_VIBRANT)) {
-                Log.i("AudioHelper", "T-Mobile US, Samsung Vibrant detected");
+                Log.i(TAG_AUDIOHELPER, "T-Mobile US, Samsung Vibrant detected");
                 return true;
             }
 
             if (device.equals(DEVICE_ID_EPIC)) {
-                Log.i("AudioHelper", "Sprint, Samsung Epic 4G detected");
+                Log.i(TAG_AUDIOHELPER, "Sprint, Samsung Epic 4G detected");
                 return true;
             }
 
             if (device.equals(DEVICE_ID_FASCINATE)) {
-                Log.i("AudioHelper", "Verizon, Samsung Fascinate detected");
+                Log.i(TAG_AUDIOHELPER, "Verizon, Samsung Fascinate detected");
                 return true;
             }
 
             if (device.equals(DEVICE_ID_MESMERIZE)) {
-                Log.i("AudioHelper", "Samsung Mesmerize detected");
+                Log.i(TAG_AUDIOHELPER, "Samsung Mesmerize detected");
                 return true;
             }
         }
