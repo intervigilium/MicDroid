@@ -99,9 +99,7 @@ public class WaveWriter {
                                                                // is mono
         file.writeInt(Integer.reverseBytes(sampleRate)); // sample rate, this is
                                                          // probably 22050 Hz
-        file
-                .writeInt(Integer.reverseBytes(sampleRate * channels
-                        * bytesPerSec)); // bytes per second
+        file.writeInt(Integer.reverseBytes(sampleRate * channels * bytesPerSec));   // bytes per second
         file.writeShort(Short.reverseBytes((short) (channels * bytesPerSec))); // bytes
                                                                                // per
                                                                                // sample
