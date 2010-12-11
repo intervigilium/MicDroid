@@ -120,13 +120,9 @@ public class AudioHelper {
         int bufferSizeAdjuster = PreferenceHelper
                 .getBufferSizeAdjuster(context);
 
-        Log
-                .i(
-                        "AudioHelper",
-                        String
-                                .format(
-                                        "AudioTrack initialized with saved configuration! sample rate: %d, buffer size adjuster: %d",
-                                        sampleRate, bufferSizeAdjuster));
+        Log.i("AudioHelper",
+                String.format("AudioTrack initialized with saved configuration! sample rate: %d, buffer adjuster: %d",
+                        sampleRate, bufferSizeAdjuster));
 
         int bufferSize = AudioTrack.getMinBufferSize(sampleRate,
                 Constants.DEFAULT_CHANNEL_CONFIG, Constants.DEFAULT_PCM_FORMAT)
@@ -186,13 +182,9 @@ public class AudioHelper {
                 .getBufferSizeAdjuster(context);
         int audioSource = AudioSource.MIC;
 
-        Log
-                .i(
-                        "AudioHelper",
-                        String
-                                .format(
-                                        "AudioRecord initialized with saved configuration! sample rate: %d, buffer size adjuster: %d",
-                                        sampleRate, bufferSizeAdjuster));
+        Log.i("AudioHelper",
+                String.format("AudioRecord initialized with saved configuration! sample rate: %d, buffer adjuster: %d",
+                        sampleRate, bufferSizeAdjuster));
 
         int bufferSize = AudioRecord.getMinBufferSize(sampleRate,
                 Constants.DEFAULT_CHANNEL_CONFIG, Constants.DEFAULT_PCM_FORMAT)
