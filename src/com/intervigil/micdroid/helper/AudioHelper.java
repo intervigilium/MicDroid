@@ -132,6 +132,12 @@ public class AudioHelper {
                 Constants.DEFAULT_CHANNEL_CONFIG, Constants.DEFAULT_PCM_FORMAT,
                 bufferSize, AudioTrack.MODE_STREAM);
 
+        if (player.getState() != AudioTrack.STATE_INITIALIZED) {
+            throw new IllegalArgumentException(
+                    String.format("unable to initialize AudioTrack instance, sample rate: %d, channels: %d, buffer: %d",
+                            sampleRate, Constants.DEFAULT_CHANNEL_CONFIG, bufferSize));
+        }
+
         return player;
     }
 
@@ -200,6 +206,11 @@ public class AudioHelper {
         recorder = new AudioRecord(audioSource, sampleRate,
                 Constants.DEFAULT_CHANNEL_CONFIG, Constants.DEFAULT_PCM_FORMAT,
                 bufferSize);
+        if (recorder.getState() != AudioRecord.STATE_INITIALIZED) {
+            throw new IllegalArgumentException(
+                    String.format("unable to initialize AudioRecord instance, sample rate: %d, channels: %d, buffer: %d",
+                            sampleRate, Constants.DEFAULT_CHANNEL_CONFIG, bufferSize));
+        }
 
         return recorder;
     }
