@@ -422,13 +422,6 @@ public class Mic extends Activity {
                         DialogHelper.showWarning(Mic.this,
                                 R.string.no_headset_plugged_in_title,
                                 R.string.no_headset_plugged_in_warning);
-                    } else if (isLiveMode
-                            && HeadsetHelper.isHeadsetPluggedIn(Mic.this)
-                            && AudioHelper.isSamsungGalaxyS()) {
-                        btn.setChecked(false);
-                        DialogHelper.showWarning(Mic.this,
-                                R.string.galaxy_s_live_mode_title,
-                                R.string.galaxy_s_live_mode_error);
                     } else {
                         timer.reset();
                         if (isLiveMode) {
