@@ -185,26 +185,18 @@ public class AudioHelper {
             throws IllegalArgumentException {
         AudioRecord recorder = null;
         int sampleRate = PreferenceHelper.getSampleRate(context);
-        int bufferSizeAdjuster = PreferenceHelper
-                .getBufferSizeAdjuster(context);
+        int bufferSize = PreferenceHelper.getBufferSize(context);
+        int bufferSizeAdjuster = PreferenceHelper.getBufferSizeAdjuster(context);
         int audioSource = AudioSource.MIC;
 
         Log.i(TAG_AUDIOHELPER,
                 String.format("AudioRecord initialized with saved configuration! sample rate: %d, buffer adjuster: %d",
                         sampleRate, bufferSizeAdjuster));
 
-        int bufferSize = AudioRecord.getMinBufferSize(sampleRate,
-                Constants.DEFAULT_CHANNEL_CONFIG, Constants.DEFAULT_PCM_FORMAT)
-                * bufferSizeAdjuster;
-
-        if (bufferSize <= 4096) {
-            // adjust this up if it's too low anyway
-            bufferSize = 4096 * 3/2;
-        }
-
         recorder = new AudioRecord(audioSource, sampleRate,
                 Constants.DEFAULT_CHANNEL_CONFIG, Constants.DEFAULT_PCM_FORMAT,
-                bufferSize);
+                bufferSize * bufferSizeAdjuster);
+
         if (recorder.getState() != AudioRecord.STATE_INITIALIZED) {
             throw new IllegalArgumentException(
                     String.format("unable to initialize AudioRecord instance, sample rate: %d, channels: %d, buffer: %d",
@@ -215,32 +207,42 @@ public class AudioHelper {
     }
 
     /**
-     * Attempts to autoconfigure current Context's sample rate. Will show a
-     * pop-up warning if autoconfiguration failed to set sample rate
+     * Attempts to autoconfigure current Context's sample rate, buffer size,
+     * or buffer size adjuster . Will show a pop-up warning if configuration
+     * failed to initialize an AudioRecord instance.
      * 
      * @param context
      *            Context which we are attempting to configure
      */
     public static void configureRecorder(Context context) {
-        int bufferSize = 0;
-        int bufferSizeAdjuster = PreferenceHelper
-                .getBufferSizeAdjuster(context);
+        AudioRecord rec = null;
         int sampleRate = PreferenceHelper.getSampleRate(context);
+        int bufferSize = PreferenceHelper.getBufferSize(context);
+        int bufferSizeAdjuster = PreferenceHelper.getBufferSizeAdjuster(context);
 
-        if (sampleRate < 0 || bufferSizeAdjuster < 0) {
+        if (sampleRate < 0 || bufferSize < 0 || bufferSizeAdjuster < 0) {
+            if (AudioHelper.isSamsungGalaxyS()) {
+                // bypass checking, go with defaults
+                bufferSize = 6144;
+                bufferSizeAdjuster = 1;
+                sampleRate = Constants.SAMPLE_RATE_22KHZ;
+                Log.i(TAG_AUDIOHELPER,
+                        String.format("AudioRecord initially configured! sample rate: %d, buffer size adjuster: %d",
+                                sampleRate, bufferSizeAdjuster));
+                PreferenceHelper.setSampleRate(context, sampleRate);
+                PreferenceHelper.setBufferSize(context, bufferSize);
+                PreferenceHelper.setBufferSizeAdjuster(context, bufferSizeAdjuster);
+                return;
+            }
+
             if (bufferSizeAdjuster < 1) {
                 // clamp buffer size adjuster to minimum of 1
                 bufferSizeAdjuster = 1;
             }
 
-            if (AudioHelper.isSamsungGalaxyS()) {
-                // bypass checking, go with defaults
-                bufferSizeAdjuster = 1;
-                sampleRate = Constants.SAMPLE_RATE_22KHZ;
-            } else {
-                // try a new sample rates until we find one that works
-                do {
-                    switch (sampleRate) {
+            // try a new sample rates until we find one that works
+            do {
+                switch (sampleRate) {
                     case -1:
                         // set the default to 22050Hz, so slower devices perform
                         // better
@@ -259,28 +261,43 @@ public class AudioHelper {
                         // start the loop over again with a larger buffer size
                         bufferSizeAdjuster *= 2;
                         sampleRate = Constants.SAMPLE_RATE_22KHZ;
-                        if (bufferSizeAdjuster > Constants.DEFAULT_BUFFER_LIMIT) {
-                            DialogHelper.showWarning(context,
-                                    R.string.unable_to_configure_audio_title,
-                                    R.string.unable_to_configure_audio_warning);
-                            return;
-                        }
+                }
+
+                bufferSize = AudioRecord.getMinBufferSize(
+                        sampleRate,
+                        Constants.DEFAULT_CHANNEL_CONFIG,
+                        Constants.DEFAULT_PCM_FORMAT);
+                if (bufferSize != AudioRecord.ERROR && bufferSize != AudioRecord.ERROR_BAD_VALUE) {
+                    if (bufferSize <= 4096) {
+                        bufferSize = 4096 * 3/2;
                     }
-
-                    bufferSize = AudioRecord.getMinBufferSize(sampleRate,
+                    rec = new AudioRecord(
+                            AudioSource.MIC,
+                            sampleRate,
                             Constants.DEFAULT_CHANNEL_CONFIG,
-                            Constants.DEFAULT_PCM_FORMAT)
-                            * bufferSizeAdjuster;
+                            Constants.DEFAULT_PCM_FORMAT,
+                            bufferSize * bufferSizeAdjuster);
 
-                } while (bufferSize == AudioRecord.ERROR_BAD_VALUE
-                        || bufferSize == AudioRecord.ERROR);
-            }
-            // save the last known good sample rate
-            Log.i(TAG_AUDIOHELPER,
-                    String.format("AudioRecord initially configured! sample rate: %d, buffer size adjuster: %d",
-                            sampleRate, bufferSizeAdjuster));
-            PreferenceHelper.setSampleRate(context, sampleRate);
-            PreferenceHelper.setBufferSizeAdjuster(context, bufferSizeAdjuster);
+                    if (rec != null && rec.getState() == AudioRecord.STATE_INITIALIZED) {
+                        rec.release();
+                        Log.i(TAG_AUDIOHELPER,
+                                String.format("AudioRecord initially configured! sample rate: %d, buffer size adjuster: %d",
+                                        sampleRate, bufferSizeAdjuster));
+                        PreferenceHelper.setSampleRate(context, sampleRate);
+                        PreferenceHelper.setBufferSize(context, bufferSize);
+                        PreferenceHelper.setBufferSizeAdjuster(context, bufferSizeAdjuster);
+                        return;
+                    }
+                    if (rec != null) {
+                        rec.release();
+                    }
+                }
+            } while (bufferSizeAdjuster < Constants.DEFAULT_BUFFER_LIMIT);
+
+            // failure to configure!
+            DialogHelper.showWarning(context,
+                    R.string.unable_to_configure_audio_title,
+                    R.string.unable_to_configure_audio_warning);
         }
     }
 
