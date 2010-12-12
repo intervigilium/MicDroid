@@ -140,7 +140,7 @@ public class PreferenceHelper {
         Editor prefEditor =
             PreferenceManager.getDefaultSharedPreferences(context).edit();
         prefEditor.putString(context.getString(R.string.prefs_sample_rate_key),
-                Integer.toString(sampleRate));
+                String.format("%d", sampleRate));
         prefEditor.commit();
     }
 
@@ -159,7 +159,7 @@ public class PreferenceHelper {
             PreferenceManager.getDefaultSharedPreferences(context).edit();
         prefEditor.putString(
                 context.getString(R.string.prefs_buffer_size_key),
-                Integer.toString(bufferSize));
+                String.format("%d", bufferSize));
         prefEditor.commit();
     }
 
@@ -178,7 +178,7 @@ public class PreferenceHelper {
             PreferenceManager.getDefaultSharedPreferences(context).edit();
         prefEditor.putString(
                 context.getString(R.string.prefs_buffer_size_adjuster_key),
-                Integer.toString(bufferSizeAdjuster));
+                String.format("%d", bufferSizeAdjuster));
         prefEditor.commit();
     }
 
