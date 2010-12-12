@@ -98,7 +98,6 @@ public class SipdroidRecorder implements Recorder {
                 writerThread.join();
             } catch (InterruptedException e) {
             }
-
             writerThread = null;
         }
     }
@@ -143,7 +142,7 @@ public class SipdroidRecorder implements Recorder {
                 mp.stop();
                 mp.release();
             } catch (Exception e) {
-                Log.e("AudioRecordWrapper", e.toString());
+                Log.e("SipRecorder", e.toString());
             }
         }
         
