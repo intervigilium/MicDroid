@@ -51,10 +51,11 @@ public class Recorder {
             throws IllegalArgumentException {
         this.errorHandler = errorHandler;
         this.isLiveMode = isLiveMode;
-        this.writer = new WaveWriter(ApplicationHelper.getOutputDirectory(),
+        this.writer = new WaveWriter(
+                context.getCacheDir().getAbsolutePath(),
                 context.getString(R.string.default_recording_name),
-                PreferenceHelper.getSampleRate(context), AudioHelper
-                        .getChannelConfig(Constants.DEFAULT_CHANNEL_CONFIG),
+                PreferenceHelper.getSampleRate(context),
+                AudioHelper.getChannelConfig(Constants.DEFAULT_CHANNEL_CONFIG),
                 AudioHelper.getPcmEncoding(Constants.DEFAULT_PCM_FORMAT));
         this.audioRecord = new AudioRecordWrapper(context);
 

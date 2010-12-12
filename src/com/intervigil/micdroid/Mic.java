@@ -315,23 +315,27 @@ public class Mic extends Activity {
             String fileName = params[0];
 
             if (isLiveMode) {
-                File recording = new File(ApplicationHelper
-                        .getOutputDirectory()
-                        + File.separator + "recording.wav");
-                File destination = new File(ApplicationHelper
-                        .getLibraryDirectory()
-                        + File.separator + fileName);
+                File recording = new File(
+                        getCacheDir().getAbsolutePath()
+                        + File.separator
+                        + getString(R.string.default_recording_name));
+                File destination = new File(
+                        ApplicationHelper.getLibraryDirectory()
+                        + File.separator
+                        + fileName);
                 recording.renameTo(destination);
             } else {
                 try {
-                    reader = new WaveReader(ApplicationHelper
-                            .getOutputDirectory(),
+                    reader = new WaveReader(
+                            getCacheDir().getAbsolutePath(),
                             getString(R.string.default_recording_name));
                     reader.openWave();
-                    writer = new WaveWriter(ApplicationHelper
-                            .getLibraryDirectory(), fileName, reader
-                            .getSampleRate(), reader.getChannels(), reader
-                            .getPcmFormat());
+                    writer = new WaveWriter(
+                            ApplicationHelper.getLibraryDirectory(),
+                            fileName,
+                            reader.getSampleRate(),
+                            reader.getChannels(),
+                            reader.getPcmFormat());
                     writer.createWaveFile();
                 } catch (IOException e) {
                     // can't create our readers and writers for some reason!
