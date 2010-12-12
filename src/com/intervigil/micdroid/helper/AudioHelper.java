@@ -39,7 +39,6 @@ public class AudioHelper {
     private static final String DEVICE_ID_FASCINATE = "sch-i500";
     private static final String DEVICE_ID_EPIC = "sph-d700";
     private static final String DEVICE_ID_MESMERIZE = "sch-i500";
-    private static final String DEVICE_ID_G2 = "vision";
 
     /**
      * Convert Android AudioFormat.CHANNEL_CONFIGURATION constants to integers
@@ -198,11 +197,9 @@ public class AudioHelper {
                 Constants.DEFAULT_CHANNEL_CONFIG, Constants.DEFAULT_PCM_FORMAT)
                 * bufferSizeAdjuster;
 
-        if (isTmobileG2()) {
-            // G2 doesn't route AudioSource.MIC correctly for some reason
-            // tell it to use camcorder (AudioSource.CAMCORDER if API7+) instead
-            // and it works
-            audioSource = 5;
+        if (bufferSize <= 4096) {
+            // adjust this up if it's too low anyway
+            bufferSize = 4096 * 3/2;
         }
 
         recorder = new AudioRecord(audioSource, sampleRate,
@@ -218,7 +215,7 @@ public class AudioHelper {
     }
 
     /**
-     * Attempts to autoconfigure current Context's sample rate Will show a
+     * Attempts to autoconfigure current Context's sample rate. Will show a
      * pop-up warning if autoconfiguration failed to set sample rate
      * 
      * @param context
@@ -237,8 +234,9 @@ public class AudioHelper {
             }
 
             if (AudioHelper.isSamsungGalaxyS()) {
+                // bypass checking, go with defaults
+                bufferSizeAdjuster = 1;
                 sampleRate = Constants.SAMPLE_RATE_22KHZ;
-                bufferSizeAdjuster = 16;
             } else {
                 // try a new sample rates until we find one that works
                 do {
@@ -332,10 +330,5 @@ public class AudioHelper {
             }
         }
         return false;
-    }
-
-    public static boolean isTmobileG2() {
-        String device = android.os.Build.DEVICE.toLowerCase();
-        return device.equals(DEVICE_ID_G2);
     }
 }
