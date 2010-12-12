@@ -351,7 +351,7 @@ public class Mic extends Activity {
                 short[] buf = new short[AUTOTALENT_CHUNK_SIZE];
                 while (true) {
                     try {
-                        int samplesRead = reader.readShort(buf,
+                        int samplesRead = reader.read(buf,
                                 AUTOTALENT_CHUNK_SIZE);
                         if (samplesRead > 0) {
                             AutoTalent.processSamples(buf, samplesRead);

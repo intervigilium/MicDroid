@@ -94,7 +94,7 @@ public class WaveReader {
         }
     }
 
-    public int readShort(short[] outBuf, int numSamples) throws IOException {
+    public int read(short[] outBuf, int numSamples) throws IOException {
         byte[] buf = new byte[numSamples * 2];
         int bytesRead = inputStream.read(buf);
 

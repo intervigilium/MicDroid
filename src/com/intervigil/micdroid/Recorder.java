@@ -135,7 +135,7 @@ public class Recorder {
                         if (isLiveMode) {
                             if (instrumentalReader != null) {
                                 short[] instrumentalBuf = new short[sample.bufferSize];
-                                instrumentalReader.readShort(instrumentalBuf,
+                                instrumentalReader.read(instrumentalBuf,
                                         sample.bufferSize);
                                 AutoTalent.processMixSamples(sample.buffer,
                                         instrumentalBuf, sample.bufferSize);
