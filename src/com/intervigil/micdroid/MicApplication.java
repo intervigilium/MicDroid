@@ -20,7 +20,6 @@
 package com.intervigil.micdroid;
 
 import java.io.File;
-import java.io.IOException;
 
 import android.app.Application;
 
@@ -31,17 +30,6 @@ public class MicApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        File outputDir = new File(ApplicationHelper.getOutputDirectory());
-        if (!outputDir.exists()) {
-            outputDir.mkdirs();
-            try {
-                // it's ok if this fails, all it's supposed to do is prevent the
-                // user from seeing the temp file
-                new File(ApplicationHelper.getOutputDirectory()
-                        + File.separator + ".nomedia").createNewFile();
-            } catch (IOException e) {
-            }
-        }
 
         File libraryDir = new File(ApplicationHelper.getLibraryDirectory());
         if (!libraryDir.exists()) {
