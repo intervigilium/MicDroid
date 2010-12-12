@@ -48,6 +48,17 @@ public class WaveWriter {
         this.bytesWritten = 0;
     }
 
+    public WaveWriter(File output, int sampleRate, int channels,
+            int sampleBits) {
+        this.output = output;
+
+        this.sampleRate = sampleRate;
+        this.channels = channels;
+        this.sampleBits = sampleBits;
+
+        this.bytesWritten = 0;
+    }
+
     public boolean createWaveFile() throws IOException {
         if (this.output.exists()) {
             this.output.delete();
