@@ -65,9 +65,10 @@ public class Recorder {
         String trackName = PreferenceHelper.getInstrumentalTrack(context);
         if (!trackName.equals(Constants.EMPTY_STRING)) {
             // start reading from instrumental track
-            File instrumentalFile = new File(ApplicationHelper
-                    .getInstrumentalDirectory()
-                    + File.separator + trackName);
+            File instrumentalFile = new File(
+                    ApplicationHelper.getInstrumentalDirectory()
+                    + File.separator
+                    + trackName);
             instrumentalReader = new WaveReader(instrumentalFile);
         }
     }
@@ -120,8 +121,8 @@ public class Recorder {
 
     public boolean isRunning() {
         return (writerThread != null
-                && writerThread.getState() != Thread.State.NEW && writerThread
-                .getState() != Thread.State.TERMINATED);
+                && writerThread.getState() != Thread.State.NEW
+                && writerThread.getState() != Thread.State.TERMINATED);
     }
 
     private class MicWriter extends Thread {
