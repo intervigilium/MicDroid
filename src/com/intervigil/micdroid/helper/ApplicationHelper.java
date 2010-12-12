@@ -39,11 +39,6 @@ public class ApplicationHelper {
         return versionCode;
     }
 
-    public static String getOldLibraryDirectory() {
-        return Environment.getExternalStorageDirectory().getAbsolutePath()
-                + File.separator + "Music";
-    }
-
     public static String getLibraryDirectory() {
         return Environment.getExternalStorageDirectory() + File.separator
                 + "MicDroid" + File.separator + "recordings";
