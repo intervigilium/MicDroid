@@ -190,8 +190,8 @@ public class AudioHelper {
         int audioSource = AudioSource.MIC;
 
         Log.i(TAG_AUDIOHELPER,
-                String.format("AudioRecord initialized with saved configuration! sample rate: %d, buffer adjuster: %d",
-                        sampleRate, bufferSizeAdjuster));
+                String.format("AudioRecord initialized with saved configuration! sample rate: %d, buffer: %d, buffer adjuster: %d",
+                        sampleRate, bufferSize, bufferSizeAdjuster));
 
         recorder = new AudioRecord(audioSource, sampleRate,
                 Constants.DEFAULT_CHANNEL_CONFIG, Constants.DEFAULT_PCM_FORMAT,
@@ -227,8 +227,8 @@ public class AudioHelper {
                 bufferSizeAdjuster = 1;
                 sampleRate = Constants.SAMPLE_RATE_22KHZ;
                 Log.i(TAG_AUDIOHELPER,
-                        String.format("AudioRecord initially configured! sample rate: %d, buffer size adjuster: %d",
-                                sampleRate, bufferSizeAdjuster));
+                        String.format("AudioRecord initially configured! sample rate: %d, buffer size: %d, buffer size adjuster: %d",
+                                sampleRate, bufferSize, bufferSizeAdjuster));
                 PreferenceHelper.setSampleRate(context, sampleRate);
                 PreferenceHelper.setBufferSize(context, bufferSize);
                 PreferenceHelper.setBufferSizeAdjuster(context, bufferSizeAdjuster);
@@ -280,9 +280,10 @@ public class AudioHelper {
 
                     if (rec != null && rec.getState() == AudioRecord.STATE_INITIALIZED) {
                         rec.release();
+                        rec = null;
                         Log.i(TAG_AUDIOHELPER,
-                                String.format("AudioRecord initially configured! sample rate: %d, buffer size adjuster: %d",
-                                        sampleRate, bufferSizeAdjuster));
+                                String.format("AudioRecord initially configured! sample rate: %d, buffer size: %d, buffer size adjuster: %d",
+                                        sampleRate, bufferSize, bufferSizeAdjuster));
                         PreferenceHelper.setSampleRate(context, sampleRate);
                         PreferenceHelper.setBufferSize(context, bufferSize);
                         PreferenceHelper.setBufferSizeAdjuster(context, bufferSizeAdjuster);
@@ -290,6 +291,7 @@ public class AudioHelper {
                     }
                     if (rec != null) {
                         rec.release();
+                        rec = null;
                     }
                 }
             } while (bufferSizeAdjuster < Constants.DEFAULT_BUFFER_LIMIT);

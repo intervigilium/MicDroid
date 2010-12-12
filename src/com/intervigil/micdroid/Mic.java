@@ -456,6 +456,7 @@ public class Mic extends Activity {
                                 recorder = new SipdroidRecorder(Mic.this,
                                         recordingErrorHandler, isLiveMode);
                             } catch (IllegalArgumentException e) {
+                                e.printStackTrace();
                                 btn.setChecked(false);
                                 DialogHelper.showWarning(Mic.this,
                                         R.string.audio_record_exception_title,
