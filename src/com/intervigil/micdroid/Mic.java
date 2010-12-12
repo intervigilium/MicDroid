@@ -56,6 +56,7 @@ import com.intervigil.micdroid.helper.DialogHelper;
 import com.intervigil.micdroid.helper.HeadsetHelper;
 import com.intervigil.micdroid.helper.PreferenceHelper;
 import com.intervigil.micdroid.helper.UpdateHelper;
+import com.intervigil.micdroid.interfaces.Recorder;
 import com.intervigil.micdroid.pitch.AutoTalent;
 import com.intervigil.micdroid.wave.WaveReader;
 import com.intervigil.micdroid.wave.WaveWriter;
@@ -435,7 +436,7 @@ public class Mic extends Activity {
                         }
                         if (recorder == null) {
                             try {
-                                recorder = new Recorder(Mic.this,
+                                recorder = new SipdroidRecorder(Mic.this,
                                         recordingErrorHandler, isLiveMode);
                             } catch (IllegalArgumentException e) {
                                 btn.setChecked(false);

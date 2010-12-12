@@ -32,14 +32,14 @@ import android.os.Message;
 import com.intervigil.micdroid.helper.ApplicationHelper;
 import com.intervigil.micdroid.helper.AudioHelper;
 import com.intervigil.micdroid.helper.PreferenceHelper;
+import com.intervigil.micdroid.interfaces.Recorder;
 import com.intervigil.micdroid.model.Sample;
 import com.intervigil.micdroid.pitch.AutoTalent;
 import com.intervigil.micdroid.wave.WaveReader;
 import com.intervigil.micdroid.wave.WaveWriter;
 
-public class Recorder {
+public class PdRecorder implements Recorder {
     private MicWriter writerThread;
-
     private AudioTrack audioTrack;
     private WaveReader instrumentalReader;
     private AudioRecordWrapper audioRecord;
@@ -47,7 +47,7 @@ public class Recorder {
     private final WaveWriter writer;
     private final boolean isLiveMode;
 
-    public Recorder(Context context, Handler errorHandler, boolean isLiveMode)
+    public PdRecorder(Context context, Handler errorHandler, boolean isLiveMode)
             throws IllegalArgumentException {
         this.errorHandler = errorHandler;
         this.isLiveMode = isLiveMode;
