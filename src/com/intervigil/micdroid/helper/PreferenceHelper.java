@@ -239,6 +239,7 @@ public class PreferenceHelper {
         Editor editor =
             PreferenceManager.getDefaultSharedPreferences(context).edit();
         editor.remove(context.getString(R.string.prefs_sample_rate_key));
+        editor.remove(context.getString(R.string.prefs_buffer_size_key));
         editor.remove(context.getString(R.string.prefs_buffer_size_adjuster_key));
         editor.commit();
     }
