@@ -29,13 +29,13 @@ import java.io.RandomAccessFile;
 public class WaveWriter {
     private static final int OUTPUT_STREAM_BUFFER = 16384;
 
-    private File output;
+    private final File output;
     private BufferedOutputStream outputStream;
     private int bytesWritten;
 
-    private int sampleRate;
-    private int channels;
-    private int sampleBits;
+    private final int sampleRate;
+    private final int channels;
+    private final int sampleBits;
 
     public WaveWriter(String path, String name, int sampleRate, int channels,
             int sampleBits) {
