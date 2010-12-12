@@ -5,7 +5,7 @@
 
 	<string name="startup_dialog_title">What\'s new in this version?</string>
     <string name="startup_dialog_text">1. Fix Galaxy S support\n\
-        2. Fix a force-close\n\
+        2. Write raw files to cache not SD\n\
         3. New icon\n\
         4. Attempt to fix some crashes\n\
         5. Better+faster error handling\n\
