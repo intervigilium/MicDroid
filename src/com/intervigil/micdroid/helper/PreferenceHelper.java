@@ -144,6 +144,25 @@ public class PreferenceHelper {
         prefEditor.commit();
     }
 
+    public static int getBufferSize(Context context) {
+        SharedPreferences prefReader = PreferenceManager
+                .getDefaultSharedPreferences(context);
+        String bufferSize = prefReader.getString(
+                context.getString(R.string.prefs_buffer_size_key),
+                "-1");
+        return Integer.parseInt(bufferSize);
+    }
+
+    public static void setBufferSize(Context context,
+            int bufferSize) {
+        Editor prefEditor =
+            PreferenceManager.getDefaultSharedPreferences(context).edit();
+        prefEditor.putString(
+                context.getString(R.string.prefs_buffer_size_key),
+                Integer.toString(bufferSize));
+        prefEditor.commit();
+    }
+
     public static int getBufferSizeAdjuster(Context context) {
         SharedPreferences prefReader = PreferenceManager
                 .getDefaultSharedPreferences(context);
