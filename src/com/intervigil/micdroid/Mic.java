@@ -21,8 +21,12 @@
 package com.intervigil.micdroid;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -316,15 +320,35 @@ public class Mic extends Activity {
             String fileName = params[0];
 
             if (isLiveMode) {
-                File recording = new File(
+                int len;
+                InputStream in;
+                OutputStream out;
+                byte[] buf = new byte[1024];
+
+                File src = new File(
                         getCacheDir().getAbsolutePath()
                         + File.separator
                         + getString(R.string.default_recording_name));
-                File destination = new File(
+                File dst = new File(
                         ApplicationHelper.getLibraryDirectory()
                         + File.separator
                         + fileName);
-                recording.renameTo(destination);
+                // do a file copy since renameto doesn't work
+                try {
+                    in = new FileInputStream(src);
+                    out = new FileOutputStream(dst);
+                    while ((len = in.read(buf)) > 0) {
+                        out.write(buf, 0, len);
+                    }
+                    in.close();
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Message msg = recordingErrorHandler
+                            .obtainMessage(Constants.UNABLE_TO_CREATE_RECORDING);
+                    recordingErrorHandler.sendMessage(msg);
+                    return null;
+                }
             } else {
                 try {
                     reader = new WaveReader(
