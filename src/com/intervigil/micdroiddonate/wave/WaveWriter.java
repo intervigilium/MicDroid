@@ -29,17 +29,28 @@ import java.io.RandomAccessFile;
 public class WaveWriter {
     private static final int OUTPUT_STREAM_BUFFER = 16384;
 
-    private File output;
+    private final File output;
     private BufferedOutputStream outputStream;
     private int bytesWritten;
 
-    private int sampleRate;
-    private int channels;
-    private int sampleBits;
+    private final int sampleRate;
+    private final int channels;
+    private final int sampleBits;
 
     public WaveWriter(String path, String name, int sampleRate, int channels,
             int sampleBits) {
         this.output = new File(path + File.separator + name);
+
+        this.sampleRate = sampleRate;
+        this.channels = channels;
+        this.sampleBits = sampleBits;
+
+        this.bytesWritten = 0;
+    }
+
+    public WaveWriter(File output, int sampleRate, int channels,
+            int sampleBits) {
+        this.output = output;
 
         this.sampleRate = sampleRate;
         this.channels = channels;
@@ -99,9 +110,7 @@ public class WaveWriter {
                                                                // is mono
         file.writeInt(Integer.reverseBytes(sampleRate)); // sample rate, this is
                                                          // probably 22050 Hz
-        file
-                .writeInt(Integer.reverseBytes(sampleRate * channels
-                        * bytesPerSec)); // bytes per second
+        file.writeInt(Integer.reverseBytes(sampleRate * channels * bytesPerSec));   // bytes per second
         file.writeShort(Short.reverseBytes((short) (channels * bytesPerSec))); // bytes
                                                                                // per
                                                                                // sample

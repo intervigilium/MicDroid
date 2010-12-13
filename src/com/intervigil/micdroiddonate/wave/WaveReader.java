@@ -28,7 +28,7 @@ import java.io.IOException;
 public class WaveReader {
     private static final int STREAM_BUFFER_SIZE = 4096;
 
-    private File input;
+    private final File input;
     private BufferedInputStream inputStream;
 
     private int mSampleRate;
@@ -94,7 +94,7 @@ public class WaveReader {
         }
     }
 
-    public int readShort(short[] outBuf, int numSamples) throws IOException {
+    public int read(short[] outBuf, int numSamples) throws IOException {
         byte[] buf = new byte[numSamples * 2];
         int bytesRead = inputStream.read(buf);
 

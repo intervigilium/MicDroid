@@ -39,21 +39,6 @@ public class ApplicationHelper {
         return versionCode;
     }
 
-    private static String getApplicationDirectory() {
-        return Environment.getExternalStorageDirectory().getAbsolutePath()
-                + File.separator + "Android" + File.separator + "data"
-                + File.separator + "com.intervigil.micdroid";
-    }
-
-    public static String getOldLibraryDirectory() {
-        return Environment.getExternalStorageDirectory().getAbsolutePath()
-                + File.separator + "Music";
-    }
-
-    public static String getOutputDirectory() {
-        return getApplicationDirectory() + File.separator + "temp";
-    }
-
     public static String getLibraryDirectory() {
         return Environment.getExternalStorageDirectory() + File.separator
                 + "MicDroid" + File.separator + "recordings";

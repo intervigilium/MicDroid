@@ -31,13 +31,14 @@ import com.intervigil.micdroiddonate.Constants;
 import com.intervigil.micdroiddonate.R;
 
 public class AudioHelper {
-    private static String MANUFACTURER_SAMSUNG = "samsung";
-    private static String DEVICE_ID_GALAXY_S = "gt-i9000";
-    private static String DEVICE_ID_CAPTIVATE = "sgh-i897";
-    private static String DEVICE_ID_VIBRANT = "sgh-t959";
-    private static String DEVICE_ID_FASCINATE = "sch-i500";
-    private static String DEVICE_ID_EPIC = "sph-d700";
-    private static String DEVICE_ID_G2 = "vision";
+    private static final String TAG_AUDIOHELPER = "AudioHelper";
+    private static final String MANUFACTURER_SAMSUNG = "samsung";
+    private static final String DEVICE_ID_GALAXY_S = "gt-i9000";
+    private static final String DEVICE_ID_CAPTIVATE = "sgh-i897";
+    private static final String DEVICE_ID_VIBRANT = "sgh-t959";
+    private static final String DEVICE_ID_FASCINATE = "sch-i500";
+    private static final String DEVICE_ID_EPIC = "sph-d700";
+    private static final String DEVICE_ID_MESMERIZE = "sch-i500";
 
     /**
      * Convert Android AudioFormat.CHANNEL_CONFIGURATION constants to integers
@@ -120,13 +121,9 @@ public class AudioHelper {
         int bufferSizeAdjuster = PreferenceHelper
                 .getBufferSizeAdjuster(context);
 
-        Log
-                .i(
-                        "AudioHelper",
-                        String
-                                .format(
-                                        "AudioTrack initialized with saved configuration! sample rate: %d, buffer size adjuster: %d",
-                                        sampleRate, bufferSizeAdjuster));
+        Log.i(TAG_AUDIOHELPER,
+                String.format("AudioTrack initialized with saved configuration! sample rate: %d, buffer adjuster: %d",
+                        sampleRate, bufferSizeAdjuster));
 
         int bufferSize = AudioTrack.getMinBufferSize(sampleRate,
                 Constants.DEFAULT_CHANNEL_CONFIG, Constants.DEFAULT_PCM_FORMAT)
@@ -135,6 +132,12 @@ public class AudioHelper {
         player = new AudioTrack(AudioManager.STREAM_MUSIC, sampleRate,
                 Constants.DEFAULT_CHANNEL_CONFIG, Constants.DEFAULT_PCM_FORMAT,
                 bufferSize, AudioTrack.MODE_STREAM);
+
+        if (player.getState() != AudioTrack.STATE_INITIALIZED) {
+            throw new IllegalArgumentException(
+                    String.format("unable to initialize AudioTrack instance, sample rate: %d, channels: %d, buffer: %d",
+                            sampleRate, Constants.DEFAULT_CHANNEL_CONFIG, bufferSize));
+        }
 
         return player;
     }
@@ -182,62 +185,64 @@ public class AudioHelper {
             throws IllegalArgumentException {
         AudioRecord recorder = null;
         int sampleRate = PreferenceHelper.getSampleRate(context);
-        int bufferSizeAdjuster = PreferenceHelper
-                .getBufferSizeAdjuster(context);
+        int bufferSize = PreferenceHelper.getBufferSize(context);
+        int bufferSizeAdjuster = PreferenceHelper.getBufferSizeAdjuster(context);
         int audioSource = AudioSource.MIC;
 
-        Log
-                .i(
-                        "AudioHelper",
-                        String
-                                .format(
-                                        "AudioRecord initialized with saved configuration! sample rate: %d, buffer size adjuster: %d",
-                                        sampleRate, bufferSizeAdjuster));
-
-        int bufferSize = AudioRecord.getMinBufferSize(sampleRate,
-                Constants.DEFAULT_CHANNEL_CONFIG, Constants.DEFAULT_PCM_FORMAT)
-                * bufferSizeAdjuster;
-
-        if (isTmobileG2()) {
-            // G2 doesn't route AudioSource.MIC correctly for some reason
-            // tell it to use camcorder (AudioSource.CAMCORDER if API7+) instead
-            // and it works
-            audioSource = 5;
-        }
+        Log.i(TAG_AUDIOHELPER,
+                String.format("AudioRecord initialized with saved configuration! sample rate: %d, buffer: %d, buffer adjuster: %d",
+                        sampleRate, bufferSize, bufferSizeAdjuster));
 
         recorder = new AudioRecord(audioSource, sampleRate,
                 Constants.DEFAULT_CHANNEL_CONFIG, Constants.DEFAULT_PCM_FORMAT,
-                bufferSize);
+                bufferSize * bufferSizeAdjuster);
+
+        if (recorder.getState() != AudioRecord.STATE_INITIALIZED) {
+            throw new IllegalArgumentException(
+                    String.format("unable to initialize AudioRecord instance, sample rate: %d, channels: %d, buffer: %d",
+                            sampleRate, Constants.DEFAULT_CHANNEL_CONFIG, bufferSize));
+        }
 
         return recorder;
     }
 
     /**
-     * Attempts to autoconfigure current Context's sample rate Will show a
-     * pop-up warning if autoconfiguration failed to set sample rate
+     * Attempts to autoconfigure current Context's sample rate, buffer size,
+     * or buffer size adjuster . Will show a pop-up warning if configuration
+     * failed to initialize an AudioRecord instance.
      * 
      * @param context
      *            Context which we are attempting to configure
      */
     public static void configureRecorder(Context context) {
-        int bufferSize = 0;
-        int bufferSizeAdjuster = PreferenceHelper
-                .getBufferSizeAdjuster(context);
+        AudioRecord rec = null;
         int sampleRate = PreferenceHelper.getSampleRate(context);
+        int bufferSize = PreferenceHelper.getBufferSize(context);
+        int bufferSizeAdjuster = PreferenceHelper.getBufferSizeAdjuster(context);
 
-        if (sampleRate < 0 || bufferSizeAdjuster < 0) {
+        if (sampleRate < 0 || bufferSize < 0 || bufferSizeAdjuster < 0) {
+            if (AudioHelper.isSamsungGalaxyS()) {
+                // bypass checking, go with defaults
+                bufferSize = 6144;
+                bufferSizeAdjuster = 1;
+                sampleRate = Constants.SAMPLE_RATE_22KHZ;
+                Log.i(TAG_AUDIOHELPER,
+                        String.format("AudioRecord initially configured! sample rate: %d, buffer size: %d, buffer size adjuster: %d",
+                                sampleRate, bufferSize, bufferSizeAdjuster));
+                PreferenceHelper.setSampleRate(context, sampleRate);
+                PreferenceHelper.setBufferSize(context, bufferSize);
+                PreferenceHelper.setBufferSizeAdjuster(context, bufferSizeAdjuster);
+                return;
+            }
+
             if (bufferSizeAdjuster < 1) {
                 // clamp buffer size adjuster to minimum of 1
                 bufferSizeAdjuster = 1;
             }
 
-            if (AudioHelper.isSamsungGalaxyS()) {
-                sampleRate = Constants.SAMPLE_RATE_22KHZ;
-                bufferSizeAdjuster = 16;
-            } else {
-                // try a new sample rates until we find one that works
-                do {
-                    switch (sampleRate) {
+            // try a new sample rates until we find one that works
+            do {
+                switch (sampleRate) {
                     case -1:
                         // set the default to 22050Hz, so slower devices perform
                         // better
@@ -256,37 +261,45 @@ public class AudioHelper {
                         // start the loop over again with a larger buffer size
                         bufferSizeAdjuster *= 2;
                         sampleRate = Constants.SAMPLE_RATE_22KHZ;
-                        if (bufferSizeAdjuster > Constants.DEFAULT_BUFFER_LIMIT) {
-                            Log
-                                    .w(
-                                            "AudioHelper",
-                                            String
-                                                    .format("Hardware does not support recording!"));
-                            DialogHelper.showWarning(context,
-                                    R.string.unable_to_configure_audio_title,
-                                    R.string.unable_to_configure_audio_warning);
-                            return;
-                        }
+                }
+
+                bufferSize = AudioRecord.getMinBufferSize(
+                        sampleRate,
+                        Constants.DEFAULT_CHANNEL_CONFIG,
+                        Constants.DEFAULT_PCM_FORMAT);
+                if (bufferSize != AudioRecord.ERROR && bufferSize != AudioRecord.ERROR_BAD_VALUE) {
+                    if (bufferSize <= 4096) {
+                        bufferSize = 4096 * 3/2;
                     }
-
-                    bufferSize = AudioRecord.getMinBufferSize(sampleRate,
+                    rec = new AudioRecord(
+                            AudioSource.MIC,
+                            sampleRate,
                             Constants.DEFAULT_CHANNEL_CONFIG,
-                            Constants.DEFAULT_PCM_FORMAT)
-                            * bufferSizeAdjuster;
+                            Constants.DEFAULT_PCM_FORMAT,
+                            bufferSize * bufferSizeAdjuster);
 
-                } while (bufferSize == AudioRecord.ERROR_BAD_VALUE
-                        || bufferSize == AudioRecord.ERROR);
-            }
-            // save the last known good sample rate
-            Log
-                    .i(
-                            "AudioHelper",
-                            String
-                                    .format(
-                                            "AudioRecord initially configured! sample rate: %d, buffer size adjuster: %d",
-                                            sampleRate, bufferSizeAdjuster));
-            PreferenceHelper.setSampleRate(context, sampleRate);
-            PreferenceHelper.setBufferSizeAdjuster(context, bufferSizeAdjuster);
+                    if (rec != null && rec.getState() == AudioRecord.STATE_INITIALIZED) {
+                        rec.release();
+                        rec = null;
+                        Log.i(TAG_AUDIOHELPER,
+                                String.format("AudioRecord initially configured! sample rate: %d, buffer size: %d, buffer size adjuster: %d",
+                                        sampleRate, bufferSize, bufferSizeAdjuster));
+                        PreferenceHelper.setSampleRate(context, sampleRate);
+                        PreferenceHelper.setBufferSize(context, bufferSize);
+                        PreferenceHelper.setBufferSizeAdjuster(context, bufferSizeAdjuster);
+                        return;
+                    }
+                    if (rec != null) {
+                        rec.release();
+                        rec = null;
+                    }
+                }
+            } while (bufferSizeAdjuster < Constants.DEFAULT_BUFFER_LIMIT);
+
+            // failure to configure!
+            DialogHelper.showWarning(context,
+                    R.string.unable_to_configure_audio_title,
+                    R.string.unable_to_configure_audio_warning);
         }
     }
 
@@ -301,41 +314,40 @@ public class AudioHelper {
         String manufacturer = android.os.Build.MANUFACTURER.toLowerCase();
         String model = android.os.Build.MODEL.toLowerCase();
         String device = android.os.Build.DEVICE.toLowerCase();
-        Log.i("AudioHelper", String.format(
-                "manufacturer: %s, model: %s, device: %s", manufacturer, model,
-                device));
+        Log.i(TAG_AUDIOHELPER, String.format(
+                "manufacturer: %s, model: %s, device: %s", manufacturer, model, device));
 
         if (manufacturer.equals(MANUFACTURER_SAMSUNG)) {
             if (device.equals(DEVICE_ID_GALAXY_S)) {
-                Log.i("AudioHelper", "Samsung Galaxy S detected");
+                Log.i(TAG_AUDIOHELPER, "Samsung Galaxy S detected");
                 return true;
             }
 
             if (device.equals(DEVICE_ID_CAPTIVATE)) {
-                Log.i("AudioHelper", "ATT, Samsung Captivate detected");
+                Log.i(TAG_AUDIOHELPER, "ATT, Samsung Captivate detected");
                 return true;
             }
 
             if (device.equals(DEVICE_ID_VIBRANT)) {
-                Log.i("AudioHelper", "T-Mobile US, Samsung Vibrant detected");
+                Log.i(TAG_AUDIOHELPER, "T-Mobile US, Samsung Vibrant detected");
                 return true;
             }
 
             if (device.equals(DEVICE_ID_EPIC)) {
-                Log.i("AudioHelper", "Sprint, Samsung Epic 4G detected");
+                Log.i(TAG_AUDIOHELPER, "Sprint, Samsung Epic 4G detected");
                 return true;
             }
 
             if (device.equals(DEVICE_ID_FASCINATE)) {
-                Log.i("AudioHelper", "Verizon, Samsung Fascinate detected");
+                Log.i(TAG_AUDIOHELPER, "Verizon, Samsung Fascinate detected");
+                return true;
+            }
+
+            if (device.equals(DEVICE_ID_MESMERIZE)) {
+                Log.i(TAG_AUDIOHELPER, "Samsung Mesmerize detected");
                 return true;
             }
         }
         return false;
-    }
-
-    public static boolean isTmobileG2() {
-        String device = android.os.Build.DEVICE.toLowerCase();
-        return device.equals(DEVICE_ID_G2);
     }
 }

@@ -21,8 +21,12 @@
 package com.intervigil.micdroiddonate;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -56,6 +60,7 @@ import com.intervigil.micdroiddonate.helper.DialogHelper;
 import com.intervigil.micdroiddonate.helper.HeadsetHelper;
 import com.intervigil.micdroiddonate.helper.PreferenceHelper;
 import com.intervigil.micdroiddonate.helper.UpdateHelper;
+import com.intervigil.micdroiddonate.interfaces.Recorder;
 import com.intervigil.micdroiddonate.pitch.AutoTalent;
 import com.intervigil.micdroiddonate.wave.WaveReader;
 import com.intervigil.micdroiddonate.wave.WaveWriter;
@@ -296,8 +301,7 @@ public class Mic extends Activity {
         @Override
         protected void onPreExecute() {
             if (isLiveMode) {
-                spinner
-                        .setMessage(getString(R.string.saving_recording_progress_msg));
+                spinner.setMessage(getString(R.string.saving_recording_progress_msg));
             } else {
                 spinner.setMessage(getString(R.string.autotalent_progress_msg));
             }
@@ -310,23 +314,47 @@ public class Mic extends Activity {
             String fileName = params[0];
 
             if (isLiveMode) {
-                File recording = new File(ApplicationHelper
-                        .getOutputDirectory()
-                        + File.separator + "recording.wav");
-                File destination = new File(ApplicationHelper
-                        .getLibraryDirectory()
-                        + File.separator + fileName);
-                recording.renameTo(destination);
+                int len;
+                InputStream in;
+                OutputStream out;
+                byte[] buf = new byte[1024];
+
+                File src = new File(
+                        getCacheDir().getAbsolutePath()
+                        + File.separator
+                        + getString(R.string.default_recording_name));
+                File dst = new File(
+                        ApplicationHelper.getLibraryDirectory()
+                        + File.separator
+                        + fileName);
+                // do a file copy since renameto doesn't work
+                try {
+                    in = new FileInputStream(src);
+                    out = new FileOutputStream(dst);
+                    while ((len = in.read(buf)) > 0) {
+                        out.write(buf, 0, len);
+                    }
+                    in.close();
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Message msg = recordingErrorHandler
+                            .obtainMessage(Constants.UNABLE_TO_CREATE_RECORDING);
+                    recordingErrorHandler.sendMessage(msg);
+                    return null;
+                }
             } else {
                 try {
-                    reader = new WaveReader(ApplicationHelper
-                            .getOutputDirectory(),
+                    reader = new WaveReader(
+                            getCacheDir().getAbsolutePath(),
                             getString(R.string.default_recording_name));
                     reader.openWave();
-                    writer = new WaveWriter(ApplicationHelper
-                            .getLibraryDirectory(), fileName, reader
-                            .getSampleRate(), reader.getChannels(), reader
-                            .getPcmFormat());
+                    writer = new WaveWriter(
+                            ApplicationHelper.getLibraryDirectory(),
+                            fileName,
+                            reader.getSampleRate(),
+                            reader.getChannels(),
+                            reader.getPcmFormat());
                     writer.createWaveFile();
                 } catch (IOException e) {
                     // can't create our readers and writers for some reason!
@@ -342,7 +370,7 @@ public class Mic extends Activity {
                 short[] buf = new short[AUTOTALENT_CHUNK_SIZE];
                 while (true) {
                     try {
-                        int samplesRead = reader.readShort(buf,
+                        int samplesRead = reader.read(buf,
                                 AUTOTALENT_CHUNK_SIZE);
                         if (samplesRead > 0) {
                             AutoTalent.processSamples(buf, samplesRead);
@@ -412,13 +440,6 @@ public class Mic extends Activity {
                         DialogHelper.showWarning(Mic.this,
                                 R.string.no_headset_plugged_in_title,
                                 R.string.no_headset_plugged_in_warning);
-                    } else if (isLiveMode
-                            && HeadsetHelper.isHeadsetPluggedIn(Mic.this)
-                            && AudioHelper.isSamsungGalaxyS()) {
-                        btn.setChecked(false);
-                        DialogHelper.showWarning(Mic.this,
-                                R.string.galaxy_s_live_mode_title,
-                                R.string.galaxy_s_live_mode_error);
                     } else {
                         timer.reset();
                         if (isLiveMode) {
@@ -426,9 +447,10 @@ public class Mic extends Activity {
                         }
                         if (recorder == null) {
                             try {
-                                recorder = new Recorder(Mic.this,
+                                recorder = new SipdroidRecorder(Mic.this,
                                         recordingErrorHandler, isLiveMode);
                             } catch (IllegalArgumentException e) {
+                                e.printStackTrace();
                                 btn.setChecked(false);
                                 DialogHelper.showWarning(Mic.this,
                                         R.string.audio_record_exception_title,

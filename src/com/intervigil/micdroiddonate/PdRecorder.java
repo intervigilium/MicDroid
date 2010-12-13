@@ -32,16 +32,14 @@ import android.os.Message;
 import com.intervigil.micdroiddonate.helper.ApplicationHelper;
 import com.intervigil.micdroiddonate.helper.AudioHelper;
 import com.intervigil.micdroiddonate.helper.PreferenceHelper;
+import com.intervigil.micdroiddonate.interfaces.Recorder;
 import com.intervigil.micdroiddonate.model.Sample;
 import com.intervigil.micdroiddonate.pitch.AutoTalent;
 import com.intervigil.micdroiddonate.wave.WaveReader;
 import com.intervigil.micdroiddonate.wave.WaveWriter;
 
-
-
-public class Recorder {
+public class PdRecorder implements Recorder {
     private MicWriter writerThread;
-
     private AudioTrack audioTrack;
     private WaveReader instrumentalReader;
     private AudioRecordWrapper audioRecord;
@@ -49,14 +47,15 @@ public class Recorder {
     private final WaveWriter writer;
     private final boolean isLiveMode;
 
-    public Recorder(Context context, Handler errorHandler, boolean isLiveMode)
+    public PdRecorder(Context context, Handler errorHandler, boolean isLiveMode)
             throws IllegalArgumentException {
         this.errorHandler = errorHandler;
         this.isLiveMode = isLiveMode;
-        this.writer = new WaveWriter(ApplicationHelper.getOutputDirectory(),
+        this.writer = new WaveWriter(
+                context.getCacheDir().getAbsolutePath(),
                 context.getString(R.string.default_recording_name),
-                PreferenceHelper.getSampleRate(context), AudioHelper
-                        .getChannelConfig(Constants.DEFAULT_CHANNEL_CONFIG),
+                PreferenceHelper.getSampleRate(context),
+                AudioHelper.getChannelConfig(Constants.DEFAULT_CHANNEL_CONFIG),
                 AudioHelper.getPcmEncoding(Constants.DEFAULT_PCM_FORMAT));
         this.audioRecord = new AudioRecordWrapper(context);
 
@@ -67,9 +66,10 @@ public class Recorder {
         String trackName = PreferenceHelper.getInstrumentalTrack(context);
         if (!trackName.equals(Constants.EMPTY_STRING)) {
             // start reading from instrumental track
-            File instrumentalFile = new File(ApplicationHelper
-                    .getInstrumentalDirectory()
-                    + File.separator + trackName);
+            File instrumentalFile = new File(
+                    ApplicationHelper.getInstrumentalDirectory()
+                    + File.separator
+                    + trackName);
             instrumentalReader = new WaveReader(instrumentalFile);
         }
     }
@@ -122,8 +122,8 @@ public class Recorder {
 
     public boolean isRunning() {
         return (writerThread != null
-                && writerThread.getState() != Thread.State.NEW && writerThread
-                .getState() != Thread.State.TERMINATED);
+                && writerThread.getState() != Thread.State.NEW
+                && writerThread.getState() != Thread.State.TERMINATED);
     }
 
     private class MicWriter extends Thread {
@@ -135,7 +135,7 @@ public class Recorder {
                         if (isLiveMode) {
                             if (instrumentalReader != null) {
                                 short[] instrumentalBuf = new short[sample.bufferSize];
-                                instrumentalReader.readShort(instrumentalBuf,
+                                instrumentalReader.read(instrumentalBuf,
                                         sample.bufferSize);
                                 AutoTalent.processMixSamples(sample.buffer,
                                         instrumentalBuf, sample.bufferSize);
