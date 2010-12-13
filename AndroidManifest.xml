@@ -34,6 +34,18 @@
 		<activity android:label="@string/instrumental_library"
 			android:name=".InstrumentalLibrary" />
 
+		<!-- AdMobActivity definition -->
+		<activity android:name="com.admob.android.ads.AdMobActivity"
+			android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+			android:configChanges="orientation|keyboard|keyboardHidden" />
+
+		<!-- Track Market Installs -->
+		<receiver android:name="com.admob.android.ads.analytics.InstallReceiver" android:exported="true">
+			<intent-filter>
+				<action android:name="com.android.vending.INSTALL_REFERRER" />
+			</intent-filter>
+		</receiver>
+
 		<meta-data android:value="a14cbf73c14c77d" android:name="ADMOB_PUBLISHER_ID" />
 
 	</application>
