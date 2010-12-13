@@ -32,6 +32,9 @@
          application and should be checked into Version Control Systems. -->
     <property file="default.properties" />
 
+    <property name="bash" location="${bash.dir}/bash" />
+    <property name="ndk-build" value="${ndk.dir}/ndk-build" />
+
     <!-- Custom Android task to deal with the project target, and import the
          proper rules.
          This requires ant 1.6.0 or above. -->
@@ -47,9 +50,13 @@
 
 <!-- extension targets. Uncomment the ones where you want to do custom work
      in between standard targets -->
-<!--
+
     <target name="-pre-build">
+        <exec dir="${basedir}" executable="${bash}">
+            <arg line="${ndk-build}" />
+        </exec>
     </target>
+<!--
     <target name="-pre-compile">
     </target>
 
