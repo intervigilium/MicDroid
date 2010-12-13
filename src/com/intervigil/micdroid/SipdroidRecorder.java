@@ -25,6 +25,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import android.content.Context;
+import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaPlayer;
@@ -87,6 +88,10 @@ public class SipdroidRecorder implements Recorder {
             instrumentalReader.openWave();
         }
         writer.createWaveFile();
+        if (isLiveMode) {
+            AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            am.setMode(AudioManager.MODE_NORMAL);
+        }
         writerThread = new MicWriter();
         writerThread.start();
     }
