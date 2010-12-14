@@ -188,7 +188,7 @@ public class SeekableMediaPlayer {
     }
 
     private long onRefresh() {
-        if (mediaPlayer != null && mediaPlayer.getDuration() != 0) {
+        if (mediaPlayer != null && mediaPlayer.getDuration() > 0) {
             int progress = (mediaPlayer.getCurrentPosition() * seekBar.getMax())
                     / mediaPlayer.getDuration();
             seekBar.setProgress((int) progress);
