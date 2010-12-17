@@ -62,8 +62,8 @@ import com.intervigil.micdroid.helper.PreferenceHelper;
 import com.intervigil.micdroid.helper.UpdateHelper;
 import com.intervigil.micdroid.interfaces.Recorder;
 import com.intervigil.micdroid.pitch.AutoTalent;
-import com.intervigil.micdroid.wave.WaveReader;
-import com.intervigil.micdroid.wave.WaveWriter;
+import com.intervigil.wave.WaveReader;
+import com.intervigil.wave.WaveWriter;
 
 public class Mic extends Activity {
 
