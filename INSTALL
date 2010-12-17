@@ -1,13 +1,18 @@
 This project requires:
 Android SDK
 Android NDK
+libwave
 
 This project does not contain the shared libraries for autotalent or lame.
-In order to build them, you must first install the Android NDK from http://developer.android.com/sdk/ndk/index.html
+In order to build them, you must first install the Android NDK from:
+http://developer.android.com/sdk/ndk/index.html
 Installing the Android NDK is beyond the scope of this INSTALL file.
 
 Then you must go to the project top level and issue the command:
 /path/to/ndk-build 
 to build the libraries.
-The NDK builder will compile the shared libraries and place them in the libs directory.
+The NDK builder will compile the shared libraries and place them in the /libs
+directory.
 
+You must also have libwave for the MicDroid project to reference. It is an
+Android library project, so the Android builders will include it automatically.
