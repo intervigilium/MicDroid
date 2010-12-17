@@ -3,7 +3,8 @@ This project is licensed under GPLv2, for further licensing information see the
 LICENSE file.
 
 Build Instructions:
-Import project into Eclipse, since I have not created Ant makefiles for this project.
+Requires libwave, also available from github.
+Import project into Eclipse, or use Ant makefiles for this project.
 For help building the autotalent C library, please consult the INSTALL file. 
 
 Known Issues:
