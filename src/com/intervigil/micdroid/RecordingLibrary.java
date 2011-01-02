@@ -28,6 +28,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -275,14 +276,12 @@ public class RecordingLibrary extends Activity {
                 long id) {
             Recording r = (Recording) parent.getItemAtPosition(position);
 
-            Intent playIntent = new Intent(getBaseContext(),
-                    RecordingPlayer.class);
-            Bundle playData = new Bundle();
-            // add recording info to play intent
-            playData.putParcelable(Constants.PLAYER_INTENT_RECORDING, r);
-            playIntent.putExtras(playData);
-
-            startActivityForResult(playIntent, Constants.PLAYER_INTENT_CODE);
+            StringBuilder sb = new StringBuilder("file://");
+            sb.append(r.getAbsolutePath());
+            Uri uri = Uri.parse(sb.toString());
+            Intent playIntent = new Intent("android.intent.action.VIEW");
+            playIntent.setDataAndType(uri, "audio/x-wav");
+            startActivity(playIntent);
         }
     };
 
