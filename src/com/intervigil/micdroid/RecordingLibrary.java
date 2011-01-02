@@ -247,9 +247,7 @@ public class RecordingLibrary extends Activity {
                 RecordingOptionsHelper.shareRecording(RecordingLibrary.this, r);
                 break;
             case R.string.recording_options_rename:
-                Intent renameFileIntent = new Intent(getBaseContext(),
-                        FileNameEntry.class);
-                // add recording info to file name entry intent
+                Intent renameFileIntent = new Intent(getBaseContext(), FileNameEntry.class);
                 Bundle recordingData = new Bundle();
                 recordingData.putParcelable(Constants.NAME_ENTRY_INTENT_RECORDING,
                         r);
