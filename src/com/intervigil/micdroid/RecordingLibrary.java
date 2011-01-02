@@ -297,8 +297,7 @@ public class RecordingLibrary extends Activity {
             View view = convertView;
             if (view == null) {
                 LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = vi
-                        .inflate(R.layout.recording_library_row, parent, false);
+                view = vi.inflate(R.layout.recording_library_row, parent, false);
             }
 
             Recording r = this.getItem(position);
@@ -370,28 +369,16 @@ public class RecordingLibrary extends Activity {
 
                             // check to see if this exists in the media store,
                             // if it doesn't insert it
-                            if (!MediaStoreHelper.isInserted(
-                                    RecordingLibrary.this, r)) {
-                                MediaStoreHelper.insertRecording(
-                                        RecordingLibrary.this, r);
-                                Log.i("RecordingLibrary", String.format(
-                                        "Added recording %s to media store", r
-                                                .getName()));
+                            if (!MediaStoreHelper.isInserted(RecordingLibrary.this, r)) {
+                                MediaStoreHelper.insertRecording(RecordingLibrary.this, r);
+                                Log.i("RecordingLibrary",
+                                        String.format("Added recording %s to media store", r.getName()));
                             }
-                            Log.i("RecordingLibrary", String.format(
-                                    "Added recording %s to library", r
-                                            .getName()));
+                            Log.i("RecordingLibrary",
+                                    String.format("Added recording %s to library", r.getName()));
                         } catch (IOException e) {
-                            // yes I know it sucks that we do control flow with
-                            // an exception here, fix it later
-                            Log
-                                    .i(
-                                            "RecordingLibrary",
-                                            String
-                                                    .format(
-                                                            "Non-wave file %s found in library directory!",
-                                                            waveFiles[i]
-                                                                    .getName()));
+                            Log.i("RecordingLibrary",
+                                    String.format("Non-wave file %s found in library directory!", waveFiles[i].getName()));
                         }
                     }
                 }
