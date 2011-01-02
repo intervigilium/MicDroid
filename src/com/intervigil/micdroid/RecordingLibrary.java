@@ -169,26 +169,25 @@ public class RecordingLibrary extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
 
         switch (requestCode) {
-        case Constants.INTENT_FILENAME_ENTRY:
-            if (resultCode == Activity.RESULT_OK) {
-                // get results from the intent
-                Recording r = data.getParcelableExtra(Constants.INTENT_EXTRA_RECORDING);
-                String destinationName = data.getStringExtra(
-                        Constants.INTENT_EXTRA_FILE_NAME).trim()
-                        + ".wav";
+            case Constants.INTENT_FILENAME_ENTRY:
+                if (resultCode == Activity.RESULT_OK) {
+                    // get results from the intent
+                    Recording r = data.getParcelableExtra(Constants.INTENT_EXTRA_RECORDING);
+                    String destinationName = data.getStringExtra(
+                            Constants.INTENT_EXTRA_FILE_NAME).trim()
+                            + ".wav";
 
-                File destination = new File(ApplicationHelper
-                        .getLibraryDirectory()
-                        + File.separator + destinationName);
-                MediaStoreHelper.removeRecording(RecordingLibrary.this, r);
-                r.moveTo(destination);
-                // refresh recordings list since something was renamed
-                loadRecordingsTask = (LoadRecordingsTask) new LoadRecordingsTask()
-                        .execute((Void) null);
-            }
-            break;
-        default:
-            break;
+                    File destination = new File(ApplicationHelper.getLibraryDirectory()
+                            + File.separator + destinationName);
+                    MediaStoreHelper.removeRecording(RecordingLibrary.this, r);
+                    r.moveTo(destination);
+                    // refresh recordings list since something was renamed
+                    loadRecordingsTask = (LoadRecordingsTask) new LoadRecordingsTask()
+                            .execute((Void) null);
+                }
+                break;
+            default:
+                break;
         }
     }
 
@@ -197,7 +196,6 @@ public class RecordingLibrary extends Activity {
             ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         menu.setHeaderTitle(R.string.recording_options_title);
-
         menu.add(Menu.NONE, R.string.recording_options_delete, Menu.NONE,
                 R.string.recording_options_delete);
         menu.add(Menu.NONE, R.string.recording_options_rename, Menu.NONE,
@@ -242,6 +240,14 @@ public class RecordingLibrary extends Activity {
                         R.string.confirm_delete_btn_no,
                         deleteListener);
                 break;
+            case R.string.recording_options_rename:
+                Intent renameFileIntent = new Intent(getBaseContext(), FileNameEntry.class);
+                Bundle recordingData = new Bundle();
+                recordingData.putParcelable(Constants.INTENT_EXTRA_RECORDING, r);
+                renameFileIntent.putExtras(recordingData);
+
+                startActivityForResult(renameFileIntent, Constants.INTENT_FILENAME_ENTRY);
+                break;
             case R.string.recording_options_set_ringtone:
                 if (RecordingOptionsHelper.setRingTone(RecordingLibrary.this, r)) {
                     Toast.makeText(RecordingLibrary.this,
@@ -267,15 +273,6 @@ public class RecordingLibrary extends Activity {
                 break;
             case R.string.recording_options_share:
                 RecordingOptionsHelper.shareRecording(RecordingLibrary.this, r);
-                break;
-            case R.string.recording_options_rename:
-                Intent renameFileIntent = new Intent(getBaseContext(), FileNameEntry.class);
-                Bundle recordingData = new Bundle();
-                recordingData.putParcelable(Constants.INTENT_EXTRA_RECORDING,
-                        r);
-                renameFileIntent.putExtras(recordingData);
-
-                startActivityForResult(renameFileIntent, Constants.INTENT_FILENAME_ENTRY);
                 break;
             default:
                 break;
@@ -380,13 +377,16 @@ public class RecordingLibrary extends Activity {
                             if (!MediaStoreHelper.isInserted(RecordingLibrary.this, r)) {
                                 MediaStoreHelper.insertRecording(RecordingLibrary.this, r);
                                 Log.i("RecordingLibrary",
-                                        String.format("Added recording %s to media store", r.getName()));
+                                        String.format("Added recording %s to media store",
+                                                r.getName()));
                             }
                             Log.i("RecordingLibrary",
-                                    String.format("Added recording %s to library", r.getName()));
+                                    String.format("Added recording %s to library",
+                                            r.getName()));
                         } catch (IOException e) {
                             Log.i("RecordingLibrary",
-                                    String.format("Non-wave file %s found in library directory!", waveFiles[i].getName()));
+                                    String.format("Non-wave file %s found in library directory!",
+                                            waveFiles[i].getName()));
                         }
                     }
                 }
