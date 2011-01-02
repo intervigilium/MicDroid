@@ -168,13 +168,12 @@ public class RecordingLibrary extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
 
         switch (requestCode) {
-        case Constants.FILENAME_ENTRY_INTENT_CODE:
+        case Constants.INTENT_FILENAME_ENTRY:
             if (resultCode == Activity.RESULT_OK) {
                 // get results from the intent
-                Recording r = data
-                        .getParcelableExtra(Constants.NAME_ENTRY_INTENT_RECORDING);
+                Recording r = data.getParcelableExtra(Constants.INTENT_EXTRA_RECORDING);
                 String destinationName = data.getStringExtra(
-                        Constants.NAME_ENTRY_INTENT_FILE_NAME).trim()
+                        Constants.INTENT_EXTRA_FILE_NAME).trim()
                         + ".wav";
 
                 File destination = new File(ApplicationHelper
@@ -225,8 +224,8 @@ public class RecordingLibrary extends Activity {
                             case DialogInterface.BUTTON_POSITIVE:
                                 r.asFile().delete();
                                 MediaStoreHelper.removeRecording(RecordingLibrary.this, r);
-                                loadRecordingsTask =
-                                    (LoadRecordingsTask) new LoadRecordingsTask().execute((Void) null);
+                                loadRecordingsTask = (LoadRecordingsTask) new LoadRecordingsTask()
+                                    .execute((Void) null);
                                 dialog.dismiss();
                                 break;
                             case DialogInterface.BUTTON_NEGATIVE:
@@ -271,11 +270,11 @@ public class RecordingLibrary extends Activity {
             case R.string.recording_options_rename:
                 Intent renameFileIntent = new Intent(getBaseContext(), FileNameEntry.class);
                 Bundle recordingData = new Bundle();
-                recordingData.putParcelable(Constants.NAME_ENTRY_INTENT_RECORDING,
+                recordingData.putParcelable(Constants.INTENT_EXTRA_RECORDING,
                         r);
                 renameFileIntent.putExtras(recordingData);
 
-                startActivityForResult(renameFileIntent, Constants.FILENAME_ENTRY_INTENT_CODE);
+                startActivityForResult(renameFileIntent, Constants.INTENT_FILENAME_ENTRY);
                 break;
             default:
                 break;
@@ -289,7 +288,7 @@ public class RecordingLibrary extends Activity {
             Recording r = (Recording) parent.getItemAtPosition(position);
 
             Intent playIntent = new Intent(Intent.ACTION_VIEW);
-            playIntent.setDataAndType(Uri.fromFile(r.asFile()), Constants.AUDIO_WAVE);
+            playIntent.setDataAndType(Uri.fromFile(r.asFile()), Constants.MIME_AUDIO_WAV);
             startActivity(playIntent);
         }
     };
