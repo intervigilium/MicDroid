@@ -199,7 +199,7 @@
 	<string name="prefs_pitch_pull">Pull to Fixed Pitch</string>
 	<string name="prefs_pitch_pull_summary">The degree that pitch is pulled towards</string>
 	<string name="prefs_pitch_pull_title">Pull to Fixed Pitch</string>
-	<string name="prefs_pitch_pull_default">0.1</string>
+	<string name="prefs_pitch_pull_default">0.0</string>
 
 	<string name="prefs_pitch_shift_key">pitch_shift</string>
 	<string name="prefs_pitch_shift">Pitch Shift</string>
