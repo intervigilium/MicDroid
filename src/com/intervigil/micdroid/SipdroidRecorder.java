@@ -157,7 +157,7 @@ public class SipdroidRecorder implements Recorder {
         
         public void run() {
             int num;
-            long now, nextTxDelay, lastTxTime = 0;
+            long now, nextFrameDelay, lastFrameTime = 0;
             short[] buf = new short[bufSize];
             
             running = true;
@@ -169,13 +169,13 @@ public class SipdroidRecorder implements Recorder {
             while (running) {
                 // delay reading if it's not time for the next frame
                 now = System.currentTimeMillis();
-                nextTxDelay = framePeriod - (now - lastTxTime);
-                lastTxTime = now;
-                if (nextTxDelay > 0) {
+                nextFrameDelay = framePeriod - (now - lastFrameTime);
+                lastFrameTime = now;
+                if (nextFrameDelay > 0) {
                     try {
-                        sleep(nextTxDelay);
+                        sleep(nextFrameDelay);
                     } catch (InterruptedException e) {}
-                    lastTxTime = lastTxTime + nextTxDelay;
+                    lastFrameTime = lastFrameTime + nextFrameDelay;
                 }
                 num = audioRecord.read(buf, 0, frameSize);
                 try {
