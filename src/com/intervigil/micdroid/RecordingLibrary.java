@@ -27,6 +27,7 @@ import java.util.List;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -50,6 +51,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import com.google.ads.AdView;
 import com.intervigil.micdroid.helper.AdHelper;
 import com.intervigil.micdroid.helper.ApplicationHelper;
+import com.intervigil.micdroid.helper.DialogHelper;
 import com.intervigil.micdroid.helper.MediaStoreHelper;
 import com.intervigil.micdroid.helper.PreferenceHelper;
 import com.intervigil.micdroid.helper.RecordingOptionsHelper;
@@ -167,13 +169,6 @@ public class RecordingLibrary extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
 
         switch (requestCode) {
-        case Constants.PLAYER_INTENT_CODE:
-            if (resultCode == Constants.RESULT_FILE_DELETED) {
-                // refresh recordings list since something was removed
-                loadRecordingsTask = (LoadRecordingsTask) new LoadRecordingsTask()
-                        .execute((Void) null);
-            }
-            break;
         case Constants.FILENAME_ENTRY_INTENT_CODE:
             if (resultCode == Activity.RESULT_OK) {
                 // get results from the intent
@@ -204,6 +199,8 @@ public class RecordingLibrary extends Activity {
         super.onCreateContextMenu(menu, v, menuInfo);
         menu.setHeaderTitle(R.string.recording_options_title);
 
+        menu.add(Menu.NONE, R.string.recording_options_delete, Menu.NONE,
+                R.string.recording_options_delete);
         menu.add(Menu.NONE, R.string.recording_options_rename, Menu.NONE,
                 R.string.recording_options_rename);
         menu.add(Menu.NONE, R.string.recording_options_set_ringtone, Menu.NONE,
@@ -218,9 +215,34 @@ public class RecordingLibrary extends Activity {
     public boolean onContextItemSelected(MenuItem item) {
         AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
                 .getMenuInfo();
-        Recording r = (Recording) libraryAdapter.getItem(info.position);
+        final Recording r = (Recording) libraryAdapter.getItem(info.position);
 
         switch (item.getItemId()) {
+            case R.string.recording_options_delete:
+                DialogInterface.OnClickListener deleteListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                r.asFile().delete();
+                                MediaStoreHelper.removeRecording(RecordingLibrary.this, r);
+                                loadRecordingsTask =
+                                    (LoadRecordingsTask) new LoadRecordingsTask().execute((Void) null);
+                                dialog.dismiss();
+                                break;
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                dialog.dismiss();
+                                break;
+                        }
+                    }
+                };
+                DialogHelper.showConfirmation(RecordingLibrary.this,
+                        R.string.confirm_delete_title,
+                        R.string.confirm_delete_message,
+                        R.string.confirm_delete_btn_yes,
+                        R.string.confirm_delete_btn_no,
+                        deleteListener);
+                break;
             case R.string.recording_options_set_ringtone:
                 if (RecordingOptionsHelper.setRingTone(RecordingLibrary.this, r)) {
                     Toast.makeText(RecordingLibrary.this,
