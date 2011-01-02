@@ -263,8 +263,7 @@ public class RecordingLibrary extends Activity {
                         r);
                 renameFileIntent.putExtras(recordingData);
 
-                startActivityForResult(renameFileIntent,
-                        Constants.FILENAME_ENTRY_INTENT_CODE);
+                startActivityForResult(renameFileIntent, Constants.FILENAME_ENTRY_INTENT_CODE);
                 break;
             default:
                 break;
