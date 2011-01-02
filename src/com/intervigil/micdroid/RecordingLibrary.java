@@ -223,50 +223,50 @@ public class RecordingLibrary extends Activity {
         Recording r = (Recording) libraryAdapter.getItem(info.position);
 
         switch (item.getItemId()) {
-        case R.string.recording_options_set_ringtone:
-            if (RecordingOptionsHelper.setRingTone(RecordingLibrary.this, r)) {
-                Toast.makeText(RecordingLibrary.this,
-                        R.string.recording_options_ringtone_set,
-                        Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(RecordingLibrary.this,
-                        R.string.recording_options_ringtone_error,
-                        Toast.LENGTH_SHORT).show();
-            }
-            break;
-        case R.string.recording_options_set_notification:
-            if (RecordingOptionsHelper.setNotificationTone(
-                    RecordingLibrary.this, r)) {
-                Toast.makeText(RecordingLibrary.this,
-                        R.string.recording_options_notification_set,
-                        Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(RecordingLibrary.this,
-                        R.string.recording_options_notification_error,
-                        Toast.LENGTH_SHORT).show();
-            }
-            break;
-        case R.string.recording_options_send_email:
-            RecordingOptionsHelper
-                    .sendEmailAttachment(RecordingLibrary.this, r);
-            break;
-        case R.string.recording_options_send_mms:
-            RecordingOptionsHelper.sendMms(RecordingLibrary.this, r);
-            break;
-        case R.string.recording_options_rename:
-            Intent renameFileIntent = new Intent(getBaseContext(),
-                    FileNameEntry.class);
-            // add recording info to file name entry intent
-            Bundle recordingData = new Bundle();
-            recordingData.putParcelable(Constants.NAME_ENTRY_INTENT_RECORDING,
-                    r);
-            renameFileIntent.putExtras(recordingData);
+            case R.string.recording_options_set_ringtone:
+                if (RecordingOptionsHelper.setRingTone(RecordingLibrary.this, r)) {
+                    Toast.makeText(RecordingLibrary.this,
+                            R.string.recording_options_ringtone_set,
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(RecordingLibrary.this,
+                            R.string.recording_options_ringtone_error,
+                            Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case R.string.recording_options_set_notification:
+                if (RecordingOptionsHelper.setNotificationTone(
+                        RecordingLibrary.this, r)) {
+                    Toast.makeText(RecordingLibrary.this,
+                            R.string.recording_options_notification_set,
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(RecordingLibrary.this,
+                            R.string.recording_options_notification_error,
+                            Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case R.string.recording_options_send_email:
+                RecordingOptionsHelper
+                        .sendEmailAttachment(RecordingLibrary.this, r);
+                break;
+            case R.string.recording_options_send_mms:
+                RecordingOptionsHelper.sendMms(RecordingLibrary.this, r);
+                break;
+            case R.string.recording_options_rename:
+                Intent renameFileIntent = new Intent(getBaseContext(),
+                        FileNameEntry.class);
+                // add recording info to file name entry intent
+                Bundle recordingData = new Bundle();
+                recordingData.putParcelable(Constants.NAME_ENTRY_INTENT_RECORDING,
+                        r);
+                renameFileIntent.putExtras(recordingData);
 
-            startActivityForResult(renameFileIntent,
-                    Constants.FILENAME_ENTRY_INTENT_CODE);
-            break;
-        default:
-            break;
+                startActivityForResult(renameFileIntent,
+                        Constants.FILENAME_ENTRY_INTENT_CODE);
+                break;
+            default:
+                break;
         }
         return true;
     }
