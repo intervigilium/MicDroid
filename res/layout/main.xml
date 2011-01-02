@@ -50,6 +50,11 @@
 			android:layout_height="wrap_content" android:text="@string/recording_button_label"
 			android:textSize="15sp" android:textColor="#fff" android:shadowColor="#000"
 			android:shadowDy="-1" android:shadowRadius="1" android:background="@drawable/base_button" />
+
+		<Button android:id="@+id/instrumental_button" android:layout_width="wrap_content"
+			android_layout_height="wrap_content" android:text="@string/instrumental_button_label"
+			android:textSize="15sp" android:textColor="#fff" android:shadowColor="#000"
+			android:shadowDy="-1" android:shadowRadius="1" android:background="@drawable/base_button" />
 	</LinearLayout>
 
 </RelativeLayout>

@@ -17,6 +17,7 @@
 	<string name="startup_dialog_accept_btn">Accept</string>
 
 	<string name="recording_button_label">My Recordings</string>
+	<string name="instrumental_button_label">Instrumental</string>
 
 	<string name="instrumental_library_row_label_1">Instrumental Name</string>
 	<string name="instrumental_library_row_label_2">Instrumental Length</string>
