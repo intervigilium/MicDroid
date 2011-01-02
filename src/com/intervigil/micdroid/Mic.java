@@ -207,30 +207,30 @@ public class Mic extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.id.options:
-            Intent preferencesIntent = new Intent(getBaseContext(),
-                    Preferences.class);
-            startActivityForResult(preferencesIntent,
-                    Constants.INTENT_PREFERENCES);
-            break;
-        case R.id.donate:
-            Intent marketSearchIntent = new Intent(Intent.ACTION_SEARCH);
-            marketSearchIntent.setPackage("com.android.vending");
-            marketSearchIntent.putExtra("query", "micdroid donate");
-            marketSearchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(marketSearchIntent);
-            break;
-        case R.id.help:
-            DialogHelper.showWarning(Mic.this, R.string.help_title,
-                    R.string.help_text);
-            break;
-        case R.id.about:
-            DialogHelper.showWarning(Mic.this, R.string.about_title,
-                    R.string.about_text);
-            break;
-        case R.id.quit:
-            finish();
-            break;
+            case R.id.options:
+                Intent preferencesIntent = new Intent(getBaseContext(),
+                        Preferences.class);
+                startActivityForResult(preferencesIntent,
+                        Constants.INTENT_PREFERENCES);
+                break;
+            case R.id.donate:
+                Intent marketSearchIntent = new Intent(Intent.ACTION_SEARCH);
+                marketSearchIntent.setPackage("com.android.vending");
+                marketSearchIntent.putExtra("query", "micdroid donate");
+                marketSearchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(marketSearchIntent);
+                break;
+            case R.id.help:
+                DialogHelper.showWarning(Mic.this, R.string.help_title,
+                        R.string.help_text);
+                break;
+            case R.id.about:
+                DialogHelper.showWarning(Mic.this, R.string.about_title,
+                        R.string.about_text);
+                break;
+            case R.id.quit:
+                finish();
+                break;
         }
         return true;
     }
@@ -240,25 +240,25 @@ public class Mic extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
 
         switch (requestCode) {
-        case Constants.INTENT_FILENAME_ENTRY:
-            if (resultCode == Activity.RESULT_OK) {
-                String fileName = data.getStringExtra(
-                        Constants.INTENT_EXTRA_FILE_NAME).trim()
-                        + ".wav";
-                new ProcessAutotalentTask().execute(fileName);
-            } else if (resultCode == Activity.RESULT_CANCELED) {
-                Toast.makeText(Mic.this, R.string.recording_save_canceled,
-                        Toast.LENGTH_SHORT).show();
-            }
-            break;
-        case Constants.INTENT_PREFERENCES:
-            if (recorder != null && !recorder.isRunning()) {
-                recorder.cleanup();
-                recorder = null;
-            }
-            break;
-        default:
-            break;
+            case Constants.INTENT_FILENAME_ENTRY:
+                if (resultCode == Activity.RESULT_OK) {
+                    String fileName = data.getStringExtra(
+                            Constants.INTENT_EXTRA_FILE_NAME).trim()
+                            + ".wav";
+                    new ProcessAutotalentTask().execute(fileName);
+                } else if (resultCode == Activity.RESULT_CANCELED) {
+                    Toast.makeText(Mic.this, R.string.recording_save_canceled,
+                            Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case Constants.INTENT_PREFERENCES:
+                if (recorder != null && !recorder.isRunning()) {
+                    recorder.cleanup();
+                    recorder = null;
+                }
+                break;
+            default:
+                break;
         }
     }
 
@@ -276,18 +276,18 @@ public class Mic extends Activity {
             recordingButton.setChecked(false);
 
             switch (msg.what) {
-            case Constants.WRITER_OUT_OF_SPACE:
-                // received error that the writer is out of SD card space
-                DialogHelper.showWarning(Mic.this,
-                        R.string.writer_out_of_space_title,
-                        R.string.writer_out_of_space_warning);
-                break;
-            case Constants.UNABLE_TO_CREATE_RECORDING:
-                // received error that the writer couldn't create the recording
-                DialogHelper.showWarning(Mic.this,
-                        R.string.unable_to_create_recording_title,
-                        R.string.unable_to_create_recording_warning);
-                break;
+                case Constants.WRITER_OUT_OF_SPACE:
+                    // received error that the writer is out of SD card space
+                    DialogHelper.showWarning(Mic.this,
+                            R.string.writer_out_of_space_title,
+                            R.string.writer_out_of_space_warning);
+                    break;
+                case Constants.UNABLE_TO_CREATE_RECORDING:
+                    // received error that the writer couldn't create the recording
+                    DialogHelper.showWarning(Mic.this,
+                            R.string.unable_to_create_recording_title,
+                            R.string.unable_to_create_recording_warning);
+                    break;
             }
         }
     };
@@ -533,7 +533,6 @@ public class Mic extends Activity {
     }
 
     private static boolean canWriteToSdCard() {
-        return Environment.getExternalStorageState().equals(
-                Environment.MEDIA_MOUNTED);
+        return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
     }
 }
