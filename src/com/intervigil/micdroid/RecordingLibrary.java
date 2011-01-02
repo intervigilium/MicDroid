@@ -267,11 +267,8 @@ public class RecordingLibrary extends Activity {
                 long id) {
             Recording r = (Recording) parent.getItemAtPosition(position);
 
-            StringBuilder sb = new StringBuilder("file://");
-            sb.append(r.getAbsolutePath());
-            Uri uri = Uri.parse(sb.toString());
-            Intent playIntent = new Intent("android.intent.action.VIEW");
-            playIntent.setDataAndType(uri, "audio/x-wav");
+            Intent playIntent = new Intent(Intent.ACTION_VIEW);
+            playIntent.setDataAndType(Uri.fromFile(r.asFile()), Constants.AUDIO_WAVE);
             startActivity(playIntent);
         }
     };

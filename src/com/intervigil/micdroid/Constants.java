@@ -53,7 +53,7 @@ public class Constants {
     public static final String KEY_LAST_VERSION_CODE = "prefs_last_version_code";
 
     // mime type
-    public static final String AUDIO_WAVE = "audio/wav";
+    public static final String AUDIO_WAVE = "audio/x-wav";
 
     // recording error handler codes
     public static final int WRITER_OUT_OF_SPACE = 6;
