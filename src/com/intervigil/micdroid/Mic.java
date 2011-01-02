@@ -211,7 +211,7 @@ public class Mic extends Activity {
             Intent preferencesIntent = new Intent(getBaseContext(),
                     Preferences.class);
             startActivityForResult(preferencesIntent,
-                    Constants.PREFERENCE_INTENT_CODE);
+                    Constants.INTENT_PREFERENCES);
             break;
         case R.id.donate:
             Intent marketSearchIntent = new Intent(Intent.ACTION_SEARCH);
@@ -240,10 +240,10 @@ public class Mic extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
 
         switch (requestCode) {
-        case Constants.FILENAME_ENTRY_INTENT_CODE:
+        case Constants.INTENT_FILENAME_ENTRY:
             if (resultCode == Activity.RESULT_OK) {
                 String fileName = data.getStringExtra(
-                        Constants.NAME_ENTRY_INTENT_FILE_NAME).trim()
+                        Constants.INTENT_EXTRA_FILE_NAME).trim()
                         + ".wav";
                 new ProcessAutotalentTask().execute(fileName);
             } else if (resultCode == Activity.RESULT_CANCELED) {
@@ -251,7 +251,7 @@ public class Mic extends Activity {
                         Toast.LENGTH_SHORT).show();
             }
             break;
-        case Constants.PREFERENCE_INTENT_CODE:
+        case Constants.INTENT_PREFERENCES:
             if (recorder != null && !recorder.isRunning()) {
                 recorder.cleanup();
                 recorder = null;
@@ -505,7 +505,7 @@ public class Mic extends Activity {
                         Intent saveFileIntent = new Intent(getBaseContext(),
                                 FileNameEntry.class);
                         startActivityForResult(saveFileIntent,
-                                Constants.FILENAME_ENTRY_INTENT_CODE);
+                                Constants.INTENT_FILENAME_ENTRY);
                     }
                 }
             }

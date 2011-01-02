@@ -38,18 +38,18 @@ public class Constants {
     public static final int SAMPLE_RATE_8KHZ = 8000;
 
     // intent codes
-    public static final int FILENAME_ENTRY_INTENT_CODE = 12768;
-    public static final int PREFERENCE_INTENT_CODE = 12771;
+    public static final int INTENT_FILENAME_ENTRY = 12768;
+    public static final int INTENT_PREFERENCES = 12771;
 
     // intent extras
-    public static final String NAME_ENTRY_INTENT_RECORDING = "NAME_ENTRY_RECORDING";
-    public static final String NAME_ENTRY_INTENT_FILE_NAME = "NAME_ENTRY_FILENAME_RESULT";
+    public static final String INTENT_EXTRA_RECORDING = "NAME_ENTRY_RECORDING";
+    public static final String INTENT_EXTRA_FILE_NAME = "NAME_ENTRY_FILENAME_RESULT";
 
     // shared preference keys
     public static final String KEY_LAST_VERSION_CODE = "prefs_last_version_code";
 
     // mime type
-    public static final String AUDIO_WAVE = "audio/x-wav";
+    public static final String MIME_AUDIO_WAV = "audio/x-wav";
 
     // recording error handler codes
     public static final int WRITER_OUT_OF_SPACE = 6;

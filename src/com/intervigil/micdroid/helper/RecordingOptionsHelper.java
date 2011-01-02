@@ -53,7 +53,7 @@ public class RecordingOptionsHelper {
     public static void shareRecording(Context context, Recording recording) {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(recording.asFile()));
-        shareIntent.setType(Constants.AUDIO_WAVE);
+        shareIntent.setType(Constants.MIME_AUDIO_WAV);
         context.startActivity(Intent.createChooser(shareIntent, "Share"));
     }
 }
