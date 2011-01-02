@@ -210,11 +210,8 @@ public class RecordingLibrary extends Activity {
                 R.string.recording_options_set_ringtone);
         menu.add(Menu.NONE, R.string.recording_options_set_notification,
                 Menu.NONE, R.string.recording_options_set_notification);
-        menu.add(Menu.NONE, R.string.recording_options_send_email, Menu.NONE,
-                R.string.recording_options_send_email);
-        // disable MMS for now because it can't attach wav files
-        // menu.add(Menu.NONE, R.string.recording_options_send_mms, Menu.NONE,
-        // R.string.recording_options_send_mms);
+        menu.add(Menu.NONE, R.string.recording_options_share, Menu.NONE,
+                R.string.recording_options_share);
     }
 
     @Override
@@ -247,12 +244,8 @@ public class RecordingLibrary extends Activity {
                             Toast.LENGTH_SHORT).show();
                 }
                 break;
-            case R.string.recording_options_send_email:
-                RecordingOptionsHelper
-                        .sendEmailAttachment(RecordingLibrary.this, r);
-                break;
-            case R.string.recording_options_send_mms:
-                RecordingOptionsHelper.sendMms(RecordingLibrary.this, r);
+            case R.string.recording_options_share:
+                RecordingOptionsHelper.shareRecording(RecordingLibrary.this, r);
                 break;
             case R.string.recording_options_rename:
                 Intent renameFileIntent = new Intent(getBaseContext(),

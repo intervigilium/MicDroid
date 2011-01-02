@@ -19,8 +19,6 @@
 
 package com.intervigil.micdroid.helper;
 
-import java.io.File;
-
 import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
@@ -52,28 +50,10 @@ public class RecordingOptionsHelper {
         return false;
     }
 
-    public static void sendEmailAttachment(Context context, Recording recording) {
-        String recordingPath = ApplicationHelper.getLibraryDirectory()
-                + File.separator + recording.getName();
-        File recordingFile = new File(recordingPath);
-
-        Intent sendEmailIntent = new Intent(Intent.ACTION_SEND);
-        sendEmailIntent.setType(Constants.AUDIO_WAVE);
-        sendEmailIntent.putExtra(Intent.EXTRA_SUBJECT, "MicDroid");
-        sendEmailIntent.putExtra(Intent.EXTRA_STREAM, Uri
-                .fromFile(recordingFile));
-        context.startActivity(Intent.createChooser(sendEmailIntent, "Email:"));
-    }
-
-    public static void sendMms(Context context, Recording recording) {
-        String recordingPath = ApplicationHelper.getLibraryDirectory()
-                + File.separator + recording.getName();
-        File recordingFile = new File(recordingPath);
-
-        Intent sendMmsIntent = new Intent(Intent.ACTION_SEND);
-        sendMmsIntent
-                .putExtra(Intent.EXTRA_STREAM, Uri.fromFile(recordingFile));
-        sendMmsIntent.setType(Constants.AUDIO_WAVE);
-        context.startActivity(Intent.createChooser(sendMmsIntent, "MMS:"));
+    public static void shareRecording(Context context, Recording recording) {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(recording.asFile()));
+        shareIntent.setType(Constants.AUDIO_WAVE);
+        context.startActivity(Intent.createChooser(shareIntent, "Share"));
     }
 }
