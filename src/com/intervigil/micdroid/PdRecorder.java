@@ -146,7 +146,7 @@ public class PdRecorder implements Recorder {
                             audioTrack.write(sample.buffer, 0,
                                     sample.bufferSize);
                         }
-                        writer.write(sample.buffer, sample.bufferSize);
+                        writer.write(sample.buffer, 0, sample.bufferSize);
                     } catch (IOException e) {
                         // problem writing to the buffer, usually means we're
                         // out of space

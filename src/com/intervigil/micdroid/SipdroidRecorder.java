@@ -191,7 +191,7 @@ public class SipdroidRecorder implements Recorder {
                         }
                         audioTrack.write(buf, 0, num);
                     }
-                    writer.write(buf, num);
+                    writer.write(buf, 0, num);
                 } catch (IOException e) {
                     // problem writing to the buffer, usually means we're
                     // out of space

@@ -380,7 +380,7 @@ public class Mic extends Activity {
                                 AUTOTALENT_CHUNK_SIZE);
                         if (samplesRead > 0) {
                             AutoTalent.processSamples(buf, samplesRead);
-                            writer.write(buf, samplesRead);
+                            writer.write(buf, 0, samplesRead);
                         } else {
                             break;
                         }
