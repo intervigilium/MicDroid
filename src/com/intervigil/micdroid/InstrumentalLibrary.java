@@ -75,7 +75,6 @@ public class InstrumentalLibrary extends Activity {
      * @param savedInstanceState
      *            Activity's saved state, if any.
      */
-    @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
