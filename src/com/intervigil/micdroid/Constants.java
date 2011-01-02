@@ -39,13 +39,9 @@ public class Constants {
 
     // intent codes
     public static final int FILENAME_ENTRY_INTENT_CODE = 12768;
-    public static final int PLAYER_INTENT_CODE = 12769;
     public static final int PREFERENCE_INTENT_CODE = 12771;
 
-    // result codes
-    public static final int RESULT_FILE_DELETED = 12770;
     // intent extras
-    public static final String PLAYER_INTENT_RECORDING = "PLAYER_RECORDING";
     public static final String NAME_ENTRY_INTENT_RECORDING = "NAME_ENTRY_RECORDING";
     public static final String NAME_ENTRY_INTENT_FILE_NAME = "NAME_ENTRY_FILENAME_RESULT";
 
