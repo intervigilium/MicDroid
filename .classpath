@@ -6,5 +6,6 @@
 	<classpathentry kind="lib" path="libs/admob-sdk-android.jar"/>
 	<classpathentry kind="src" path="liblame_src"/>
 	<classpathentry kind="src" path="libwave_src"/>
+	<classpathentry kind="src" path="libautotalent_src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

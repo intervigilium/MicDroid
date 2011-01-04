@@ -32,6 +32,11 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>libautotalent_src</name>
+			<type>2</type>
+			<locationURI>_android_libautotalent_e7224fa0/src</locationURI>
+		</link>
+		<link>
 			<name>liblame_src</name>
 			<type>2</type>
 			<locationURI>_android_liblame_9e569d2/src</locationURI>

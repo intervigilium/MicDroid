@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import net.sourceforge.autotalent.Autotalent;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -61,7 +62,6 @@ import com.intervigil.micdroid.helper.HeadsetHelper;
 import com.intervigil.micdroid.helper.PreferenceHelper;
 import com.intervigil.micdroid.helper.UpdateHelper;
 import com.intervigil.micdroid.interfaces.Recorder;
-import com.intervigil.micdroid.pitch.AutoTalent;
 import com.intervigil.wave.WaveReader;
 import com.intervigil.wave.WaveWriter;
 
@@ -159,7 +159,7 @@ public class Mic extends Activity {
         if (recorder != null) {
             recorder.cleanup();
         }
-        AutoTalent.destroyAutoTalent();
+        Autotalent.destroyAutoTalent();
     }
 
     @Override
@@ -381,7 +381,7 @@ public class Mic extends Activity {
                         int samplesRead = reader.read(buf,
                                 AUTOTALENT_CHUNK_SIZE);
                         if (samplesRead > 0) {
-                            AutoTalent.processSamples(buf, samplesRead);
+                            Autotalent.processSamples(buf, samplesRead);
                             writer.write(buf, 0, samplesRead);
                         } else {
                             break;
@@ -399,7 +399,7 @@ public class Mic extends Activity {
                 try {
                     reader.closeWaveFile();
                     writer.closeWaveFile();
-                    AutoTalent.destroyAutoTalent();
+                    Autotalent.destroyAutoTalent();
                 } catch (IOException e) {
                     // failed to close out our files correctly
                     // TODO: real error handling
@@ -535,9 +535,9 @@ public class Mic extends Activity {
         float formantWarp = PreferenceHelper.getFormantWarp(Mic.this);
         float mix = PreferenceHelper.getMix(Mic.this);
 
-        AutoTalent.instantiateAutoTalent(PreferenceHelper
+        Autotalent.instantiateAutoTalent(PreferenceHelper
                 .getSampleRate(Mic.this));
-        AutoTalent.initializeAutoTalent(CONCERT_A, key, DEFAULT_FIXED_PITCH,
+        Autotalent.initializeAutoTalent(CONCERT_A, key, DEFAULT_FIXED_PITCH,
                 fixedPull, strength, smooth, pitchShift, DEFAULT_SCALE_ROTATE,
                 DEFAULT_LFO_DEPTH, DEFAULT_LFO_RATE, DEFAULT_LFO_SHAPE,
                 DEFAULT_LFO_SYM, DEFAULT_LFO_QUANT, formantCorrection,
