@@ -88,6 +88,15 @@
 	<string name="instrumental_clear_btn_label">Clear</string>
 	<string name="instrumental_set_btn_label">Set Instrumental</string>
 
+	<string name="instrumental_open_file_title">Select Instrumental</string>
+	<string name="instrumental_open_file_btn_label">Select</string>
+
+	<string name="instrumental_set_msg">Instrumental Track Set!</string>
+	<string name="instrumental_cleared_msg">Instrumental Track Cleared!</string>
+
+	<string name="instrumental_input_invalid_title">Error!</string>
+	<string name="instrumental_input_invalid_error">Selected instrumental track does not exist!</string>
+
 	<string name="recording_library">Recordings</string>
 	<string name="recording_library_title">Recorded Clips</string>
 	<string name="recording_library_empty">No Recordings</string>

@@ -19,28 +19,33 @@
 
 package com.intervigil.micdroid;
 
+import java.io.File;
+
+import org.openintents.intents.FileManagerIntents;
+
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.view.View.OnCreateContextMenuListener;
-import android.widget.AdapterView;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
-import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.AdapterView.OnItemClickListener;
 
 import com.admob.android.ads.AdView;
+import com.intervigil.micdroid.helper.DialogHelper;
 import com.intervigil.micdroid.helper.PreferenceHelper;
-import com.intervigil.micdroid.model.Instrumental;
 
-public class InstrumentalLibrary extends Activity {
+public class InstrumentalLibrary extends Activity implements OnClickListener {
 
-    private Boolean showAds;
-    private AdView ad;
+    private EditText mCurrentTrack;
+    private EditText mInputFilename;
+    private Boolean mShowAds;
+    private AdView mAdView;
 
     /**
      * Called when the activity is starting. This is where most initialization
@@ -54,10 +59,22 @@ public class InstrumentalLibrary extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.instrumental_library);
 
-        showAds = PreferenceHelper.getShowAds(InstrumentalLibrary.this);
+        mShowAds = PreferenceHelper.getShowAds(InstrumentalLibrary.this);
 
-        ad = (AdView) findViewById(R.id.instrumental_ad);
-        ad.setEnabled(showAds);
+        mAdView = (AdView) findViewById(R.id.instrumental_ad);
+        mAdView.setEnabled(mShowAds);
+
+        mCurrentTrack = (EditText) findViewById(R.id.instrumental_current);
+        mInputFilename = (EditText) findViewById(R.id.instrumental_selected);
+
+        String currentTrack = PreferenceHelper.getInstrumentalTrack(InstrumentalLibrary.this);
+        if (!currentTrack.equals(Constants.EMPTY_STRING)) {
+            mCurrentTrack.setText(currentTrack);
+        }
+
+        ((Button) findViewById(R.id.instrumental_clear_btn)).setOnClickListener(this);
+        ((ImageButton) findViewById(R.id.instrumental_select_btn)).setOnClickListener(this);
+        ((Button) findViewById(R.id.instrumental_set_btn)).setOnClickListener(this);
     }
 
     @Override
@@ -91,8 +108,78 @@ public class InstrumentalLibrary extends Activity {
     }
 
     @Override
-    public void onClick(View v) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-        PreferenceHelper.setInstrumentalTrack(InstrumentalLibrary.this, track.getName());
+        switch (requestCode) {
+            case Constants.INTENT_OPEN_FILE:
+                if (resultCode == RESULT_OK && data != null) {
+                    // obtain the filename
+                    String filename = data.getDataString();
+                    if (filename != null) {
+                        // Get rid of URI prefix:
+                        if (filename.startsWith("file://")) {
+                            filename = filename.substring(7);
+                        }
+                        mInputFilename.setText(filename);
+                    }
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.instrumental_clear_btn:
+                PreferenceHelper.setInstrumentalTrack(InstrumentalLibrary.this,
+                        Constants.EMPTY_STRING);
+                mCurrentTrack.setText(R.string.instrumental_not_selected);
+                Toast.makeText(InstrumentalLibrary.this,
+                        R.string.instrumental_cleared_msg, Toast.LENGTH_SHORT);
+                break;
+            case R.id.instrumental_select_btn:
+                openFile(mInputFilename.getText().toString());
+                break;
+            case R.id.instrumental_set_btn:
+                File inputFile = new File(mInputFilename.getText().toString());
+                if (inputFile.exists()) {
+                    PreferenceHelper.setInstrumentalTrack(InstrumentalLibrary.this,
+                            mInputFilename.getText().toString());
+                    mCurrentTrack.setText(mInputFilename.getText());
+                    Toast.makeText(InstrumentalLibrary.this,
+                            R.string.instrumental_set_msg, Toast.LENGTH_SHORT);
+                    finish();
+                } else {
+                    DialogHelper.showWarning(InstrumentalLibrary.this,
+                            R.string.instrumental_input_invalid_title,
+                            R.string.instrumental_input_invalid_error);
+                }
+                break;
+        }
+    }
+
+    private void openFile(String fileName) {
+        Intent intent = new Intent(FileManagerIntents.ACTION_PICK_FILE);
+
+        // Construct URI from file name.
+        intent.setData(Uri.parse("file://" + fileName));
+
+        // Set fancy title and button (optional)
+        intent.putExtra(FileManagerIntents.EXTRA_TITLE,
+                getString(R.string.instrumental_open_file_title));
+        intent.putExtra(FileManagerIntents.EXTRA_BUTTON_TEXT,
+                getString(R.string.instrumental_open_file_btn_label));
+
+        try {
+            startActivityForResult(intent, Constants.INTENT_OPEN_FILE);
+        } catch (ActivityNotFoundException e) {
+            // No compatible file manager was found.
+            Intent marketSearchIntent = new Intent(Intent.ACTION_SEARCH);
+            marketSearchIntent.setPackage("com.android.vending");
+            marketSearchIntent.putExtra("query", "pname:org.openintents.filemanager");
+            marketSearchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(marketSearchIntent);
+        }
     }
 }

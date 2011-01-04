@@ -18,13 +18,13 @@
 		android:orientation="horizontal" android:layout_width="fill_parent"
 		android:layout_height="wrap_content">
 
-		<EditText android:id="@+id/current_instrumental"
+		<EditText android:id="@+id/instrumental_current"
 			android:text="@string/instrumental_not_selected" android:layout_width="fill_parent"
 			android:layout_height="fill_parent" android:layout_weight="1" android:maxLines="1"
-			android:scrollHorizontally="true" android:ellipsize="end" />
+			android:scrollHorizontally="true" android:ellipsize="end" android:editable="false" />
 
         <Button android:id="@+id/instrumental_clear_btn" android:text="@string/instrumental_clear_btn_label"
-			android:layout_width="wrap_content" android:layout_height="wrap_content" />
+			android:layout_width="wrap_content" android:layout_height="fill_parent" />
 
 	</LinearLayout>
 
@@ -35,12 +35,12 @@
         android:orientation="horizontal" android:layout_width="fill_parent"
         android:layout_height="wrap_content">
 
-        <EditText android:id="@+id/input_instrumental" android:layout_width="fill_parent"
+        <EditText android:id="@+id/instrumental_selected" android:layout_width="fill_parent"
             android:layout_height="fill_parent" android:layout_weight="1"
             android:maxLines="1" android:scrollHorizontally="true"
             android:ellipsize="end" />
 
-        <ImageButton android:id="@+id/select_input_instrumental_btn"
+        <ImageButton android:id="@+id/instrumental_select_btn"
             android:src="@drawable/ic_launcher_folder" android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>

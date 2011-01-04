@@ -40,6 +40,7 @@ public class Constants {
     // intent codes
     public static final int INTENT_FILENAME_ENTRY = 12768;
     public static final int INTENT_PREFERENCES = 12771;
+    public static final int INTENT_OPEN_FILE = 12772;
 
     // intent extras
     public static final String INTENT_EXTRA_RECORDING = "NAME_ENTRY_RECORDING";
