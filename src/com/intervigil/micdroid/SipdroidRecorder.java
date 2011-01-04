@@ -33,7 +33,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.intervigil.micdroid.helper.ApplicationHelper;
 import com.intervigil.micdroid.helper.AudioHelper;
 import com.intervigil.micdroid.helper.PreferenceHelper;
 import com.intervigil.micdroid.interfaces.Recorder;
@@ -73,11 +72,7 @@ public class SipdroidRecorder implements Recorder {
         String trackName = PreferenceHelper.getInstrumentalTrack(context);
         if (!trackName.equals(Constants.EMPTY_STRING)) {
             // start reading from instrumental track
-            File instrumentalFile = new File(
-                    ApplicationHelper.getInstrumentalDirectory()
-                    + File.separator
-                    + trackName);
-            this.instrumentalReader = new WaveReader(instrumentalFile);
+            this.instrumentalReader = new WaveReader(new File(trackName));
         }
     }
 
