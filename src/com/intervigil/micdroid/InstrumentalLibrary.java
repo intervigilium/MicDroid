@@ -91,83 +91,8 @@ public class InstrumentalLibrary extends Activity {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        Log.i(getPackageName(), "onSaveInstanceState()");
-        super.onSaveInstanceState(outState);
+    public void onClick(View v) {
+
+        PreferenceHelper.setInstrumentalTrack(InstrumentalLibrary.this, track.getName());
     }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        Log.i(getPackageName(), "onRestoreInstanceState()");
-        super.onRestoreInstanceState(savedInstanceState);
-    }
-
-    @Override
-    public Object onRetainNonConfigurationInstance() {
-        return super.onRetainNonConfigurationInstance();
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
-                .getMenuInfo();
-        Instrumental track = null;
-
-        switch (item.getItemId()) {
-        case R.string.instrumental_options_set:
-            PreferenceHelper.setInstrumentalTrack(InstrumentalLibrary.this,
-                    track.getName());
-            Toast.makeText(InstrumentalLibrary.this,
-                            R.string.instrumental_options_track_set,
-                            Toast.LENGTH_SHORT).show();
-            break;
-        case R.string.instrumental_options_unset:
-            String selectedTrack = PreferenceHelper
-                    .getInstrumentalTrack(InstrumentalLibrary.this);
-            if (selectedTrack.equals(track.getName())) {
-                PreferenceHelper.setInstrumentalTrack(InstrumentalLibrary.this,
-                        Constants.EMPTY_STRING);
-                Toast.makeText(InstrumentalLibrary.this,
-                        R.string.instrumental_options_track_unset,
-                        Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(InstrumentalLibrary.this,
-                        R.string.instrumental_options_track_unset_error,
-                        Toast.LENGTH_SHORT).show();
-            }
-            break;
-        case R.string.instrumental_options_remove:
-            if (track.asFile().delete()) {
-                Toast.makeText(InstrumentalLibrary.this,
-                        R.string.instrumental_options_track_deleted,
-                        Toast.LENGTH_SHORT).show();
-            }
-            break;
-        default:
-            break;
-        }
-        return true;
-    }
-
-    private OnItemClickListener libraryClickListener = new OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position,
-                long id) {
-            view.showContextMenu();
-        }
-    };
-
-    private OnCreateContextMenuListener instrumentalItemListener = new OnCreateContextMenuListener() {
-        @Override
-        public void onCreateContextMenu(ContextMenu menu, View v,
-                ContextMenuInfo menuInfo) {
-            menu.setHeaderTitle(R.string.instrumental_options_title);
-            menu.add(Menu.NONE, R.string.instrumental_options_set, Menu.NONE,
-                    R.string.instrumental_options_set);
-            menu.add(Menu.NONE, R.string.instrumental_options_unset, Menu.NONE,
-                    R.string.instrumental_options_unset);
-            menu.add(Menu.NONE, R.string.instrumental_options_remove,
-                    Menu.NONE, R.string.instrumental_options_remove);
-        }
-    };
 }
