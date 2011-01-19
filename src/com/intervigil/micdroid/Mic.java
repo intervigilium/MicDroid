@@ -159,7 +159,7 @@ public class Mic extends Activity {
         if (recorder != null) {
             recorder.cleanup();
         }
-        Autotalent.destroyAutoTalent();
+        Autotalent.destroyAutotalent();
     }
 
     @Override
@@ -399,7 +399,7 @@ public class Mic extends Activity {
                 try {
                     reader.closeWaveFile();
                     writer.closeWaveFile();
-                    Autotalent.destroyAutoTalent();
+                    Autotalent.destroyAutotalent();
                 } catch (IOException e) {
                     // failed to close out our files correctly
                     // TODO: real error handling
@@ -534,7 +534,7 @@ public class Mic extends Activity {
         float formantWarp = PreferenceHelper.getFormantWarp(Mic.this);
         float mix = PreferenceHelper.getMix(Mic.this);
 
-        Autotalent.instantiateAutoTalent(PreferenceHelper.getSampleRate(Mic.this));
+        Autotalent.instantiateAutotalent(PreferenceHelper.getSampleRate(Mic.this));
         Autotalent.setKey(key);
         Autotalent.setConcertA(CONCERT_A);
         Autotalent.setFixedPitch(DEFAULT_FIXED_PITCH);
