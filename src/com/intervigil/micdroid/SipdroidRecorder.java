@@ -179,14 +179,17 @@ public class SipdroidRecorder implements Recorder {
                 num = audioRecord.read(buf, 0, frameSize);
                 try {
                     if (isLiveMode) {
-                        if (instrumentalReader != null) {
-                            short[] instrumentalBuf = new short[num];
-                            instrumentalReader.read(instrumentalBuf,
-                                    frameSize);
-                            Autotalent.processMixSamples(buf,
-                                    instrumentalBuf, num);
-                        } else {
+                        if (instrumentalReader == null) {
                             Autotalent.processSamples(buf, num);
+                        } else if (instrumentalReader.getChannels() == 2) {
+                            short[] instrLeft = new short[num];
+                            short[] instrRight = new short[num];
+                            instrumentalReader.read(instrLeft, instrRight, num);
+                            Autotalent.processSamples(buf, instrLeft, instrRight, num);
+                        } else if (instrumentalReader.getChannels() == 1) {
+                            short[] instrumental = new short[num];
+                            instrumentalReader.read(instrumental, num);
+                            Autotalent.processSamples(buf, instrumental, null, num);
                         }
                         audioTrack.write(buf, 0, num);
                     }
