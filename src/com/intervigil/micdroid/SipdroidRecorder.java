@@ -51,17 +51,15 @@ public class SipdroidRecorder implements Recorder {
     private final boolean isLiveMode;
     private final int sampleRate;
 
-    public SipdroidRecorder(Context context, Handler errorHandler, boolean isLiveMode)
-            throws IllegalArgumentException {
+    public SipdroidRecorder(Context context, Handler errorHandler,
+            boolean isLiveMode) throws IllegalArgumentException {
         this.context = context;
         this.sampleRate = PreferenceHelper.getSampleRate(context);
         this.errorHandler = errorHandler;
         this.isLiveMode = isLiveMode;
         this.audioRecord = AudioHelper.getRecorder(context);
-        this.writer = new WaveWriter(
-                context.getCacheDir().getAbsolutePath(),
-                context.getString(R.string.default_recording_name),
-                sampleRate,
+        this.writer = new WaveWriter(context.getCacheDir().getAbsolutePath(),
+                context.getString(R.string.default_recording_name), sampleRate,
                 AudioHelper.getChannelConfig(Constants.DEFAULT_CHANNEL_CONFIG),
                 AudioHelper.getPcmEncoding(Constants.DEFAULT_PCM_FORMAT));
 
@@ -76,15 +74,16 @@ public class SipdroidRecorder implements Recorder {
         }
     }
 
-    public void start()
-            throws IllegalStateException, FileNotFoundException, IOException {
+    public void start() throws IllegalStateException, FileNotFoundException,
+            IOException {
         // create and open necessary files
         if (instrumentalReader != null) {
             instrumentalReader.openWave();
         }
         writer.createWaveFile();
         if (isLiveMode) {
-            AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            AudioManager am = (AudioManager) context
+                    .getSystemService(Context.AUDIO_SERVICE);
             am.setMode(AudioManager.MODE_NORMAL);
         }
         writerThread = new MicWriter();
@@ -96,8 +95,7 @@ public class SipdroidRecorder implements Recorder {
             writerThread.close();
             try {
                 writerThread.join();
-            } catch (InterruptedException e) {
-            }
+            } catch (InterruptedException e) {}
             writerThread = null;
         }
     }
@@ -112,8 +110,8 @@ public class SipdroidRecorder implements Recorder {
 
     public boolean isRunning() {
         return (writerThread != null
-                && writerThread.getState() != Thread.State.NEW
-                && writerThread.getState() != Thread.State.TERMINATED);
+                && writerThread.getState() != Thread.State.NEW && writerThread
+                .getState() != Thread.State.TERMINATED);
     }
 
     private class MicWriter extends Thread {
@@ -122,7 +120,7 @@ public class SipdroidRecorder implements Recorder {
         private final long framePeriod;
         private final int bufSize;
         private boolean running;
-        
+
         public MicWriter() {
             this.frameSize = 160;
             this.framePeriod = 1000 / (sampleRate / frameSize);
@@ -130,8 +128,9 @@ public class SipdroidRecorder implements Recorder {
             this.bufSize = frameSize * (frameRate + 1);
             this.running = false;
         }
-        
-        // weird little hack; eliminates the nasty click when AudioTrack (dis)engages by playing
+
+        // weird little hack; eliminates the nasty click when AudioTrack
+        // (dis)engages by playing
         // a few milliseconds of silence before starting AudioTrack
         // This quirky hack taken from PdCore of pd-for-android project
         private void avoidClickHack(Context context) {
@@ -145,16 +144,16 @@ public class SipdroidRecorder implements Recorder {
                 Log.e("SipRecorder", e.toString());
             }
         }
-        
+
         public void close() {
             running = false;
         }
-        
+
         public void run() {
             int num;
             long now, nextFrameDelay, lastFrameTime = 0;
             short[] buf = new short[bufSize];
-            
+
             running = true;
             avoidClickHack(context);
             audioRecord.startRecording();
