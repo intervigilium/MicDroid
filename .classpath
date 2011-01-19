@@ -4,7 +4,6 @@
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="lib" path="libs/admob-sdk-android.jar"/>
-	<classpathentry kind="src" path="liblame_src"/>
 	<classpathentry kind="src" path="libwave_src"/>
 	<classpathentry kind="src" path="libautotalent_src"/>
 	<classpathentry kind="output" path="bin"/>
