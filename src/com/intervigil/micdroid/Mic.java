@@ -518,18 +518,27 @@ public class Mic extends Activity {
         float pitchShift = PreferenceHelper.getPitchShift(Mic.this);
         float strength = PreferenceHelper.getCorrectionStrength(Mic.this);
         float smooth = PreferenceHelper.getCorrectionSmoothness(Mic.this);
-        int formantCorrection = PreferenceHelper.getFormantCorrection(Mic.this) ? 1
-                : 0;
+        int formantCorrection = PreferenceHelper.getFormantCorrection(Mic.this) ? 1 : 0;
         float formantWarp = PreferenceHelper.getFormantWarp(Mic.this);
         float mix = PreferenceHelper.getMix(Mic.this);
 
-        Autotalent.instantiateAutoTalent(PreferenceHelper
-                .getSampleRate(Mic.this));
-        Autotalent.initializeAutoTalent(CONCERT_A, key, DEFAULT_FIXED_PITCH,
-                fixedPull, strength, smooth, pitchShift, DEFAULT_SCALE_ROTATE,
-                DEFAULT_LFO_DEPTH, DEFAULT_LFO_RATE, DEFAULT_LFO_SHAPE,
-                DEFAULT_LFO_SYM, DEFAULT_LFO_QUANT, formantCorrection,
-                formantWarp, mix);
+        Autotalent.instantiateAutoTalent(PreferenceHelper.getSampleRate(Mic.this));
+        Autotalent.setKey(key);
+        Autotalent.setConcertA(CONCERT_A);
+        Autotalent.setFixedPitch(DEFAULT_FIXED_PITCH);
+        Autotalent.setFixedPull(fixedPull);
+        Autotalent.setCorrectionStrength(strength);
+        Autotalent.setCorrectionSmoothness(smooth);
+        Autotalent.setPitchShift(pitchShift);
+        Autotalent.setScaleRotate(DEFAULT_SCALE_ROTATE);
+        Autotalent.setLfoDepth(DEFAULT_LFO_DEPTH);
+        Autotalent.setLfoRate(DEFAULT_LFO_RATE);
+        Autotalent.setLfoShape(DEFAULT_LFO_SHAPE);
+        Autotalent.setLfoSymmetric(DEFAULT_LFO_SYM);
+        Autotalent.setLfoQuantization(DEFAULT_LFO_QUANT);
+        Autotalent.setFormantCorrection(formantCorrection);
+        Autotalent.setFormantWarp(formantWarp);
+        Autotalent.setMix(mix);
     }
 
     private static boolean canWriteToSdCard() {
