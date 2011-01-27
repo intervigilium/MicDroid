@@ -121,11 +121,6 @@
 	<string name="confirm_reset_prefs_btn_yes">Reset</string>
 	<string name="confirm_reset_prefs_btn_no">Cancel</string>
 
-	<string name="live_mode_enable_title">WARNING!</string>
-	<string name="live_mode_enable_warning">Live pitch-correction mode requires a powerful
-		phone and headphones in order to function properly.\n\ Motorola Droid
-		or better is recommended!\n\ Enable at your own risk!</string>
-
 	<string name="set_preferences">Pitch-Correction Settings</string>
 	<string name="mic_label">Power Button</string>
 	<string name="mic_toggle_off">On</string>
