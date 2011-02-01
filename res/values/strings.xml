@@ -97,6 +97,11 @@
 	<string name="instrumental_input_invalid_title">Error!</string>
 	<string name="instrumental_input_invalid_error">Selected instrumental track does not exist!</string>
 
+	<string name="confirm_market_filemanager_title">No File Selector Found!</string>
+	<string name="confirm_market_filemanager_message">There is no file selector installed on your phone. Install from the Android Market?</string>
+	<string name="confirm_market_filemanager_btn_yes">Go to Market</string>
+	<string name="confirm_market_filemanager_btn_no">Cancel</string>
+
 	<string name="recording_library">Recordings</string>
 	<string name="recording_library_title">Recorded Clips</string>
 	<string name="recording_library_empty">No Recordings</string>

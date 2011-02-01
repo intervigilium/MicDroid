@@ -25,6 +25,7 @@ import org.openintents.intents.FileManagerIntents;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -174,12 +175,31 @@ public class InstrumentalLibrary extends Activity implements OnClickListener {
         try {
             startActivityForResult(intent, Constants.INTENT_OPEN_FILE);
         } catch (ActivityNotFoundException e) {
-            // No compatible file manager was found.
-            Intent marketSearchIntent = new Intent(Intent.ACTION_SEARCH);
-            marketSearchIntent.setPackage("com.android.vending");
-            marketSearchIntent.putExtra("query", "pname:org.openintents.filemanager");
-            marketSearchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(marketSearchIntent);
+         // No compatible file manager was found.
+            DialogInterface.OnClickListener marketIntentListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which) {
+                        case DialogInterface.BUTTON_POSITIVE:
+                            Intent marketSearchIntent = new Intent(Intent.ACTION_SEARCH);
+                            marketSearchIntent.setPackage("com.android.vending");
+                            marketSearchIntent.putExtra("query", "pname:org.openintents.filemanager");
+                            marketSearchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(marketSearchIntent);
+                            dialog.dismiss();
+                            break;
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            dialog.dismiss();
+                            break;
+                    }
+                }
+            };
+            DialogHelper.showConfirmation(InstrumentalLibrary.this,
+                    R.string.confirm_market_filemanager_title,
+                    R.string.confirm_market_filemanager_message,
+                    R.string.confirm_market_filemanager_btn_yes,
+                    R.string.confirm_market_filemanager_btn_no,
+                    marketIntentListener);
         }
     }
 }
