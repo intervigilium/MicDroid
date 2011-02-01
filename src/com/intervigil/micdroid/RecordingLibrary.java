@@ -196,7 +196,10 @@ public class RecordingLibrary extends Activity {
     public void onCreateContextMenu(ContextMenu menu, View v,
             ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
+
         menu.setHeaderTitle(R.string.recording_options_title);
+        menu.add(Menu.NONE, R.string.recording_options_play, Menu.NONE,
+                R.string.recording_options_play);
         menu.add(Menu.NONE, R.string.recording_options_delete, Menu.NONE,
                 R.string.recording_options_delete);
         menu.add(Menu.NONE, R.string.recording_options_rename, Menu.NONE,
@@ -216,6 +219,19 @@ public class RecordingLibrary extends Activity {
         final Recording r = (Recording) libraryAdapter.getItem(info.position);
 
         switch (item.getItemId()) {
+            case R.string.recording_options_play:
+                try {
+                    Intent playIntent = new Intent(Intent.ACTION_VIEW);
+                    playIntent.setDataAndType(Uri.fromFile(r.asFile()), Constants.MIME_AUDIO_WAV);
+                    startActivity(playIntent);
+                } catch (ActivityNotFoundException e) {
+                    Intent playIntent = new Intent(getBaseContext(), RecordingPlayer.class);
+                    Bundle playData = new Bundle();
+                    playData.putParcelable(Constants.INTENT_EXTRA_RECORDING, r);
+                    playIntent.putExtras(playData);
+                    startActivity(playIntent);
+                }
+                break;
             case R.string.recording_options_delete:
                 DialogInterface.OnClickListener deleteListener = new DialogInterface.OnClickListener() {
                     @Override
@@ -284,19 +300,7 @@ public class RecordingLibrary extends Activity {
     private OnItemClickListener libraryClickListener = new OnItemClickListener() {
         public void onItemClick(AdapterView<?> parent, View view, int position,
                 long id) {
-            Recording r = (Recording) parent.getItemAtPosition(position);
-
-            try {
-                Intent playIntent = new Intent(Intent.ACTION_VIEW);
-                playIntent.setDataAndType(Uri.fromFile(r.asFile()), Constants.MIME_AUDIO_WAV);
-                startActivity(playIntent);
-            } catch (ActivityNotFoundException e) {
-                Intent playIntent = new Intent(getBaseContext(), RecordingPlayer.class);
-                Bundle playData = new Bundle();
-                playData.putParcelable(Constants.INTENT_EXTRA_RECORDING, r);
-                playIntent.putExtras(playData);
-                startActivity(playIntent);
-            }
+            view.showContextMenu();
         }
     };
 
