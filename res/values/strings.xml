@@ -113,6 +113,13 @@
 	<string name="recording_options_notification_set">Recording set as notification!</string>
 	<string name="recording_options_notification_error">Unable to set recording as notification!</string>
 
+	<string name="recording_player">Recording Player</string>
+	<string name="recording_player_file_name">Recording Name</string>
+	<string name="recording_player_btn_play">Play</string>
+	<string name="recording_player_btn_stop">Stop</string>
+	<string name="recording_player_btn_delete">Delete</string>
+	<string name="recording_player_btn_close">Close</string>
+
 	<string name="confirm_delete_title">Delete Recording</string>
 	<string name="confirm_delete_message">Are you sure you want to delete this recording?</string>
 	<string name="confirm_delete_btn_yes">Delete</string>
