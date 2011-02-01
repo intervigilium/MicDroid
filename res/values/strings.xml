@@ -107,6 +107,7 @@
 	<string name="recording_library_empty">No Recordings</string>
 
 	<string name="recording_options_title">Recording Options</string>
+	<string name="recording_options_play">Play Recording</string>
 	<string name="recording_options_delete">Delete Recording</string>
 	<string name="recording_options_rename">Rename Recording</string>
 	<string name="recording_options_set_ringtone">Set as Ringtone</string>
