@@ -26,12 +26,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.intervigil.micdroid.model.Recording;
 
-public class RecordingPlayer extends Activity {
+public class RecordingPlayer extends Activity implements OnClickListener {
 
     private static final int SEEKBAR_RESOLUTION = 1000;
 
@@ -55,6 +57,10 @@ public class RecordingPlayer extends Activity {
 
         recording = getIntent().getExtras().getParcelable(
                 Constants.INTENT_EXTRA_RECORDING);
+
+        ((Button) findViewById(R.id.recording_player_btn_play)).setOnClickListener(this);
+        ((Button) findViewById(R.id.recording_player_btn_stop)).setOnClickListener(this);
+        ((Button) findViewById(R.id.recording_player_btn_close)).setOnClickListener(this);
 
         mediaSeekBar = (SeekBar) findViewById(R.id.recording_player_seekbar);
         ((TextView) findViewById(R.id.recording_player_file_name))
@@ -125,23 +131,23 @@ public class RecordingPlayer extends Activity {
                 .setText(recording.getName());
 
         mediaSeekBar.setMax(SEEKBAR_RESOLUTION);
-
         mediaPlayer.bindSeekBar(mediaSeekBar);
     }
 
-    public void recordingPlayerClickHandler(View view) {
-        switch (view.getId()) {
-        case R.id.recording_player_btn_play:
-            mediaPlayer.play();
-            break;
-        case R.id.recording_player_btn_stop:
-            mediaPlayer.stop();
-            break;
-        case R.id.recording_player_btn_close:
-            finish();
-            break;
-        default:
-            break;
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.recording_player_btn_play:
+                mediaPlayer.play();
+                break;
+            case R.id.recording_player_btn_stop:
+                mediaPlayer.stop();
+                break;
+            case R.id.recording_player_btn_close:
+                finish();
+                break;
+            default:
+                break;
         }
     }
 }
