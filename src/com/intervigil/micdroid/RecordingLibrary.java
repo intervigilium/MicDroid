@@ -26,6 +26,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -284,9 +285,17 @@ public class RecordingLibrary extends Activity {
                 long id) {
             Recording r = (Recording) parent.getItemAtPosition(position);
 
-            Intent playIntent = new Intent(Intent.ACTION_VIEW);
-            playIntent.setDataAndType(Uri.fromFile(r.asFile()), Constants.MIME_AUDIO_WAV);
-            startActivity(playIntent);
+            try {
+                Intent playIntent = new Intent(Intent.ACTION_VIEW);
+                playIntent.setDataAndType(Uri.fromFile(r.asFile()), Constants.MIME_AUDIO_WAV);
+                startActivity(playIntent);
+            } catch (ActivityNotFoundException e) {
+                Intent playIntent = new Intent(getBaseContext(), RecordingPlayer.class);
+                Bundle playData = new Bundle();
+                playData.putParcelable(Constants.INTENT_EXTRA_RECORDING, r);
+                playIntent.putExtras(playData);
+                startActivity(playIntent);
+            }
         }
     };
 
