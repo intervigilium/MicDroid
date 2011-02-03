@@ -132,6 +132,10 @@ public class Recording implements Parcelable {
         recordingSize = size;
     }
 
+    public boolean delete() {
+        return new File(recordingPath + File.separator + recordingName).delete();
+    }
+
     public void moveTo(File destination) {
         File recordingFile = new File(recordingPath + File.separator
                 + recordingName);
