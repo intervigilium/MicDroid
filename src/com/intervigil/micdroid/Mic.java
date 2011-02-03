@@ -61,11 +61,12 @@ import com.intervigil.micdroid.helper.DialogHelper;
 import com.intervigil.micdroid.helper.HeadsetHelper;
 import com.intervigil.micdroid.helper.PreferenceHelper;
 import com.intervigil.micdroid.helper.UpdateHelper;
+import com.intervigil.micdroid.interfaces.PostRecordTask;
 import com.intervigil.micdroid.interfaces.Recorder;
 import com.intervigil.wave.WaveReader;
 import com.intervigil.wave.WaveWriter;
 
-public class Mic extends Activity {
+public class Mic extends Activity implements OnClickListener {
 
     private static final String CLASS_MIC = "Mic";
 
@@ -83,6 +84,7 @@ public class Mic extends Activity {
     private WakeLock wakeLock;
     private Recorder recorder;
     private Timer timer;
+    private ToggleButton recordingButton;
 
     /** Called when the activity is first created. */
     @Override
@@ -92,15 +94,15 @@ public class Mic extends Activity {
 
         Typeface timerFont = Typeface.createFromAsset(getAssets(),
                 "fonts/Clockopia.ttf");
-        ToggleButton recordingButton = ((ToggleButton) findViewById(R.id.recording_button));
+        recordingButton = ((ToggleButton) findViewById(R.id.recording_button));
         Button libraryButton = ((Button) findViewById(R.id.library_button));
         Button instrumentalButton = ((Button) findViewById(R.id.instrumental_button));
         TextView timerDisplay = (TextView) findViewById(R.id.recording_timer);
 
         recordingButton.setChecked(false);
         recordingButton.setOnCheckedChangeListener(mPowerBtnListener);
-        libraryButton.setOnClickListener(mLibraryBtnListener);
-        instrumentalButton.setOnClickListener(mInstrumentalBtnListener);
+        libraryButton.setOnClickListener(this);
+        instrumentalButton.setOnClickListener(this);
         timerDisplay.setTypeface(timerFont);
 
         timer = new Timer(timerDisplay);
@@ -184,8 +186,8 @@ public class Mic extends Activity {
 
         boolean isRecording = recorder != null ? recorder.isRunning() : false;
 
-        ((Button) findViewById(R.id.library_button))
-                .setOnClickListener(mLibraryBtnListener);
+        ((Button) findViewById(R.id.library_button)).setOnClickListener(this);
+        ((Button) findViewById(R.id.instrumental_button)).setOnClickListener(this);
         ToggleButton micSwitch = (ToggleButton) findViewById(R.id.recording_button);
         micSwitch.setChecked(isRecording);
         micSwitch.setOnCheckedChangeListener(mPowerBtnListener);
@@ -418,23 +420,19 @@ public class Mic extends Activity {
         }
     }
 
-    private OnClickListener mLibraryBtnListener = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Intent libraryIntent = new Intent(getBaseContext(),
-                    RecordingLibrary.class);
-            startActivity(libraryIntent);
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.library_button:
+                Intent libraryIntent = new Intent(getBaseContext(), RecordingLibrary.class);
+                startActivity(libraryIntent);
+                break;
+            case R.id.instrumental_button:
+                Intent instrumentalIntent = new Intent(getBaseContext(), InstrumentalLibrary.class);
+                startActivity(instrumentalIntent);
+                break;
         }
-    };
-
-    private OnClickListener mInstrumentalBtnListener = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Intent instrumentalIntent = new Intent(getBaseContext(),
-                    InstrumentalLibrary.class);
-            startActivity(instrumentalIntent);
-        }
-    };
+    }
 
     private OnCheckedChangeListener mPowerBtnListener = new OnCheckedChangeListener() {
         public void onCheckedChanged(CompoundButton btn, boolean isChecked) {
