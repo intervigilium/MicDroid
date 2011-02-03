@@ -3,6 +3,7 @@ There are a lot of things left to do, and many features to add.
 To Do:
 Split app into fragments
 Implement simple recorder class for 'normal' phones, and Sipdroid recorder for weird ones
+Use callback to handle on-recorder errors
 Implement some kind of testing or QA routine
 Add some kind of help to the app
 Share as MMS, depends on MP3 encoder
