@@ -371,30 +371,10 @@ public class RecordingLibrary extends Activity {
             if (waveFiles != null) {
                 for (int i = 0; i < waveFiles.length; i++) {
                     if (waveFiles[i].isFile()) {
-                        WaveReader reader = new WaveReader(waveFiles[i]);
-
+                        Recording r = null;
                         try {
-                            reader.openWave();
-                            Recording r = new Recording(libraryDir
-                                    .getAbsolutePath(), waveFiles[i].getName(),
-                                    reader.getLength(), reader.getDataSize()
-                                            + Recording.WAVE_HEADER_SIZE);
-                            reader.closeWaveFile();
-                            reader = null;
-
-                            publishProgress(r);
-
-                            // check to see if this exists in the media store,
-                            // if it doesn't insert it
-                            if (!MediaStoreHelper.isInserted(RecordingLibrary.this, r)) {
-                                MediaStoreHelper.insertRecording(RecordingLibrary.this, r);
-                                Log.i("RecordingLibrary",
-                                        String.format("Added recording %s to media store",
-                                                r.getName()));
-                            }
-                            Log.i("RecordingLibrary",
-                                    String.format("Added recording %s to library",
-                                            r.getName()));
+                            r = new Recording(waveFiles[i]);
+                            recordings.add(r);
                         } catch (IOException e) {
                             Log.i("RecordingLibrary",
                                     String.format("Non-wave file %s found in library directory!",
