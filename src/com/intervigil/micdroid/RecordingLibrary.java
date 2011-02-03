@@ -54,7 +54,7 @@ import com.intervigil.micdroid.helper.PreferenceHelper;
 import com.intervigil.micdroid.helper.RecordingOptionsHelper;
 import com.intervigil.micdroid.model.Recording;
 
-public class RecordingLibrary extends Activity {
+public class RecordingLibrary extends Activity implements OnItemClickListener {
 
     private static final String STATE_LOAD_IN_PROGRESS = "load_recordings_in_progress";
 
@@ -86,7 +86,7 @@ public class RecordingLibrary extends Activity {
         ad.setEnabled(showAds);
 
         library = (ListView) findViewById(R.id.recording_library_list);
-        library.setOnItemClickListener(libraryClickListener);
+        library.setOnItemClickListener(this);
         registerForContextMenu(library);
 
         Object savedRecordings = getLastNonConfigurationInstance();
@@ -179,6 +179,11 @@ public class RecordingLibrary extends Activity {
     }
 
     @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        view.showContextMenu();
+    }
+
+    @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
             ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -200,8 +205,7 @@ public class RecordingLibrary extends Activity {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
-                .getMenuInfo();
+        AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
         final Recording r = (Recording) libraryAdapter.getItem(info.position);
 
         switch (item.getItemId()) {
@@ -271,12 +275,6 @@ public class RecordingLibrary extends Activity {
         }
         return true;
     }
-
-    private OnItemClickListener libraryClickListener = new OnItemClickListener() {
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            view.showContextMenu();
-        }
-    };
 
     private class RecordingAdapter extends ArrayAdapter<Recording> {
         public RecordingAdapter(Context context, int textViewResourceId, List<Recording> objects) {
