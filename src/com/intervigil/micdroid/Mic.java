@@ -67,8 +67,9 @@ import com.intervigil.wave.WaveWriter;
 
 public class Mic extends Activity {
 
-    private static final int AUTOTALENT_CHUNK_SIZE = 8192;
+    private static final String CLASS_MIC = "Mic";
 
+    private static final int AUTOTALENT_CHUNK_SIZE = 8192;
     private static final float CONCERT_A = 440.0f;
 
     private static final int DEFAULT_SCALE_ROTATE = 0;
@@ -119,13 +120,13 @@ public class Mic extends Activity {
 
     @Override
     protected void onStart() {
-        Log.i(getPackageName(), "onStart()");
+        Log.i(CLASS_MIC, "onStart()");
         super.onStart();
     }
 
     @Override
     protected void onResume() {
-        Log.i(getPackageName(), "onResume()");
+        Log.i(CLASS_MIC, "onResume()");
         super.onResume();
         if (PreferenceHelper.getScreenLock(Mic.this)) {
             wakeLock.acquire();
@@ -134,7 +135,7 @@ public class Mic extends Activity {
 
     @Override
     protected void onPause() {
-        Log.i(getPackageName(), "onPause()");
+        Log.i(CLASS_MIC, "onPause()");
         super.onPause();
         if (PreferenceHelper.getScreenLock(Mic.this)) {
             wakeLock.release();
@@ -143,13 +144,13 @@ public class Mic extends Activity {
 
     @Override
     protected void onStop() {
-        Log.i(getPackageName(), "onStop()");
+        Log.i(CLASS_MIC, "onStop()");
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        Log.i(getPackageName(), "onDestroy()");
+        Log.i(CLASS_MIC, "onDestroy()");
         super.onStop();
 
         if (wakeLock != null && wakeLock.isHeld()) {
@@ -164,19 +165,19 @@ public class Mic extends Activity {
 
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState) {
-        Log.i(getPackageName(), "onSaveInstanceState()");
+        Log.i(CLASS_MIC, "onSaveInstanceState()");
         super.onSaveInstanceState(savedInstanceState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        Log.i(getPackageName(), "onRestoreInstanceState()");
+        Log.i(CLASS_MIC, "onRestoreInstanceState()");
         super.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        Log.i(getPackageName(), "onConfigurationChanged");
+        Log.i(CLASS_MIC, "onConfigurationChanged");
         super.onConfigurationChanged(newConfig);
 
         setContentView(R.layout.main);

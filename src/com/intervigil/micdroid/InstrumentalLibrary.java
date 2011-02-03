@@ -43,6 +43,8 @@ import com.intervigil.micdroid.helper.PreferenceHelper;
 
 public class InstrumentalLibrary extends Activity implements OnClickListener {
 
+    private static final String CLASS_INSTRUMENTAL_LIBRARY = "InstrumentalLibrary";
+
     private EditText mCurrentTrack;
     private EditText mInputFilename;
     private Boolean mShowAds;
@@ -80,31 +82,31 @@ public class InstrumentalLibrary extends Activity implements OnClickListener {
 
     @Override
     protected void onStart() {
-        Log.i(getPackageName(), "onStart()");
+        Log.i(CLASS_INSTRUMENTAL_LIBRARY, "onStart()");
         super.onStart();
     }
 
     @Override
     protected void onResume() {
-        Log.i(getPackageName(), "onResume()");
+        Log.i(CLASS_INSTRUMENTAL_LIBRARY, "onResume()");
         super.onResume();
     }
 
     @Override
     protected void onPause() {
-        Log.i(getPackageName(), "onPause()");
+        Log.i(CLASS_INSTRUMENTAL_LIBRARY, "onPause()");
         super.onPause();
     }
 
     @Override
     protected void onStop() {
-        Log.i(getPackageName(), "onStop()");
+        Log.i(CLASS_INSTRUMENTAL_LIBRARY, "onStop()");
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        Log.i(getPackageName(), "onDestroy()");
+        Log.i(CLASS_INSTRUMENTAL_LIBRARY, "onDestroy()");
         super.onDestroy();
     }
 

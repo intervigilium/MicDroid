@@ -31,6 +31,9 @@ import android.util.Log;
 import com.intervigil.micdroid.helper.PreferenceHelper;
 
 public class Preferences extends PreferenceActivity {
+
+    private static final String CLASS_PREFERENCES = "Preferences";
+
     /**
      * Called when the activity is starting. This is where most initialization
      * should go: calling setContentView(int) to inflate the activity's UI, etc.
@@ -54,31 +57,31 @@ public class Preferences extends PreferenceActivity {
 
     @Override
     protected void onStart() {
-        Log.i("Preferences", "onStart()");
+        Log.i(CLASS_PREFERENCES, "onStart()");
         super.onStart();
     }
 
     @Override
     protected void onResume() {
-        Log.i("Preferences", "onResume()");
+        Log.i(CLASS_PREFERENCES, "onResume()");
         super.onResume();
     }
 
     @Override
     protected void onPause() {
-        Log.i("Preferences", "onPause()");
+        Log.i(CLASS_PREFERENCES, "onPause()");
         super.onPause();
     }
 
     @Override
     protected void onStop() {
-        Log.i("Preferences", "onStop()");
+        Log.i(CLASS_PREFERENCES, "onStop()");
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        Log.i("Preferences", "onDestroy()");
+        Log.i(CLASS_PREFERENCES, "onDestroy()");
         super.onStop();
     }
 
