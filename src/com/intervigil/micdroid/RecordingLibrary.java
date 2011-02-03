@@ -26,11 +26,9 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -52,11 +50,9 @@ import android.widget.AdapterView.OnItemClickListener;
 import com.admob.android.ads.AdView;
 import com.intervigil.micdroid.helper.ApplicationHelper;
 import com.intervigil.micdroid.helper.DialogHelper;
-import com.intervigil.micdroid.helper.MediaStoreHelper;
 import com.intervigil.micdroid.helper.PreferenceHelper;
 import com.intervigil.micdroid.helper.RecordingOptionsHelper;
 import com.intervigil.micdroid.model.Recording;
-import com.intervigil.wave.WaveReader;
 
 public class RecordingLibrary extends Activity {
 
@@ -96,18 +92,12 @@ public class RecordingLibrary extends Activity {
         Object savedRecordings = getLastNonConfigurationInstance();
         if (savedRecordings == null) {
             recordings = new ArrayList<Recording>();
-            this.libraryAdapter = new RecordingAdapter(this,
-                    R.layout.recording_library_row, recordings);
-            library.setAdapter(libraryAdapter);
-            loadRecordingsTask = (LoadRecordingsTask) new LoadRecordingsTask()
-                    .execute((Void) null);
         } else {
             recordings = (ArrayList<Recording>) savedRecordings;
-            this.libraryAdapter = new RecordingAdapter(this,
-                    R.layout.recording_library_row, recordings);
-            library.setAdapter(libraryAdapter);
-            this.libraryAdapter.notifyDataSetChanged();
         }
+        libraryAdapter = new RecordingAdapter(this, R.layout.recording_library_row, recordings);
+        library.setAdapter(libraryAdapter);
+        loadRecordingsTask = (LoadRecordingsTask) new LoadRecordingsTask().execute((Void) null);
     }
 
     @Override
@@ -171,19 +161,16 @@ public class RecordingLibrary extends Activity {
         switch (requestCode) {
             case Constants.INTENT_FILENAME_ENTRY:
                 if (resultCode == Activity.RESULT_OK) {
-                    // get results from the intent
                     Recording r = data.getParcelableExtra(Constants.INTENT_EXTRA_RECORDING);
+                    recordings.remove(r);
                     String destinationName = data.getStringExtra(
                             Constants.INTENT_EXTRA_FILE_NAME).trim()
                             + ".wav";
-
                     File destination = new File(ApplicationHelper.getLibraryDirectory()
                             + File.separator + destinationName);
-                    MediaStoreHelper.removeRecording(RecordingLibrary.this, r);
                     r.moveTo(destination);
-                    // refresh recordings list since something was renamed
-                    loadRecordingsTask = (LoadRecordingsTask) new LoadRecordingsTask()
-                            .execute((Void) null);
+                    recordings.add(r);
+                    libraryAdapter.notifyDataSetChanged();
                 }
                 break;
             default:
@@ -227,10 +214,9 @@ public class RecordingLibrary extends Activity {
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
-                                r.asFile().delete();
-                                MediaStoreHelper.removeRecording(RecordingLibrary.this, r);
-                                loadRecordingsTask = (LoadRecordingsTask) new LoadRecordingsTask()
-                                    .execute((Void) null);
+                                r.delete();
+                                libraryAdapter.remove(r);
+                                libraryAdapter.notifyDataSetChanged();
                                 dialog.dismiss();
                                 break;
                             case DialogInterface.BUTTON_NEGATIVE:
@@ -287,15 +273,13 @@ public class RecordingLibrary extends Activity {
     }
 
     private OnItemClickListener libraryClickListener = new OnItemClickListener() {
-        public void onItemClick(AdapterView<?> parent, View view, int position,
-                long id) {
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             view.showContextMenu();
         }
     };
 
     private class RecordingAdapter extends ArrayAdapter<Recording> {
-        public RecordingAdapter(Context context, int textViewResourceId,
-                List<Recording> objects) {
+        public RecordingAdapter(Context context, int textViewResourceId, List<Recording> objects) {
             super(context, textViewResourceId, objects);
         }
 
@@ -307,12 +291,12 @@ public class RecordingLibrary extends Activity {
                 view = vi.inflate(R.layout.recording_library_row, parent, false);
             }
 
-            Recording r = this.getItem(position);
+            Recording r = getItem(position);
             if (r != null) {
-                ((TextView) view.findViewById(R.id.recording_row_first_line))
-                        .setText("Name: " + r.getName());
-                ((TextView) view.findViewById(R.id.recording_row_second_line))
-                        .setText("Length: " + r.getLength());
+                TextView name = (TextView) view.findViewById(R.id.recording_row_first_line);
+                TextView length = (TextView) view.findViewById(R.id.recording_row_second_line);
+                name.setText("Name: " + r.getName());
+                length.setText("Length: " + r.getLength());
             }
 
             return view;
@@ -342,9 +326,7 @@ public class RecordingLibrary extends Activity {
         }
     }
 
-    private class LoadRecordingsTask extends AsyncTask<Void, Recording, Void> {
-        // Async load all the recordings already in the directory
-
+    private class LoadRecordingsTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
             libraryAdapter.clear();
@@ -378,15 +360,8 @@ public class RecordingLibrary extends Activity {
         }
 
         @Override
-        protected void onProgressUpdate(Recording... values) {
-            Recording r = values[0];
-            if (r != null) {
-                libraryAdapter.add(r);
-            }
-        }
-
-        @Override
         protected void onPostExecute(Void result) {
+            libraryAdapter.notifyDataSetChanged();
             loadRecordingSpinner.dismiss();
         }
     }
