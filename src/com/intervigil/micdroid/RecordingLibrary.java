@@ -20,6 +20,7 @@
 package com.intervigil.micdroid;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +54,7 @@ import com.intervigil.micdroid.helper.DialogHelper;
 import com.intervigil.micdroid.helper.PreferenceHelper;
 import com.intervigil.micdroid.helper.RecordingOptionsHelper;
 import com.intervigil.micdroid.model.Recording;
+import com.intervigil.wave.exception.InvalidWaveException;
 
 public class RecordingLibrary extends Activity implements OnItemClickListener {
 
@@ -346,10 +348,16 @@ public class RecordingLibrary extends Activity implements OnItemClickListener {
                         try {
                             r = new Recording(waveFiles[i]);
                             recordings.add(r);
-                        } catch (IOException e) {
-                            Log.i("RecordingLibrary",
+                        } catch (FileNotFoundException e) {
+                            Log.i(CLASS_RECORDING_LIBRARY,
+                                    String.format("File %s not found in library directory!",
+                                            waveFiles[i].getName()));
+                        } catch (InvalidWaveException e) {
+                            Log.i(CLASS_RECORDING_LIBRARY,
                                     String.format("Non-wave file %s found in library directory!",
                                             waveFiles[i].getName()));
+                        } catch (IOException e) {
+                            // can't recover
                         }
                     }
                 }
