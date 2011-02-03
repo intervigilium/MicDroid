@@ -220,17 +220,7 @@ public class RecordingLibrary extends Activity {
 
         switch (item.getItemId()) {
             case R.string.recording_options_play:
-                try {
-                    Intent playIntent = new Intent(Intent.ACTION_VIEW);
-                    playIntent.setDataAndType(Uri.fromFile(r.asFile()), Constants.MIME_AUDIO_WAV);
-                    startActivity(playIntent);
-                } catch (ActivityNotFoundException e) {
-                    Intent playIntent = new Intent(getBaseContext(), RecordingPlayer.class);
-                    Bundle playData = new Bundle();
-                    playData.putParcelable(Constants.INTENT_EXTRA_RECORDING, r);
-                    playIntent.putExtras(playData);
-                    startActivity(playIntent);
-                }
+                RecordingOptionsHelper.playRecording(RecordingLibrary.this, r);
                 break;
             case R.string.recording_options_delete:
                 DialogInterface.OnClickListener deleteListener = new DialogInterface.OnClickListener() {
