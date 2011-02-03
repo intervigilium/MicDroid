@@ -1,11 +1,12 @@
 There are a lot of things left to do, and many features to add. 
 
 To Do:
+Better exceptions (eg. UnknownFileTypeException, etc)
+Split app into fragments
+Implement simple recorder class for 'normal' phones, and Sipdroid recorder for weird ones
 Implement some kind of testing or QA routine
-Figure out and add some presets maybe, like a T-Pain preset, or Ke$ha, etc
 Add some kind of help to the app
 Share as MMS, depends on MP3 encoder
 Integrate MP3 encoder
-Add option to play instrumental backing track 
 Integrate automatic log collector: http://code.google.com/p/android-send-me-logs/
 Make preferences seekbar based: http://www.mail-archive.com/android-developers@googlegroups.com/msg19042.html
