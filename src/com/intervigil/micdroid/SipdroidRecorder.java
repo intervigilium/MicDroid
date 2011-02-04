@@ -33,6 +33,7 @@ import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.intervigil.micdroid.helper.AudioHelper;
 import com.intervigil.micdroid.helper.DialogHelper;
@@ -69,6 +70,9 @@ public class SipdroidRecorder implements Recorder {
         try {
             writerThread = new MicWriter();
             writerThread.start();
+            Toast.makeText(context,
+                    R.string.recording_started_toast,
+                    Toast.LENGTH_SHORT).show();
         } catch (IllegalArgumentException e) {
             DialogHelper.showWarning(context,
                     R.string.audio_record_exception_title,

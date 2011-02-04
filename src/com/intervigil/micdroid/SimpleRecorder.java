@@ -11,6 +11,7 @@ import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.os.Handler;
 import android.os.Message;
+import android.widget.Toast;
 
 import com.intervigil.micdroid.helper.AudioHelper;
 import com.intervigil.micdroid.helper.DialogHelper;
@@ -48,6 +49,9 @@ public class SimpleRecorder implements Recorder {
         try {
             writerThread = new MicWriter();
             writerThread.start();
+            Toast.makeText(context,
+                    R.string.recording_started_toast,
+                    Toast.LENGTH_SHORT).show();
         } catch (IllegalArgumentException e) {
             DialogHelper.showWarning(context,
                     R.string.audio_record_exception_title,
