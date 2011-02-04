@@ -18,7 +18,7 @@ import com.intervigil.micdroid.R;
 import com.intervigil.micdroid.helper.AudioHelper;
 import com.intervigil.micdroid.helper.DialogHelper;
 import com.intervigil.micdroid.helper.PreferenceHelper;
-import com.intervigil.micdroid.interfaces.PostRecordTask;
+import com.intervigil.micdroid.interfaces.DependentTask;
 import com.intervigil.micdroid.interfaces.Recorder;
 import com.intervigil.wave.WaveReader;
 import com.intervigil.wave.WaveWriter;
@@ -37,9 +37,9 @@ public class SimpleRecorder implements Recorder {
     private MicWriter writerThread;
     private final boolean isLiveMode;
     private final int sampleRate;
-    private final PostRecordTask postRecordTask;
+    private final DependentTask postRecordTask;
 
-    public SimpleRecorder(Context context, PostRecordTask postRecordTask, boolean isLiveMode) {
+    public SimpleRecorder(Context context, DependentTask postRecordTask, boolean isLiveMode) {
         this.context = context;
         this.sampleRate = PreferenceHelper.getSampleRate(context);
         this.postRecordTask = postRecordTask;
