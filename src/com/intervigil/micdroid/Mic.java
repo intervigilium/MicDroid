@@ -20,25 +20,14 @@
 
 package com.intervigil.micdroid;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import net.sourceforge.autotalent.Autotalent;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.Log;
@@ -54,23 +43,19 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
-import com.intervigil.micdroid.helper.ApplicationHelper;
 import com.intervigil.micdroid.helper.AudioHelper;
 import com.intervigil.micdroid.helper.DialogHelper;
 import com.intervigil.micdroid.helper.HeadsetHelper;
 import com.intervigil.micdroid.helper.PreferenceHelper;
 import com.intervigil.micdroid.helper.UpdateHelper;
-import com.intervigil.micdroid.interfaces.PostRecordTask;
+import com.intervigil.micdroid.interfaces.DependentTask;
 import com.intervigil.micdroid.interfaces.Recorder;
 import com.intervigil.micdroid.recorder.SimpleRecorder;
-import com.intervigil.wave.WaveReader;
-import com.intervigil.wave.WaveWriter;
 
 public class Mic extends Activity implements OnClickListener {
 
     private static final String CLASS_MIC = "Mic";
 
-    private static final int AUTOTALENT_CHUNK_SIZE = 8192;
     private static final float CONCERT_A = 440.0f;
 
     private static final int DEFAULT_SCALE_ROTATE = 0;
@@ -85,6 +70,7 @@ public class Mic extends Activity implements OnClickListener {
     private Recorder recorder;
     private Timer timer;
     private ToggleButton recordingButton;
+    private AutotalentTask autotalentTask;
 
     /** Called when the activity is first created. */
     @Override
@@ -106,6 +92,8 @@ public class Mic extends Activity implements OnClickListener {
         timerDisplay.setTypeface(timerFont);
 
         timer = new Timer(timerDisplay);
+
+        autotalentTask = new AutotalentTask(Mic.this, postAutotalentTask);
 
         if (PreferenceHelper.getScreenLock(Mic.this)) {
             PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -250,7 +238,8 @@ public class Mic extends Activity implements OnClickListener {
                     String fileName = data.getStringExtra(
                             Constants.INTENT_EXTRA_FILE_NAME).trim()
                             + ".wav";
-                    new ProcessAutotalentTask().execute(fileName);
+                    updateAutoTalentPreferences();
+                    autotalentTask.runAutotalentTask(fileName);
                 } else if (resultCode == Activity.RESULT_CANCELED) {
                     Toast.makeText(Mic.this, R.string.recording_save_canceled,
                             Toast.LENGTH_SHORT).show();
@@ -264,159 +253,6 @@ public class Mic extends Activity implements OnClickListener {
                 break;
             default:
                 break;
-        }
-    }
-
-    private Handler recordingErrorHandler = new Handler() {
-        // use the handler to receive error messages from the recorder object
-        @Override
-        public void handleMessage(Message msg) {
-            ToggleButton recordingButton = (ToggleButton) findViewById(R.id.recording_button);
-
-            if (recorder != null) {
-                recorder.cleanup();
-                recorder = null;
-            }
-            timer.stop();
-            recordingButton.setChecked(false);
-
-            switch (msg.what) {
-                case Constants.WRITER_OUT_OF_SPACE:
-                    // received error that the writer is out of SD card space
-                    DialogHelper.showWarning(Mic.this,
-                            R.string.writer_out_of_space_title,
-                            R.string.writer_out_of_space_warning);
-                    break;
-                case Constants.UNABLE_TO_CREATE_RECORDING:
-                    // received error that the writer couldn't create the recording
-                    DialogHelper.showWarning(Mic.this,
-                            R.string.unable_to_create_recording_title,
-                            R.string.unable_to_create_recording_warning);
-                    break;
-            }
-        }
-    };
-
-    private class ProcessAutotalentTask extends AsyncTask<String, Void, Void> {
-        private WaveReader reader;
-        private WaveWriter writer;
-        private ProgressDialog spinner;
-        private boolean isLiveMode;
-
-        public ProcessAutotalentTask() {
-            spinner = new ProgressDialog(Mic.this);
-            spinner.setCancelable(false);
-            isLiveMode = PreferenceHelper.getLiveMode(Mic.this);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            if (isLiveMode) {
-                spinner.setMessage(getString(R.string.saving_recording_progress_msg));
-            } else {
-                spinner.setMessage(getString(R.string.autotalent_progress_msg));
-            }
-            spinner.show();
-        }
-
-        @Override
-        protected Void doInBackground(String... params) {
-            // maybe ugly but we only pass one string in anyway
-            String fileName = params[0];
-
-            if (isLiveMode) {
-                int len;
-                InputStream in;
-                OutputStream out;
-                byte[] buf = new byte[1024];
-
-                File src = new File(
-                        getCacheDir().getAbsolutePath()
-                        + File.separator
-                        + getString(R.string.default_recording_name));
-                File dst = new File(
-                        ApplicationHelper.getLibraryDirectory()
-                        + File.separator
-                        + fileName);
-                // do a file copy since renameto doesn't work
-                try {
-                    in = new FileInputStream(src);
-                    out = new FileOutputStream(dst);
-                    while ((len = in.read(buf)) > 0) {
-                        out.write(buf, 0, len);
-                    }
-                    in.close();
-                    out.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Message msg = recordingErrorHandler
-                            .obtainMessage(Constants.UNABLE_TO_CREATE_RECORDING);
-                    recordingErrorHandler.sendMessage(msg);
-                    return null;
-                }
-            } else {
-                try {
-                    reader = new WaveReader(
-                            getCacheDir().getAbsolutePath(),
-                            getString(R.string.default_recording_name));
-                    reader.openWave();
-                    writer = new WaveWriter(
-                            ApplicationHelper.getLibraryDirectory(),
-                            fileName,
-                            reader.getSampleRate(),
-                            reader.getChannels(),
-                            reader.getPcmFormat());
-                    writer.createWaveFile();
-                } catch (IOException e) {
-                    // can't create our readers and writers for some reason!
-                    e.printStackTrace();
-                    Message msg = recordingErrorHandler
-                            .obtainMessage(Constants.UNABLE_TO_CREATE_RECORDING);
-                    recordingErrorHandler.sendMessage(msg);
-                    return null;
-                }
-
-                updateAutoTalentPreferences();
-
-                short[] buf = new short[AUTOTALENT_CHUNK_SIZE];
-                while (true) {
-                    try {
-                        int samplesRead = reader.read(buf,
-                                AUTOTALENT_CHUNK_SIZE);
-                        if (samplesRead > 0) {
-                            Autotalent.processSamples(buf, samplesRead);
-                            writer.write(buf, 0, samplesRead);
-                        } else {
-                            break;
-                        }
-                    } catch (IOException e) {
-                        // failed to read/write to wave file
-                        e.printStackTrace();
-                        Message msg = recordingErrorHandler
-                                .obtainMessage(Constants.WRITER_OUT_OF_SPACE);
-                        recordingErrorHandler.sendMessage(msg);
-                        break;
-                    }
-                }
-
-                try {
-                    reader.closeWaveFile();
-                    writer.closeWaveFile();
-                    Autotalent.destroyAutotalent();
-                } catch (IOException e) {
-                    // failed to close out our files correctly
-                    // TODO: real error handling
-                    e.printStackTrace();
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void unused) {
-            spinner.dismiss();
-            Toast.makeText(Mic.this, R.string.recording_save_success,
-                    Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -480,7 +316,20 @@ public class Mic extends Activity implements OnClickListener {
         }
     };
 
-    PostRecordTask postRecordTask = new PostRecordTask() {
+    DependentTask postAutotalentTask = new DependentTask() {
+        @Override
+        public void handleError() {
+            Autotalent.destroyAutotalent();
+        }
+
+        @Override
+        public void doTask() {
+            Autotalent.destroyAutotalent();
+            Toast.makeText(Mic.this, R.string.recording_save_success,
+                    Toast.LENGTH_SHORT).show();
+        }
+    };
+    DependentTask postRecordTask = new DependentTask() {
         @Override
         public void doTask() {
             Toast.makeText(getBaseContext(),
