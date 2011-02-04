@@ -53,14 +53,10 @@
 
 	<string name="instrumental_not_found_title">ERROR!</string>
 	<string name="instrumental_not_found_warning">Instrumental file not found!
-		Please check to see that instrumental file exists and is acccessible!</string>
+		Please check to see that the selected instrumental file exists, is acccessible, and is a WAVE file!</string>
 
 	<string name="no_headset_plugged_in_title">WARNING!</string>
 	<string name="no_headset_plugged_in_warning">Live correction mode requires headphones!</string>
-
-	<string name="galaxy_s_live_mode_title">ERROR!</string>
-	<string name="galaxy_s_live_mode_error">Samsung Galaxy S phones (Captivate, Vibrant, Epic,
-		Fascinate) do not support live mode.</string>
 
 	<string name="recording_started_toast">Recording started! Press power button to stop
 		recording!</string>
