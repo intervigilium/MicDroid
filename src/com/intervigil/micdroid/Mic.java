@@ -332,7 +332,9 @@ public class Mic extends Activity implements OnClickListener {
     DependentTask postRecordTask = new DependentTask() {
         @Override
         public void doTask() {
-            Autotalent.destroyAutotalent();
+            if (PreferenceHelper.getLiveMode(Mic.this)) {
+                Autotalent.destroyAutotalent();
+            }
             Toast.makeText(getBaseContext(),
                     R.string.recording_finished_toast,
                     Toast.LENGTH_SHORT).show();
@@ -344,7 +346,9 @@ public class Mic extends Activity implements OnClickListener {
 
         @Override
         public void handleError() {
-            Autotalent.destroyAutotalent();
+            if (PreferenceHelper.getLiveMode(Mic.this)) {
+                Autotalent.destroyAutotalent();
+            }
             recordingButton.setOnCheckedChangeListener(null);
             recordingButton.setChecked(false);
             recordingButton.setOnCheckedChangeListener(recordBtnListener);
