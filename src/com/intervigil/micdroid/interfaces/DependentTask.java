@@ -1,6 +1,6 @@
 package com.intervigil.micdroid.interfaces;
 
-public interface PostRecordTask {
+public interface DependentTask {
 
     public void doTask();
     
