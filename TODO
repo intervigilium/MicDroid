@@ -2,6 +2,7 @@ There are a lot of things left to do, and many features to add.
 
 To Do:
 Update strings and help
+Integrate resample code for WAVE instrumentals
 Support fragments
 Implement simple recorder class for 'normal' phones, and Sipdroid recorder for weird ones
 Implement some kind of testing or QA routine
