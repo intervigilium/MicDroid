@@ -22,7 +22,6 @@ package com.intervigil.micdroid;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -100,7 +99,7 @@ public class Mic extends Activity implements OnClickListener {
         TextView timerDisplay = (TextView) findViewById(R.id.recording_timer);
 
         recordingButton.setChecked(false);
-        recordingButton.setOnCheckedChangeListener(mPowerBtnListener);
+        recordingButton.setOnCheckedChangeListener(recordBtnListener);
         libraryButton.setOnClickListener(this);
         instrumentalButton.setOnClickListener(this);
         timerDisplay.setTypeface(timerFont);
@@ -190,7 +189,7 @@ public class Mic extends Activity implements OnClickListener {
         ((Button) findViewById(R.id.instrumental_button)).setOnClickListener(this);
         ToggleButton micSwitch = (ToggleButton) findViewById(R.id.recording_button);
         micSwitch.setChecked(isRecording);
-        micSwitch.setOnCheckedChangeListener(mPowerBtnListener);
+        micSwitch.setOnCheckedChangeListener(recordBtnListener);
 
         Typeface timerFont = Typeface.createFromAsset(getAssets(),
                 "fonts/Clockopia.ttf");
@@ -434,7 +433,7 @@ public class Mic extends Activity implements OnClickListener {
         }
     }
 
-    private OnCheckedChangeListener mPowerBtnListener = new OnCheckedChangeListener() {
+    private OnCheckedChangeListener recordBtnListener = new OnCheckedChangeListener() {
         public void onCheckedChanged(CompoundButton btn, boolean isChecked) {
             if (!hasWindowFocus()) {
                 return;
@@ -463,46 +462,13 @@ public class Mic extends Activity implements OnClickListener {
                             updateAutoTalentPreferences();
                         }
                         if (recorder == null) {
-                            try {
-                                recorder = new SipdroidRecorder(Mic.this,
-                                        recordingErrorHandler, isLiveMode);
-                            } catch (IllegalArgumentException e) {
-                                e.printStackTrace();
-                                btn.setChecked(false);
-                                DialogHelper.showWarning(Mic.this,
-                                        R.string.audio_record_exception_title,
-                                        R.string.audio_record_exception_warning);
-                                return;
-                            }
+                            recorder = new SimpleRecorder(Mic.this, postRecordTask, isLiveMode);
                         }
-                        try {
-                            recorder.start();
-                            timer.start();
-                            Toast.makeText(getBaseContext(),
-                                    R.string.recording_started_toast,
-                                    Toast.LENGTH_SHORT).show();
-                        } catch (IllegalStateException e) {
-                            btn.setChecked(false);
-                            recorder.cleanup();
-                            DialogHelper.showWarning(Mic.this,
-                                    R.string.audio_record_exception_title,
-                                    R.string.audio_record_exception_warning);
-                            return;
-                        } catch (FileNotFoundException e) {
-                            btn.setChecked(false);
-                            recorder.cleanup();
-                            DialogHelper.showWarning(Mic.this,
-                                    R.string.instrumental_not_found_title,
-                                    R.string.instrumental_not_found_warning);
-                            return;
-                        } catch (IOException e) {
-                            btn.setChecked(false);
-                            recorder.cleanup();
-                            DialogHelper.showWarning(Mic.this,
-                                    R.string.unable_to_create_recording_title,
-                                    R.string.unable_to_create_recording_warning);
-                            return;
-                        }
+                        recorder.start();
+                        timer.start();
+                        Toast.makeText(Mic.this,
+                                R.string.recording_started_toast,
+                                Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     if (recorder != null && recorder.isRunning()) {
@@ -510,16 +476,29 @@ public class Mic extends Activity implements OnClickListener {
                         // message triggered the check state change
                         recorder.stop();
                         timer.stop();
-                        Toast.makeText(getBaseContext(),
-                                R.string.recording_finished_toast,
-                                Toast.LENGTH_SHORT).show();
-                        Intent saveFileIntent = new Intent(getBaseContext(),
-                                FileNameEntry.class);
-                        startActivityForResult(saveFileIntent,
-                                Constants.INTENT_FILENAME_ENTRY);
                     }
                 }
             }
+        }
+    };
+
+    PostRecordTask postRecordTask = new PostRecordTask() {
+        @Override
+        public void doTask() {
+            Toast.makeText(getBaseContext(),
+                    R.string.recording_finished_toast,
+                    Toast.LENGTH_SHORT).show();
+            Intent saveFileIntent = new Intent(getBaseContext(),
+                    FileNameEntry.class);
+            startActivityForResult(saveFileIntent,
+                    Constants.INTENT_FILENAME_ENTRY);
+        }
+
+        @Override
+        public void handleError() {
+            recordingButton.setOnCheckedChangeListener(null);
+            recordingButton.setChecked(false);
+            recordingButton.setOnCheckedChangeListener(recordBtnListener);
         }
     };
 
