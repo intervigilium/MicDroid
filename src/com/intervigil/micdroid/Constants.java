@@ -50,8 +50,4 @@ public class Constants {
 
     // mime type
     public static final String MIME_AUDIO_WAV = "audio/x-wav";
-
-    // recording error handler codes
-    public static final int WRITER_OUT_OF_SPACE = 6;
-    public static final int UNABLE_TO_CREATE_RECORDING = 7;
 }
