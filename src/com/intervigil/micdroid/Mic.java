@@ -460,9 +460,6 @@ public class Mic extends Activity implements OnClickListener {
                         }
                         recorder.start();
                         timer.start();
-                        Toast.makeText(Mic.this,
-                                R.string.recording_started_toast,
-                                Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     if (recorder != null && recorder.isRunning()) {
