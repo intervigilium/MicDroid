@@ -62,6 +62,7 @@ import com.intervigil.micdroid.helper.PreferenceHelper;
 import com.intervigil.micdroid.helper.UpdateHelper;
 import com.intervigil.micdroid.interfaces.PostRecordTask;
 import com.intervigil.micdroid.interfaces.Recorder;
+import com.intervigil.micdroid.recorder.SimpleRecorder;
 import com.intervigil.wave.WaveReader;
 import com.intervigil.wave.WaveWriter;
 
