@@ -1,4 +1,4 @@
-package com.intervigil.micdroid;
+package com.intervigil.micdroid.recorder;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,6 +13,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.widget.Toast;
 
+import com.intervigil.micdroid.Constants;
+import com.intervigil.micdroid.R;
 import com.intervigil.micdroid.helper.AudioHelper;
 import com.intervigil.micdroid.helper.DialogHelper;
 import com.intervigil.micdroid.helper.PreferenceHelper;
