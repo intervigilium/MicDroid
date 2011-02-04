@@ -39,13 +39,9 @@
 		check your sample rate settings and make sure your device is able to
 		record at that rate!</string>
 
-	<string name="writer_out_of_space_title">WARNING!</string>
-	<string name="writer_out_of_space_warning">Writer cannot continue writing data! Please check
-		to make sure your SD card is not full!</string>
-
-	<string name="unable_to_create_recording_title">WARNING!</string>
-	<string name="unable_to_create_recording_warning">Writer cannot create recording! Please make sure
-		your SD card is inserted and is writable!</string>
+	<string name="recording_io_error_title">WARNING!</string>
+	<string name="recording_io_error_warning">Error writing recording! Please make sure
+		your SD card has free space and is inserted and writable!</string>
 
 	<string name="audio_record_exception_title">ERROR!</string>
 	<string name="audio_record_exception_warning">An error has occurred while recording! Please check

@@ -115,14 +115,14 @@ public class SipdroidRecorder implements Recorder {
                     break;
                 case RECORDER_MESSAGE_INVALID_INSTRUMENTAL:
                     DialogHelper.showWarning(context,
-                            R.string.unable_to_create_recording_title,
-                            R.string.unable_to_create_recording_warning);
+                            R.string.instrumental_not_found_title,
+                            R.string.instrumental_not_found_warning);
                     postRecordTask.handleError();
                     break;
                 case RECORDER_MESSAGE_IO_ERROR:
                     DialogHelper.showWarning(context,
-                            R.string.writer_out_of_space_title,
-                            R.string.writer_out_of_space_warning);
+                            R.string.recording_io_error_title,
+                            R.string.recording_io_error_warning);
                     postRecordTask.handleError();
                     break;
                 case RECORDER_MESSAGE_FINISHED:
