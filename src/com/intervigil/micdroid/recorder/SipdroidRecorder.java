@@ -281,11 +281,11 @@ public class SipdroidRecorder implements Recorder {
                 short[] instrLeft = new short[numSamples];
                 short[] instrRight = new short[numSamples];
                 instrumentalReader.read(instrLeft, instrRight, numSamples);
-                Autotalent.processSamples(samples, instrLeft, instrRight, numSamples);
+                Autotalent.processSamples(samples, instrLeft, instrRight, sampleRate, numSamples);
             } else if (instrumentalReader.getChannels() == 1) {
                 short[] instrumental = new short[numSamples];
                 instrumentalReader.read(instrumental, numSamples);
-                Autotalent.processSamples(samples, instrumental, null, numSamples);
+                Autotalent.processSamples(samples, instrumental, null, sampleRate, numSamples);
             }
         }
     }
