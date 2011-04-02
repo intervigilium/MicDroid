@@ -25,6 +25,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import net.sourceforge.autotalent.Autotalent;
+import net.sourceforge.resample.Resample;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.AudioRecord;
@@ -189,6 +190,7 @@ public class SipdroidRecorder implements Recorder {
         public void initialize() throws FileNotFoundException, InvalidWaveException, IOException {
             if (instrumentalReader != null) {
                 instrumentalReader.openWave();
+                Resample.initialize(instrumentalReader.getSampleRate(), sampleRate, Resample.DEFAULT_BUFFER_SIZE, instrumentalReader.getChannels());
             }
             writer.createWaveFile();
             if (isLiveMode) {
@@ -209,6 +211,7 @@ public class SipdroidRecorder implements Recorder {
             }
             if (instrumentalReader != null) {
                 try {
+                    Resample.close();
                     instrumentalReader.closeWaveFile();
                 } catch (IOException e) {
                     // no recovery possible here
@@ -275,17 +278,21 @@ public class SipdroidRecorder implements Recorder {
         }
 
         private void processLiveAudio(short[] samples, int numSamples) throws IOException {
-            if (instrumentalReader == null) {
-                Autotalent.processSamples(samples, numSamples);
-            } else if (instrumentalReader.getChannels() == 2) {
-                short[] instrLeft = new short[numSamples];
-                short[] instrRight = new short[numSamples];
-                instrumentalReader.read(instrLeft, instrRight, numSamples);
-                Autotalent.processSamples(samples, instrLeft, instrRight, sampleRate, numSamples);
-            } else if (instrumentalReader.getChannels() == 1) {
+            if (instrumentalReader != null) {
+                int read;
                 short[] instrumental = new short[numSamples];
-                instrumentalReader.read(instrumental, numSamples);
-                Autotalent.processSamples(samples, instrumental, null, sampleRate, numSamples);
+
+                if (instrumentalReader.getChannels() == 1) {
+                    read = instrumentalReader.read(instrumental, numSamples);
+                } else {
+                    short[] instrRight = new short[numSamples];
+                    read = instrumentalReader.read(instrumental, instrRight, numSamples);
+                    Resample.downsample(instrumental, instrumental, instrRight, read);
+                }
+                Resample.process(instrumental, instrumental, Resample.CHANNEL_MONO, read != numSamples);
+                Autotalent.processSamples(samples, instrumental, numSamples);
+            } else {
+                Autotalent.processSamples(samples, numSamples);
             }
         }
     }
