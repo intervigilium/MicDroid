@@ -148,6 +148,7 @@ public class SimpleRecorder implements Recorder {
         public void initialize() throws FileNotFoundException, InvalidWaveException, IOException {
             if (instrumentalReader != null) {
                 instrumentalReader.openWave();
+                Resample.initialize(instrumentalReader.getSampleRate(), sampleRate, Resample.DEFAULT_BUFFER_SIZE, instrumentalReader.getChannels());
             }
             writer.createWaveFile();
             if (isLiveMode) {
@@ -168,6 +169,7 @@ public class SimpleRecorder implements Recorder {
             }
             if (instrumentalReader != null) {
                 try {
+                    Resample.close();
                     instrumentalReader.closeWaveFile();
                 } catch (IOException e) {
                     // no recovery possible here
