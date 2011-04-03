@@ -225,17 +225,18 @@ public class SimpleRecorder implements Recorder {
 
         private void processLiveAudio(short[] samples, int numSamples) throws IOException {
             if (instrumentalReader != null) {
-                int read;
-                short[] instrumental = new short[numSamples];
+                int read, resampled;
+                int bufferSize = (int) (numSamples / Resample.getFactor());
+                short[] instrumental = new short[bufferSize];
 
                 if (instrumentalReader.getChannels() == 1) {
-                    read = instrumentalReader.read(instrumental, numSamples);
+                    read = instrumentalReader.read(instrumental, bufferSize);
                 } else {
-                    short[] instrRight = new short[numSamples];
-                    read = instrumentalReader.read(instrumental, instrRight, numSamples);
+                    short[] instrRight = new short[bufferSize];
+                    read = instrumentalReader.read(instrumental, instrRight, bufferSize);
                     Resample.downsample(instrumental, instrumental, instrRight, read);
                 }
-                Resample.process(instrumental, instrumental, Resample.CHANNEL_MONO, read != numSamples);
+                resampled = Resample.process(instrumental, instrumental, Resample.CHANNEL_MONO, read != bufferSize);
                 Autotalent.processSamples(samples, instrumental, numSamples);
             } else {
                 Autotalent.processSamples(samples, numSamples);
