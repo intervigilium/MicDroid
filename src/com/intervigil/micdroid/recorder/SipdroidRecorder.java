@@ -288,7 +288,7 @@ public class SipdroidRecorder implements Recorder {
                 } else {
                     short[] instrRight = new short[bufferSize];
                     read = instrumentalReader.read(instrumental, instrRight, bufferSize);
-                    Resample.downsample(instrumental, instrumental, instrRight, read);
+                    Resample.downmix(instrumental, instrumental, instrRight, read);
                 }
                 Resample.process(instrumental, instrumental, Resample.CHANNEL_MONO, read != bufferSize);
                 Autotalent.processSamples(samples, instrumental, numSamples);
