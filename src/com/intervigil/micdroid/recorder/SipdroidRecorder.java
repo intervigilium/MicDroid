@@ -1,4 +1,4 @@
-/* Mic.java
+/* SipdroidRecorder.java
    An auto-tune app for Android
 
    Copyright (c) 2010 Ethan Chen
