@@ -35,6 +35,7 @@ import com.intervigil.micdroid.model.Recording;
 
 public class RecordingPlayer extends Activity implements OnClickListener {
 
+    private static final String CLASS_RECORDING_PLAYER = "RecordingPlayer";
     private static final int SEEKBAR_RESOLUTION = 1000;
 
     private Recording recording;
@@ -73,19 +74,19 @@ public class RecordingPlayer extends Activity implements OnClickListener {
 
     @Override
     protected void onStart() {
-        Log.i("RecordingPlayer", "onStart()");
+        Log.i(CLASS_RECORDING_PLAYER, "onStart()");
         super.onStart();
     }
 
     @Override
     protected void onResume() {
-        Log.i("RecordingPlayer", "onResume()");
+        Log.i(CLASS_RECORDING_PLAYER, "onResume()");
         super.onResume();
     }
 
     @Override
     protected void onPause() {
-        Log.i("RecordingPlayer", "onPause()");
+        Log.i(CLASS_RECORDING_PLAYER, "onPause()");
         super.onPause();
 
         if (isFinishing()) {
@@ -98,13 +99,13 @@ public class RecordingPlayer extends Activity implements OnClickListener {
 
     @Override
     protected void onStop() {
-        Log.i("RecordingPlayer", "onStop()");
+        Log.i(CLASS_RECORDING_PLAYER, "onStop()");
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        Log.i("RecordingPlayer", "onDestroy()");
+        Log.i(CLASS_RECORDING_PLAYER, "onDestroy()");
         super.onDestroy();
 
         if (mediaPlayer != null) {
@@ -115,13 +116,13 @@ public class RecordingPlayer extends Activity implements OnClickListener {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        Log.i(getPackageName(), "onSaveInstanceState()");
+        Log.i(CLASS_RECORDING_PLAYER, "onSaveInstanceState()");
         super.onSaveInstanceState(outState);
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        Log.i(getPackageName(), "onConfigurationChanged");
+        Log.i(CLASS_RECORDING_PLAYER, "onConfigurationChanged");
         super.onConfigurationChanged(newConfig);
 
         setContentView(R.layout.recording_player);

@@ -57,6 +57,7 @@ import com.intervigil.micdroid.model.Recording;
 
 public class RecordingLibrary extends Activity implements OnItemClickListener {
 
+    private static final String CLASS_RECORDING_LIBRARY = "RecordingLibrary";
     private static final String STATE_LOAD_IN_PROGRESS = "load_recordings_in_progress";
 
     private Boolean showAds;
@@ -103,31 +104,31 @@ public class RecordingLibrary extends Activity implements OnItemClickListener {
 
     @Override
     protected void onStart() {
-        Log.i(getPackageName(), "onStart()");
+        Log.i(CLASS_RECORDING_LIBRARY, "onStart()");
         super.onStart();
     }
 
     @Override
     protected void onResume() {
-        Log.i(getPackageName(), "onResume()");
+        Log.i(CLASS_RECORDING_LIBRARY, "onResume()");
         super.onResume();
     }
 
     @Override
     protected void onPause() {
-        Log.i(getPackageName(), "onPause()");
+        Log.i(CLASS_RECORDING_LIBRARY, "onPause()");
         super.onPause();
     }
 
     @Override
     protected void onStop() {
-        Log.i(getPackageName(), "onStop()");
+        Log.i(CLASS_RECORDING_LIBRARY, "onStop()");
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        Log.i(getPackageName(), "onDestroy()");
+        Log.i(CLASS_RECORDING_LIBRARY, "onDestroy()");
         super.onDestroy();
 
         onCancelLoadRecordings();
@@ -135,7 +136,7 @@ public class RecordingLibrary extends Activity implements OnItemClickListener {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        Log.i(getPackageName(), "onSaveInstanceState()");
+        Log.i(CLASS_RECORDING_LIBRARY, "onSaveInstanceState()");
         super.onSaveInstanceState(outState);
 
         saveLoadRecordingsTask(outState);
@@ -143,7 +144,7 @@ public class RecordingLibrary extends Activity implements OnItemClickListener {
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        Log.i(getPackageName(), "onRestoreInstanceState()");
+        Log.i(CLASS_RECORDING_LIBRARY, "onRestoreInstanceState()");
         super.onRestoreInstanceState(savedInstanceState);
 
         restoreLoadRecordingsTask(savedInstanceState);
