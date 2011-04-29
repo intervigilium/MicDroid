@@ -53,7 +53,7 @@ import com.intervigil.micdroid.helper.MediaStoreHelper;
 import com.intervigil.micdroid.helper.PreferenceHelper;
 import com.intervigil.micdroid.helper.RecordingOptionsHelper;
 import com.intervigil.micdroid.model.Recording;
-import com.intervigil.micdroid.wave.WaveReader;
+import com.intervigil.wave.WaveReader;
 
 public class RecordingLibrary extends Activity {
 

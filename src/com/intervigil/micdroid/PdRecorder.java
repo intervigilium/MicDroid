@@ -35,8 +35,8 @@ import com.intervigil.micdroid.helper.PreferenceHelper;
 import com.intervigil.micdroid.interfaces.Recorder;
 import com.intervigil.micdroid.model.Sample;
 import com.intervigil.micdroid.pitch.AutoTalent;
-import com.intervigil.micdroid.wave.WaveReader;
-import com.intervigil.micdroid.wave.WaveWriter;
+import com.intervigil.wave.WaveReader;
+import com.intervigil.wave.WaveWriter;
 
 public class PdRecorder implements Recorder {
     private MicWriter writerThread;
@@ -146,7 +146,7 @@ public class PdRecorder implements Recorder {
                             audioTrack.write(sample.buffer, 0,
                                     sample.bufferSize);
                         }
-                        writer.write(sample.buffer, sample.bufferSize);
+                        writer.write(sample.buffer, 0, sample.bufferSize);
                     } catch (IOException e) {
                         // problem writing to the buffer, usually means we're
                         // out of space

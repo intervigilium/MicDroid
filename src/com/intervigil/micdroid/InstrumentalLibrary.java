@@ -54,7 +54,7 @@ import com.intervigil.micdroid.helper.ApplicationHelper;
 import com.intervigil.micdroid.helper.PreferenceHelper;
 import com.intervigil.micdroid.model.Instrumental;
 import com.intervigil.micdroid.model.Recording;
-import com.intervigil.micdroid.wave.WaveReader;
+import com.intervigil.wave.WaveReader;
 
 
 public class InstrumentalLibrary extends Activity {

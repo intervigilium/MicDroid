@@ -38,8 +38,8 @@ import com.intervigil.micdroid.helper.AudioHelper;
 import com.intervigil.micdroid.helper.PreferenceHelper;
 import com.intervigil.micdroid.interfaces.Recorder;
 import com.intervigil.micdroid.pitch.AutoTalent;
-import com.intervigil.micdroid.wave.WaveReader;
-import com.intervigil.micdroid.wave.WaveWriter;
+import com.intervigil.wave.WaveReader;
+import com.intervigil.wave.WaveWriter;
 
 public class SipdroidRecorder implements Recorder {
     private final Context context;
@@ -191,7 +191,7 @@ public class SipdroidRecorder implements Recorder {
                         }
                         audioTrack.write(buf, 0, num);
                     }
-                    writer.write(buf, num);
+                    writer.write(buf, 0, num);
                 } catch (IOException e) {
                     // problem writing to the buffer, usually means we're
                     // out of space
