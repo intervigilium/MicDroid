@@ -20,7 +20,6 @@
 
 package com.intervigil.micdroid.recorder;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -42,7 +41,6 @@ import com.intervigil.micdroid.helper.DialogHelper;
 import com.intervigil.micdroid.helper.PreferenceHelper;
 import com.intervigil.micdroid.interfaces.DependentTask;
 import com.intervigil.micdroid.interfaces.Recorder;
-import com.intervigil.wave.WaveReader;
 import com.intervigil.wave.WaveWriter;
 import com.intervigil.wave.exception.InvalidWaveException;
 
@@ -50,7 +48,6 @@ public class SipdroidRecorder implements Recorder {
 
     private static final String CLASS_SIPDROID_RECORDER = "SipdroidRecorder";
 
-    private static final int RECORDER_MESSAGE_INVALID_INSTRUMENTAL = 8675309;
     private static final int RECORDER_MESSAGE_IO_ERROR = 8675308;
     private static final int RECORDER_MESSAGE_RECORD_ERROR = 8675310;
     private static final int RECORDER_MESSAGE_FINISHED = 8675307;
@@ -113,12 +110,6 @@ public class SipdroidRecorder implements Recorder {
                             R.string.audio_record_exception_warning);
                     postRecordTask.handleError();
                     break;
-                case RECORDER_MESSAGE_INVALID_INSTRUMENTAL:
-                    DialogHelper.showWarning(context,
-                            R.string.instrumental_not_found_title,
-                            R.string.instrumental_not_found_warning);
-                    postRecordTask.handleError();
-                    break;
                 case RECORDER_MESSAGE_IO_ERROR:
                     DialogHelper.showWarning(context,
                             R.string.recording_io_error_title,
@@ -136,7 +127,6 @@ public class SipdroidRecorder implements Recorder {
         private final AudioRecord audioRecord;
         private AudioTrack audioTrack;
         private final WaveWriter writer;
-        private WaveReader instrumentalReader;
         private final int frameSize;
         private final int frameRate;
         private final long framePeriod;
@@ -157,12 +147,6 @@ public class SipdroidRecorder implements Recorder {
 
             if (isLiveMode) {
                 this.audioTrack = AudioHelper.getPlayer(context);
-            }
-
-            String trackName = PreferenceHelper.getInstrumentalTrack(context);
-            if (!trackName.equals(Constants.EMPTY_STRING)) {
-                // start reading from instrumental track
-                this.instrumentalReader = new WaveReader(new File(trackName));
             }
         }
 
@@ -187,9 +171,6 @@ public class SipdroidRecorder implements Recorder {
         }
 
         public void initialize() throws FileNotFoundException, InvalidWaveException, IOException {
-            if (instrumentalReader != null) {
-                instrumentalReader.openWave();
-            }
             writer.createWaveFile();
             if (isLiveMode) {
                 AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
@@ -206,14 +187,6 @@ public class SipdroidRecorder implements Recorder {
             if (isLiveMode) {
                 audioTrack.stop();
                 audioTrack.release();
-            }
-            if (instrumentalReader != null) {
-                try {
-                    instrumentalReader.closeWaveFile();
-                } catch (IOException e) {
-                    // no recovery possible here
-                    e.printStackTrace();
-                }
             }
             // close file
             try {
@@ -259,12 +232,6 @@ public class SipdroidRecorder implements Recorder {
                 msg = recorderHandler.obtainMessage(RECORDER_MESSAGE_FINISHED);
             } catch (IllegalStateException e) {
                 msg = recorderHandler.obtainMessage(RECORDER_MESSAGE_RECORD_ERROR);
-            } catch (FileNotFoundException e) {
-                // couldn't find instrumental file
-                msg = recorderHandler.obtainMessage(RECORDER_MESSAGE_INVALID_INSTRUMENTAL);
-            } catch (InvalidWaveException e) {
-                // not a wave file
-                msg = recorderHandler.obtainMessage(RECORDER_MESSAGE_INVALID_INSTRUMENTAL);
             } catch (IOException e) {
                 // file IO error, no recovery possible?
                 e.printStackTrace();
@@ -275,18 +242,7 @@ public class SipdroidRecorder implements Recorder {
         }
 
         private void processLiveAudio(short[] samples, int numSamples) throws IOException {
-            if (instrumentalReader == null) {
-                Autotalent.processSamples(samples, numSamples);
-            } else if (instrumentalReader.getChannels() == 2) {
-                short[] instrLeft = new short[numSamples];
-                short[] instrRight = new short[numSamples];
-                instrumentalReader.read(instrLeft, instrRight, numSamples);
-                Autotalent.processSamples(samples, instrLeft, instrRight, sampleRate, numSamples);
-            } else if (instrumentalReader.getChannels() == 1) {
-                short[] instrumental = new short[numSamples];
-                instrumentalReader.read(instrumental, numSamples);
-                Autotalent.processSamples(samples, instrumental, null, sampleRate, numSamples);
-            }
+            Autotalent.processSamples(samples, numSamples);
         }
     }
 }

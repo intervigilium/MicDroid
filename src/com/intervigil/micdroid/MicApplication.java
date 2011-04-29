@@ -35,12 +35,6 @@ public class MicApplication extends Application {
         if (!libraryDir.exists()) {
             libraryDir.mkdirs();
         }
-
-        File instrumentalDir = new File(ApplicationHelper
-                .getInstrumentalDirectory());
-        if (!instrumentalDir.exists()) {
-            instrumentalDir.mkdirs();
-        }
     }
 
     @Override

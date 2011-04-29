@@ -43,9 +43,4 @@ public class ApplicationHelper {
         return Environment.getExternalStorageDirectory() + File.separator
                 + "MicDroid" + File.separator + "recordings";
     }
-
-    public static String getInstrumentalDirectory() {
-        return Environment.getExternalStorageDirectory() + File.separator
-                + "MicDroid" + File.separator + "instrumental";
-    }
 }

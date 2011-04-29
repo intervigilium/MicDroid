@@ -32,8 +32,6 @@
 		<activity android:label="@string/recording_player"
 			android:name=".RecordingPlayer" android:theme="@android:style/Theme.Dialog"
 			android:configChanges="keyboard|keyboardHidden|orientation" />
-		<activity android:label="@string/instrumental_library"
-			android:name=".InstrumentalLibrary" />
 
 		<!-- AdMobActivity definition -->
 		<activity android:name="com.google.ads.AdActivity"

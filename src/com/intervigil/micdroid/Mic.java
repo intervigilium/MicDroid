@@ -50,7 +50,7 @@ import com.intervigil.micdroid.helper.PreferenceHelper;
 import com.intervigil.micdroid.helper.UpdateHelper;
 import com.intervigil.micdroid.interfaces.DependentTask;
 import com.intervigil.micdroid.interfaces.Recorder;
-import com.intervigil.micdroid.recorder.SimpleRecorder;
+import com.intervigil.micdroid.recorder.SipdroidRecorder;
 
 public class Mic extends Activity implements OnClickListener {
 
