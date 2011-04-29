@@ -1,11 +1,9 @@
 package com.intervigil.micdroid.interfaces;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
 public interface Recorder {
 
-    public void start() throws IllegalStateException, FileNotFoundException, IOException;
+    public void start();
     
     public void stop();
     

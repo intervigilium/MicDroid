@@ -1,23 +1,3 @@
-/* Mic.java
-   An auto-tune app for Android
-
-   Copyright (c) 2010 Ethan Chen
-
-   This program is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License along
-   with this program; if not, write to the Free Software Foundation, Inc.,
-   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
-
 package com.intervigil.micdroid;
 
 import java.io.File;
@@ -29,10 +9,8 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
-import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import com.intervigil.micdroid.helper.AudioHelper;
 import com.intervigil.micdroid.helper.DialogHelper;
@@ -43,10 +21,10 @@ import com.intervigil.wave.WaveReader;
 import com.intervigil.wave.WaveWriter;
 import com.intervigil.wave.exception.InvalidWaveException;
 
-public class SipdroidRecorder implements Recorder {
+public class SimpleRecorder implements Recorder {
 
-    private static final String CLASS_SIPDROID_RECORDER = "SipdroidRecorder";
-
+    private static final int SIMPLE_RECORDER_BUFFER_SIZE = 8192;
+    
     private static final int RECORDER_MESSAGE_INVALID_INSTRUMENTAL = 8675309;
     private static final int RECORDER_MESSAGE_IO_ERROR = 8675308;
     private static final int RECORDER_MESSAGE_RECORD_ERROR = 8675310;
@@ -56,15 +34,16 @@ public class SipdroidRecorder implements Recorder {
     private MicWriter writerThread;
     private final boolean isLiveMode;
     private final int sampleRate;
-    private PostRecordTask postRecordTask;
+    private final PostRecordTask postRecordTask;
 
-    public SipdroidRecorder(Context context, PostRecordTask postRecordTask, boolean isLiveMode) {
+    public SimpleRecorder(Context context, PostRecordTask postRecordTask, boolean isLiveMode) {
         this.context = context;
         this.sampleRate = PreferenceHelper.getSampleRate(context);
         this.postRecordTask = postRecordTask;
         this.isLiveMode = isLiveMode;
     }
 
+    @Override
     public void start() {
         try {
             writerThread = new MicWriter();
@@ -77,6 +56,7 @@ public class SipdroidRecorder implements Recorder {
         }
     }
 
+    @Override
     public void stop() {
         if (isRunning()) {
             writerThread.close();
@@ -87,10 +67,12 @@ public class SipdroidRecorder implements Recorder {
         }
     }
 
+    @Override
     public void cleanup() {
         stop();
     }
 
+    @Override
     public boolean isRunning() {
         return (writerThread != null
                 && writerThread.getState() != Thread.State.NEW && writerThread
@@ -131,17 +113,9 @@ public class SipdroidRecorder implements Recorder {
         private AudioTrack audioTrack;
         private final WaveWriter writer;
         private WaveReader instrumentalReader;
-        private final int frameSize;
-        private final int frameRate;
-        private final long framePeriod;
-        private final int bufSize;
         private boolean running;
 
-        public MicWriter() {
-            this.frameSize = 160;
-            this.framePeriod = 1000 / (sampleRate / frameSize);
-            this.frameRate = (int) (sampleRate / frameSize * 1.5);
-            this.bufSize = frameSize * (frameRate + 1);
+        public MicWriter() throws IllegalArgumentException {
             this.running = false;
             this.audioRecord = AudioHelper.getRecorder(context);
             this.writer = new WaveWriter(context.getCacheDir().getAbsolutePath(),
@@ -157,22 +131,6 @@ public class SipdroidRecorder implements Recorder {
             if (!trackName.equals(Constants.EMPTY_STRING)) {
                 // start reading from instrumental track
                 this.instrumentalReader = new WaveReader(new File(trackName));
-            }
-        }
-
-        // weird little hack; eliminates the nasty click when AudioTrack
-        // (dis)engages by playing
-        // a few milliseconds of silence before starting AudioTrack
-        // This quirky hack taken from PdCore of pd-for-android project
-        private void avoidClickHack(Context context) {
-            try {
-                MediaPlayer mp = MediaPlayer.create(context, R.raw.silence);
-                mp.start();
-                Thread.sleep(10);
-                mp.stop();
-                mp.release();
-            } catch (Exception e) {
-                Log.e(CLASS_SIPDROID_RECORDER, e.toString());
             }
         }
 
@@ -220,35 +178,23 @@ public class SipdroidRecorder implements Recorder {
 
         public void run() {
             Message msg;
-            int num;
-            long now, nextFrameDelay, lastFrameTime = 0;
-            short[] buf = new short[bufSize];
+            int numSamples;
+            short[] buf = new short[SIMPLE_RECORDER_BUFFER_SIZE];
 
             try {
                 initialize();
                 running = true;
-                avoidClickHack(context);
                 audioRecord.startRecording();
                 if (isLiveMode) {
                     audioTrack.play();
                 }
                 while (running) {
-                    // delay reading if it's not time for the next frame
-                    now = System.currentTimeMillis();
-                    nextFrameDelay = framePeriod - (now - lastFrameTime);
-                    lastFrameTime = now;
-                    if (nextFrameDelay > 0) {
-                        try {
-                            sleep(nextFrameDelay);
-                        } catch (InterruptedException e) {}
-                        lastFrameTime = lastFrameTime + nextFrameDelay;
-                    }
-                    num = audioRecord.read(buf, 0, frameSize);
+                    numSamples = audioRecord.read(buf, 0, SIMPLE_RECORDER_BUFFER_SIZE);
                     if (isLiveMode) {
-                        processLiveAudio(buf, num);
-                        audioTrack.write(buf, 0, num);
+                        processLiveAudio(buf, numSamples);
+                        audioTrack.write(buf, 0, numSamples);
                     }
-                    writer.write(buf, 0, num);
+                    writer.write(buf, 0, numSamples);
                 }
                 msg = recorderHandler.obtainMessage(RECORDER_MESSAGE_FINISHED);
             } catch (IllegalStateException e) {
