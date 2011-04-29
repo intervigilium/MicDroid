@@ -37,8 +37,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.google.ads.AdRequest;
 import com.google.ads.AdView;
+import com.intervigil.micdroid.helper.AdHelper;
 import com.intervigil.micdroid.helper.DialogHelper;
 import com.intervigil.micdroid.helper.PreferenceHelper;
 
@@ -66,8 +66,7 @@ public class InstrumentalLibrary extends Activity implements OnClickListener {
         mShowAds = PreferenceHelper.getShowAds(InstrumentalLibrary.this);
 
         mAdView = (AdView) findViewById(R.id.instrumental_ad);
-        mAdView.setEnabled(mShowAds);
-        mAdView.loadAd(new AdRequest());
+        AdHelper.GenerateAd(mAdView, mShowAds);
 
         mCurrentTrack = (EditText) findViewById(R.id.instrumental_current);
         mInputFilename = (EditText) findViewById(R.id.instrumental_selected);
