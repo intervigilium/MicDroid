@@ -2,13 +2,14 @@
 
 <LinearLayout android:id="@+id/recording_library_layout"
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:admobsdk="http://schemas.android.com/apk/res/com.intervigil.micdroid"
+	xmlns:ads="http://schemas.android.com/apk/res/com.intervigil.micdroid"
 	android:orientation="vertical" android:gravity="center"
 	android:layout_width="fill_parent" android:layout_height="fill_parent">
 
-	<com.admob.android.ads.AdView android:id="@+id/recording_ad"
+	<com.google.ads.AdView android:id="@+id/recording_ad"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		admobsdk:backgroundColor="#000000" admobsdk:primaryTextColor="#FFFFFF" />
+		ads:adUnitId="a14cbf73c14c77d"
+		ads:adSize="BANNER" />
 
 	<TextView android:id="@+id/recording_library_title"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"

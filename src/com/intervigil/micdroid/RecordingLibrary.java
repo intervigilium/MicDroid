@@ -48,6 +48,7 @@ import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
+import com.google.ads.AdRequest;
 import com.google.ads.AdView;
 import com.intervigil.micdroid.helper.ApplicationHelper;
 import com.intervigil.micdroid.helper.DialogHelper;
@@ -87,6 +88,7 @@ public class RecordingLibrary extends Activity implements OnItemClickListener {
 
         ad = (AdView) findViewById(R.id.recording_ad);
         ad.setEnabled(showAds);
+        ad.loadAd(new AdRequest());
 
         library = (ListView) findViewById(R.id.recording_library_list);
         library.setOnItemClickListener(this);

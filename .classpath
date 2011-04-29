@@ -3,9 +3,9 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="lib" path="libs/GoogleAdMobAdsSdk-4.0.4.jar"/>
 	<classpathentry kind="src" path="libwave_src"/>
 	<classpathentry kind="src" path="libautotalent_src"/>
 	<classpathentry kind="src" path="libresample_src"/>
-	<classpathentry kind="lib" path="libs/GoogleAdMobAdsSdk-4.0.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
