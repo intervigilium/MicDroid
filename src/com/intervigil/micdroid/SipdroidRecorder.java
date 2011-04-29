@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import net.sourceforge.autotalent.Autotalent;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.AudioRecord;
@@ -37,7 +38,6 @@ import com.intervigil.micdroid.helper.ApplicationHelper;
 import com.intervigil.micdroid.helper.AudioHelper;
 import com.intervigil.micdroid.helper.PreferenceHelper;
 import com.intervigil.micdroid.interfaces.Recorder;
-import com.intervigil.micdroid.pitch.AutoTalent;
 import com.intervigil.wave.WaveReader;
 import com.intervigil.wave.WaveWriter;
 
@@ -184,10 +184,10 @@ public class SipdroidRecorder implements Recorder {
                             short[] instrumentalBuf = new short[num];
                             instrumentalReader.read(instrumentalBuf,
                                     frameSize);
-                            AutoTalent.processMixSamples(buf,
+                            Autotalent.processMixSamples(buf,
                                     instrumentalBuf, num);
                         } else {
-                            AutoTalent.processSamples(buf, num);
+                            Autotalent.processSamples(buf, num);
                         }
                         audioTrack.write(buf, 0, num);
                     }
