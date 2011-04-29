@@ -48,12 +48,13 @@ import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
-import com.admob.android.ads.AdView;
+import com.google.ads.AdView;
 import com.intervigil.micdroid.helper.ApplicationHelper;
 import com.intervigil.micdroid.helper.PreferenceHelper;
 import com.intervigil.micdroid.model.Instrumental;
 import com.intervigil.micdroid.model.Recording;
 import com.intervigil.micdroid.wave.WaveReader;
+
 
 public class InstrumentalLibrary extends Activity {
 
