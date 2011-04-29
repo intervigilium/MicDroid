@@ -21,8 +21,6 @@
 package com.intervigil.micdroid;
 
 import android.app.Activity;
-import android.app.AlertDialog.Builder;
-import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,7 +29,6 @@ import android.view.WindowManager;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.intervigil.micdroid.helper.MediaStoreHelper;
 import com.intervigil.micdroid.model.Recording;
 
 public class RecordingPlayer extends Activity {
@@ -57,7 +54,7 @@ public class RecordingPlayer extends Activity {
                 WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
 
         recording = getIntent().getExtras().getParcelable(
-                Constants.PLAYER_INTENT_RECORDING);
+                Constants.INTENT_EXTRA_RECORDING);
 
         mediaSeekBar = (SeekBar) findViewById(R.id.recording_player_seekbar);
         ((TextView) findViewById(R.id.recording_player_file_name))
@@ -139,34 +136,6 @@ public class RecordingPlayer extends Activity {
             break;
         case R.id.recording_player_btn_stop:
             mediaPlayer.stop();
-            break;
-        case R.id.recording_player_btn_delete:
-            Builder confirmDialogBuilder = new Builder(RecordingPlayer.this);
-            confirmDialogBuilder.setTitle(R.string.confirm_delete_title)
-                    .setMessage(R.string.confirm_delete_message)
-                    .setPositiveButton(R.string.confirm_delete_btn_yes,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog,
-                                        int which) {
-                                    mediaPlayer.close();
-                                    recording.asFile().delete();
-                                    MediaStoreHelper.removeRecording(
-                                            RecordingPlayer.this, recording);
-                                    setResult(Constants.RESULT_FILE_DELETED);
-                                    dialog.dismiss();
-                                    finish();
-                                }
-                            }).setNegativeButton(
-                            R.string.confirm_delete_btn_no,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog,
-                                        int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-            confirmDialogBuilder.create().show();
             break;
         case R.id.recording_player_btn_close:
             finish();

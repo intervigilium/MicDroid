@@ -30,8 +30,8 @@
 		<activity android:label="@string/recording_library"
 			android:name=".RecordingLibrary" />
 		<activity android:label="@string/recording_player"
-			android:name=".RecordingPlayer" android:configChanges="keyboard|keyboardHidden|orientation"
-			android:theme="@android:style/Theme.Dialog" />
+			android:name=".RecordingPlayer" android:theme="@android:style/Theme.Dialog"
+			android:configChanges="keyboard|keyboardHidden|orientation" />
 		<activity android:label="@string/instrumental_library"
 			android:name=".InstrumentalLibrary" />
 

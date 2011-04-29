@@ -28,10 +28,6 @@
 			android:onClick="recordingPlayerClickHandler" android:layout_width="wrap_content"
 			android:layout_height="wrap_content" android:text="@string/recording_player_btn_stop" />
 
-		<Button android:id="@+id/recording_player_btn_delete"
-			android:onClick="recordingPlayerClickHandler" android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:text="@string/recording_player_btn_delete" />
-
 		<Button android:id="@+id/recording_player_btn_close"
 			android:onClick="recordingPlayerClickHandler" android:layout_width="wrap_content"
 			android:layout_height="wrap_content" android:text="@string/recording_player_btn_close" />
