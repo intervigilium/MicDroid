@@ -20,25 +20,14 @@
 
 package com.intervigil.micdroiddonate;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
+import net.sourceforge.autotalent.Autotalent;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.Log;
@@ -54,21 +43,18 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
-import com.intervigil.micdroiddonate.helper.ApplicationHelper;
 import com.intervigil.micdroiddonate.helper.AudioHelper;
 import com.intervigil.micdroiddonate.helper.DialogHelper;
 import com.intervigil.micdroiddonate.helper.HeadsetHelper;
 import com.intervigil.micdroiddonate.helper.PreferenceHelper;
 import com.intervigil.micdroiddonate.helper.UpdateHelper;
+import com.intervigil.micdroiddonate.interfaces.DependentTask;
 import com.intervigil.micdroiddonate.interfaces.Recorder;
-import com.intervigil.micdroiddonate.pitch.AutoTalent;
-import com.intervigil.micdroiddonate.wave.WaveReader;
-import com.intervigil.micdroiddonate.wave.WaveWriter;
+import com.intervigil.micdroiddonate.recorder.SipdroidRecorder;
 
+public class Mic extends Activity implements OnClickListener {
 
-public class Mic extends Activity {
-
-    private static final int AUTOTALENT_CHUNK_SIZE = 8192;
+    private static final String CLASS_MIC = "Mic";
 
     private static final float CONCERT_A = 440.0f;
 
@@ -83,6 +69,8 @@ public class Mic extends Activity {
     private WakeLock wakeLock;
     private Recorder recorder;
     private Timer timer;
+    private ToggleButton recordingButton;
+    private AutotalentTask autotalentTask;
 
     /** Called when the activity is first created. */
     @Override
@@ -92,16 +80,19 @@ public class Mic extends Activity {
 
         Typeface timerFont = Typeface.createFromAsset(getAssets(),
                 "fonts/Clockopia.ttf");
-        ToggleButton recordingButton = ((ToggleButton) findViewById(R.id.recording_button));
+        recordingButton = ((ToggleButton) findViewById(R.id.recording_button));
         Button libraryButton = ((Button) findViewById(R.id.library_button));
         TextView timerDisplay = (TextView) findViewById(R.id.recording_timer);
 
         recordingButton.setChecked(false);
-        recordingButton.setOnCheckedChangeListener(mPowerBtnListener);
-        libraryButton.setOnClickListener(mLibraryBtnListener);
+        recordingButton.setOnCheckedChangeListener(recordBtnListener);
+        libraryButton.setOnClickListener(this);
+
         timerDisplay.setTypeface(timerFont);
 
         timer = new Timer(timerDisplay);
+
+        autotalentTask = new AutotalentTask(Mic.this, postAutotalentTask);
 
         if (PreferenceHelper.getScreenLock(Mic.this)) {
             PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -118,13 +109,13 @@ public class Mic extends Activity {
 
     @Override
     protected void onStart() {
-        Log.i(getPackageName(), "onStart()");
+        Log.i(CLASS_MIC, "onStart()");
         super.onStart();
     }
 
     @Override
     protected void onResume() {
-        Log.i(getPackageName(), "onResume()");
+        Log.i(CLASS_MIC, "onResume()");
         super.onResume();
         if (PreferenceHelper.getScreenLock(Mic.this)) {
             wakeLock.acquire();
@@ -133,7 +124,7 @@ public class Mic extends Activity {
 
     @Override
     protected void onPause() {
-        Log.i(getPackageName(), "onPause()");
+        Log.i(CLASS_MIC, "onPause()");
         super.onPause();
         if (PreferenceHelper.getScreenLock(Mic.this)) {
             wakeLock.release();
@@ -142,13 +133,13 @@ public class Mic extends Activity {
 
     @Override
     protected void onStop() {
-        Log.i(getPackageName(), "onStop()");
+        Log.i(CLASS_MIC, "onStop()");
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        Log.i(getPackageName(), "onDestroy()");
+        Log.i(CLASS_MIC, "onDestroy()");
         super.onStop();
 
         if (wakeLock != null && wakeLock.isHeld()) {
@@ -158,35 +149,34 @@ public class Mic extends Activity {
         if (recorder != null) {
             recorder.cleanup();
         }
-        AutoTalent.destroyAutoTalent();
+        Autotalent.destroyAutotalent();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState) {
-        Log.i(getPackageName(), "onSaveInstanceState()");
+        Log.i(CLASS_MIC, "onSaveInstanceState()");
         super.onSaveInstanceState(savedInstanceState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        Log.i(getPackageName(), "onRestoreInstanceState()");
+        Log.i(CLASS_MIC, "onRestoreInstanceState()");
         super.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        Log.i(getPackageName(), "onConfigurationChanged");
+        Log.i(CLASS_MIC, "onConfigurationChanged");
         super.onConfigurationChanged(newConfig);
 
         setContentView(R.layout.main);
 
         boolean isRecording = recorder != null ? recorder.isRunning() : false;
 
-        ((Button) findViewById(R.id.library_button))
-                .setOnClickListener(mLibraryBtnListener);
+        ((Button) findViewById(R.id.library_button)).setOnClickListener(this);
         ToggleButton micSwitch = (ToggleButton) findViewById(R.id.recording_button);
         micSwitch.setChecked(isRecording);
-        micSwitch.setOnCheckedChangeListener(mPowerBtnListener);
+        micSwitch.setOnCheckedChangeListener(recordBtnListener);
 
         Typeface timerFont = Typeface.createFromAsset(getAssets(),
                 "fonts/Clockopia.ttf");
@@ -208,23 +198,23 @@ public class Mic extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.id.options:
-            Intent preferencesIntent = new Intent(getBaseContext(),
-                    Preferences.class);
-            startActivityForResult(preferencesIntent,
-                    Constants.PREFERENCE_INTENT_CODE);
-            break;
-        case R.id.help:
-            DialogHelper.showWarning(Mic.this, R.string.help_title,
-                    R.string.help_text);
-            break;
-        case R.id.about:
-            DialogHelper.showWarning(Mic.this, R.string.about_title,
-                    R.string.about_text);
-            break;
-        case R.id.quit:
-            finish();
-            break;
+            case R.id.options:
+                Intent preferencesIntent = new Intent(getBaseContext(),
+                        Preferences.class);
+                startActivityForResult(preferencesIntent,
+                        Constants.INTENT_PREFERENCES);
+                break;
+            case R.id.help:
+                DialogHelper.showWarning(Mic.this, R.string.help_title,
+                        R.string.help_text);
+                break;
+            case R.id.about:
+                DialogHelper.showWarning(Mic.this, R.string.about_title,
+                        R.string.about_text);
+                break;
+            case R.id.quit:
+                finish();
+                break;
         }
         return true;
     }
@@ -234,190 +224,40 @@ public class Mic extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
 
         switch (requestCode) {
-        case Constants.FILENAME_ENTRY_INTENT_CODE:
-            if (resultCode == Activity.RESULT_OK) {
-                String fileName = data.getStringExtra(
-                        Constants.NAME_ENTRY_INTENT_FILE_NAME).trim()
-                        + ".wav";
-                new ProcessAutotalentTask().execute(fileName);
-            } else if (resultCode == Activity.RESULT_CANCELED) {
-                Toast.makeText(Mic.this, R.string.recording_save_canceled,
-                        Toast.LENGTH_SHORT).show();
-            }
-            break;
-        case Constants.PREFERENCE_INTENT_CODE:
-            if (recorder != null && !recorder.isRunning()) {
-                recorder.cleanup();
-                recorder = null;
-            }
-            break;
-        default:
-            break;
+            case Constants.INTENT_FILENAME_ENTRY:
+                if (resultCode == Activity.RESULT_OK) {
+                    String fileName = data.getStringExtra(
+                            Constants.INTENT_EXTRA_FILE_NAME).trim()
+                            + ".wav";
+                    updateAutoTalentPreferences();
+                    autotalentTask.runAutotalentTask(fileName);
+                } else if (resultCode == Activity.RESULT_CANCELED) {
+                    Toast.makeText(Mic.this, R.string.recording_save_canceled,
+                            Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case Constants.INTENT_PREFERENCES:
+                if (recorder != null && !recorder.isRunning()) {
+                    recorder.cleanup();
+                    recorder = null;
+                }
+                break;
+            default:
+                break;
         }
     }
 
-    private Handler recordingErrorHandler = new Handler() {
-        // use the handler to receive error messages from the recorder object
-        @Override
-        public void handleMessage(Message msg) {
-            ToggleButton recordingButton = (ToggleButton) findViewById(R.id.recording_button);
-
-            if (recorder != null) {
-                recorder.cleanup();
-                recorder = null;
-            }
-            timer.stop();
-            recordingButton.setChecked(false);
-
-            switch (msg.what) {
-            case Constants.WRITER_OUT_OF_SPACE:
-                // received error that the writer is out of SD card space
-                DialogHelper.showWarning(Mic.this,
-                        R.string.writer_out_of_space_title,
-                        R.string.writer_out_of_space_warning);
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.library_button:
+                Intent libraryIntent = new Intent(getBaseContext(), RecordingLibrary.class);
+                startActivity(libraryIntent);
                 break;
-            case Constants.UNABLE_TO_CREATE_RECORDING:
-                // received error that the writer couldn't create the recording
-                DialogHelper.showWarning(Mic.this,
-                        R.string.unable_to_create_recording_title,
-                        R.string.unable_to_create_recording_warning);
-                break;
-            }
-        }
-    };
-
-    private class ProcessAutotalentTask extends AsyncTask<String, Void, Void> {
-        private WaveReader reader;
-        private WaveWriter writer;
-        private ProgressDialog spinner;
-        private boolean isLiveMode;
-
-        public ProcessAutotalentTask() {
-            spinner = new ProgressDialog(Mic.this);
-            spinner.setCancelable(false);
-            isLiveMode = PreferenceHelper.getLiveMode(Mic.this);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            if (isLiveMode) {
-                spinner.setMessage(getString(R.string.saving_recording_progress_msg));
-            } else {
-                spinner.setMessage(getString(R.string.autotalent_progress_msg));
-            }
-            spinner.show();
-        }
-
-        @Override
-        protected Void doInBackground(String... params) {
-            // maybe ugly but we only pass one string in anyway
-            String fileName = params[0];
-
-            if (isLiveMode) {
-                int len;
-                InputStream in;
-                OutputStream out;
-                byte[] buf = new byte[1024];
-
-                File src = new File(
-                        getCacheDir().getAbsolutePath()
-                        + File.separator
-                        + getString(R.string.default_recording_name));
-                File dst = new File(
-                        ApplicationHelper.getLibraryDirectory()
-                        + File.separator
-                        + fileName);
-                // do a file copy since renameto doesn't work
-                try {
-                    in = new FileInputStream(src);
-                    out = new FileOutputStream(dst);
-                    while ((len = in.read(buf)) > 0) {
-                        out.write(buf, 0, len);
-                    }
-                    in.close();
-                    out.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Message msg = recordingErrorHandler
-                            .obtainMessage(Constants.UNABLE_TO_CREATE_RECORDING);
-                    recordingErrorHandler.sendMessage(msg);
-                    return null;
-                }
-            } else {
-                try {
-                    reader = new WaveReader(
-                            getCacheDir().getAbsolutePath(),
-                            getString(R.string.default_recording_name));
-                    reader.openWave();
-                    writer = new WaveWriter(
-                            ApplicationHelper.getLibraryDirectory(),
-                            fileName,
-                            reader.getSampleRate(),
-                            reader.getChannels(),
-                            reader.getPcmFormat());
-                    writer.createWaveFile();
-                } catch (IOException e) {
-                    // can't create our readers and writers for some reason!
-                    e.printStackTrace();
-                    Message msg = recordingErrorHandler
-                            .obtainMessage(Constants.UNABLE_TO_CREATE_RECORDING);
-                    recordingErrorHandler.sendMessage(msg);
-                    return null;
-                }
-
-                updateAutoTalentPreferences();
-
-                short[] buf = new short[AUTOTALENT_CHUNK_SIZE];
-                while (true) {
-                    try {
-                        int samplesRead = reader.read(buf,
-                                AUTOTALENT_CHUNK_SIZE);
-                        if (samplesRead > 0) {
-                            AutoTalent.processSamples(buf, samplesRead);
-                            writer.write(buf, samplesRead);
-                        } else {
-                            break;
-                        }
-                    } catch (IOException e) {
-                        // failed to read/write to wave file
-                        e.printStackTrace();
-                        Message msg = recordingErrorHandler
-                                .obtainMessage(Constants.WRITER_OUT_OF_SPACE);
-                        recordingErrorHandler.sendMessage(msg);
-                        break;
-                    }
-                }
-
-                try {
-                    reader.closeWaveFile();
-                    writer.closeWaveFile();
-                    AutoTalent.destroyAutoTalent();
-                } catch (IOException e) {
-                    // failed to close out our files correctly
-                    // TODO: real error handling
-                    e.printStackTrace();
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void unused) {
-            spinner.dismiss();
-            Toast.makeText(Mic.this, R.string.recording_save_success,
-                    Toast.LENGTH_SHORT).show();
         }
     }
 
-    private OnClickListener mLibraryBtnListener = new OnClickListener() {
-        public void onClick(View v) {
-            Intent libraryIntent = new Intent(getBaseContext(),
-                    RecordingLibrary.class);
-            startActivity(libraryIntent);
-        }
-    };
-
-    private OnCheckedChangeListener mPowerBtnListener = new OnCheckedChangeListener() {
+    private OnCheckedChangeListener recordBtnListener = new OnCheckedChangeListener() {
         public void onCheckedChanged(CompoundButton btn, boolean isChecked) {
             if (!hasWindowFocus()) {
                 return;
@@ -446,46 +286,10 @@ public class Mic extends Activity {
                             updateAutoTalentPreferences();
                         }
                         if (recorder == null) {
-                            try {
-                                recorder = new SipdroidRecorder(Mic.this,
-                                        recordingErrorHandler, isLiveMode);
-                            } catch (IllegalArgumentException e) {
-                                e.printStackTrace();
-                                btn.setChecked(false);
-                                DialogHelper.showWarning(Mic.this,
-                                        R.string.audio_record_exception_title,
-                                        R.string.audio_record_exception_warning);
-                                return;
-                            }
+                            recorder = new SipdroidRecorder(Mic.this, postRecordTask, isLiveMode);
                         }
-                        try {
-                            recorder.start();
-                            timer.start();
-                            Toast.makeText(getBaseContext(),
-                                    R.string.recording_started_toast,
-                                    Toast.LENGTH_SHORT).show();
-                        } catch (IllegalStateException e) {
-                            btn.setChecked(false);
-                            recorder.cleanup();
-                            DialogHelper.showWarning(Mic.this,
-                                    R.string.audio_record_exception_title,
-                                    R.string.audio_record_exception_warning);
-                            return;
-                        } catch (FileNotFoundException e) {
-                            btn.setChecked(false);
-                            recorder.cleanup();
-                            DialogHelper.showWarning(Mic.this,
-                                    R.string.instrumental_not_found_title,
-                                    R.string.instrumental_not_found_warning);
-                            return;
-                        } catch (IOException e) {
-                            btn.setChecked(false);
-                            recorder.cleanup();
-                            DialogHelper.showWarning(Mic.this,
-                                    R.string.unable_to_create_recording_title,
-                                    R.string.unable_to_create_recording_warning);
-                            return;
-                        }
+                        recorder.start();
+                        timer.start();
                     }
                 } else {
                     if (recorder != null && recorder.isRunning()) {
@@ -493,16 +297,48 @@ public class Mic extends Activity {
                         // message triggered the check state change
                         recorder.stop();
                         timer.stop();
-                        Toast.makeText(getBaseContext(),
-                                R.string.recording_finished_toast,
-                                Toast.LENGTH_SHORT).show();
-                        Intent saveFileIntent = new Intent(getBaseContext(),
-                                FileNameEntry.class);
-                        startActivityForResult(saveFileIntent,
-                                Constants.FILENAME_ENTRY_INTENT_CODE);
                     }
                 }
             }
+        }
+    };
+
+    DependentTask postAutotalentTask = new DependentTask() {
+        @Override
+        public void handleError() {
+            Autotalent.destroyAutotalent();
+        }
+
+        @Override
+        public void doTask() {
+            Autotalent.destroyAutotalent();
+            Toast.makeText(Mic.this, R.string.recording_save_success,
+                    Toast.LENGTH_SHORT).show();
+        }
+    };
+    DependentTask postRecordTask = new DependentTask() {
+        @Override
+        public void doTask() {
+            if (PreferenceHelper.getLiveMode(Mic.this)) {
+                Autotalent.destroyAutotalent();
+            }
+            Toast.makeText(getBaseContext(),
+                    R.string.recording_finished_toast,
+                    Toast.LENGTH_SHORT).show();
+            Intent saveFileIntent = new Intent(getBaseContext(),
+                    FileNameEntry.class);
+            startActivityForResult(saveFileIntent,
+                    Constants.INTENT_FILENAME_ENTRY);
+        }
+
+        @Override
+        public void handleError() {
+            if (PreferenceHelper.getLiveMode(Mic.this)) {
+                Autotalent.destroyAutotalent();
+            }
+            recordingButton.setOnCheckedChangeListener(null);
+            recordingButton.setChecked(false);
+            recordingButton.setOnCheckedChangeListener(recordBtnListener);
         }
     };
 
@@ -512,22 +348,30 @@ public class Mic extends Activity {
         float pitchShift = PreferenceHelper.getPitchShift(Mic.this);
         float strength = PreferenceHelper.getCorrectionStrength(Mic.this);
         float smooth = PreferenceHelper.getCorrectionSmoothness(Mic.this);
-        int formantCorrection = PreferenceHelper.getFormantCorrection(Mic.this) ? 1
-                : 0;
+        int formantCorrection = PreferenceHelper.getFormantCorrection(Mic.this) ? 1 : 0;
         float formantWarp = PreferenceHelper.getFormantWarp(Mic.this);
         float mix = PreferenceHelper.getMix(Mic.this);
 
-        AutoTalent.instantiateAutoTalent(PreferenceHelper
-                .getSampleRate(Mic.this));
-        AutoTalent.initializeAutoTalent(CONCERT_A, key, DEFAULT_FIXED_PITCH,
-                fixedPull, strength, smooth, pitchShift, DEFAULT_SCALE_ROTATE,
-                DEFAULT_LFO_DEPTH, DEFAULT_LFO_RATE, DEFAULT_LFO_SHAPE,
-                DEFAULT_LFO_SYM, DEFAULT_LFO_QUANT, formantCorrection,
-                formantWarp, mix);
+        Autotalent.instantiateAutotalent(PreferenceHelper.getSampleRate(Mic.this));
+        Autotalent.setKey(key);
+        Autotalent.setConcertA(CONCERT_A);
+        Autotalent.setFixedPitch(DEFAULT_FIXED_PITCH);
+        Autotalent.setFixedPull(fixedPull);
+        Autotalent.setCorrectionStrength(strength);
+        Autotalent.setCorrectionSmoothness(smooth);
+        Autotalent.setPitchShift(pitchShift);
+        Autotalent.setScaleRotate(DEFAULT_SCALE_ROTATE);
+        Autotalent.setLfoDepth(DEFAULT_LFO_DEPTH);
+        Autotalent.setLfoRate(DEFAULT_LFO_RATE);
+        Autotalent.setLfoShape(DEFAULT_LFO_SHAPE);
+        Autotalent.setLfoSymmetric(DEFAULT_LFO_SYM);
+        Autotalent.setLfoQuantization(DEFAULT_LFO_QUANT);
+        Autotalent.setFormantCorrection(formantCorrection);
+        Autotalent.setFormantWarp(formantWarp);
+        Autotalent.setMix(mix);
     }
 
     private static boolean canWriteToSdCard() {
-        return Environment.getExternalStorageState().equals(
-                Environment.MEDIA_MOUNTED);
+        return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
     }
 }

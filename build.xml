@@ -52,9 +52,11 @@
      in between standard targets -->
 
     <target name="-pre-build">
+        <!--
         <exec dir="${basedir}" executable="${bash}">
             <arg line="${ndk-build}" />
         </exec>
+        -->
     </target>
 <!--
     <target name="-pre-compile">

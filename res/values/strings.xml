@@ -4,12 +4,11 @@
 	<string name="default_recording_name">recording.wav</string>
 
 	<string name="startup_dialog_title">What\'s new in this version?</string>
-    <string name="startup_dialog_text">1. Fix Galaxy S support\n\
-        2. Write raw files to cache not SD\n\
-        3. New icon\n\
+    <string name="startup_dialog_text">1. Major code cleanup\n\
+        2. Cleaner error handling\n\
+        3. Updated AdMob SDK\n\
         4. Attempt to fix some crashes\n\
-        5. Better+faster error handling\n\
-		6. Add optional ads\n\
+        5. Attempt to fix sound device release\n\
 		\n\
 		DISCLAIMER: This is beta software! May be buggy and force close on you! Author is
 		aware and working on issues!\n\
@@ -17,9 +16,6 @@
 	<string name="startup_dialog_accept_btn">Accept</string>
 
 	<string name="recording_button_label">My Recordings</string>
-
-	<string name="instrumental_library_row_label_1">Instrumental Name</string>
-	<string name="instrumental_library_row_label_2">Instrumental Length</string>
 
 	<string name="recording_library_row_label_1">Recording Name</string>
 	<string name="recording_library_row_label_2">Recording Length</string>
@@ -39,28 +35,16 @@
 		check your sample rate settings and make sure your device is able to
 		record at that rate!</string>
 
-	<string name="writer_out_of_space_title">WARNING!</string>
-	<string name="writer_out_of_space_warning">Writer cannot continue writing data! Please check
-		to make sure your SD card is not full!</string>
-
-	<string name="unable_to_create_recording_title">WARNING!</string>
-	<string name="unable_to_create_recording_warning">Writer cannot create recording! Please make sure
-		your SD card is inserted and is writable!</string>
+	<string name="recording_io_error_title">WARNING!</string>
+	<string name="recording_io_error_warning">Error writing recording! Please make sure
+		your SD card has free space and is inserted and writable!</string>
 
 	<string name="audio_record_exception_title">ERROR!</string>
 	<string name="audio_record_exception_warning">An error has occurred while recording! Please check
 		your settings and make sure your device is able to record audio!</string>
 
-	<string name="instrumental_not_found_title">ERROR!</string>
-	<string name="instrumental_not_found_warning">Instrumental file not found!
-		Please check to see that instrumental file exists and is acccessible!</string>
-
 	<string name="no_headset_plugged_in_title">WARNING!</string>
 	<string name="no_headset_plugged_in_warning">Live correction mode requires headphones!</string>
-
-	<string name="galaxy_s_live_mode_title">ERROR!</string>
-	<string name="galaxy_s_live_mode_error">Samsung Galaxy S phones (Captivate, Vibrant, Epic,
-		Fascinate) do not support live mode.</string>
 
 	<string name="recording_started_toast">Recording started! Press power button to stop
 		recording!</string>
@@ -80,43 +64,27 @@
 	<string name="autotalent_progress_msg">Pitch correction in progress...</string>
 	<string name="saving_recording_progress_msg">Saving recording...</string>
 
-	<string name="instrumental_library">Instrumentals</string>
-	<string name="instrumental_library_title">Instrumental Tracks</string>
-	<string name="instrumental_library_empty">No Instrumentals</string>
-
-	<string name="instrumental_options_title">Instrumental Options</string>
-	<string name="instrumental_options_set">Set Instrumental as backing track</string>
-	<string name="instrumental_options_unset">Unset Instrumental as backing track</string>
-	<string name="instrumental_options_remove">Delete Instrumental from library</string>
-
-	<string name="instrumental_options_track_set">Instrumental set as backing track!</string>
-	<string name="instrumental_options_track_unset">Instrumental unset!</string>
-	<string name="instrumental_options_track_unset_error">Instrumental not set as backing track!</string>
-	<string name="instrumental_options_track_deleted">Instrumental track deleted!</string>
-
 	<string name="recording_library">Recordings</string>
 	<string name="recording_library_title">Recorded Clips</string>
 	<string name="recording_library_empty">No Recordings</string>
 
 	<string name="recording_options_title">Recording Options</string>
+	<string name="recording_options_play">Play Recording</string>
+	<string name="recording_options_delete">Delete Recording</string>
 	<string name="recording_options_rename">Rename Recording</string>
 	<string name="recording_options_set_ringtone">Set as Ringtone</string>
 	<string name="recording_options_set_notification">Set as Notification</string>
-	<string name="recording_options_send_email">Send as Email</string>
-	<string name="recording_options_send_mms">Send as MMS</string>
+	<string name="recording_options_share">Share recording</string>
 
 	<string name="recording_options_ringtone_set">Recording set as ringtone!</string>
 	<string name="recording_options_ringtone_error">Unable to set recording as ringtone!</string>
 	<string name="recording_options_notification_set">Recording set as notification!</string>
 	<string name="recording_options_notification_error">Unable to set recording as notification!</string>
-	<string name="recording_options_mms_sent">Recording sent as MMS!</string>
-	<string name="recording_options_email_sent">Recording sent as email!</string>
 
 	<string name="recording_player">Recording Player</string>
 	<string name="recording_player_file_name">Recording Name</string>
 	<string name="recording_player_btn_play">Play</string>
 	<string name="recording_player_btn_stop">Stop</string>
-	<string name="recording_player_btn_delete">Delete</string>
 	<string name="recording_player_btn_close">Close</string>
 
 	<string name="confirm_delete_title">Delete Recording</string>
@@ -130,17 +98,10 @@
 	<string name="confirm_reset_prefs_btn_yes">Reset</string>
 	<string name="confirm_reset_prefs_btn_no">Cancel</string>
 
-	<string name="live_mode_enable_title">WARNING!</string>
-	<string name="live_mode_enable_warning">Live pitch-correction mode requires a powerful
-		phone and headphones in order to function properly.\n\ Motorola Droid
-		or better is recommended!\n\ Enable at your own risk!</string>
-
 	<string name="set_preferences">Pitch-Correction Settings</string>
 	<string name="mic_label">Power Button</string>
 	<string name="mic_toggle_off">On</string>
 	<string name="mic_toggle_on">Off</string>
-
-	<string name="prefs_instrumental_track_key">instrumental_track</string>
 
 	<string name="prefs_cat_screen">Android Settings</string>
 	<string name="prefs_prevent_screen_lock_key">screen_lock</string>
@@ -156,7 +117,7 @@
 	<string name="prefs_enable_ads_summary_off">Please consider showing ads to support the
 		developer!</string>
 	<string name="prefs_enable_ads_title">Enable Mobile Ads</string>
-	<string name="prefs_enable_ads_default">true</string>
+	<string name="prefs_enable_ads_default">false</string>
 
 	<string name="prefs_cat_recording">Recording Settings</string>
 	<string name="prefs_live_mode_key">live_mode</string>
@@ -199,7 +160,7 @@
 	<string name="prefs_pitch_pull">Pull to Fixed Pitch</string>
 	<string name="prefs_pitch_pull_summary">The degree that pitch is pulled towards</string>
 	<string name="prefs_pitch_pull_title">Pull to Fixed Pitch</string>
-	<string name="prefs_pitch_pull_default">0.1</string>
+	<string name="prefs_pitch_pull_default">0.0</string>
 
 	<string name="prefs_pitch_shift_key">pitch_shift</string>
 	<string name="prefs_pitch_shift">Pitch Shift</string>
@@ -247,7 +208,7 @@
 	<string name="prefs_reset_default_title">Reset to Default</string>
 	<string name="prefs_reset_default_default">false</string>
 
-	<string name="about_title">About MicDroid Version 0.44</string>
+	<string name="about_title">About MicDroid Version 0.45</string>
 	<string name="about_text">Graphics work courtesy of Peng X. Wang:
 		http://pengxwang.com\n\
 		\n\

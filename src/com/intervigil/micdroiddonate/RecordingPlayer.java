@@ -21,21 +21,22 @@
 package com.intervigil.micdroiddonate;
 
 import android.app.Activity;
-import android.app.AlertDialog.Builder;
-import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.intervigil.micdroiddonate.helper.MediaStoreHelper;
 import com.intervigil.micdroiddonate.model.Recording;
 
-public class RecordingPlayer extends Activity {
 
+public class RecordingPlayer extends Activity implements OnClickListener {
+
+    private static final String CLASS_RECORDING_PLAYER = "RecordingPlayer";
     private static final int SEEKBAR_RESOLUTION = 1000;
 
     private Recording recording;
@@ -57,7 +58,11 @@ public class RecordingPlayer extends Activity {
                 WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
 
         recording = getIntent().getExtras().getParcelable(
-                Constants.PLAYER_INTENT_RECORDING);
+                Constants.INTENT_EXTRA_RECORDING);
+
+        ((Button) findViewById(R.id.recording_player_btn_play)).setOnClickListener(this);
+        ((Button) findViewById(R.id.recording_player_btn_stop)).setOnClickListener(this);
+        ((Button) findViewById(R.id.recording_player_btn_close)).setOnClickListener(this);
 
         mediaSeekBar = (SeekBar) findViewById(R.id.recording_player_seekbar);
         ((TextView) findViewById(R.id.recording_player_file_name))
@@ -70,19 +75,19 @@ public class RecordingPlayer extends Activity {
 
     @Override
     protected void onStart() {
-        Log.i("RecordingPlayer", "onStart()");
+        Log.i(CLASS_RECORDING_PLAYER, "onStart()");
         super.onStart();
     }
 
     @Override
     protected void onResume() {
-        Log.i("RecordingPlayer", "onResume()");
+        Log.i(CLASS_RECORDING_PLAYER, "onResume()");
         super.onResume();
     }
 
     @Override
     protected void onPause() {
-        Log.i("RecordingPlayer", "onPause()");
+        Log.i(CLASS_RECORDING_PLAYER, "onPause()");
         super.onPause();
 
         if (isFinishing()) {
@@ -95,13 +100,13 @@ public class RecordingPlayer extends Activity {
 
     @Override
     protected void onStop() {
-        Log.i("RecordingPlayer", "onStop()");
+        Log.i(CLASS_RECORDING_PLAYER, "onStop()");
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        Log.i("RecordingPlayer", "onDestroy()");
+        Log.i(CLASS_RECORDING_PLAYER, "onDestroy()");
         super.onDestroy();
 
         if (mediaPlayer != null) {
@@ -112,13 +117,13 @@ public class RecordingPlayer extends Activity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        Log.i(getPackageName(), "onSaveInstanceState()");
+        Log.i(CLASS_RECORDING_PLAYER, "onSaveInstanceState()");
         super.onSaveInstanceState(outState);
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        Log.i(getPackageName(), "onConfigurationChanged");
+        Log.i(CLASS_RECORDING_PLAYER, "onConfigurationChanged");
         super.onConfigurationChanged(newConfig);
 
         setContentView(R.layout.recording_player);
@@ -128,51 +133,23 @@ public class RecordingPlayer extends Activity {
                 .setText(recording.getName());
 
         mediaSeekBar.setMax(SEEKBAR_RESOLUTION);
-
         mediaPlayer.bindSeekBar(mediaSeekBar);
     }
 
-    public void recordingPlayerClickHandler(View view) {
-        switch (view.getId()) {
-        case R.id.recording_player_btn_play:
-            mediaPlayer.play();
-            break;
-        case R.id.recording_player_btn_stop:
-            mediaPlayer.stop();
-            break;
-        case R.id.recording_player_btn_delete:
-            Builder confirmDialogBuilder = new Builder(RecordingPlayer.this);
-            confirmDialogBuilder.setTitle(R.string.confirm_delete_title)
-                    .setMessage(R.string.confirm_delete_message)
-                    .setPositiveButton(R.string.confirm_delete_btn_yes,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog,
-                                        int which) {
-                                    mediaPlayer.close();
-                                    recording.asFile().delete();
-                                    MediaStoreHelper.removeRecording(
-                                            RecordingPlayer.this, recording);
-                                    setResult(Constants.RESULT_FILE_DELETED);
-                                    dialog.dismiss();
-                                    finish();
-                                }
-                            }).setNegativeButton(
-                            R.string.confirm_delete_btn_no,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog,
-                                        int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-            confirmDialogBuilder.create().show();
-            break;
-        case R.id.recording_player_btn_close:
-            finish();
-            break;
-        default:
-            break;
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.recording_player_btn_play:
+                mediaPlayer.play();
+                break;
+            case R.id.recording_player_btn_stop:
+                mediaPlayer.stop();
+                break;
+            case R.id.recording_player_btn_close:
+                finish();
+                break;
+            default:
+                break;
         }
     }
 }

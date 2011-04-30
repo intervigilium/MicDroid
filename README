@@ -3,11 +3,9 @@ This project is licensed under GPLv2, for further licensing information see the
 LICENSE file.
 
 Build Instructions:
-Import project into Eclipse, since I have not created Ant makefiles for this project.
+Requires libautotalent, libwave, also available from github.
+Import project into Eclipse, or use Ant makefiles for this project.
 For help building the autotalent C library, please consult the INSTALL file. 
 
 Known Issues:
-Must write as PCM wav, since we do not have an API to access encoders
 
-This project uses Autotalent from http://web.mit.edu/tbaran/www/autotalent.html
-which was created originally by Tom Baran.

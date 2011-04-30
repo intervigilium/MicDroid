@@ -182,25 +182,6 @@ public class PreferenceHelper {
         prefEditor.commit();
     }
 
-    public static String getInstrumentalTrack(Context context) {
-        SharedPreferences prefReader =
-            PreferenceManager.getDefaultSharedPreferences(context);
-        String pref = prefReader.getString(
-                context.getString(R.string.prefs_instrumental_track_key),
-                Constants.EMPTY_STRING);
-        return pref;
-    }
-
-    public static void setInstrumentalTrack(Context context,
-            String instrumentalName) {
-        Editor prefEditor =
-            PreferenceManager.getDefaultSharedPreferences(context).edit();
-        prefEditor.putString(
-                context.getString(R.string.prefs_instrumental_track_key),
-                instrumentalName);
-        prefEditor.commit();
-    }
-
     public static int getLastVersionCode(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context).getInt(
                 Constants.KEY_LAST_VERSION_CODE, -1);

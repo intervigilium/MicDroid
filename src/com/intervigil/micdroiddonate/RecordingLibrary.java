@@ -20,6 +20,7 @@
 package com.intervigil.micdroiddonate;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,7 @@ import java.util.List;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -46,17 +48,19 @@ import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
-import com.admob.android.ads.AdView;
+import com.google.ads.AdView;
+import com.intervigil.micdroiddonate.helper.AdHelper;
 import com.intervigil.micdroiddonate.helper.ApplicationHelper;
-import com.intervigil.micdroiddonate.helper.MediaStoreHelper;
+import com.intervigil.micdroiddonate.helper.DialogHelper;
 import com.intervigil.micdroiddonate.helper.PreferenceHelper;
 import com.intervigil.micdroiddonate.helper.RecordingOptionsHelper;
 import com.intervigil.micdroiddonate.model.Recording;
-import com.intervigil.micdroiddonate.wave.WaveReader;
+import com.intervigil.wave.exception.InvalidWaveException;
 
 
-public class RecordingLibrary extends Activity {
+public class RecordingLibrary extends Activity implements OnItemClickListener {
 
+    private static final String CLASS_RECORDING_LIBRARY = "RecordingLibrary";
     private static final String STATE_LOAD_IN_PROGRESS = "load_recordings_in_progress";
 
     private Boolean showAds;
@@ -84,56 +88,50 @@ public class RecordingLibrary extends Activity {
         showAds = PreferenceHelper.getShowAds(RecordingLibrary.this);
 
         ad = (AdView) findViewById(R.id.recording_ad);
-        ad.setEnabled(showAds);
+        AdHelper.GenerateAd(ad, showAds);
 
         library = (ListView) findViewById(R.id.recording_library_list);
-        library.setOnItemClickListener(libraryClickListener);
+        library.setOnItemClickListener(this);
         registerForContextMenu(library);
 
         Object savedRecordings = getLastNonConfigurationInstance();
         if (savedRecordings == null) {
             recordings = new ArrayList<Recording>();
-            this.libraryAdapter = new RecordingAdapter(this,
-                    R.layout.recording_library_row, recordings);
-            library.setAdapter(libraryAdapter);
-            loadRecordingsTask = (LoadRecordingsTask) new LoadRecordingsTask()
-                    .execute((Void) null);
         } else {
             recordings = (ArrayList<Recording>) savedRecordings;
-            this.libraryAdapter = new RecordingAdapter(this,
-                    R.layout.recording_library_row, recordings);
-            library.setAdapter(libraryAdapter);
-            this.libraryAdapter.notifyDataSetChanged();
         }
+        libraryAdapter = new RecordingAdapter(this, R.layout.recording_library_row, recordings);
+        library.setAdapter(libraryAdapter);
+        loadRecordingsTask = (LoadRecordingsTask) new LoadRecordingsTask().execute((Void) null);
     }
 
     @Override
     protected void onStart() {
-        Log.i(getPackageName(), "onStart()");
+        Log.i(CLASS_RECORDING_LIBRARY, "onStart()");
         super.onStart();
     }
 
     @Override
     protected void onResume() {
-        Log.i(getPackageName(), "onResume()");
+        Log.i(CLASS_RECORDING_LIBRARY, "onResume()");
         super.onResume();
     }
 
     @Override
     protected void onPause() {
-        Log.i(getPackageName(), "onPause()");
+        Log.i(CLASS_RECORDING_LIBRARY, "onPause()");
         super.onPause();
     }
 
     @Override
     protected void onStop() {
-        Log.i(getPackageName(), "onStop()");
+        Log.i(CLASS_RECORDING_LIBRARY, "onStop()");
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        Log.i(getPackageName(), "onDestroy()");
+        Log.i(CLASS_RECORDING_LIBRARY, "onDestroy()");
         super.onDestroy();
 
         onCancelLoadRecordings();
@@ -141,7 +139,7 @@ public class RecordingLibrary extends Activity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        Log.i(getPackageName(), "onSaveInstanceState()");
+        Log.i(CLASS_RECORDING_LIBRARY, "onSaveInstanceState()");
         super.onSaveInstanceState(outState);
 
         saveLoadRecordingsTask(outState);
@@ -149,7 +147,7 @@ public class RecordingLibrary extends Activity {
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        Log.i(getPackageName(), "onRestoreInstanceState()");
+        Log.i(CLASS_RECORDING_LIBRARY, "onRestoreInstanceState()");
         super.onRestoreInstanceState(savedInstanceState);
 
         restoreLoadRecordingsTask(savedInstanceState);
@@ -166,130 +164,125 @@ public class RecordingLibrary extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
 
         switch (requestCode) {
-        case Constants.PLAYER_INTENT_CODE:
-            if (resultCode == Constants.RESULT_FILE_DELETED) {
-                // refresh recordings list since something was removed
-                loadRecordingsTask = (LoadRecordingsTask) new LoadRecordingsTask()
-                        .execute((Void) null);
-            }
-            break;
-        case Constants.FILENAME_ENTRY_INTENT_CODE:
-            if (resultCode == Activity.RESULT_OK) {
-                // get results from the intent
-                Recording r = data
-                        .getParcelableExtra(Constants.NAME_ENTRY_INTENT_RECORDING);
-                String destinationName = data.getStringExtra(
-                        Constants.NAME_ENTRY_INTENT_FILE_NAME).trim()
-                        + ".wav";
-
-                File destination = new File(ApplicationHelper
-                        .getLibraryDirectory()
-                        + File.separator + destinationName);
-                MediaStoreHelper.removeRecording(RecordingLibrary.this, r);
-                r.moveTo(destination);
-                // refresh recordings list since something was renamed
-                loadRecordingsTask = (LoadRecordingsTask) new LoadRecordingsTask()
-                        .execute((Void) null);
-            }
-            break;
-        default:
-            break;
+            case Constants.INTENT_FILENAME_ENTRY:
+                if (resultCode == Activity.RESULT_OK) {
+                    Recording r = data.getParcelableExtra(Constants.INTENT_EXTRA_RECORDING);
+                    recordings.remove(r);
+                    String destinationName = data.getStringExtra(
+                            Constants.INTENT_EXTRA_FILE_NAME).trim()
+                            + ".wav";
+                    File destination = new File(ApplicationHelper.getLibraryDirectory()
+                            + File.separator + destinationName);
+                    r.moveTo(destination);
+                    recordings.add(r);
+                    libraryAdapter.notifyDataSetChanged();
+                }
+                break;
+            default:
+                break;
         }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        view.showContextMenu();
     }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
             ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        menu.setHeaderTitle(R.string.recording_options_title);
 
+        menu.setHeaderTitle(R.string.recording_options_title);
+        menu.add(Menu.NONE, R.string.recording_options_play, Menu.NONE,
+                R.string.recording_options_play);
+        menu.add(Menu.NONE, R.string.recording_options_delete, Menu.NONE,
+                R.string.recording_options_delete);
         menu.add(Menu.NONE, R.string.recording_options_rename, Menu.NONE,
                 R.string.recording_options_rename);
         menu.add(Menu.NONE, R.string.recording_options_set_ringtone, Menu.NONE,
                 R.string.recording_options_set_ringtone);
         menu.add(Menu.NONE, R.string.recording_options_set_notification,
                 Menu.NONE, R.string.recording_options_set_notification);
-        menu.add(Menu.NONE, R.string.recording_options_send_email, Menu.NONE,
-                R.string.recording_options_send_email);
-        // disable MMS for now because it can't attach wav files
-        // menu.add(Menu.NONE, R.string.recording_options_send_mms, Menu.NONE,
-        // R.string.recording_options_send_mms);
+        menu.add(Menu.NONE, R.string.recording_options_share, Menu.NONE,
+                R.string.recording_options_share);
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
-                .getMenuInfo();
-        Recording r = (Recording) libraryAdapter.getItem(info.position);
+        AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+        final Recording r = (Recording) libraryAdapter.getItem(info.position);
 
         switch (item.getItemId()) {
-        case R.string.recording_options_set_ringtone:
-            if (RecordingOptionsHelper.setRingTone(RecordingLibrary.this, r)) {
-                Toast.makeText(RecordingLibrary.this,
-                        R.string.recording_options_ringtone_set,
-                        Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(RecordingLibrary.this,
-                        R.string.recording_options_ringtone_error,
-                        Toast.LENGTH_SHORT).show();
-            }
-            break;
-        case R.string.recording_options_set_notification:
-            if (RecordingOptionsHelper.setNotificationTone(
-                    RecordingLibrary.this, r)) {
-                Toast.makeText(RecordingLibrary.this,
-                        R.string.recording_options_notification_set,
-                        Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(RecordingLibrary.this,
-                        R.string.recording_options_notification_error,
-                        Toast.LENGTH_SHORT).show();
-            }
-            break;
-        case R.string.recording_options_send_email:
-            RecordingOptionsHelper
-                    .sendEmailAttachment(RecordingLibrary.this, r);
-            break;
-        case R.string.recording_options_send_mms:
-            RecordingOptionsHelper.sendMms(RecordingLibrary.this, r);
-            break;
-        case R.string.recording_options_rename:
-            Intent renameFileIntent = new Intent(getBaseContext(),
-                    FileNameEntry.class);
-            // add recording info to file name entry intent
-            Bundle recordingData = new Bundle();
-            recordingData.putParcelable(Constants.NAME_ENTRY_INTENT_RECORDING,
-                    r);
-            renameFileIntent.putExtras(recordingData);
+            case R.string.recording_options_play:
+                RecordingOptionsHelper.playRecording(RecordingLibrary.this, r);
+                break;
+            case R.string.recording_options_delete:
+                DialogInterface.OnClickListener deleteListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                r.delete();
+                                libraryAdapter.remove(r);
+                                libraryAdapter.notifyDataSetChanged();
+                                dialog.dismiss();
+                                break;
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                dialog.dismiss();
+                                break;
+                        }
+                    }
+                };
+                DialogHelper.showConfirmation(RecordingLibrary.this,
+                        R.string.confirm_delete_title,
+                        R.string.confirm_delete_message,
+                        R.string.confirm_delete_btn_yes,
+                        R.string.confirm_delete_btn_no,
+                        deleteListener);
+                break;
+            case R.string.recording_options_rename:
+                Intent renameFileIntent = new Intent(getBaseContext(), FileNameEntry.class);
+                Bundle recordingData = new Bundle();
+                recordingData.putParcelable(Constants.INTENT_EXTRA_RECORDING, r);
+                renameFileIntent.putExtras(recordingData);
 
-            startActivityForResult(renameFileIntent,
-                    Constants.FILENAME_ENTRY_INTENT_CODE);
-            break;
-        default:
-            break;
+                startActivityForResult(renameFileIntent, Constants.INTENT_FILENAME_ENTRY);
+                break;
+            case R.string.recording_options_set_ringtone:
+                if (RecordingOptionsHelper.setRingTone(RecordingLibrary.this, r)) {
+                    Toast.makeText(RecordingLibrary.this,
+                            R.string.recording_options_ringtone_set,
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(RecordingLibrary.this,
+                            R.string.recording_options_ringtone_error,
+                            Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case R.string.recording_options_set_notification:
+                if (RecordingOptionsHelper.setNotificationTone(
+                        RecordingLibrary.this, r)) {
+                    Toast.makeText(RecordingLibrary.this,
+                            R.string.recording_options_notification_set,
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(RecordingLibrary.this,
+                            R.string.recording_options_notification_error,
+                            Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case R.string.recording_options_share:
+                RecordingOptionsHelper.shareRecording(RecordingLibrary.this, r);
+                break;
+            default:
+                break;
         }
         return true;
     }
 
-    private OnItemClickListener libraryClickListener = new OnItemClickListener() {
-        public void onItemClick(AdapterView<?> parent, View view, int position,
-                long id) {
-            Recording r = (Recording) parent.getItemAtPosition(position);
-
-            Intent playIntent = new Intent(getBaseContext(),
-                    RecordingPlayer.class);
-            Bundle playData = new Bundle();
-            // add recording info to play intent
-            playData.putParcelable(Constants.PLAYER_INTENT_RECORDING, r);
-            playIntent.putExtras(playData);
-
-            startActivityForResult(playIntent, Constants.PLAYER_INTENT_CODE);
-        }
-    };
-
     private class RecordingAdapter extends ArrayAdapter<Recording> {
-        public RecordingAdapter(Context context, int textViewResourceId,
-                List<Recording> objects) {
+        public RecordingAdapter(Context context, int textViewResourceId, List<Recording> objects) {
             super(context, textViewResourceId, objects);
         }
 
@@ -298,16 +291,15 @@ public class RecordingLibrary extends Activity {
             View view = convertView;
             if (view == null) {
                 LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = vi
-                        .inflate(R.layout.recording_library_row, parent, false);
+                view = vi.inflate(R.layout.recording_library_row, parent, false);
             }
 
-            Recording r = this.getItem(position);
+            Recording r = getItem(position);
             if (r != null) {
-                ((TextView) view.findViewById(R.id.recording_row_first_line))
-                        .setText("Name: " + r.getName());
-                ((TextView) view.findViewById(R.id.recording_row_second_line))
-                        .setText("Length: " + r.getLength());
+                TextView name = (TextView) view.findViewById(R.id.recording_row_first_line);
+                TextView length = (TextView) view.findViewById(R.id.recording_row_second_line);
+                name.setText("Name: " + r.getName());
+                length.setText("Length: " + r.getLength());
             }
 
             return view;
@@ -337,9 +329,7 @@ public class RecordingLibrary extends Activity {
         }
     }
 
-    private class LoadRecordingsTask extends AsyncTask<Void, Recording, Void> {
-        // Async load all the recordings already in the directory
-
+    private class LoadRecordingsTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
             libraryAdapter.clear();
@@ -356,43 +346,20 @@ public class RecordingLibrary extends Activity {
             if (waveFiles != null) {
                 for (int i = 0; i < waveFiles.length; i++) {
                     if (waveFiles[i].isFile()) {
-                        WaveReader reader = new WaveReader(waveFiles[i]);
-
+                        Recording r = null;
                         try {
-                            reader.openWave();
-                            Recording r = new Recording(libraryDir
-                                    .getAbsolutePath(), waveFiles[i].getName(),
-                                    reader.getLength(), reader.getDataSize()
-                                            + Recording.WAVE_HEADER_SIZE);
-                            reader.closeWaveFile();
-                            reader = null;
-
-                            publishProgress(r);
-
-                            // check to see if this exists in the media store,
-                            // if it doesn't insert it
-                            if (!MediaStoreHelper.isInserted(
-                                    RecordingLibrary.this, r)) {
-                                MediaStoreHelper.insertRecording(
-                                        RecordingLibrary.this, r);
-                                Log.i("RecordingLibrary", String.format(
-                                        "Added recording %s to media store", r
-                                                .getName()));
-                            }
-                            Log.i("RecordingLibrary", String.format(
-                                    "Added recording %s to library", r
-                                            .getName()));
+                            r = new Recording(waveFiles[i]);
+                            recordings.add(r);
+                        } catch (FileNotFoundException e) {
+                            Log.i(CLASS_RECORDING_LIBRARY,
+                                    String.format("File %s not found in library directory!",
+                                            waveFiles[i].getName()));
+                        } catch (InvalidWaveException e) {
+                            Log.i(CLASS_RECORDING_LIBRARY,
+                                    String.format("Non-wave file %s found in library directory!",
+                                            waveFiles[i].getName()));
                         } catch (IOException e) {
-                            // yes I know it sucks that we do control flow with
-                            // an exception here, fix it later
-                            Log
-                                    .i(
-                                            "RecordingLibrary",
-                                            String
-                                                    .format(
-                                                            "Non-wave file %s found in library directory!",
-                                                            waveFiles[i]
-                                                                    .getName()));
+                            // can't recover
                         }
                     }
                 }
@@ -402,15 +369,8 @@ public class RecordingLibrary extends Activity {
         }
 
         @Override
-        protected void onProgressUpdate(Recording... values) {
-            Recording r = values[0];
-            if (r != null) {
-                libraryAdapter.add(r);
-            }
-        }
-
-        @Override
         protected void onPostExecute(Void result) {
+            libraryAdapter.notifyDataSetChanged();
             loadRecordingSpinner.dismiss();
         }
     }

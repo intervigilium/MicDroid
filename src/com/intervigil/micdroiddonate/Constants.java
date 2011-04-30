@@ -38,24 +38,16 @@ public class Constants {
     public static final int SAMPLE_RATE_8KHZ = 8000;
 
     // intent codes
-    public static final int FILENAME_ENTRY_INTENT_CODE = 12768;
-    public static final int PLAYER_INTENT_CODE = 12769;
-    public static final int PREFERENCE_INTENT_CODE = 12771;
+    public static final int INTENT_FILENAME_ENTRY = 12768;
+    public static final int INTENT_PREFERENCES = 12771;
 
-    // result codes
-    public static final int RESULT_FILE_DELETED = 12770;
     // intent extras
-    public static final String PLAYER_INTENT_RECORDING = "PLAYER_RECORDING";
-    public static final String NAME_ENTRY_INTENT_RECORDING = "NAME_ENTRY_RECORDING";
-    public static final String NAME_ENTRY_INTENT_FILE_NAME = "NAME_ENTRY_FILENAME_RESULT";
+    public static final String INTENT_EXTRA_RECORDING = "NAME_ENTRY_RECORDING";
+    public static final String INTENT_EXTRA_FILE_NAME = "NAME_ENTRY_FILENAME_RESULT";
 
     // shared preference keys
     public static final String KEY_LAST_VERSION_CODE = "prefs_last_version_code";
 
     // mime type
-    public static final String AUDIO_WAVE = "audio/wav";
-
-    // recording error handler codes
-    public static final int WRITER_OUT_OF_SPACE = 6;
-    public static final int UNABLE_TO_CREATE_RECORDING = 7;
+    public static final String MIME_AUDIO_WAV = "audio/x-wav";
 }

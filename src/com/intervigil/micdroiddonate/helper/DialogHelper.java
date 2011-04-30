@@ -20,13 +20,17 @@
 package com.intervigil.micdroiddonate.helper;
 
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+
+import com.intervigil.micdroiddonate.R;
 
 public class DialogHelper {
 
     public static void showWarning(Context context, int titleId, int warningId) {
-        AlertDialog.Builder warningBuilder = new AlertDialog.Builder(context);
+        Builder warningBuilder = new AlertDialog.Builder(context);
         warningBuilder.setMessage(context.getString(warningId)).setTitle(
                 context.getString(titleId)).setCancelable(false)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -35,5 +39,15 @@ public class DialogHelper {
                     }
                 });
         warningBuilder.create().show();
+    }
+
+    public static void showConfirmation(Context context, int titleId, int messageId,
+            int positiveId, int negativeId, OnClickListener clickListener) {
+        Builder confirmDialogBuilder = new Builder(context);
+        confirmDialogBuilder.setTitle(R.string.confirm_delete_title)
+                .setMessage(R.string.confirm_delete_message)
+                .setPositiveButton(R.string.confirm_delete_btn_yes, clickListener)
+                .setNegativeButton(R.string.confirm_delete_btn_no, clickListener);
+        confirmDialogBuilder.create().show();
     }
 }

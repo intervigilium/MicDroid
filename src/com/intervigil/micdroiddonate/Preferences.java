@@ -19,22 +19,22 @@
 
 package com.intervigil.micdroiddonate;
 
+import net.sourceforge.autotalent.Autotalent;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.util.Log;
 
-import com.intervigil.micdroiddonate.helper.DialogHelper;
 import com.intervigil.micdroiddonate.helper.PreferenceHelper;
 
 
-public class Preferences extends PreferenceActivity implements
-        OnSharedPreferenceChangeListener {
+public class Preferences extends PreferenceActivity {
+
+    private static final String CLASS_PREFERENCES = "Preferences";
+
     /**
      * Called when the activity is starting. This is where most initialization
      * should go: calling setContentView(int) to inflate the activity's UI, etc.
@@ -49,58 +49,41 @@ public class Preferences extends PreferenceActivity implements
         // Load the preferences from an XML resource.
         addPreferencesFromResource(R.xml.preferences);
 
+        Preference liveCorrection = (Preference) findPreference(getString(R.string.prefs_live_mode_key));
+        liveCorrection.setEnabled(Autotalent.getLiveCorrectionEnabled());
+
         Preference resetDefault = (Preference) findPreference(getString(R.string.prefs_reset_default_key));
         resetDefault.setOnPreferenceClickListener(resetListener);
     }
 
     @Override
     protected void onStart() {
-        Log.i("Preferences", "onStart()");
+        Log.i(CLASS_PREFERENCES, "onStart()");
         super.onStart();
     }
 
     @Override
     protected void onResume() {
-        Log.i("Preferences", "onResume()");
+        Log.i(CLASS_PREFERENCES, "onResume()");
         super.onResume();
-
-        // Set up a listener whenever a key changes
-        getPreferenceScreen().getSharedPreferences()
-                .registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
     protected void onPause() {
-        Log.i("Preferences", "onPause()");
+        Log.i(CLASS_PREFERENCES, "onPause()");
         super.onPause();
-
-        // Unregister the listener whenever a key changes
-        getPreferenceScreen().getSharedPreferences()
-                .unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override
     protected void onStop() {
-        Log.i("Preferences", "onStop()");
+        Log.i(CLASS_PREFERENCES, "onStop()");
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        Log.i("Preferences", "onDestroy()");
+        Log.i(CLASS_PREFERENCES, "onDestroy()");
         super.onStop();
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
-            String key) {
-        if (key.equals(getString(R.string.prefs_live_mode_key))) {
-            if (PreferenceHelper.getLiveMode(Preferences.this)) {
-                DialogHelper.showWarning(Preferences.this,
-                        R.string.live_mode_enable_title,
-                        R.string.live_mode_enable_warning);
-            }
-        }
     }
 
     private OnPreferenceClickListener resetListener = new OnPreferenceClickListener() {

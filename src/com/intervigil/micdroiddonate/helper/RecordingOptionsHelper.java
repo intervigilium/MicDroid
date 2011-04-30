@@ -19,17 +19,33 @@
 
 package com.intervigil.micdroiddonate.helper;
 
-import java.io.File;
-
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Bundle;
 
 import com.intervigil.micdroiddonate.Constants;
+import com.intervigil.micdroiddonate.RecordingPlayer;
 import com.intervigil.micdroiddonate.model.Recording;
 
+
 public class RecordingOptionsHelper {
+
+    public static void playRecording(Context context, Recording recording) {
+        try {
+            Intent playIntent = new Intent(Intent.ACTION_VIEW);
+            playIntent.setDataAndType(Uri.fromFile(recording.asFile()), Constants.MIME_AUDIO_WAV);
+            context.startActivity(playIntent);
+        } catch (ActivityNotFoundException e) {
+            Intent playIntent = new Intent(context, RecordingPlayer.class);
+            Bundle playData = new Bundle();
+            playData.putParcelable(Constants.INTENT_EXTRA_RECORDING, recording);
+            playIntent.putExtras(playData);
+            context.startActivity(playIntent);
+        }
+    }
 
     public static boolean setRingTone(Context context, Recording recording) {
         Uri recordingUri = MediaStoreHelper.getRecordingUri(context, recording);
@@ -52,28 +68,10 @@ public class RecordingOptionsHelper {
         return false;
     }
 
-    public static void sendEmailAttachment(Context context, Recording recording) {
-        String recordingPath = ApplicationHelper.getLibraryDirectory()
-                + File.separator + recording.getName();
-        File recordingFile = new File(recordingPath);
-
-        Intent sendEmailIntent = new Intent(Intent.ACTION_SEND);
-        sendEmailIntent.setType(Constants.AUDIO_WAVE);
-        sendEmailIntent.putExtra(Intent.EXTRA_SUBJECT, "MicDroid");
-        sendEmailIntent.putExtra(Intent.EXTRA_STREAM, Uri
-                .fromFile(recordingFile));
-        context.startActivity(Intent.createChooser(sendEmailIntent, "Email:"));
-    }
-
-    public static void sendMms(Context context, Recording recording) {
-        String recordingPath = ApplicationHelper.getLibraryDirectory()
-                + File.separator + recording.getName();
-        File recordingFile = new File(recordingPath);
-
-        Intent sendMmsIntent = new Intent(Intent.ACTION_SEND);
-        sendMmsIntent
-                .putExtra(Intent.EXTRA_STREAM, Uri.fromFile(recordingFile));
-        sendMmsIntent.setType(Constants.AUDIO_WAVE);
-        context.startActivity(Intent.createChooser(sendMmsIntent, "MMS:"));
+    public static void shareRecording(Context context, Recording recording) {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(recording.asFile()));
+        shareIntent.setType(Constants.MIME_AUDIO_WAV);
+        context.startActivity(Intent.createChooser(shareIntent, "Share"));
     }
 }

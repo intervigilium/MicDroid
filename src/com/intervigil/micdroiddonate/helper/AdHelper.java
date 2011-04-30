@@ -1,5 +1,4 @@
-/* Sample.java
-   An auto-tune app for Android
+/* AdHelper.java
 
    Copyright (c) 2010 Ethan Chen
 
@@ -18,18 +17,27 @@
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.intervigil.micdroiddonate.model;
+package com.intervigil.micdroiddonate.helper;
 
-/** Packet of audio to pass between reader and writer threads. */
-public class Sample {
-    public short[] buffer;
-    public int bufferSize;
+import java.util.HashMap;
+import java.util.Map;
 
-    public Sample(short[] buffer, int bufferSize) {
-        this.buffer = buffer;
-        this.bufferSize = bufferSize;
-    }
+import com.google.ads.AdRequest;
+import com.google.ads.AdView;
 
-    public Sample() {
+public class AdHelper {
+
+    public static void GenerateAd(AdView ad, boolean enabled) {
+        if (enabled) {
+            ad.setEnabled(true);
+            Map<String, Object> extras = new HashMap<String, Object>();
+            extras.put("color_bg", "000000");
+            extras.put("color_text", "FFFFFF");
+            AdRequest adRequest = new AdRequest();
+            adRequest.setExtras(extras);
+            ad.loadAd(adRequest);
+        } else {
+            ad.setEnabled(false);
+        }
     }
 }

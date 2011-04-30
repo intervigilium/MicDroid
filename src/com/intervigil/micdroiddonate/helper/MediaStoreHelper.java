@@ -66,7 +66,7 @@ public class MediaStoreHelper {
             values.put(MediaStore.MediaColumns.TITLE, r.getName());
             values.put(MediaStore.MediaColumns.DISPLAY_NAME, r.getName());
             values.put(MediaStore.MediaColumns.SIZE, r.getSize());
-            values.put(MediaStore.MediaColumns.MIME_TYPE, Constants.AUDIO_WAVE);
+            values.put(MediaStore.MediaColumns.MIME_TYPE, Constants.MIME_AUDIO_WAV);
 
             values.put(MediaStore.Audio.Media.ARTIST, "MicDroid");
             values.put(MediaStore.Audio.Media.ALBUM, "MicDroid");
@@ -135,7 +135,7 @@ public class MediaStoreHelper {
             values.put(MediaStore.MediaColumns.DISPLAY_NAME, recording
                     .getName());
             values.put(MediaStore.MediaColumns.SIZE, recording.getSize());
-            values.put(MediaStore.MediaColumns.MIME_TYPE, Constants.AUDIO_WAVE);
+            values.put(MediaStore.MediaColumns.MIME_TYPE, Constants.MIME_AUDIO_WAV);
 
             values.put(MediaStore.Audio.Media.ARTIST, "MicDroid");
             values.put(MediaStore.Audio.Media.ALBUM, "MicDroid");

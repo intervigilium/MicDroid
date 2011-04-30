@@ -74,7 +74,7 @@
 	<!-- Entry names for the pitch pull menu. -->
 	<string-array name="prefs_pitch_pull_entries">
 		<item>0.0 (Use original pitch)</item>
-		<item>0.1 (default)</item>
+		<item>0.1</item>
 		<item>0.2</item>
 		<item>0.3</item>
 		<item>0.4</item>
