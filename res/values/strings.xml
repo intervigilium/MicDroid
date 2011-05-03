@@ -4,14 +4,15 @@
 	<string name="default_recording_name">recording.wav</string>
 
 	<string name="startup_dialog_title">What\'s new in this version?</string>
-    <string name="startup_dialog_text">1. Major code cleanup\n\
-        2. Cleaner error handling\n\
-        3. Updated AdMob SDK\n\
-        4. Attempt to fix some crashes\n\
-        5. Attempt to fix sound device release\n\
-		\n\
-		DISCLAIMER: This is beta software! May be buggy and force close on you! Author is
-		aware and working on issues!\n\
+    <string name="startup_dialog_text">1. Fix recording length bug\n\
+    	2. Major code cleanup\n\
+    	3. Cleaner error handling\n\
+    	4. Updated AdMob SDK\n\
+    	5. Attempt to fix some crashes\n\
+    	6. Attempt to fix sound device release\n\
+    	\n\
+    	DISCLAIMER: This is beta software! May be buggy and force close on you! Author is
+    	aware and working on issues!\n\
     </string>
 	<string name="startup_dialog_accept_btn">Accept</string>
 
@@ -208,7 +209,7 @@
 	<string name="prefs_reset_default_title">Reset to Default</string>
 	<string name="prefs_reset_default_default">false</string>
 
-	<string name="about_title">About MicDroid Version 0.45</string>
+	<string name="about_title">About MicDroid Version 0.46</string>
 	<string name="about_text">Graphics work courtesy of Peng X. Wang:
 		http://pengxwang.com\n\
 		\n\
