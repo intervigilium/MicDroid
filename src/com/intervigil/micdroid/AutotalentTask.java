@@ -136,7 +136,7 @@ public class AutotalentTask {
                     if (reader != null) {
                         reader.closeWaveFile();
                     }
-                    if (reader != null) {
+                    if (writer != null) {
                         writer.closeWaveFile();
                     }
                 } catch (IOException e) {
