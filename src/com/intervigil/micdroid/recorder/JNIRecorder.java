@@ -21,38 +21,40 @@
 package com.intervigil.micdroid.recorder;
 
 import android.content.Context;
+import android.media.AudioRecord;
+import android.media.AudioTrack;
 
+import com.intervigil.micdroid.helper.AudioHelper;
+import com.intervigil.micdroid.helper.PreferenceHelper;
 import com.intervigil.micdroid.interfaces.DependentTask;
 import com.intervigil.micdroid.interfaces.Recorder;
 
 public class JNIRecorder implements Recorder {
 
     public JNIRecorder(Context context, DependentTask postRecordTask, boolean isLiveMode) {
-        jniRecorderInitCallback();
+	jniRecorderInitCallback(PreferenceHelper.getSampleRate(context),
+		AudioHelper.getRecorder(context),
+		AudioHelper.getPlayer(context));
     }
 
     @Override
     public void cleanup() {
-        // TODO Auto-generated method stub
-        
+	jniRecorderCleanup();
     }
 
     @Override
     public boolean isRunning() {
-        // TODO Auto-generated method stub
         return false;
     }
 
     @Override
     public void start() {
-        // TODO Auto-generated method stub
-        
+	jniRecorderStart();
     }
 
     @Override
     public void stop() {
-        // TODO Auto-generated method stub
-        
+	jniRecorderStop();
     }
 
     private native void jniRecorderStart();
@@ -61,5 +63,5 @@ public class JNIRecorder implements Recorder {
     
     private native void jniRecorderCleanup();
     
-    private native void jniRecorderInitCallback();
+    private native void jniRecorderInitCallback(int sampleRate, AudioRecord record, AudioTrack track);
 }
