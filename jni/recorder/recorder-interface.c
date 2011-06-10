@@ -22,4 +22,27 @@
 #include "recorder-interface.h"
 
 
+JNIEXPORT void JNICALL Java_com_intervigil_micdroid_recorder_JniRecorder_jniRecorderStart
+  (JNIEnv *env, jobject obj)
+{
 
+
+}
+
+JNIEXPORT void JNICALL Java_com_intervigil_micdroid_recorder_JniRecorder_jniRecorderStop
+  (JNIEnv *env, jobject obj)
+{
+
+}
+
+JNIEXPORT void JNICALL Java_com_intervigil_micdroid_recorder_JniRecorder_jniRecorderCleanup
+  (JNIEnv *env, jobject obj)
+{
+
+}
+
+JNIEXPORT void JNICALL Java_com_intervigil_micdroid_recorder_JniRecorder_jniRecorderInitCallback
+  (JNIEnv *env, jobject obj, jint sampleRate, jobject record, jobject track)
+{
+
+}
