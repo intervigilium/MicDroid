@@ -21,6 +21,24 @@
 
 #include "jni_audio.h"
 
+int is_running(jni_play *play)
+{
+  int ret = 0;
+  pthread_mutex_lock(play->lock);
+  ret = play->running;
+  pthread_mutex_unlock(play->lock);
+  return ret;
+}
+
+int is_running(jni_record *record)
+{
+  int ret = 0;
+  pthread_mutex_lock(record->lock);
+  ret = record->running;
+  pthread_mutex_unlock(record->lock);
+  return ret;
+}
+
 jni_audio *init_jni_audio(int sample_rate, jobject audio_record,
     jobject audio_track)
 {
@@ -152,17 +170,11 @@ void cleanup_jni_audio(jni_audio * audio)
   jni_record *record = audio->record;
   jni_play *play = audio->play;
 
-  pthread_mutex_lock(record->lock);
-  running = record->running;
-  pthread_mutex_unlock(record->lock);
-  if (running) {
+  if (is_running(record)) {
     stop_record(audio);
   }
 
-  pthread_mutex_lock(play->lock);
-  running = play->running;
-  pthread_mutex_unlock(play->lock);
-  if (running) {
+  if (is_running(play)) {
     stop_play(audio);
   }
 
