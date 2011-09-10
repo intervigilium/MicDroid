@@ -67,11 +67,15 @@ jni_audio *init_jni_audio(int sample_rate, jobject audio_record,
 void record_function(void *ptr)
 {
   jni_record *record = (jni_record *) ptr;
+
+  // TODO(echen): call into Java record functions
 }
 
 void play_function(void *ptr)
 {
   jni_play *play = (jni_play *) ptr;
+
+  // TODO(echen): call into Java playback functions
 }
 
 void start_record(jni_audio * audio)
