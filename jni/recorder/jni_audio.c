@@ -71,8 +71,7 @@ jni_audio *init_jni_audio(int sample_rate, jobject audio_record,
       record->lock = (pthread_mutex_t *) malloc(sizeof(pthread_mutex_t));
       pthread_mutex_init(record->lock, NULL);
       record->running = 0;
-      record->r_obj = audio_record;
-      record->r_obj = (*jni_env)->NewGlobalRef(record->r_obj);
+      record->r_obj = (*jni_env)->NewGlobalRef(audio_record);
       record->r_class = (jclass) (*jni_env)->NewGlobalRef(
           jni_env->FindClass("android/media/AudioRecord"));
       audio->record = record;
@@ -84,8 +83,7 @@ jni_audio *init_jni_audio(int sample_rate, jobject audio_record,
       play->lock = (pthread_mutex_t *) malloc(sizeof(pthread_mutex_t));
       pthread_mutex_init(play->lock, NULL);
       play->running = 0;
-      play->p_obj = audio_track;
-      play->p_obj = (*jni_env)->NewGlobalRef(play->p_obj);
+      play->p_obj = (*jni_env)->NewGlobalRef(audio_track);
       play->p_class = (jclass) (*jni_env)->NewGlobalRef(
           jni_env->FindClass("android/media/AudioTrack"));
       audio->play = play;
