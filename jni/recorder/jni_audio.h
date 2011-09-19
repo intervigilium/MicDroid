@@ -30,6 +30,7 @@ typedef struct {
   pthread_mutex_t *lock;
   pthread_t *r_thread;
   int running;
+  void (*r_callback)(jbyte *);
 } jni_record;
 
 typedef struct {
@@ -39,6 +40,7 @@ typedef struct {
   pthread_mutex_t *lock;
   pthread_t *p_thread;
   int running;
+  void (*p_callback)(jbyte *);
 } jni_play;
 
 typedef struct {

@@ -82,6 +82,7 @@ jni_audio *init_jni_audio(int sample_rate, jobject audio_record,
       record->r_obj = (*jni_env)->NewGlobalRef(audio_record);
       record->r_class = (jclass) (*jni_env)->NewGlobalRef(
           jni_env->FindClass("android/media/AudioRecord"));
+      record->r_callback = NULL;
       audio->record = record;
     }
 
@@ -94,12 +95,29 @@ jni_audio *init_jni_audio(int sample_rate, jobject audio_record,
       play->p_obj = (*jni_env)->NewGlobalRef(audio_track);
       play->p_class = (jclass) (*jni_env)->NewGlobalRef(
           jni_env->FindClass("android/media/AudioTrack"));
+      play->p_callback = NULL;
       audio->play = play;
     }
   }
 
   DETACH_JVM(jni_env);
   return audio;
+}
+
+void set_record_callback(jni_audio *audio, void (*callback)(jbyte *))
+{
+  jni_record *record = audio->record;
+  if (record) {
+    record->r_callback = callback;
+  }
+}
+
+void set_play_callback(jni_audio *audio, void (*callback)(jbyte *))
+{
+  jni_play *play = audio->play;
+  if (play) {
+    play->p_callback = callback;
+  }
 }
 
 void start_record(jni_audio * audio)
