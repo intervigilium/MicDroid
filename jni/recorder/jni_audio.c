@@ -22,7 +22,7 @@
 #include <time.h>
 #include "jni_audio.h"
 
-static long get_time()
+static long get_timestamp()
 {
   struct timespec now;
   clock_gettime(CLOCK_MONOTONIC, &now);
@@ -47,18 +47,80 @@ static int is_running(jni_record *record)
   return ret;
 }
 
-void record_function(void *ptr)
+static void record_function(void *ptr)
 {
   jni_record *record = (jni_record *) ptr;
+  JNIEnv *jni_env = NULL;
+  jbyteArray j_in_buf;
+  jbyte *in_buf;
+  jmethodID read_method, record_method;
+  int bytes_read;
+  long now, last_frame;
+  int elapsed_ms, to_wait_ms;
+  // TODO(echen): figure out values for these
+  int size;
+  int nframes;
+  int samples_per_sec;
+  // for frame time calculation
+  int frame_time = nframes * 1000 / samples_per_sec;
+  int missed_time = frame_time
 
-  // TODO(echen): call into Java record functions
+  ATTACH_JVM(jni_env);
+
+  // TODO(echen): lots of error checking
+  read_method = jni_env->GetMethodID(record->r_class, "read", "([BII)I");
+  record_method = jni_env->GetMethodID(record->r_class,
+                                       "startRecording", "()V");
+  j_in_buf = jni_env->NewByteArray(size);
+  in_buf = jni_env->GetByteArrayElements(j_in_buf, 0);
+
+  // TODO(echen): set thread priority to ANDROID_PRIORITY_AUDIO
+  jni_env->CallVoidMethod(record->r_obj, record_method);
+  last_frame = get_timestamp();
+  while (is_running(record)) {
+    now = get_timestamp();
+    elapsed_ms = now - last_frame;
+    last_frame = get_timestamp();
+    // adjust time if we are filling faster than time
+    missed_time = missed_time / 2 + elapsed_ms - frame_time;
+    if (missed_time <= 0) {
+      to_wait_ms = (-1 * missed_time) - 2;
+      if (to_wait_ms > 0) {
+        // sleep(to_wait_ms)
+      }
+    }
+    bytes_read = (*jni_env)->CallIntMethod(record->r_obj,
+                                           read_method,
+                                           j_in_buf,
+                                           0, size);
+    if (bytes_read <= 0) {
+      // error
+    }
+    if (bytes_read != size) {
+      // overrun?
+    }
+
+    // in_buf is aliased to j_in_buf
+    (*record->r_callback)(in_buf);
+  }
+
+  (*jni_env)->ReleaseByteArrayElements(j_in_buf, in_buf, 0);
+  DETACH_JVM(jni_env);
+  return 0;
 }
 
-void play_function(void *ptr)
+static void play_function(void *ptr)
 {
   jni_play *play = (jni_play *) ptr;
+  JNIEnv *jni_env = NULL;
+  ATTACH_JVM(jni_env);
 
   // TODO(echen): call into Java playback functions
+  while (is_running(play)) {
+
+  }
+
+  DETACH_JVM(jni_env);
 }
 
 jni_audio *init_jni_audio(int sample_rate, jobject audio_record,
