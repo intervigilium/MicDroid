@@ -19,9 +19,17 @@
  */
 /*****************************************************************************/
 
+#include <time.h>
 #include "jni_audio.h"
 
-int is_running(jni_play *play)
+static long get_time()
+{
+  struct timespec now;
+  clock_gettime(CLOCK_MONOTONIC, &now);
+  return now.tv_sec * 1000000 + now.tv_nsec / 1000;
+}
+
+static int is_running(jni_play *play)
 {
   int ret = 0;
   pthread_mutex_lock(play->lock);
