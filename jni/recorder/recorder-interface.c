@@ -35,6 +35,12 @@ JNIEXPORT void JNICALL Java_com_intervigil_micdroid_recorder_JniRecorder_jniReco
 
 }
 
+JNIEXPORT jboolean JNICALL Java_com_intervigil_micdroid_recorder_JNIRecorder_jniIsRunning
+  (JNIEnv *env, jobject obj)
+{
+
+}
+
 JNIEXPORT void JNICALL Java_com_intervigil_micdroid_recorder_JniRecorder_jniRecorderCleanup
   (JNIEnv *env, jobject obj)
 {

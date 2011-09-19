@@ -44,7 +44,7 @@ public class JNIRecorder implements Recorder {
 
     @Override
     public boolean isRunning() {
-        return false;
+        return jniIsRunning();
     }
 
     @Override
@@ -60,6 +60,8 @@ public class JNIRecorder implements Recorder {
     private native void jniRecorderStart();
     
     private native void jniRecorderStop();
+    
+    private native boolean jniIsRunning();
     
     private native void jniRecorderCleanup();
     
