@@ -38,7 +38,7 @@ static int is_running(jni_play *play)
   return ret;
 }
 
-int is_running(jni_record *record)
+static int is_running(jni_record *record)
 {
   int ret = 0;
   pthread_mutex_lock(record->lock);
