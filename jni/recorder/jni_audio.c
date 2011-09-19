@@ -105,6 +105,7 @@ static void record_function(void *ptr)
   }
 
   (*jni_env)->ReleaseByteArrayElements(j_in_buf, in_buf, 0);
+  (*jni_env)->DeleteLocalRef(j_in_buf);
   DETACH_JVM(jni_env);
   return 0;
 }
