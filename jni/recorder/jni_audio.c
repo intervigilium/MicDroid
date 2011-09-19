@@ -114,13 +114,35 @@ static void play_function(void *ptr)
   jni_play *play = (jni_play *) ptr;
   JNIEnv *jni_env = NULL;
   ATTACH_JVM(jni_env);
+  jbyteArray j_out_buf;
+  jbyte *out_buf;
+  jmethodID write_method, play_method;
+  // TODO(echen): figure out values for these
+  int size;
+  int nframes;
 
-  // TODO(echen): call into Java playback functions
+  write_method = (*jni_env)->GetMethodID(play->p_class, "write", "([BII)I");
+  play_method = (*jni_env)->GetMethodID(play->p_class, "play", "()V");
+
+  j_out_buf = (*jni_env)->NewByteArray(size);
+  out_buf = (*jni_env)->GetByteArrayElements(j_out_buf, 0);
+
+  // TODO(echen): set thread priority to ANDROID_PRIORITY_AUDIO
+  (*jni_env)->CallVoidMethod(play->p_obj, play_method);
+
   while (is_running(play)) {
-
+    count = play->p_callback(out_buf);
+    status = (*jni_env)->CallIntMethod(play->p_obj,
+                                       write_method,
+                                       j_out_buf,
+                                       0, size);
+    // TODO(echen): error checking
   }
 
+  (*jni_env)->ReleaseByteArrayElements(j_out_buf, out_buf, 0);
+  (*jni_env)->DeleteLocalRef(j_out_buf);
   DETACH_JVM(jni_env);
+  return 0;
 }
 
 jni_audio *init_jni_audio(int sample_rate, jobject audio_record,
