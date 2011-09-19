@@ -120,7 +120,7 @@ void set_play_callback(jni_audio *audio, void (*callback)(jbyte *))
   }
 }
 
-void start_record(jni_audio * audio)
+void start_record(jni_audio *audio)
 {
   int res;
   jni_record *record = audio->record;
@@ -137,7 +137,7 @@ void start_record(jni_audio * audio)
   }
 }
 
-void start_play(jni_audio * audio)
+void start_play(jni_audio *audio)
 {
   int res;
   jni_play *play = audio->play;
@@ -154,7 +154,7 @@ void start_play(jni_audio * audio)
   }
 }
 
-void stop_record(jni_audio * audio)
+void stop_record(jni_audio *audio)
 {
   int res;
   jni_record *record = audio->record;
@@ -169,7 +169,7 @@ void stop_record(jni_audio * audio)
   }
 }
 
-void stop_play(jni_audio * audio)
+void stop_play(jni_audio *audio)
 {
   int res;
   jni_play *play = audio->play;
@@ -184,7 +184,7 @@ void stop_play(jni_audio * audio)
   }
 }
 
-void cleanup_jni_audio(jni_audio * audio)
+void cleanup_jni_audio(jni_audio *audio)
 {
   JNIEnv *jni_env = NULL;
   jmethodID release_method = NULL;
