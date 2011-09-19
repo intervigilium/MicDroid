@@ -68,14 +68,14 @@ static void record_function(void *ptr)
   ATTACH_JVM(jni_env);
 
   // TODO(echen): lots of error checking
-  read_method = jni_env->GetMethodID(record->r_class, "read", "([BII)I");
-  record_method = jni_env->GetMethodID(record->r_class,
-                                       "startRecording", "()V");
-  j_in_buf = jni_env->NewByteArray(size);
-  in_buf = jni_env->GetByteArrayElements(j_in_buf, 0);
+  read_method = (*jni_env)->GetMethodID(record->r_class, "read", "([BII)I");
+  record_method = (*jni_env)->GetMethodID(record->r_class,
+                                          "startRecording", "()V");
+  j_in_buf = (*jni_env)->NewByteArray(size);
+  in_buf = (*jni_env)->GetByteArrayElements(j_in_buf, 0);
 
   // TODO(echen): set thread priority to ANDROID_PRIORITY_AUDIO
-  jni_env->CallVoidMethod(record->r_obj, record_method);
+  (*jni_env)->CallVoidMethod(record->r_obj, record_method);
   last_frame = get_timestamp();
   while (is_running(record)) {
     now = get_timestamp();
