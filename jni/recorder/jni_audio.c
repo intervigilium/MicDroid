@@ -118,9 +118,7 @@ static void play_function(void *ptr)
   jbyteArray j_out_buf;
   jbyte *out_buf;
   jmethodID write_method, play_method;
-  // TODO(echen): figure out values for these
   int size;
-  int nframes;
 
   write_method = (*jni_env)->GetMethodID(play->p_class, "write", "([BII)I");
   play_method = (*jni_env)->GetMethodID(play->p_class, "play", "()V");
@@ -132,7 +130,8 @@ static void play_function(void *ptr)
   (*jni_env)->CallVoidMethod(play->p_obj, play_method);
 
   while (is_running(play)) {
-    count = play->p_callback(out_buf);
+    // fill buffer from callback
+    size = play->p_callback(out_buf);
     status = (*jni_env)->CallIntMethod(play->p_obj,
                                        write_method,
                                        j_out_buf,
