@@ -22,11 +22,33 @@
 #include <time.h>
 #include "jni_audio.h"
 
-static long get_timestamp()
+static int get_timestamp_ms()
 {
+  int ts;
   struct timespec now;
+  // clock_gettime has ns resolution
   clock_gettime(CLOCK_MONOTONIC, &now);
-  return now.tv_sec * 1000000 + now.tv_nsec / 1000;
+  ts = now.tv_sec;
+  ts *= 1000;
+  ts += now.tv_nsec / 1000000;
+  return res;
+}
+
+static void pthread_sleep(int sleep_time_ms)
+{
+  pthread_mutex_t wait_mutex = PTHREAD_MUTEX_INITIALIZER;
+  pthread_cond_t wait_cond = PTHREAD_COND_INITIALIZER;
+  struct timespec wait_time;
+  int rt;
+
+  clock_gettime(CLOCK_MONOTONIC, &wait_time);
+  wait_time.tv_sec += sleep_time_ms / 1000;
+  wait_time.tv_nsec += (sleep_time_ms % 1000) * 1000000;
+
+  pthread_mutex_lock(&wait_mutex);
+  rt = pthread_cond_timedwait(&wait_cond, &wait_mutex, &wait_time);
+  pthread_mutex_unlock(&wait_mutex);
+  // TODO(echen): log wait time
 }
 
 static int is_running(jni_play *play)
@@ -76,17 +98,17 @@ static void record_function(void *ptr)
 
   // TODO(echen): set thread priority to ANDROID_PRIORITY_AUDIO
   (*jni_env)->CallVoidMethod(record->r_obj, record_method);
-  last_frame = get_timestamp();
+  last_frame = get_timestamp_ms();
   while (is_running(record)) {
-    now = get_timestamp();
+    now = get_timestamp_ms();
     elapsed_ms = now - last_frame;
-    last_frame = get_timestamp();
+    last_frame = get_timestamp_ms();
     // adjust time if we are filling faster than time
     missed_time = missed_time / 2 + elapsed_ms - frame_time;
     if (missed_time <= 0) {
       to_wait_ms = (-1 * missed_time) - 2;
       if (to_wait_ms > 0) {
-        // sleep(to_wait_ms)
+        pthread_sleep(to_wait_ms);
       }
     }
     bytes_read = (*jni_env)->CallIntMethod(record->r_obj,
