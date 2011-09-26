@@ -20,6 +20,7 @@
 /*****************************************************************************/
 
 #include <cpu-features.h>
+#include "micdroid-interface.h"
 
 JNIEXPORT jboolean JNICALL Java_com_intervigil_micdroid_jni_JNIMicDroid_getLiveCorrectionEnabled
   (JNIEnv *env, jclass class)
