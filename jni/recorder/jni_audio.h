@@ -61,6 +61,10 @@ typedef struct {
 
 jni_audio * init_jni_audio(int sample_rate, jobject audio_record, jobject audio_track);
 
+void set_record_callback(jni_audio *audio, int (*callback)(jbyte *, int));
+
+void set_play_callback(jni_audio *audio, int (*callback)(jbyte *, int));
+
 int start_record(jni_audio *audio);
 
 int start_play(jni_audio *audio);

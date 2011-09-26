@@ -76,7 +76,6 @@ static void record_function(void *ptr)
   jbyteArray j_in_buf;
   jbyte *in_buf;
   jmethodID read_method, record_method;
-  int callback_status;
   int bytes_read;
   long now, last_frame;
   int elapsed_ms, to_wait_ms;
@@ -134,9 +133,7 @@ static void record_function(void *ptr)
     }
 
     // in_buf is aliased to j_in_buf
-    // TODO(echen): check r_callback return status
-    callback_status = (*record->r_callback)(in_buf, size);
-    if (callback_status != CALLBACK_SUCCESS) {
+    if ((*record->r_callback)(in_buf, size) != CALLBACK_SUCCESS) {
       LOGE("Record thread: Error in record callback, exiting...");
       goto on_finish;
     }
@@ -154,12 +151,12 @@ static void play_function(void *ptr)
 {
   jni_play *play = (jni_play *) ptr;
   JNIEnv *jni_env = NULL;
+  int status;
   jmethodID write_method, play_method;
   jbyteArray j_out_buf;
   jbyte *out_buf;
   // TODO(echen): figure out values for these
   int size;
-  int callback_status;
   int status;
 
   ATTACH_JVM(jni_env);
@@ -183,8 +180,7 @@ static void play_function(void *ptr)
 
   while (is_running(play)) {
     // fill buffer from callback
-    callback_status = play->p_callback(out_buf, size);
-    if (callback_status != CALLBACK_SUCCESS) {
+    if ((*play->p_callback)(out_buf, size) != CALLBACK_SUCCESS) {
       goto on_finish;
     }
     status = (*jni_env)->CallIntMethod(play->p_obj,
