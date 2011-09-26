@@ -51,6 +51,35 @@ static void pthread_sleep(int sleep_time_ms)
   LOGI("Thread slept for %d milliseconds", sleep_time_ms);
 }
 
+static void set_thread_priority(int priority)
+{
+  JNIEnv *jni_env = NULL;
+  jclass process_class;
+  jmethodID set_priority_method;
+
+  ATTACH_JVM(jni_env);
+
+  process_class = (*jni_env)->NewGlobalRef(
+      (*jni_env)->FindClass("android/os/Process"));
+  if (process_class == NULL) {
+    LOGE("Unable to find android/os/Process class, exiting!");
+    goto on_break;
+  }
+
+  set_priority_method = (*jni_env)->GetStaticMethodID(
+      process_class, "SetThreadPriority", "(I)V");
+  if (set_priority_method == NULL) {
+    LOGE("Unable to find set priority method, exiting!");
+    goto on_break;
+  }
+
+  (*jni_env)->CallStaticVoidMethod(process_class,
+                                   set_priority_method,
+                                   priority);
+on_break:
+  DETACH_JVM(jni_env);
+}
+
 static int is_running(jni_play *play)
 {
   int ret = 0;
@@ -103,7 +132,8 @@ static void record_function(void *ptr)
   }
   in_buf = (*jni_env)->GetByteArrayElements(j_in_buf, 0);
 
-  // TODO(echen): set thread priority to ANDROID_PRIORITY_AUDIO
+  set_thread_priority(THREAD_PRIORITY_URGENT_AUDIO);
+
   (*jni_env)->CallVoidMethod(record->r_obj, record_method);
   last_frame = get_timestamp_ms();
 
@@ -175,7 +205,8 @@ static void play_function(void *ptr)
   }
   out_buf = (*jni_env)->GetByteArrayElements(j_out_buf, 0);
 
-  // TODO(echen): set thread priority to ANDROID_PRIORITY_AUDIO
+  set_thread_priority(THREAD_PRIORITY_URGENT_AUDIO);
+
   (*jni_env)->CallVoidMethod(play->p_obj, play_method);
 
   while (is_running(play)) {

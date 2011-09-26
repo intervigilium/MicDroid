@@ -33,6 +33,7 @@
 #define LOGE(...) __android_log_print(ANDROID_LOG_WARN, "libjniaudio", \
                                       __VA_ARGS__)
 #define CALLBACK_SUCCESS 0
+#define THREAD_PRIORITY_URGENT_AUDIO -19
 
 typedef struct {
   int sample_rate;
