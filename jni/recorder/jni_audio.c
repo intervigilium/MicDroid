@@ -266,7 +266,7 @@ void set_play_callback(jni_audio *audio, int (*callback)(jbyte *, int))
   }
 }
 
-void start_record(jni_audio *audio)
+int start_record(jni_audio *audio)
 {
   int res;
   jni_record *record = audio->record;
@@ -277,13 +277,13 @@ void start_record(jni_audio *audio)
                        record_function,
                        (void *) record);
   if (res) {
-    // error occurred
+    LOGE("Error occurred starting record thread: %d", res);
     record->running = 0;
-    return;
   }
+  return res;
 }
 
-void start_play(jni_audio *audio)
+int start_play(jni_audio *audio)
 {
   int res;
   jni_play *play = audio->play;
@@ -294,13 +294,13 @@ void start_play(jni_audio *audio)
                        play_function,
                        (void *) play);
   if (res) {
-    // error occurred
+    LOGE("Error occurred starting playback thread: %d", res);
     play->running = 0;
-    return;
   }
+  return res;
 }
 
-void stop_record(jni_audio *audio)
+int stop_record(jni_audio *audio)
 {
   int res;
   jni_record *record = audio->record;
@@ -310,12 +310,12 @@ void stop_record(jni_audio *audio)
   pthread_mutex_unlock(record->lock);
   res = pthread_join(*(record->r_thread), NULL);
   if (res) {
-    // error occurred
-    return;
+    LOGE("Error occurred joining record thread: %d", res);
   }
+  return res;
 }
 
-void stop_play(jni_audio *audio)
+int stop_play(jni_audio *audio)
 {
   int res;
   jni_play *play = audio->play;
@@ -325,9 +325,9 @@ void stop_play(jni_audio *audio)
   pthread_mutex_unlock(play->lock);
   res = pthread_join(*(play->p_thread), NULL);
   if (res) {
-    // error occurred
-    return;
+    LOGE("Error occurred joining playback thread: %d", res);
   }
+  return res;
 }
 
 void cleanup_jni_audio(jni_audio *audio)

@@ -61,12 +61,12 @@ typedef struct {
 
 jni_audio * init_jni_audio(int sample_rate, jobject audio_record, jobject audio_track);
 
-void start_record(jni_audio *audio);
+int start_record(jni_audio *audio);
 
-void start_play(jni_audio *audio);
+int start_play(jni_audio *audio);
 
-void stop_record(jni_audio *audio);
+int stop_record(jni_audio *audio);
 
-void stop_play(jni_audio *audio);
+int stop_play(jni_audio *audio);
 
 void cleanup_jni_audio(jni_audio *audio);
