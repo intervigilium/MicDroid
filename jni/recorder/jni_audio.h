@@ -21,7 +21,18 @@
 
 #include <jni.h>
 #include <pthread.h>
+#include <android/log.h>
 #include "jvm_wrapper.h"
+
+#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, "libjniaudio", \
+                                      __VA_ARGS__)
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "libjniaudio", \
+                                      __VA_ARGS__)
+#define LOGW(...) __android_log_print(ANDROID_LOG_WARN, "libjniaudio", \
+                                      __VA_ARGS__)
+#define LOGE(...) __android_log_print(ANDROID_LOG_WARN, "libjniaudio", \
+                                      __VA_ARGS__)
+#define CALLBACK_SUCCESS 0
 
 typedef struct {
   int sample_rate;

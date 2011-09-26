@@ -48,7 +48,7 @@ static void pthread_sleep(int sleep_time_ms)
   pthread_mutex_lock(&wait_mutex);
   rt = pthread_cond_timedwait(&wait_cond, &wait_mutex, &wait_time);
   pthread_mutex_unlock(&wait_mutex);
-  // TODO(echen): log wait time
+  LOGI("Thread slept for %d milliseconds", sleep_time_ms);
 }
 
 static int is_running(jni_play *play)
@@ -76,6 +76,7 @@ static void record_function(void *ptr)
   jbyteArray j_in_buf;
   jbyte *in_buf;
   jmethodID read_method, record_method;
+  int callback_status;
   int bytes_read;
   long now, last_frame;
   int elapsed_ms, to_wait_ms;
@@ -89,16 +90,24 @@ static void record_function(void *ptr)
 
   ATTACH_JVM(jni_env);
 
-  // TODO(echen): lots of error checking
   read_method = (*jni_env)->GetMethodID(record->r_class, "read", "([BII)I");
   record_method = (*jni_env)->GetMethodID(record->r_class,
                                           "startRecording", "()V");
+  if (read_method == NULL || record_method == NULL) {
+    LOGE("Record thread: Unable to find AudioRecord functions, exiting!");
+    goto on_break;
+  }
   j_in_buf = (*jni_env)->NewByteArray(size);
+  if (j_in_buf == NULL) {
+    LOGE("Record thread: Unable to allocate input buffer, exiting!");
+    goto on_break;
+  }
   in_buf = (*jni_env)->GetByteArrayElements(j_in_buf, 0);
 
   // TODO(echen): set thread priority to ANDROID_PRIORITY_AUDIO
   (*jni_env)->CallVoidMethod(record->r_obj, record_method);
   last_frame = get_timestamp_ms();
+
   while (is_running(record)) {
     now = get_timestamp_ms();
     elapsed_ms = now - last_frame;
@@ -116,18 +125,27 @@ static void record_function(void *ptr)
                                            j_in_buf,
                                            0, size);
     if (bytes_read <= 0) {
-      // error
+      LOGW("Record thread: error reading data...");
+      continue;
     }
     if (bytes_read != size) {
-      // overrun?
+      LOGW("Record thread: Overrun...");
+      continue;
     }
 
     // in_buf is aliased to j_in_buf
-    (*record->r_callback)(in_buf);
+    // TODO(echen): check r_callback return status
+    callback_status = (*record->r_callback)(in_buf, size);
+    if (callback_status != CALLBACK_SUCCESS) {
+      LOGE("Record thread: Error in record callback, exiting...");
+      goto on_finish;
+    }
   }
 
+on_finish:
   (*jni_env)->ReleaseByteArrayElements(j_in_buf, in_buf, 0);
   (*jni_env)->DeleteLocalRef(j_in_buf);
+on_break:
   DETACH_JVM(jni_env);
   return 0;
 }
@@ -136,16 +154,28 @@ static void play_function(void *ptr)
 {
   jni_play *play = (jni_play *) ptr;
   JNIEnv *jni_env = NULL;
-  ATTACH_JVM(jni_env);
+  jmethodID write_method, play_method;
   jbyteArray j_out_buf;
   jbyte *out_buf;
-  jmethodID write_method, play_method;
+  // TODO(echen): figure out values for these
   int size;
+  int callback_status;
+  int status;
+
+  ATTACH_JVM(jni_env);
 
   write_method = (*jni_env)->GetMethodID(play->p_class, "write", "([BII)I");
   play_method = (*jni_env)->GetMethodID(play->p_class, "play", "()V");
+  if (write_method == NULL || play_method == NULL) {
+    LOGE("Playback thread: Unable to find AudioTrack functions!, exiting");
+    goto on_break;
+  }
 
   j_out_buf = (*jni_env)->NewByteArray(size);
+  if (j_out_buf == NULL) {
+    LOGE("Playback thread: Unable to allocate output buffer, exiting!");
+    goto on_break;
+  }
   out_buf = (*jni_env)->GetByteArrayElements(j_out_buf, 0);
 
   // TODO(echen): set thread priority to ANDROID_PRIORITY_AUDIO
@@ -153,16 +183,26 @@ static void play_function(void *ptr)
 
   while (is_running(play)) {
     // fill buffer from callback
-    size = play->p_callback(out_buf);
+    callback_status = play->p_callback(out_buf, size);
+    if (callback_status != CALLBACK_SUCCESS) {
+      goto on_finish;
+    }
     status = (*jni_env)->CallIntMethod(play->p_obj,
                                        write_method,
                                        j_out_buf,
                                        0, size);
-    // TODO(echen): error checking
+    if (status < 0) {
+      LOGW("Playback thread: Error writing output buffer: %d", status);
+      continue;
+    } else if (status != size) {
+      LOGI("Playback thread: Only wrote %d of %d bytes!", status, size);
+    }
   }
 
+on_finish:
   (*jni_env)->ReleaseByteArrayElements(j_out_buf, out_buf, 0);
   (*jni_env)->DeleteLocalRef(j_out_buf);
+on_break:
   DETACH_JVM(jni_env);
   return 0;
 }
@@ -210,7 +250,7 @@ jni_audio *init_jni_audio(int sample_rate, jobject audio_record,
   return audio;
 }
 
-void set_record_callback(jni_audio *audio, void (*callback)(jbyte *))
+void set_record_callback(jni_audio *audio, int (*callback)(jbyte *, int))
 {
   jni_record *record = audio->record;
   if (record) {
@@ -218,7 +258,7 @@ void set_record_callback(jni_audio *audio, void (*callback)(jbyte *))
   }
 }
 
-void set_play_callback(jni_audio *audio, void (*callback)(jbyte *))
+void set_play_callback(jni_audio *audio, int (*callback)(jbyte *, int))
 {
   jni_play *play = audio->play;
   if (play) {
