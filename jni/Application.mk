@@ -1,2 +1,2 @@
 APP_ABI := armeabi armeabi-v7a
-APP_MODULES := autotalent micdroid recorder
+APP_MODULES := recorder
