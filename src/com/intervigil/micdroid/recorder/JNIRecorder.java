@@ -32,7 +32,7 @@ import com.intervigil.micdroid.interfaces.Recorder;
 public class JNIRecorder implements Recorder {
 
     public JNIRecorder(Context context, DependentTask postRecordTask, boolean isLiveMode) {
-	jniRecorderInitCallback(PreferenceHelper.getSampleRate(context),
+	jniRecorderInit(PreferenceHelper.getSampleRate(context),
 		AudioHelper.getRecorder(context),
 		AudioHelper.getPlayer(context));
     }
@@ -57,13 +57,13 @@ public class JNIRecorder implements Recorder {
 	jniRecorderStop();
     }
 
-    private native void jniRecorderStart();
+    private native int jniRecorderStart();
     
-    private native void jniRecorderStop();
+    private native int jniRecorderStop();
     
     private native boolean jniIsRunning();
     
-    private native void jniRecorderCleanup();
+    private native int jniRecorderCleanup();
     
-    private native void jniRecorderInitCallback(int sampleRate, AudioRecord record, AudioTrack track);
+    private native int jniRecorderInit(int sampleRate, AudioRecord record, AudioTrack track);
 }

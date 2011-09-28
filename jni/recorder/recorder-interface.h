@@ -10,17 +10,17 @@ extern "C" {
 /*
  * Class:     com_intervigil_micdroid_recorder_JNIRecorder
  * Method:    jniRecorderStart
- * Signature: ()V
+ * Signature: ()I
  */
-JNIEXPORT void JNICALL Java_com_intervigil_micdroid_recorder_JNIRecorder_jniRecorderStart
+JNIEXPORT jint JNICALL Java_com_intervigil_micdroid_recorder_JNIRecorder_jniRecorderStart
   (JNIEnv *, jobject);
 
 /*
  * Class:     com_intervigil_micdroid_recorder_JNIRecorder
  * Method:    jniRecorderStop
- * Signature: ()V
+ * Signature: ()I
  */
-JNIEXPORT void JNICALL Java_com_intervigil_micdroid_recorder_JNIRecorder_jniRecorderStop
+JNIEXPORT jint JNICALL Java_com_intervigil_micdroid_recorder_JNIRecorder_jniRecorderStop
   (JNIEnv *, jobject);
 
 /*
@@ -34,17 +34,17 @@ JNIEXPORT jboolean JNICALL Java_com_intervigil_micdroid_recorder_JNIRecorder_jni
 /*
  * Class:     com_intervigil_micdroid_recorder_JNIRecorder
  * Method:    jniRecorderCleanup
- * Signature: ()V
+ * Signature: ()I
  */
-JNIEXPORT void JNICALL Java_com_intervigil_micdroid_recorder_JNIRecorder_jniRecorderCleanup
+JNIEXPORT jint JNICALL Java_com_intervigil_micdroid_recorder_JNIRecorder_jniRecorderCleanup
   (JNIEnv *, jobject);
 
 /*
  * Class:     com_intervigil_micdroid_recorder_JNIRecorder
- * Method:    jniRecorderInitCallback
- * Signature: (ILandroid/media/AudioRecord;Landroid/media/AudioTrack;)V
+ * Method:    jniRecorderInit
+ * Signature: (ILandroid/media/AudioRecord;Landroid/media/AudioTrack;)I
  */
-JNIEXPORT void JNICALL Java_com_intervigil_micdroid_recorder_JNIRecorder_jniRecorderInitCallback
+JNIEXPORT jint JNICALL Java_com_intervigil_micdroid_recorder_JNIRecorder_jniRecorderInit
   (JNIEnv *, jobject, jint, jobject, jobject);
 
 #ifdef __cplusplus

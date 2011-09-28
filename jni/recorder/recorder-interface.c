@@ -22,14 +22,13 @@
 #include "recorder-interface.h"
 
 
-JNIEXPORT void JNICALL Java_com_intervigil_micdroid_recorder_JniRecorder_jniRecorderStart
+JNIEXPORT jint JNICALL Java_com_intervigil_micdroid_recorder_JniRecorder_jniRecorderStart
   (JNIEnv *env, jobject obj)
 {
 
-
 }
 
-JNIEXPORT void JNICALL Java_com_intervigil_micdroid_recorder_JniRecorder_jniRecorderStop
+JNIEXPORT jint JNICALL Java_com_intervigil_micdroid_recorder_JniRecorder_jniRecorderStop
   (JNIEnv *env, jobject obj)
 {
 
@@ -41,13 +40,13 @@ JNIEXPORT jboolean JNICALL Java_com_intervigil_micdroid_recorder_JNIRecorder_jni
 
 }
 
-JNIEXPORT void JNICALL Java_com_intervigil_micdroid_recorder_JniRecorder_jniRecorderCleanup
+JNIEXPORT jint JNICALL Java_com_intervigil_micdroid_recorder_JniRecorder_jniRecorderCleanup
   (JNIEnv *env, jobject obj)
 {
 
 }
 
-JNIEXPORT void JNICALL Java_com_intervigil_micdroid_recorder_JniRecorder_jniRecorderInitCallback
+JNIEXPORT jint JNICALL Java_com_intervigil_micdroid_recorder_JniRecorder_jniRecorderInit
   (JNIEnv *env, jobject obj, jint sampleRate, jobject record, jobject track)
 {
 
