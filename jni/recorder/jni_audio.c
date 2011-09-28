@@ -165,7 +165,7 @@ static void record_function(void *ptr)
     }
 
     // in_buf is aliased to j_in_buf
-    if ((*record->r_callback)(in_buf, size) != CALLBACK_SUCCESS) {
+    if ((*record->r_callback)(in_buf, size) != JNI_AUDIO_SUCCESS) {
       LOGE("Record thread: Error in record callback, exiting...");
       goto on_finish;
     }
@@ -213,7 +213,7 @@ static void play_function(void *ptr)
 
   while (is_running(play)) {
     // fill buffer from callback
-    if ((*play->p_callback)(out_buf, size) != CALLBACK_SUCCESS) {
+    if ((*play->p_callback)(out_buf, size) != JNI_AUDIO_SUCCESS) {
       goto on_finish;
     }
     status = (*jni_env)->CallIntMethod(play->p_obj,
@@ -236,89 +236,91 @@ on_break:
   return 0;
 }
 
-jni_audio *init_jni_audio(int sample_rate, jobject audio_record,
-    jobject audio_track)
+int init_jni_record(jni_record *rec, int sample_rate, jobject audio_record)
 {
-  jni_audio *audio = NULL;
+  int status = -1;
   JNIEnv *jni_env = NULL;
+
   ATTACH_JVM(jni_env);
 
-  audio = (jni_audio *) malloc(sizeof(jni_audio));
-  record = (jni_record *) malloc(sizeof(jni_record))
-  play = (jni_play *) malloc(sizeof(jni_play))
-
-  if (audio) {
-    if (record) {
-      // init record object
-      record->r_thread = (pthread_t *) malloc(sizeof(pthread_t));
-      record->lock = (pthread_mutex_t *) malloc(sizeof(pthread_mutex_t));
-      pthread_mutex_init(record->lock, NULL);
-      record->running = 0;
-      record->r_obj = (*jni_env)->NewGlobalRef(audio_record);
-      record->r_class = (jclass) (*jni_env)->NewGlobalRef(
-          jni_env->FindClass("android/media/AudioRecord"));
-      record->r_callback = NULL;
-      audio->record = record;
-    }
-
-    if (play) {
-      // init play object
-      play->p_thread = (pthread_t *) malloc(sizeof(pthread_t));
-      play->lock = (pthread_mutex_t *) malloc(sizeof(pthread_mutex_t));
-      pthread_mutex_init(play->lock, NULL);
-      play->running = 0;
-      play->p_obj = (*jni_env)->NewGlobalRef(audio_track);
-      play->p_class = (jclass) (*jni_env)->NewGlobalRef(
-          jni_env->FindClass("android/media/AudioTrack"));
-      play->p_callback = NULL;
-      audio->play = play;
-    }
+  if (rec) {
+    // init record object
+    rec->r_thread = (pthread_t *) malloc(sizeof(pthread_t));
+    rec->lock = (pthread_mutex_t *) malloc(sizeof(pthread_mutex_t));
+    pthread_mutex_init(rec->lock, NULL);
+    rec->running = 0;
+    rec->r_obj = (*jni_env)->NewGlobalRef(audio_record);
+    rec->r_class = (jclass) (*jni_env)->NewGlobalRef(
+        jni_env->FindClass("android/media/AudioRecord"));
+    rec->r_callback = NULL;
+    status = JNI_AUDIO_SUCCESS;
   }
 
   DETACH_JVM(jni_env);
-  return audio;
+  return status;
 }
 
-void set_record_callback(jni_audio *audio, int (*callback)(jbyte *, int))
+int init_jni_play(jni_play *play, int sample_rate, jobject audio_track)
 {
-  jni_record *record = audio->record;
+  int status = -1;
+  JNIEnv *jni_env = NULL;
+
+  ATTACH_JVM(jni_env);
+
+  if (play) {
+    // init play object
+    play->p_thread = (pthread_t *) malloc(sizeof(pthread_t));
+    play->lock = (pthread_mutex_t *) malloc(sizeof(pthread_mutex_t));
+    pthread_mutex_init(play->lock, NULL);
+    play->running = 0;
+    play->p_obj = (*jni_env)->NewGlobalRef(audio_track);
+    play->p_class = (jclass) (*jni_env)->NewGlobalRef(
+        jni_env->FindClass("android/media/AudioTrack"));
+    play->p_callback = NULL;
+    status = JNI_AUDIO_SUCCESS;
+  }
+
+  DETACH_JVM(jni_env);
+  return status;
+
+}
+
+void set_record_callback(jni_record *rec, int (*callback)(jbyte *, int))
+{
   if (record) {
-    record->r_callback = callback;
+    rec->r_callback = callback;
   }
 }
 
-void set_play_callback(jni_audio *audio, int (*callback)(jbyte *, int))
+void set_play_callback(jni_play *play, int (*callback)(jbyte *, int))
 {
-  jni_play *play = audio->play;
   if (play) {
     play->p_callback = callback;
   }
 }
 
-int start_record(jni_audio *audio)
+int start_record(jni_record *rec)
 {
   int res;
-  jni_record *record = audio->record;
 
-  record->running = 1;
-  res = pthread_create(record->record_thread,
+  rec->running = 1;
+  res = pthread_create(rec->r_thread,
                        NULL,
                        record_function,
-                       (void *) record);
+                       (void *) rec);
   if (res) {
     LOGE("Error occurred starting record thread: %d", res);
-    record->running = 0;
+    rec->running = 0;
   }
   return res;
 }
 
-int start_play(jni_audio *audio)
+int start_play(jni_play *play)
 {
   int res;
-  jni_play *play = audio->play;
 
   play->running = 1;
-  res = pthread_create(play->play_thread,
+  res = pthread_create(play->p_thread,
                        NULL,
                        play_function,
                        (void *) play);
@@ -329,25 +331,23 @@ int start_play(jni_audio *audio)
   return res;
 }
 
-int stop_record(jni_audio *audio)
+int stop_record(jni_record *rec)
 {
   int res;
-  jni_record *record = audio->record;
 
-  pthread_mutex_lock(record->lock);
-  record->running = 0;
-  pthread_mutex_unlock(record->lock);
-  res = pthread_join(*(record->r_thread), NULL);
+  pthread_mutex_lock(rec->lock);
+  rec->running = 0;
+  pthread_mutex_unlock(rec->lock);
+  res = pthread_join(*(rec->r_thread), NULL);
   if (res) {
     LOGE("Error occurred joining record thread: %d", res);
   }
   return res;
 }
 
-int stop_play(jni_audio *audio)
+int stop_play(jni_play *play)
 {
   int res;
-  jni_play *play = audio->play;
 
   pthread_mutex_lock(play->lock);
   play->running = 0;
@@ -359,42 +359,46 @@ int stop_play(jni_audio *audio)
   return res;
 }
 
-void cleanup_jni_audio(jni_audio *audio)
+void cleanup_jni_record(jni_record *rec)
 {
   JNIEnv *jni_env = NULL;
   jmethodID release_method = NULL;
-  int running = 0;
+
   ATTACH_JVM(jni_env);
 
-  jni_record *record = audio->record;
-  jni_play *play = audio->play;
+  if (rec) {
+    if (is_running(rec)) {
+      stop_record(rec);
+    }
+    free(rec->r_thread);
+    pthread_mutex_destroy(record->lock);
+    release_method = (*jni_env)->GetMethodID(rec->r_class, "release", "()V");
+    (*jni_env)->CallVoidMethod(rec->r_obj, release_method);
+    (*jni_env)->DeleteGlobalRef(rec->r_obj);
+    (*jni_env)->DeleteGlobalRef(rec->r_class);
 
-  if (is_running(record)) {
-    stop_record(audio);
-  }
-
-  if (is_running(play)) {
-    stop_play(audio);
-  }
-
-  if (record) {
-    free(record->r_thread);
-    pthread_mutex_destroy(&record->lock);
-
-    release_method = (*jni_env)->GetMethodID(record->r_class, "release", "()V");
-    (*jni_env)->CallVoidMethod(record->r_obj, release_method);
-    (*jni_env)->DeleteGlobalRef(record->r_obj);
-    (*jni_env)->DeleteGlobalRef(record->r_class);
-
-    record->r_obj = NULL;
-    record->r_class = NULL;
+    rec->r_obj = NULL;
+    rec->r_class = NULL;
 
     free(record);
   }
-  if (play) {
-    free(play->p_thread);
-    pthread_mutex_destroy(&play->lock);
 
+  DETACH_JVM(jni_env);
+}
+
+void cleanup_jni_play(jni_play *play)
+{
+  JNIEnv *jni_env = NULL;
+  jmethodID release_method = NULL;
+
+  ATTACH_JVM(jni_env);
+
+  if (play) {
+    if (is_running(play)) {
+      stop_play(play);
+    }
+    free(play->p_thread);
+    pthread_mutex_destroy(play->lock);
     release_method = (*jni_env)->GetMethodID(play->p_class,
                                              "release",
                                              "()V");
@@ -402,13 +406,11 @@ void cleanup_jni_audio(jni_audio *audio)
     (*jni_env)->DeleteGlobalRef(play->p_obj);
     (*jni_env)->DeleteGlobalRef(play->p_class);
 
-    audio->play = NULL;
-    audio->play_class = NULL;
+    play->p_obj = NULL;
+    play->p_class = NULL;
 
     free(play);
   }
-  if (audio) {
-    free(audio);
-  }
+
   DETACH_JVM(jni_env);
 }

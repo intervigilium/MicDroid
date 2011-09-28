@@ -33,7 +33,7 @@
                                       __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_WARN, "libjniaudio", \
                                       __VA_ARGS__)
-#define CALLBACK_SUCCESS 0
+#define JNI_AUDIO_SUCCESS 0
 #define THREAD_PRIORITY_URGENT_AUDIO -19
 
 typedef struct {
@@ -56,25 +56,24 @@ typedef struct {
   void (*p_callback)(jbyte *);
 } jni_play;
 
-typedef struct {
-  jni_record *record;
-  jni_play *play;
-} jni_audio;
+int init_jni_record(jni_record *rec, int sample_rate, jobject audio_record);
 
-jni_audio * init_jni_audio(int sample_rate, jobject audio_record, jobject audio_track);
+int init_jni_play(jni_play *play, int sample_rate, jobject_audio_track);
 
 void set_record_callback(jni_audio *audio, int (*callback)(jbyte *, int));
 
 void set_play_callback(jni_audio *audio, int (*callback)(jbyte *, int));
 
-int start_record(jni_audio *audio);
+int start_record(jni_record *rec);
 
-int start_play(jni_audio *audio);
+int start_play(jni_play *play);
 
-int stop_record(jni_audio *audio);
+int stop_record(jni_record *rec);
 
-int stop_play(jni_audio *audio);
+int stop_play(jni_play *play);
 
-void cleanup_jni_audio(jni_audio *audio);
+void cleanup_jni_record(jni_record *rec);
+
+void cleanup jni_play(jni_play *play);
 
 #endif  // end JNI_AUDIO_H
