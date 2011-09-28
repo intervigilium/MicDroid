@@ -19,8 +19,10 @@
  */
 /*****************************************************************************/
 
+#include <android/log.h>
 #include <time.h>
 #include "jni_audio.h"
+#include "jvm_wrapper.h"
 
 static int get_timestamp_ms()
 {
