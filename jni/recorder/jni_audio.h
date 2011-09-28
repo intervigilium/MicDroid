@@ -19,10 +19,11 @@
  */
 /*****************************************************************************/
 
+#ifndef JNI_AUDIO_H
+#define JNI_AUDIO_H
+
 #include <jni.h>
 #include <pthread.h>
-#include <android/log.h>
-#include "jvm_wrapper.h"
 
 #define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, "libjniaudio", \
                                       __VA_ARGS__)
@@ -75,3 +76,5 @@ int stop_record(jni_audio *audio);
 int stop_play(jni_audio *audio);
 
 void cleanup_jni_audio(jni_audio *audio);
+
+#endif  // end JNI_AUDIO_H
