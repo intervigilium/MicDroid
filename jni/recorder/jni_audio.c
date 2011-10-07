@@ -24,6 +24,8 @@
 #include "jni_audio.h"
 #include "jvm_wrapper.h"
 
+#define THREAD_PRIORITY_URGENT_AUDIO -19
+
 static int get_timestamp_ms()
 {
   int ts;

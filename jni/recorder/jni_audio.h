@@ -25,8 +25,6 @@
 #include <jni.h>
 #include <pthread.h>
 
-#define THREAD_PRIORITY_URGENT_AUDIO -19
-
 typedef struct {
   int timestamp;
   int size;
