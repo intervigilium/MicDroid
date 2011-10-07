@@ -3,6 +3,7 @@ gen/*
 libs/armeabi*
 obj/*
 keys
+tags
 market/*
 *.apk
 *.iws
