@@ -37,32 +37,38 @@
 #define THREAD_PRIORITY_URGENT_AUDIO -19
 
 typedef struct {
-  int sample_rate;
+  int timestamp;
+  int size;
+  jbyte *buf;
+} jni_audio_frame;
+
+typedef struct {
+  int samples_per_sec;
   jobject r_obj;
   jclass r_class;
   pthread_mutex_t *lock;
   pthread_t *r_thread;
   int running;
-  void (*r_callback)(jbyte *);
+  void (*r_callback)(jni_audio_frame *);
 } jni_record;
 
 typedef struct {
-  int sample_rate;
+  int samples_per_sec;
   jobject p_obj;
   jclass p_class;
   pthread_mutex_t *lock;
   pthread_t *p_thread;
   int running;
-  void (*p_callback)(jbyte *);
+  void (*p_callback)(jni_audio_frame *);
 } jni_play;
 
-int init_jni_record(jni_record *rec, int sample_rate, jobject audio_record);
+int init_jni_record(jni_record *rec, int samples_per_sec, jobject audio_record);
 
-int init_jni_play(jni_play *play, int sample_rate, jobject_audio_track);
+int init_jni_play(jni_play *play, int samples_per_sec, jobject_audio_track);
 
-void set_record_callback(jni_audio *audio, int (*callback)(jbyte *, int));
+void set_record_callback(jni_rec *rec, int (*callback)(jni_audio_frame *));
 
-void set_play_callback(jni_audio *audio, int (*callback)(jbyte *, int));
+void set_play_callback(jni_play *play, int (*callback)(jni_audio_frame *));
 
 int start_record(jni_record *rec);
 

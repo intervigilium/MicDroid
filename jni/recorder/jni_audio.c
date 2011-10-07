@@ -110,12 +110,13 @@ static void record_function(void *ptr)
   int bytes_read;
   long now, last_frame;
   int elapsed_ms, to_wait_ms;
-  // TODO(echen): figure out values for these
-  int size;
-  int nframes;
-  int samples_per_sec;
+  jni_audio_frame *frame;
+  // samples_per_frame = samples_per_sec * 20 / 1000
+  // bytes_per_sample = 16 bits = 2 bytes
+  int size = record->samples_per_sec * 20 / 1000 * 2;
+  int nframes = record->samples_per_sec * 20 / 1000 / 1;
   // for frame time calculation
-  int frame_time = nframes * 1000 / samples_per_sec;
+  int frame_time = nframes * 1000 / record->samples_per_sec;
   int missed_time = frame_time
 
   ATTACH_JVM(jni_env);
@@ -164,8 +165,13 @@ static void record_function(void *ptr)
       continue;
     }
 
-    // in_buf is aliased to j_in_buf
-    if ((*record->r_callback)(in_buf, size) != JNI_AUDIO_SUCCESS) {
+    frame = (jni_audio_frame *) malloc(sizeof(jni_audio_frame));
+    frame->timestamp = now;
+    frame->size = size;
+    frame->buf = in_buf;
+
+    // in_buf is aliased to j_in_buf, callback is responsible for copying buf
+    if ((*record->r_callback)(frame) != JNI_AUDIO_SUCCESS) {
       LOGE("Record thread: Error in record callback, exiting...");
       goto on_finish;
     }
@@ -187,8 +193,10 @@ static void play_function(void *ptr)
   jmethodID write_method, play_method;
   jbyteArray j_out_buf;
   jbyte *out_buf;
-  // TODO(echen): figure out values for these
-  int size;
+  jni_audio_frame *frame;
+  // samples_per_frame = samples_per_sec * 20 / 1000
+  // bytes_per_sample = 16 bits = 2 bytes
+  int size = play->samples_per_sec * 20 / 1000 * 2;
   int status;
 
   ATTACH_JVM(jni_env);
@@ -212,8 +220,9 @@ static void play_function(void *ptr)
   (*jni_env)->CallVoidMethod(play->p_obj, play_method);
 
   while (is_running(play)) {
-    // fill buffer from callback
-    if ((*play->p_callback)(out_buf, size) != JNI_AUDIO_SUCCESS) {
+    // fill buffer from callback, callback responsible for copying buf
+    frame = (jni_audio_frame *) malloc(sizeof(jni_audio_frame));
+    if ((*play->p_callback)(frame) != JNI_AUDIO_SUCCESS) {
       goto on_finish;
     }
     status = (*jni_env)->CallIntMethod(play->p_obj,
@@ -236,7 +245,7 @@ on_break:
   return 0;
 }
 
-int init_jni_record(jni_record *rec, int sample_rate, jobject audio_record)
+int init_jni_record(jni_record *rec, int samples_per_sec, jobject audio_record)
 {
   int status = -1;
   JNIEnv *jni_env = NULL;
@@ -260,7 +269,7 @@ int init_jni_record(jni_record *rec, int sample_rate, jobject audio_record)
   return status;
 }
 
-int init_jni_play(jni_play *play, int sample_rate, jobject audio_track)
+int init_jni_play(jni_play *play, int samples_per_sec, jobject audio_track)
 {
   int status = -1;
   JNIEnv *jni_env = NULL;
@@ -285,14 +294,15 @@ int init_jni_play(jni_play *play, int sample_rate, jobject audio_track)
 
 }
 
-void set_record_callback(jni_record *rec, int (*callback)(jbyte *, int))
+void set_record_callback(jni_record *rec,
+                         int (*callback)(jni_audio_frame *frame))
 {
   if (record) {
     rec->r_callback = callback;
   }
 }
 
-void set_play_callback(jni_play *play, int (*callback)(jbyte *, int))
+void set_play_callback(jni_play *play, int (*callback)(jni_audio_frame *frame))
 {
   if (play) {
     play->p_callback = callback;
