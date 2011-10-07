@@ -25,15 +25,6 @@
 #include <jni.h>
 #include <pthread.h>
 
-#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, "libjniaudio", \
-                                      __VA_ARGS__)
-#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "libjniaudio", \
-                                      __VA_ARGS__)
-#define LOGW(...) __android_log_print(ANDROID_LOG_WARN, "libjniaudio", \
-                                      __VA_ARGS__)
-#define LOGE(...) __android_log_print(ANDROID_LOG_WARN, "libjniaudio", \
-                                      __VA_ARGS__)
-#define JNI_AUDIO_SUCCESS 0
 #define THREAD_PRIORITY_URGENT_AUDIO -19
 
 typedef struct {

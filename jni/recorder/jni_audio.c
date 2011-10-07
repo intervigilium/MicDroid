@@ -19,8 +19,8 @@
  */
 /*****************************************************************************/
 
-#include <android/log.h>
 #include <time.h>
+#include "jni_common.h"
 #include "jni_audio.h"
 #include "jvm_wrapper.h"
 
@@ -50,7 +50,7 @@ static void pthread_sleep(int sleep_time_ms)
   pthread_mutex_lock(&wait_mutex);
   rt = pthread_cond_timedwait(&wait_cond, &wait_mutex, &wait_time);
   pthread_mutex_unlock(&wait_mutex);
-  LOGI("Thread slept for %d milliseconds", sleep_time_ms);
+  LOG_INFO("Thread slept for %d milliseconds", sleep_time_ms);
 }
 
 static void set_thread_priority(int priority)
@@ -63,22 +63,15 @@ static void set_thread_priority(int priority)
 
   process_class = (*jni_env)->NewGlobalRef(
       (*jni_env)->FindClass("android/os/Process"));
-  if (process_class == NULL) {
-    LOGE("Unable to find android/os/Process class, exiting!");
-    goto on_break;
-  }
-
+  check(process_class != NULL, "Unable to find android/os/Process class");
   set_priority_method = (*jni_env)->GetStaticMethodID(
       process_class, "SetThreadPriority", "(I)V");
-  if (set_priority_method == NULL) {
-    LOGE("Unable to find set priority method, exiting!");
-    goto on_break;
-  }
+  check(set_priority_method != NULL, "Unable to find set priority method");
 
   (*jni_env)->CallStaticVoidMethod(process_class,
                                    set_priority_method,
                                    priority);
-on_break:
+on_error:
   DETACH_JVM(jni_env);
 }
 
@@ -107,6 +100,7 @@ static void record_function(void *ptr)
   jbyteArray j_in_buf;
   jbyte *in_buf;
   jmethodID read_method, record_method;
+  int status;
   int bytes_read;
   long now, last_frame;
   int elapsed_ms, to_wait_ms;
@@ -124,15 +118,10 @@ static void record_function(void *ptr)
   read_method = (*jni_env)->GetMethodID(record->r_class, "read", "([BII)I");
   record_method = (*jni_env)->GetMethodID(record->r_class,
                                           "startRecording", "()V");
-  if (read_method == NULL || record_method == NULL) {
-    LOGE("Record thread: Unable to find AudioRecord functions, exiting!");
-    goto on_break;
-  }
+  check(read_method != NULL && record_method != NULL,
+        "Record thread: Unable to find AudioRecord functions");
   j_in_buf = (*jni_env)->NewByteArray(size);
-  if (j_in_buf == NULL) {
-    LOGE("Record thread: Unable to allocate input buffer, exiting!");
-    goto on_break;
-  }
+  check_mem(j_in_buf);
   in_buf = (*jni_env)->GetByteArrayElements(j_in_buf, 0);
 
   set_thread_priority(THREAD_PRIORITY_URGENT_AUDIO);
@@ -157,30 +146,26 @@ static void record_function(void *ptr)
                                            j_in_buf,
                                            0, size);
     if (bytes_read <= 0) {
-      LOGW("Record thread: error reading data...");
+      LOG_WARN("Record thread: error reading data...");
       continue;
     }
     if (bytes_read != size) {
-      LOGW("Record thread: Overrun...");
+      LOG_WARN("Record thread: Overrun...");
       continue;
     }
 
+    // in_buf is aliased to j_in_buf, callback is responsible for copying buf
     frame = (jni_audio_frame *) malloc(sizeof(jni_audio_frame));
     frame->timestamp = now;
     frame->size = size;
     frame->buf = in_buf;
-
-    // in_buf is aliased to j_in_buf, callback is responsible for copying buf
-    if ((*record->r_callback)(frame) != JNI_AUDIO_SUCCESS) {
-      LOGE("Record thread: Error in record callback, exiting...");
-      goto on_finish;
-    }
+    status = (*record->r_callback)(frame);
+    check(status == 0, "Record thread: Error in record callback");
   }
 
-on_finish:
+on_error:
   (*jni_env)->ReleaseByteArrayElements(j_in_buf, in_buf, 0);
   (*jni_env)->DeleteLocalRef(j_in_buf);
-on_break:
   DETACH_JVM(jni_env);
   return 0;
 }
@@ -203,16 +188,11 @@ static void play_function(void *ptr)
 
   write_method = (*jni_env)->GetMethodID(play->p_class, "write", "([BII)I");
   play_method = (*jni_env)->GetMethodID(play->p_class, "play", "()V");
-  if (write_method == NULL || play_method == NULL) {
-    LOGE("Playback thread: Unable to find AudioTrack functions!, exiting");
-    goto on_break;
-  }
+  check(write_method != NULL && play_method != NULL,
+        "Playback thread: Unable to find AudioTrack functions");
 
   j_out_buf = (*jni_env)->NewByteArray(size);
-  if (j_out_buf == NULL) {
-    LOGE("Playback thread: Unable to allocate output buffer, exiting!");
-    goto on_break;
-  }
+  check_mem(j_out_buf);
   out_buf = (*jni_env)->GetByteArrayElements(j_out_buf, 0);
 
   set_thread_priority(THREAD_PRIORITY_URGENT_AUDIO);
@@ -222,25 +202,23 @@ static void play_function(void *ptr)
   while (is_running(play)) {
     // fill buffer from callback, callback responsible for copying buf
     frame = (jni_audio_frame *) malloc(sizeof(jni_audio_frame));
-    if ((*play->p_callback)(frame) != JNI_AUDIO_SUCCESS) {
-      goto on_finish;
-    }
+    status = (*play->p_callback)(frame);
+    check(status == 0, "Playback thread: Error retrieving frame from callback.");
     status = (*jni_env)->CallIntMethod(play->p_obj,
                                        write_method,
                                        j_out_buf,
                                        0, size);
     if (status < 0) {
-      LOGW("Playback thread: Error writing output buffer: %d", status);
+      LOG_WARN("Playback thread: Error writing output buffer: %d", status);
       continue;
     } else if (status != size) {
-      LOGI("Playback thread: Only wrote %d of %d bytes!", status, size);
+      LOG_INFO("Playback thread: Only wrote %d of %d bytes!", status, size);
     }
   }
 
-on_finish:
+on_error:
   (*jni_env)->ReleaseByteArrayElements(j_out_buf, out_buf, 0);
   (*jni_env)->DeleteLocalRef(j_out_buf);
-on_break:
   DETACH_JVM(jni_env);
   return 0;
 }
@@ -262,7 +240,7 @@ int init_jni_record(jni_record *rec, int samples_per_sec, jobject audio_record)
     rec->r_class = (jclass) (*jni_env)->NewGlobalRef(
         jni_env->FindClass("android/media/AudioRecord"));
     rec->r_callback = NULL;
-    status = JNI_AUDIO_SUCCESS;
+    status = 0;
   }
 
   DETACH_JVM(jni_env);
@@ -286,7 +264,7 @@ int init_jni_play(jni_play *play, int samples_per_sec, jobject audio_track)
     play->p_class = (jclass) (*jni_env)->NewGlobalRef(
         jni_env->FindClass("android/media/AudioTrack"));
     play->p_callback = NULL;
-    status = JNI_AUDIO_SUCCESS;
+    status = 0;
   }
 
   DETACH_JVM(jni_env);
@@ -319,7 +297,7 @@ int start_record(jni_record *rec)
                        record_function,
                        (void *) rec);
   if (res) {
-    LOGE("Error occurred starting record thread: %d", res);
+    LOG_ERROR("Error occurred starting record thread: %d", res);
     rec->running = 0;
   }
   return res;
@@ -335,7 +313,7 @@ int start_play(jni_play *play)
                        play_function,
                        (void *) play);
   if (res) {
-    LOGE("Error occurred starting playback thread: %d", res);
+    LOG_ERROR("Error occurred starting playback thread: %d", res);
     play->running = 0;
   }
   return res;
@@ -350,7 +328,7 @@ int stop_record(jni_record *rec)
   pthread_mutex_unlock(rec->lock);
   res = pthread_join(*(rec->r_thread), NULL);
   if (res) {
-    LOGE("Error occurred joining record thread: %d", res);
+    LOG_ERROR("Error occurred joining record thread: %d", res);
   }
   return res;
 }
@@ -364,7 +342,7 @@ int stop_play(jni_play *play)
   pthread_mutex_unlock(play->lock);
   res = pthread_join(*(play->p_thread), NULL);
   if (res) {
-    LOGE("Error occurred joining playback thread: %d", res);
+    LOG_ERROR("Error occurred joining playback thread: %d", res);
   }
   return res;
 }
