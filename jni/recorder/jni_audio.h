@@ -26,6 +26,8 @@
 #include <pthread.h>
 
 typedef struct {
+  jni_audio_frame *next;
+  jni_audio_frame *prev;
   int timestamp;
   int size;
   jbyte *buf;
