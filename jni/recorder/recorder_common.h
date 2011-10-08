@@ -1,4 +1,4 @@
-/* jni_common.h
+/* recorder_common.h
  * JNIRecorder library for Android
  *
  * Copyright (c) 2010 Ethan Chen
@@ -19,15 +19,15 @@
  */
 /*****************************************************************************/
 
-#ifndef JNI_COMMON_H
-#define JNI_COMMON_H
+#ifndef RECORDER_COMMON_H
+#define RECORDER_COMMON_H
 
 #include <android/log.h>
 #include <errno.h>
 
 // TODO(echen): fix the formatting to conform to 80-char column
 // Below code originally from c.learncodethehardway.org
-#define JNI_AUDIO_LIBRARY "libjniaudio"
+#define JNI_AUDIO_LIBRARY "libjnirecorder"
 #define clean_errno() (errno == 0 ? "None" : strerror(errno))
 
 #ifdef NDEBUG

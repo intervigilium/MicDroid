@@ -20,9 +20,9 @@
 /*****************************************************************************/
 
 #include <time.h>
-#include "jni_common.h"
 #include "jni_audio.h"
 #include "jvm_wrapper.h"
+#include "recorder_common.h"
 
 #define THREAD_PRIORITY_URGENT_AUDIO -19
 
