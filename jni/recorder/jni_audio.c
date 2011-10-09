@@ -26,10 +26,12 @@
 
 #define THREAD_PRIORITY_URGENT_AUDIO -19
 
-static int get_timestamp_ms()
+static int
+get_timestamp_ms()
 {
   int ts;
   struct timespec now;
+
   // clock_gettime has ns resolution
   clock_gettime(CLOCK_MONOTONIC, &now);
   ts = now.tv_sec;
@@ -38,7 +40,8 @@ static int get_timestamp_ms()
   return res;
 }
 
-static void pthread_sleep(int sleep_time_ms)
+static void
+pthread_sleep(int sleep_time_ms)
 {
   pthread_mutex_t wait_mutex = PTHREAD_MUTEX_INITIALIZER;
   pthread_cond_t wait_cond = PTHREAD_COND_INITIALIZER;
@@ -55,7 +58,8 @@ static void pthread_sleep(int sleep_time_ms)
   LOG_INFO("Thread slept for %d milliseconds", sleep_time_ms);
 }
 
-static void set_thread_priority(int priority)
+static void
+set_thread_priority(int priority)
 {
   JNIEnv *jni_env = NULL;
   jclass process_class;
@@ -71,31 +75,35 @@ static void set_thread_priority(int priority)
   check(set_priority_method != NULL, "Unable to find set priority method");
 
   (*jni_env)->CallStaticVoidMethod(process_class,
-                                   set_priority_method,
-                                   priority);
+                                   set_priority_method, priority);
 on_error:
   DETACH_JVM(jni_env);
 }
 
-static int is_running(jni_play *play)
+static int
+is_running(jni_play *play)
 {
   int ret = 0;
+
   pthread_mutex_lock(play->lock);
   ret = play->running;
   pthread_mutex_unlock(play->lock);
   return ret;
 }
 
-static int is_running(jni_record *record)
+static int
+is_running(jni_record *record)
 {
   int ret = 0;
+
   pthread_mutex_lock(record->lock);
   ret = record->running;
   pthread_mutex_unlock(record->lock);
   return ret;
 }
 
-static void record_function(void *ptr)
+static void
+record_function(void *ptr)
 {
   jni_record *record = (jni_record *) ptr;
   JNIEnv *jni_env = NULL;
@@ -144,9 +152,7 @@ static void record_function(void *ptr)
       }
     }
     bytes_read = (*jni_env)->CallIntMethod(record->r_obj,
-                                           read_method,
-                                           j_in_buf,
-                                           0, size);
+                                           read_method, j_in_buf, 0, size);
     if (bytes_read <= 0) {
       LOG_WARN("Record thread: error reading data...");
       continue;
@@ -155,7 +161,6 @@ static void record_function(void *ptr)
       LOG_WARN("Record thread: Overrun...");
       continue;
     }
-
     // in_buf is aliased to j_in_buf, callback is responsible for copying buf
     frame = (jni_audio_frame *) malloc(sizeof(jni_audio_frame));
     frame->timestamp = now;
@@ -172,7 +177,8 @@ on_error:
   return 0;
 }
 
-static void play_function(void *ptr)
+static void
+play_function(void *ptr)
 {
   jni_play *play = (jni_play *) ptr;
   JNIEnv *jni_env = NULL;
@@ -205,11 +211,10 @@ static void play_function(void *ptr)
     // fill buffer from callback, callback responsible for copying buf
     frame = (jni_audio_frame *) malloc(sizeof(jni_audio_frame));
     status = (*play->p_callback)(frame);
-    check(status == 0, "Playback thread: Error retrieving frame from callback.");
+    check(status == 0,
+          "Playback thread: Error retrieving frame from callback.");
     status = (*jni_env)->CallIntMethod(play->p_obj,
-                                       write_method,
-                                       j_out_buf,
-                                       0, size);
+                                       write_method, j_out_buf, 0, size);
     if (status < 0) {
       LOG_WARN("Playback thread: Error writing output buffer: %d", status);
       continue;
@@ -225,7 +230,8 @@ on_error:
   return 0;
 }
 
-int init_jni_record(jni_record *rec, int samples_per_sec, jobject audio_record)
+int
+init_jni_record(jni_record *rec, int samples_per_sec, jobject audio_record)
 {
   int status = -1;
   JNIEnv *jni_env = NULL;
@@ -249,7 +255,8 @@ int init_jni_record(jni_record *rec, int samples_per_sec, jobject audio_record)
   return status;
 }
 
-int init_jni_play(jni_play *play, int samples_per_sec, jobject audio_track)
+int
+init_jni_play(jni_play *play, int samples_per_sec, jobject audio_track)
 {
   int status = -1;
   JNIEnv *jni_env = NULL;
@@ -274,30 +281,29 @@ int init_jni_play(jni_play *play, int samples_per_sec, jobject audio_track)
 
 }
 
-void set_record_callback(jni_record *rec,
-                         int (*callback)(jni_audio_frame *frame))
+void
+set_record_callback(jni_record *rec, int (*callback)(jni_audio_frame *frame))
 {
   if (record) {
     rec->r_callback = callback;
   }
 }
 
-void set_play_callback(jni_play *play, int (*callback)(jni_audio_frame *frame))
+void
+set_play_callback(jni_play *play, int (*callback)(jni_audio_frame *frame))
 {
   if (play) {
     play->p_callback = callback;
   }
 }
 
-int start_record(jni_record *rec)
+int
+start_record(jni_record *rec)
 {
   int res;
 
   rec->running = 1;
-  res = pthread_create(rec->r_thread,
-                       NULL,
-                       record_function,
-                       (void *) rec);
+  res = pthread_create(rec->r_thread, NULL, record_function, (void *) rec);
   if (res) {
     LOG_ERROR("Error occurred starting record thread: %d", res);
     rec->running = 0;
@@ -305,15 +311,13 @@ int start_record(jni_record *rec)
   return res;
 }
 
-int start_play(jni_play *play)
+int
+start_play(jni_play *play)
 {
   int res;
 
   play->running = 1;
-  res = pthread_create(play->p_thread,
-                       NULL,
-                       play_function,
-                       (void *) play);
+  res = pthread_create(play->p_thread, NULL, play_function, (void *) play);
   if (res) {
     LOG_ERROR("Error occurred starting playback thread: %d", res);
     play->running = 0;
@@ -321,7 +325,8 @@ int start_play(jni_play *play)
   return res;
 }
 
-int stop_record(jni_record *rec)
+int
+stop_record(jni_record *rec)
 {
   int res;
 
@@ -335,7 +340,8 @@ int stop_record(jni_record *rec)
   return res;
 }
 
-int stop_play(jni_play *play)
+int
+stop_play(jni_play *play)
 {
   int res;
 
@@ -349,7 +355,8 @@ int stop_play(jni_play *play)
   return res;
 }
 
-void cleanup_jni_record(jni_record *rec)
+void
+cleanup_jni_record(jni_record *rec)
 {
   JNIEnv *jni_env = NULL;
   jmethodID release_method = NULL;
@@ -376,7 +383,8 @@ void cleanup_jni_record(jni_record *rec)
   DETACH_JVM(jni_env);
 }
 
-void cleanup_jni_play(jni_play *play)
+void
+cleanup_jni_play(jni_play *play)
 {
   JNIEnv *jni_env = NULL;
   jmethodID release_method = NULL;
@@ -389,9 +397,7 @@ void cleanup_jni_play(jni_play *play)
     }
     free(play->p_thread);
     pthread_mutex_destroy(play->lock);
-    release_method = (*jni_env)->GetMethodID(play->p_class,
-                                             "release",
-                                             "()V");
+    release_method = (*jni_env)->GetMethodID(play->p_class, "release", "()V");
     (*jni_env)->CallVoidMethod(play->p_obj, release_method);
     (*jni_env)->DeleteGlobalRef(play->p_obj);
     (*jni_env)->DeleteGlobalRef(play->p_class);
