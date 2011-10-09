@@ -282,7 +282,7 @@ init_jni_play(jni_play *play, int samples_per_sec, jobject audio_track)
 }
 
 void
-set_record_callback(jni_record *rec, int (*callback)(jni_audio_frame *frame))
+set_record_callback(jni_record *rec, jni_audio_callback callback)
 {
   if (record) {
     rec->r_callback = callback;
@@ -290,7 +290,7 @@ set_record_callback(jni_record *rec, int (*callback)(jni_audio_frame *frame))
 }
 
 void
-set_play_callback(jni_play *play, int (*callback)(jni_audio_frame *frame))
+set_play_callback(jni_play *play, jni_audio_callback callback)
 {
   if (play) {
     play->p_callback = callback;

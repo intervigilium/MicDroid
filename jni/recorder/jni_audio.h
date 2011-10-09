@@ -25,6 +25,8 @@
 #include <jni.h>
 #include <pthread.h>
 
+typedef int (*jni_audio_callback)(jni_audio_frame *);
+
 typedef struct {
   int timestamp;
   int size;
@@ -38,7 +40,7 @@ typedef struct {
   pthread_mutex_t *lock;
   pthread_t *r_thread;
   int running;
-  void (*r_callback)(jni_audio_frame *);
+  jni_audio_callback r_callback;
 } jni_record;
 
 typedef struct {
@@ -48,16 +50,16 @@ typedef struct {
   pthread_mutex_t *lock;
   pthread_t *p_thread;
   int running;
-  void (*p_callback)(jni_audio_frame *);
+  jni_audio_callback p_callback;
 } jni_play;
 
 int init_jni_record(jni_record *rec, int samples_per_sec, jobject audio_record);
 
 int init_jni_play(jni_play *play, int samples_per_sec, jobject_audio_track);
 
-void set_record_callback(jni_record *rec, int (*callback)(jni_audio_frame *));
+void set_record_callback(jni_record *rec, jni_audio_callback callback);
 
-void set_play_callback(jni_play *play, int (*callback)(jni_audio_frame *));
+void set_play_callback(jni_play *play, jni_audio_callback callback);
 
 int start_record(jni_record *rec);
 
