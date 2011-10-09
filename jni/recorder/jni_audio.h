@@ -69,6 +69,6 @@ int stop_play(jni_play *play);
 
 void cleanup_jni_record(jni_record *rec);
 
-void cleanup jni_play(jni_play *play);
+void cleanup_jni_play(jni_play *play);
 
 #endif  // end JNI_AUDIO_H
