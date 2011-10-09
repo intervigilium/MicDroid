@@ -55,7 +55,7 @@ int init_jni_record(jni_record *rec, int samples_per_sec, jobject audio_record);
 
 int init_jni_play(jni_play *play, int samples_per_sec, jobject_audio_track);
 
-void set_record_callback(jni_rec *rec, int (*callback)(jni_audio_frame *));
+void set_record_callback(jni_record *rec, int (*callback)(jni_audio_frame *));
 
 void set_play_callback(jni_play *play, int (*callback)(jni_audio_frame *));
 
