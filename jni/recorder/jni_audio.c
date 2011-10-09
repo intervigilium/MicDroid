@@ -113,7 +113,7 @@ static void record_function(void *ptr)
   int nframes = record->samples_per_sec * 20 / 1000 / 1;
   // for frame time calculation
   int frame_time = nframes * 1000 / record->samples_per_sec;
-  int missed_time = frame_time
+  int missed_time = frame_time;
 
   ATTACH_JVM(jni_env);
 
