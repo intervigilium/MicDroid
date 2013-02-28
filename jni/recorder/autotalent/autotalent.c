@@ -1095,6 +1095,7 @@ void cleanupAutotalent(Autotalent * Instance)
   free(Instance->m_pfFcorr);
   free(Instance->m_pfFwarp);
   free(Instance->m_pfMix);
+  free(Instance->m_pfKey);
 
   free(Instance);
 }
