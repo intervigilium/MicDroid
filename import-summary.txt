@@ -1,0 +1,81 @@
+ECLIPSE ANDROID PROJECT IMPORT SUMMARY
+======================================
+
+Ignored Files:
+--------------
+The following files were *not* copied into the new Gradle project; you
+should evaluate whether these are still needed in your project and if
+so manually move them:
+
+* .gitignore
+* INSTALL
+* LICENSE
+* README
+* TODO
+* build.xml
+* default.properties
+* proguard.cfg
+* zipalign-apk.sh
+
+Moved Files:
+------------
+Android Gradle projects use a different directory structure than ADT
+Eclipse projects. Here's how the projects were restructured:
+
+* AndroidManifest.xml => app/src/main/AndroidManifest.xml
+* assets/ => app/src/main/assets/
+* libs/GoogleAdMobAdsSdk-4.0.4.jar => app/libs/GoogleAdMobAdsSdk-4.0.4.jar
+* res/ => app/src/main/res/
+* src/ => app/src/main/java/
+* /home/echen/workspace/studio/libautotalent/ => app/src/main/java/
+* /home/echen/workspace/studio/libautotalent/.classpath => app/src/main/resources/.classpath
+* /home/echen/workspace/studio/libautotalent/.gitignore => app/src/main/resources/.gitignore
+* /home/echen/workspace/studio/libautotalent/.project => app/src/main/resources/.project
+* /home/echen/workspace/studio/libautotalent/AndroidManifest.xml => app/src/main/resources/AndroidManifest.xml
+* /home/echen/workspace/studio/libautotalent/INSTALL => app/src/main/resources/INSTALL
+* /home/echen/workspace/studio/libautotalent/LICENSE => app/src/main/resources/LICENSE
+* /home/echen/workspace/studio/libautotalent/README => app/src/main/resources/README
+* /home/echen/workspace/studio/libautotalent/TODO => app/src/main/resources/TODO
+* /home/echen/workspace/studio/libautotalent/build.xml => app/src/main/resources/build.xml
+* /home/echen/workspace/studio/libautotalent/default.properties => app/src/main/resources/default.properties
+* /home/echen/workspace/studio/libautotalent/jni/Android.mk => app/src/main/resources/jni/Android.mk
+* /home/echen/workspace/studio/libautotalent/jni/Application.mk => app/src/main/resources/jni/Application.mk
+* /home/echen/workspace/studio/libautotalent/jni/autotalent/Android.mk => app/src/main/resources/jni/autotalent/Android.mk
+* /home/echen/workspace/studio/libautotalent/jni/autotalent/autotalent-interface.c => app/src/main/resources/jni/autotalent/autotalent-interface.c
+* /home/echen/workspace/studio/libautotalent/jni/autotalent/autotalent-interface.h => app/src/main/resources/jni/autotalent/autotalent-interface.h
+* /home/echen/workspace/studio/libautotalent/jni/autotalent/autotalent.c => app/src/main/resources/jni/autotalent/autotalent.c
+* /home/echen/workspace/studio/libautotalent/jni/autotalent/autotalent.h => app/src/main/resources/jni/autotalent/autotalent.h
+* /home/echen/workspace/studio/libautotalent/jni/autotalent/fft.c => app/src/main/resources/jni/autotalent/fft.c
+* /home/echen/workspace/studio/libautotalent/jni/autotalent/fft.h => app/src/main/resources/jni/autotalent/fft.h
+* /home/echen/workspace/studio/libautotalent/jni/autotalent/mayer_fft.c => app/src/main/resources/jni/autotalent/mayer_fft.c
+* /home/echen/workspace/studio/libautotalent/jni/autotalent/mayer_fft.h => app/src/main/resources/jni/autotalent/mayer_fft.h
+* /home/echen/workspace/studio/libautotalent/proguard.cfg => app/src/main/resources/proguard.cfg
+* /home/echen/workspace/studio/libautotalent/res/values/strings.xml => app/src/main/resources/res/values/strings.xml
+* /home/echen/workspace/studio/libwave/ => app/src/main/java/
+* /home/echen/workspace/studio/libwave/.classpath => app/src/main/resources/.classpath
+* /home/echen/workspace/studio/libwave/.gitignore => app/src/main/resources/.gitignore
+* /home/echen/workspace/studio/libwave/.project => app/src/main/resources/.project
+* /home/echen/workspace/studio/libwave/AndroidManifest.xml => app/src/main/resources/AndroidManifest.xml
+* /home/echen/workspace/studio/libwave/INSTALL => app/src/main/resources/INSTALL
+* /home/echen/workspace/studio/libwave/LICENSE => app/src/main/resources/LICENSE
+* /home/echen/workspace/studio/libwave/README => app/src/main/resources/README
+* /home/echen/workspace/studio/libwave/TODO => app/src/main/resources/TODO
+* /home/echen/workspace/studio/libwave/build.xml => app/src/main/resources/build.xml
+* /home/echen/workspace/studio/libwave/default.properties => app/src/main/resources/default.properties
+* /home/echen/workspace/studio/libwave/proguard.cfg => app/src/main/resources/proguard.cfg
+* /home/echen/workspace/studio/libwave/res/values/strings.xml => app/src/main/resources/res/values/strings.xml
+
+Next Steps:
+-----------
+You can now build the project. The Gradle project needs network
+connectivity to download dependencies.
+
+Bugs:
+-----
+If for some reason your project does not build, and you determine that
+it is due to a bug or limitation of the Eclipse to Gradle importer,
+please file a bug at http://b.android.com with category
+Component-Tools.
+
+(This import summary is for your information only, and can be deleted
+after import once you are satisfied with the results.)

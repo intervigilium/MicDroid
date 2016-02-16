@@ -1,0 +1,8 @@
+This project is licensed under LGPLv2, for further licensing information see
+the LICENSE file.
+
+Build Instructions:
+Include this project as a library and the Android builders will do the rest.
+
+Known Issues:
+

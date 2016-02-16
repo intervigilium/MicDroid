@@ -1,0 +1,5 @@
+This project requires:
+Android SDK
+
+This is a library project. Include this project as a library in your own
+Android projects and the Android builders will do the rest.

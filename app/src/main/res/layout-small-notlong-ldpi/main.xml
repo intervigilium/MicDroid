@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/recording_layout" android:orientation="vertical"
+	android:gravity="center" android:layout_width="fill_parent"
+	android:layout_height="fill_parent" android:background="@drawable/mesh_tile">
+
+	<RelativeLayout android:id="@+id/recording_panel"
+		android:orientation="vertical" android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:layout_marginTop="20dp"
+		android:layout_marginRight="12dp" android:layout_marginBottom="60dp"
+		android:layout_marginLeft="12dp" android:background="@drawable/base_panel">
+
+		<ImageView android:id="@+id/recording_panel_head"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:adjustViewBounds="true" android:scaleType="center"
+			android:src="@drawable/panel_head" />
+
+		<RelativeLayout android:id="@+id/recording_timer_container"
+			android:orientation="vertical" android:gravity="center"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:layout_marginTop="50dp">
+
+			<TextView android:id="@+id/recording_timer" android:gravity="center"
+				android:layout_width="fill_parent" android:layout_height="wrap_content"
+				android:text="00:00" android:textSize="40sp" android:textColor="#b67bff"
+				android:textStyle="bold" android:background="@drawable/large_display" />
+
+		</RelativeLayout>
+		<!-- would be nice if mic_toggle -> recording_button -->
+		<RelativeLayout android:id="@+id/recording_button_container"
+			android:orientation="vertical" android:gravity="center"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:layout_centerVertical="true"
+			android:layout_alignParentBottom="true">
+
+			<ToggleButton android:id="@+id/recording_button"
+				android:layout_width="112dp" android:layout_height="112dp"
+				android:textOn="" android:textOff="" android:background="@drawable/recording_button" />
+
+		</RelativeLayout>
+	</RelativeLayout>
+
+	<RelativeLayout android:id="@+id/navigation_area"
+		android:orientation="vertical" android:gravity="center"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true">
+
+		<Button android:id="@+id/library_button" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:gravity="center"
+			android:text="My Recordings" android:textSize="15sp"
+			android:textColor="#fff" android:shadowColor="#000" android:shadowDy="-1"
+			android:shadowRadius="1" android:background="@drawable/base_button" />
+
+	</RelativeLayout>
+</RelativeLayout>
