@@ -2,12 +2,14 @@
 
 <LinearLayout android:id="@+id/recording_library_layout"
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:ads="http://schemas.android.com/apk/res/com.intervigil.micdroid"
+	xmlns:ads="http://schemas.android.com/apk/res-auto"
 	android:orientation="vertical" android:gravity="center"
 	android:layout_width="fill_parent" android:layout_height="fill_parent">
 
-	<com.google.ads.AdView android:id="@+id/recording_ad"
-		android:layout_width="fill_parent" android:layout_height="wrap_content"
+	<com.google.gms.ads.AdView
+		android:id="@+id/recording_ad"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
 		ads:adUnitId="a14cbf73c14c77d"
 		ads:adSize="BANNER" />
 

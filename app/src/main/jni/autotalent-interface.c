@@ -24,7 +24,6 @@
 #include <string.h>
 #include <stdio.h>
 #include <android/log.h>
-#include <cpu-features.h>
 
 #define MAX_SHORT 32767
 #define MIN_SHORT -32768
@@ -50,8 +49,7 @@ Java_net_sourceforge_autotalent_Autotalent_getLiveCorrectionEnabled(JNIEnv *
 								    class)
 {
 	// jboolean is 8 bits so be careful of truncation!
-	return ((android_getCpuFeatures() & ANDROID_CPU_ARM_FEATURE_ARMv7) ==
-		ANDROID_CPU_ARM_FEATURE_ARMv7);
+	return JNI_FALSE;
 }
 
 JNIEXPORT void JNICALL
