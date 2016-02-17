@@ -19,12 +19,6 @@
 
 package com.intervigil.micdroid;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -34,19 +28,19 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.AdapterView.OnItemClickListener;
 
 import com.google.android.gms.ads.AdView;
 import com.intervigil.micdroid.helper.AdHelper;
@@ -56,6 +50,12 @@ import com.intervigil.micdroid.helper.PreferenceHelper;
 import com.intervigil.micdroid.helper.RecordingOptionsHelper;
 import com.intervigil.micdroid.model.Recording;
 import com.intervigil.wave.exception.InvalidWaveException;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RecordingLibrary extends Activity implements OnItemClickListener {
 
@@ -74,9 +74,8 @@ public class RecordingLibrary extends Activity implements OnItemClickListener {
     /**
      * Called when the activity is starting. This is where most initialization
      * should go: calling setContentView(int) to inflate the activity's UI, etc.
-     * 
-     * @param savedInstanceState
-     *            Activity's saved state, if any.
+     *
+     * @param savedInstanceState Activity's saved state, if any.
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -189,7 +188,7 @@ public class RecordingLibrary extends Activity implements OnItemClickListener {
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
-            ContextMenuInfo menuInfo) {
+                                    ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
 
         menu.setHeaderTitle(R.string.recording_options_title);

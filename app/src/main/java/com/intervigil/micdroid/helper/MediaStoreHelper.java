@@ -44,8 +44,8 @@ public class MediaStoreHelper {
                     .getAbsolutePath());
 
             Cursor results = resolver.query(contentUri,
-                    new String[] { "_display_name" }, "_display_name=?",
-                    new String[] { r.getName() }, null);
+                    new String[]{"_display_name"}, "_display_name=?",
+                    new String[]{r.getName()}, null);
 
             int count = 0;
             if (results != null) {
@@ -82,11 +82,11 @@ public class MediaStoreHelper {
                     .getAbsolutePath());
 
             Cursor results = resolver.query(contentUri,
-                    new String[] { "_display_name" }, "_display_name=?",
-                    new String[] { r.getName() }, null);
+                    new String[]{"_display_name"}, "_display_name=?",
+                    new String[]{r.getName()}, null);
             if (results != null && results.getCount() > 0) {
-                resolver.delete(contentUri, "_display_name=?", new String[] { r
-                        .getName() });
+                resolver.delete(contentUri, "_display_name=?", new String[]{r
+                        .getName()});
                 results.close();
             }
 
@@ -114,11 +114,11 @@ public class MediaStoreHelper {
                     .getAbsolutePath());
 
             Cursor results = resolver.query(contentUri,
-                    new String[] { "_display_name" }, "_display_name=?",
-                    new String[] { r.getName() }, null);
+                    new String[]{"_display_name"}, "_display_name=?",
+                    new String[]{r.getName()}, null);
             if (results != null && results.getCount() > 0) {
-                resolver.delete(contentUri, "_display_name=?", new String[] { r
-                        .getName() });
+                resolver.delete(contentUri, "_display_name=?", new String[]{r
+                        .getName()});
                 results.close();
             }
             resolver = null;
@@ -150,7 +150,7 @@ public class MediaStoreHelper {
             Uri contentUri = MediaStore.Audio.Media
                     .getContentUriForPath(recording.getAbsolutePath());
             resolver.delete(contentUri, "_display_name=?",
-                    new String[] { recording.getName() });
+                    new String[]{recording.getName()});
             Uri recordingUri = resolver.insert(contentUri, values);
             resolver = null;
             return recordingUri;

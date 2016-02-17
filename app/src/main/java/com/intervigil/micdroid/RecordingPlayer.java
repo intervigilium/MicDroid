@@ -25,8 +25,8 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -45,9 +45,8 @@ public class RecordingPlayer extends Activity implements OnClickListener {
     /**
      * Called when the activity is starting. This is where most initialization
      * should go: calling setContentView(int) to inflate the activity's UI, etc.
-     * 
-     * @param savedInstanceState
-     *            Activity's saved state, if any.
+     *
+     * @param savedInstanceState Activity's saved state, if any.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -1,12 +1,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-	<item android:id="@+id/options" android:title="Pitch-Correction Settings"
-		android:icon="@drawable/android_settings" />
-	<item android:id="@+id/donate" android:title="Donate"
-		android:icon="@drawable/android_donate" />
-	<item android:id="@+id/help" android:title="Help"
-		android:icon="@drawable/android_help" />
-	<item android:id="@+id/about" android:title="About"
-		android:icon="@drawable/android_about" />
-	<item android:id="@+id/quit" android:title="Exit"
-		android:icon="@drawable/android_close" />
+    <item
+        android:id="@+id/options"
+        android:icon="@drawable/android_settings"
+        android:title="Pitch-Correction Settings" />
+    <item
+        android:id="@+id/donate"
+        android:icon="@drawable/android_donate"
+        android:title="Donate" />
+    <item
+        android:id="@+id/help"
+        android:icon="@drawable/android_help"
+        android:title="Help" />
+    <item
+        android:id="@+id/about"
+        android:icon="@drawable/android_about"
+        android:title="About" />
+    <item
+        android:id="@+id/quit"
+        android:icon="@drawable/android_close"
+        android:title="Exit" />
 </menu>

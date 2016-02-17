@@ -42,7 +42,7 @@ public class DialogHelper {
     }
 
     public static void showConfirmation(Context context, int titleId, int messageId,
-            int positiveId, int negativeId, OnClickListener clickListener) {
+                                        int positiveId, int negativeId, OnClickListener clickListener) {
         Builder confirmDialogBuilder = new Builder(context);
         confirmDialogBuilder.setTitle(R.string.confirm_delete_title)
                 .setMessage(R.string.confirm_delete_message)

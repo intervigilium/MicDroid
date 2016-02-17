@@ -42,77 +42,72 @@ public class AudioHelper {
 
     /**
      * Convert Android AudioFormat.CHANNEL_CONFIGURATION constants to integers
-     * 
-     * @param androidChannels
-     *            Android AudioFormat constant
+     *
+     * @param androidChannels Android AudioFormat constant
      */
     public static int getChannelConfig(int androidChannels) {
         switch (androidChannels) {
-        case AudioFormat.CHANNEL_CONFIGURATION_MONO:
-            return 1;
-        case AudioFormat.CHANNEL_CONFIGURATION_STEREO:
-            return 2;
-        default:
-            return 1;
+            case AudioFormat.CHANNEL_CONFIGURATION_MONO:
+                return 1;
+            case AudioFormat.CHANNEL_CONFIGURATION_STEREO:
+                return 2;
+            default:
+                return 1;
         }
     }
 
     /**
      * Convert Android AudioFormat.ENCODING_PCM constants to integers
-     * 
-     * @param androidEncoding
-     *            Android AudioFormat constant
+     *
+     * @param androidEncoding Android AudioFormat constant
      */
     public static int getPcmEncoding(int androidEncoding) {
         switch (androidEncoding) {
-        case AudioFormat.ENCODING_PCM_8BIT:
-            return 8;
-        case AudioFormat.ENCODING_PCM_16BIT:
-            return 16;
-        default:
-            return 8;
+            case AudioFormat.ENCODING_PCM_8BIT:
+                return 8;
+            case AudioFormat.ENCODING_PCM_16BIT:
+                return 16;
+            default:
+                return 8;
         }
     }
 
     /**
      * Convert integers to AudioFormat.CHANNEL_CONFIGURATION constants
-     * 
-     * @param numChannels
-     *            number of channels, typically 1 or 2
+     *
+     * @param numChannels number of channels, typically 1 or 2
      */
     public static int getAndroidChannelConfig(int numChannels) {
         switch (numChannels) {
-        case 1:
-            return AudioFormat.CHANNEL_CONFIGURATION_MONO;
-        case 2:
-            return AudioFormat.CHANNEL_CONFIGURATION_STEREO;
-        default:
-            return AudioFormat.CHANNEL_CONFIGURATION_DEFAULT;
+            case 1:
+                return AudioFormat.CHANNEL_CONFIGURATION_MONO;
+            case 2:
+                return AudioFormat.CHANNEL_CONFIGURATION_STEREO;
+            default:
+                return AudioFormat.CHANNEL_CONFIGURATION_DEFAULT;
         }
     }
 
     /**
      * Convert integers to AudioFormat.ENCODING_PCM constants
-     * 
-     * @param bitsPerSample
-     *            bits in a sample of audio, typically 8 or 16
+     *
+     * @param bitsPerSample bits in a sample of audio, typically 8 or 16
      */
     public static int getAndroidPcmEncoding(int bitsPerSample) {
         switch (bitsPerSample) {
-        case 8:
-            return AudioFormat.ENCODING_PCM_8BIT;
-        case 16:
-            return AudioFormat.ENCODING_PCM_16BIT;
-        default:
-            return AudioFormat.ENCODING_DEFAULT;
+            case 8:
+                return AudioFormat.ENCODING_PCM_8BIT;
+            case 16:
+                return AudioFormat.ENCODING_PCM_16BIT;
+            default:
+                return AudioFormat.ENCODING_DEFAULT;
         }
     }
 
     /**
      * Gets an AudioTrack object using the current playback settings
-     * 
-     * @param context
-     *            Context which we are getting recorder for
+     *
+     * @param context Context which we are getting recorder for
      */
     public static AudioTrack getPlayer(Context context)
             throws IllegalArgumentException {
@@ -145,9 +140,8 @@ public class AudioHelper {
     /**
      * Gets the validity of the current recorder settings, particularly sample
      * rate; This function wraps getRecorderBufferSize(Context)
-     * 
-     * @param context
-     *            Context which we are getting recorder information about
+     *
+     * @param context Context which we are getting recorder information about
      */
     public static boolean isValidRecorderConfiguration(Context context) {
         return getRecorderBufferSize(context) != AudioRecord.ERROR_BAD_VALUE;
@@ -159,9 +153,8 @@ public class AudioHelper {
      * PcmFormat) which means this function can return
      * AudioRecord.ERROR_BAD_VALUE for invalid settings or AudioRecord.ERROR
      * when the system is unable to query hardware for proper settings
-     * 
-     * @param context
-     *            Context which we are getting recorder information about
+     *
+     * @param context Context which we are getting recorder information about
      */
     public static int getRecorderBufferSize(Context context) {
         int bufferSize = 0;
@@ -177,9 +170,8 @@ public class AudioHelper {
 
     /**
      * Gets an AudioRecord object using the current recording settings
-     * 
-     * @param context
-     *            Context which we are getting recorder for
+     *
+     * @param context Context which we are getting recorder for
      */
     public static AudioRecord getRecorder(Context context)
             throws IllegalArgumentException {
@@ -210,9 +202,8 @@ public class AudioHelper {
      * Attempts to autoconfigure current Context's sample rate, buffer size,
      * or buffer size adjuster . Will show a pop-up warning if configuration
      * failed to initialize an AudioRecord instance.
-     * 
-     * @param context
-     *            Context which we are attempting to configure
+     *
+     * @param context Context which we are attempting to configure
      */
     public static void configureRecorder(Context context) {
         AudioRecord rec = null;
@@ -269,7 +260,7 @@ public class AudioHelper {
                         Constants.DEFAULT_PCM_FORMAT);
                 if (bufferSize != AudioRecord.ERROR && bufferSize != AudioRecord.ERROR_BAD_VALUE) {
                     if (bufferSize <= 4096) {
-                        bufferSize = 4096 * 3/2;
+                        bufferSize = 4096 * 3 / 2;
                     }
                     rec = new AudioRecord(
                             AudioSource.MIC,
@@ -307,7 +298,7 @@ public class AudioHelper {
      * Tries to figure out if the current phone is Galaxy S based, since it has
      * recording issues This is pretty nasty since we are string matching, but
      * unless I can get a better way to do it...
-     * 
+     *
      * @param
      */
     public static boolean isSamsungGalaxyS() {

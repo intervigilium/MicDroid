@@ -20,10 +20,6 @@
 
 package com.intervigil.micdroid.recorder;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
-import net.sourceforge.autotalent.Autotalent;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.AudioRecord;
@@ -43,6 +39,11 @@ import com.intervigil.micdroid.interfaces.DependentTask;
 import com.intervigil.micdroid.interfaces.Recorder;
 import com.intervigil.wave.WaveWriter;
 import com.intervigil.wave.exception.InvalidWaveException;
+
+import net.sourceforge.autotalent.Autotalent;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class SipdroidRecorder implements Recorder {
 
@@ -85,7 +86,8 @@ public class SipdroidRecorder implements Recorder {
             writerThread.close();
             try {
                 writerThread.join();
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException e) {
+            }
             writerThread = null;
         }
     }
@@ -219,7 +221,8 @@ public class SipdroidRecorder implements Recorder {
                     if (nextFrameDelay > 0) {
                         try {
                             sleep(nextFrameDelay);
-                        } catch (InterruptedException e) {}
+                        } catch (InterruptedException e) {
+                        }
                         lastFrameTime = lastFrameTime + nextFrameDelay;
                     }
                     num = audioRecord.read(buf, 0, frameSize);

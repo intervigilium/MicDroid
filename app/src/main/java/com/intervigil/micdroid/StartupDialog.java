@@ -37,7 +37,7 @@ public class StartupDialog extends Dialog {
     private int buttonLabelId;
 
     public StartupDialog(Context context, int titleId, int textId,
-            int buttonLabelId) {
+                         int buttonLabelId) {
         super(context);
         this.context = context;
         this.titleId = titleId;

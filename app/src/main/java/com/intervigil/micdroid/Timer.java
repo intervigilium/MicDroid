@@ -51,25 +51,25 @@ public class Timer {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-            case TIMER_START:
-                display.setText(getTime());
-                this.sleep(DEFAULT_TIMER_COUNT);
-                break;
-            case TIMER_STOP:
-                this.removeMessages(TIMER_COUNT_UP);
-                this.removeMessages(TIMER_START);
-                this.removeMessages(TIMER_STOP);
-                this.removeMessages(TIMER_RESET);
-                break;
-            case TIMER_RESET:
-                timer = 0;
-                display.setText(getTime());
-                break;
-            case TIMER_COUNT_UP:
-                display.setText(getTime());
-                timer++;
-                this.sleep(DEFAULT_TIMER_COUNT);
-                break;
+                case TIMER_START:
+                    display.setText(getTime());
+                    this.sleep(DEFAULT_TIMER_COUNT);
+                    break;
+                case TIMER_STOP:
+                    this.removeMessages(TIMER_COUNT_UP);
+                    this.removeMessages(TIMER_START);
+                    this.removeMessages(TIMER_STOP);
+                    this.removeMessages(TIMER_RESET);
+                    break;
+                case TIMER_RESET:
+                    timer = 0;
+                    display.setText(getTime());
+                    break;
+                case TIMER_COUNT_UP:
+                    display.setText(getTime());
+                    timer++;
+                    this.sleep(DEFAULT_TIMER_COUNT);
+                    break;
             }
         }
 
@@ -77,5 +77,7 @@ public class Timer {
             this.removeMessages(TIMER_COUNT_UP);
             sendMessageDelayed(this.obtainMessage(TIMER_COUNT_UP), delayMillis);
         }
-    };
+    }
+
+    ;
 }

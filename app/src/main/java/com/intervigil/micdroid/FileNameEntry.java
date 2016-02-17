@@ -19,21 +19,21 @@
 
 package com.intervigil.micdroid;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.intervigil.micdroid.model.Recording;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class FileNameEntry extends Activity {
 
@@ -42,9 +42,8 @@ public class FileNameEntry extends Activity {
     /**
      * Called when the activity is starting. This is where most initialization
      * should go: calling setContentView(int) to inflate the activity's UI, etc.
-     * 
-     * @param savedInstanceState
-     *            Activity's saved state, if any.
+     *
+     * @param savedInstanceState Activity's saved state, if any.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {

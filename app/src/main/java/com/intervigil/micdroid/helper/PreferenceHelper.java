@@ -31,7 +31,7 @@ public class PreferenceHelper {
 
     public static boolean getShowAds(Context context) {
         SharedPreferences prefReader =
-            PreferenceManager.getDefaultSharedPreferences(context);
+                PreferenceManager.getDefaultSharedPreferences(context);
         boolean pref = prefReader.getBoolean(
                 context.getString(R.string.prefs_enable_ads_key),
                 Boolean.parseBoolean(context.getString(R.string.prefs_enable_ads_default)));
@@ -40,7 +40,7 @@ public class PreferenceHelper {
 
     public static boolean getScreenLock(Context context) {
         SharedPreferences prefReader =
-            PreferenceManager.getDefaultSharedPreferences(context);
+                PreferenceManager.getDefaultSharedPreferences(context);
         boolean pref = prefReader.getBoolean(
                 context.getString(R.string.prefs_prevent_screen_lock_key),
                 Boolean.parseBoolean(context.getString(R.string.prefs_prevent_screen_lock_default)));
@@ -49,7 +49,7 @@ public class PreferenceHelper {
 
     public static boolean getLiveMode(Context context) {
         SharedPreferences prefReader =
-            PreferenceManager.getDefaultSharedPreferences(context);
+                PreferenceManager.getDefaultSharedPreferences(context);
         boolean pref = prefReader.getBoolean(
                 context.getString(R.string.prefs_live_mode_key),
                 Boolean.parseBoolean(context.getString(R.string.prefs_live_mode_default)));
@@ -58,7 +58,7 @@ public class PreferenceHelper {
 
     public static char getKey(Context context) {
         SharedPreferences prefReader =
-            PreferenceManager.getDefaultSharedPreferences(context);
+                PreferenceManager.getDefaultSharedPreferences(context);
         String pref = prefReader.getString(
                 context.getString(R.string.prefs_key_key),
                 context.getString(R.string.prefs_key_default));
@@ -67,7 +67,7 @@ public class PreferenceHelper {
 
     public static float getPullToFixedPitch(Context context) {
         SharedPreferences prefs =
-            PreferenceManager.getDefaultSharedPreferences(context);
+                PreferenceManager.getDefaultSharedPreferences(context);
         String pref = prefs.getString(
                 context.getString(R.string.prefs_pitch_pull_key),
                 context.getString(R.string.prefs_pitch_pull_default));
@@ -76,7 +76,7 @@ public class PreferenceHelper {
 
     public static float getPitchShift(Context context) {
         SharedPreferences prefs =
-            PreferenceManager.getDefaultSharedPreferences(context);
+                PreferenceManager.getDefaultSharedPreferences(context);
         String pref = prefs.getString(
                 context.getString(R.string.prefs_pitch_shift_key),
                 context.getString(R.string.prefs_pitch_shift_default));
@@ -85,7 +85,7 @@ public class PreferenceHelper {
 
     public static float getCorrectionStrength(Context context) {
         SharedPreferences prefs =
-            PreferenceManager.getDefaultSharedPreferences(context);
+                PreferenceManager.getDefaultSharedPreferences(context);
         String pref = prefs.getString(
                 context.getString(R.string.prefs_corr_str_key),
                 context.getString(R.string.prefs_corr_str_default));
@@ -94,7 +94,7 @@ public class PreferenceHelper {
 
     public static float getCorrectionSmoothness(Context context) {
         SharedPreferences prefs =
-            PreferenceManager.getDefaultSharedPreferences(context);
+                PreferenceManager.getDefaultSharedPreferences(context);
         String pref = prefs.getString(
                 context.getString(R.string.prefs_corr_smooth_key),
                 context.getString(R.string.prefs_corr_smooth_default));
@@ -103,7 +103,7 @@ public class PreferenceHelper {
 
     public static boolean getFormantCorrection(Context context) {
         SharedPreferences prefReader =
-            PreferenceManager.getDefaultSharedPreferences(context);
+                PreferenceManager.getDefaultSharedPreferences(context);
         boolean pref = prefReader.getBoolean(
                 context.getString(R.string.prefs_formant_corr_key),
                 Boolean.parseBoolean(context.getString(R.string.prefs_formant_corr_default)));
@@ -112,7 +112,7 @@ public class PreferenceHelper {
 
     public static float getFormantWarp(Context context) {
         SharedPreferences prefs =
-            PreferenceManager.getDefaultSharedPreferences(context);
+                PreferenceManager.getDefaultSharedPreferences(context);
         String pref = prefs.getString(
                 context.getString(R.string.prefs_formant_warp_key),
                 context.getString(R.string.prefs_formant_warp_default));
@@ -121,7 +121,7 @@ public class PreferenceHelper {
 
     public static float getMix(Context context) {
         SharedPreferences prefs =
-            PreferenceManager.getDefaultSharedPreferences(context);
+                PreferenceManager.getDefaultSharedPreferences(context);
         String pref = prefs.getString(
                 context.getString(R.string.prefs_corr_mix_key),
                 context.getString(R.string.prefs_corr_mix_default));
@@ -130,7 +130,7 @@ public class PreferenceHelper {
 
     public static int getSampleRate(Context context) {
         SharedPreferences prefReader =
-            PreferenceManager.getDefaultSharedPreferences(context);
+                PreferenceManager.getDefaultSharedPreferences(context);
         String sampleRate = prefReader.getString(
                 context.getString(R.string.prefs_sample_rate_key), "-1");
         return Integer.parseInt(sampleRate);
@@ -138,7 +138,7 @@ public class PreferenceHelper {
 
     public static void setSampleRate(Context context, int sampleRate) {
         Editor prefEditor =
-            PreferenceManager.getDefaultSharedPreferences(context).edit();
+                PreferenceManager.getDefaultSharedPreferences(context).edit();
         prefEditor.putString(context.getString(R.string.prefs_sample_rate_key),
                 String.format("%d", sampleRate));
         prefEditor.commit();
@@ -154,9 +154,9 @@ public class PreferenceHelper {
     }
 
     public static void setBufferSize(Context context,
-            int bufferSize) {
+                                     int bufferSize) {
         Editor prefEditor =
-            PreferenceManager.getDefaultSharedPreferences(context).edit();
+                PreferenceManager.getDefaultSharedPreferences(context).edit();
         prefEditor.putString(
                 context.getString(R.string.prefs_buffer_size_key),
                 String.format("%d", bufferSize));
@@ -173,9 +173,9 @@ public class PreferenceHelper {
     }
 
     public static void setBufferSizeAdjuster(Context context,
-            int bufferSizeAdjuster) {
+                                             int bufferSizeAdjuster) {
         Editor prefEditor =
-            PreferenceManager.getDefaultSharedPreferences(context).edit();
+                PreferenceManager.getDefaultSharedPreferences(context).edit();
         prefEditor.putString(
                 context.getString(R.string.prefs_buffer_size_adjuster_key),
                 String.format("%d", bufferSizeAdjuster));
@@ -189,14 +189,14 @@ public class PreferenceHelper {
 
     public static void setLastVersionCode(Context context, int value) {
         Editor editor =
-            PreferenceManager.getDefaultSharedPreferences(context).edit();
+                PreferenceManager.getDefaultSharedPreferences(context).edit();
         editor.putInt(Constants.KEY_LAST_VERSION_CODE, value);
         editor.commit();
     }
 
     public static void setDefaultPreferences(Context context) {
         Editor prefEditor =
-            PreferenceManager.getDefaultSharedPreferences(context).edit();
+                PreferenceManager.getDefaultSharedPreferences(context).edit();
         prefEditor.clear().commit();
 
         AudioHelper.configureRecorder(context);
@@ -204,21 +204,21 @@ public class PreferenceHelper {
 
     public static void resetFormantCorrectionDefault(Context context) {
         Editor editor =
-            PreferenceManager.getDefaultSharedPreferences(context).edit();
+                PreferenceManager.getDefaultSharedPreferences(context).edit();
         editor.remove(context.getString(R.string.prefs_formant_corr_key));
         editor.commit();
     }
 
     public static void resetPitchShiftDefault(Context context) {
         Editor editor =
-            PreferenceManager.getDefaultSharedPreferences(context).edit();
+                PreferenceManager.getDefaultSharedPreferences(context).edit();
         editor.remove(context.getString(R.string.prefs_pitch_shift_key));
         editor.commit();
     }
 
     public static void unsetRecordingSettings(Context context) {
         Editor editor =
-            PreferenceManager.getDefaultSharedPreferences(context).edit();
+                PreferenceManager.getDefaultSharedPreferences(context).edit();
         editor.remove(context.getString(R.string.prefs_sample_rate_key));
         editor.remove(context.getString(R.string.prefs_buffer_size_key));
         editor.remove(context.getString(R.string.prefs_buffer_size_adjuster_key));

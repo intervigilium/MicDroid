@@ -41,14 +41,14 @@ public class WaveWriter {
     /**
      * Constructor; initializes WaveWriter with file name and path
      *
-     * @param path  output file path
-     * @param name  output file name
-     * @param sampleRate  output sample rate
-     * @param channels  number of channels
-     * @param sampleBits  number of bits per sample (S8LE, S16LE)
+     * @param path       output file path
+     * @param name       output file name
+     * @param sampleRate output sample rate
+     * @param channels   number of channels
+     * @param sampleBits number of bits per sample (S8LE, S16LE)
      */
     public WaveWriter(String path, String name, int sampleRate, int channels,
-            int sampleBits) {
+                      int sampleBits) {
         this.mOutFile = new File(path + File.separator + name);
 
         this.mSampleRate = sampleRate;
@@ -61,10 +61,10 @@ public class WaveWriter {
     /**
      * Constructor; initializes WaveWriter with file name and path
      *
-     * @param file  output file handle
-     * @param sampleRate  output sample rate
-     * @param channels  number of channels
-     * @param sampleBits  number of bits per sample (S8LE, S16LE)
+     * @param file       output file handle
+     * @param sampleRate output sample rate
+     * @param channels   number of channels
+     * @param sampleBits number of bits per sample (S8LE, S16LE)
      */
     public WaveWriter(File file, int sampleRate, int channels, int sampleBits) {
         this.mOutFile = file;
@@ -80,7 +80,6 @@ public class WaveWriter {
      * Create output WAV file
      *
      * @return whether file creation succeeded
-     *
      * @throws IOException if file I/O error occurs allocating header
      */
     public boolean createWaveFile() throws IOException {
@@ -102,10 +101,9 @@ public class WaveWriter {
      * Write audio data to output file (mono). Does
      * nothing if output file is not mono channel.
      *
-     * @param src  mono audio data input buffer
+     * @param src    mono audio data input buffer
      * @param offset offset into src buffer
-     * @param length  buffer size in number of samples
-     *
+     * @param length buffer size in number of samples
      * @throws IOException if file I/O error occurs
      */
     public void write(short[] src, int offset, int length) throws IOException {
@@ -125,11 +123,10 @@ public class WaveWriter {
      * Write audio data to output file (stereo). Does
      * nothing if output file is not stereo channel.
      *
-     * @param left  left channel audio data buffer
+     * @param left   left channel audio data buffer
      * @param right  right channel audio data buffer
-     * @param offset  offset into left/right buffers
-     * @param length  buffer size in number of samples
-     *
+     * @param offset offset into left/right buffers
+     * @param length buffer size in number of samples
      * @throws IOException if file I/O error occurs
      */
     public void write(short[] left, short[] right, int offset, int length) throws IOException {

@@ -57,7 +57,7 @@ public class RecordingOptionsHelper {
     }
 
     public static boolean setNotificationTone(Context context,
-            Recording recording) {
+                                              Recording recording) {
         Uri recordingUri = MediaStoreHelper.getRecordingUri(context, recording);
         if (recordingUri != null) {
             RingtoneManager.setActualDefaultRingtoneUri(context,

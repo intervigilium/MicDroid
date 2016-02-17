@@ -19,16 +19,17 @@
 
 package com.intervigil.micdroid;
 
-import net.sourceforge.autotalent.Autotalent;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.preference.Preference;
-import android.preference.PreferenceActivity;
 import android.preference.Preference.OnPreferenceClickListener;
+import android.preference.PreferenceActivity;
 import android.util.Log;
 
 import com.intervigil.micdroid.helper.PreferenceHelper;
+
+import net.sourceforge.autotalent.Autotalent;
 
 public class Preferences extends PreferenceActivity {
 
@@ -37,9 +38,8 @@ public class Preferences extends PreferenceActivity {
     /**
      * Called when the activity is starting. This is where most initialization
      * should go: calling setContentView(int) to inflate the activity's UI, etc.
-     * 
-     * @param icicle
-     *            Activity's saved state, if any.
+     *
+     * @param icicle Activity's saved state, if any.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,21 +96,21 @@ public class Preferences extends PreferenceActivity {
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog,
-                                        int which) {
+                                                    int which) {
                                     PreferenceHelper
                                             .setDefaultPreferences(Preferences.this);
                                     dialog.dismiss();
                                     finish();
                                 }
                             }).setNegativeButton(
-                            R.string.confirm_reset_prefs_btn_no,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog,
-                                        int which) {
-                                    dialog.dismiss();
-                                }
-                            });
+                    R.string.confirm_reset_prefs_btn_no,
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog,
+                                            int which) {
+                            dialog.dismiss();
+                        }
+                    });
             confirmDialogBuilder.create().show();
             return true;
         }

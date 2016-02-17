@@ -19,11 +19,11 @@
 
 package com.intervigil.micdroid.helper;
 
-import java.io.File;
-
 import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Environment;
+
+import java.io.File;
 
 public class ApplicationHelper {
 

@@ -1,56 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/recording_layout" android:orientation="vertical"
-	android:gravity="center" android:layout_width="fill_parent"
-	android:layout_height="fill_parent" android:background="@drawable/mesh_tile">
+    android:id="@+id/recording_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/mesh_tile"
+    android:gravity="center"
+    android:orientation="vertical">
 
-	<RelativeLayout android:id="@+id/recording_panel"
-		android:orientation="vertical" android:layout_width="fill_parent"
-		android:layout_height="fill_parent" android:layout_marginTop="20dp"
-		android:layout_marginRight="12dp" android:layout_marginBottom="60dp"
-		android:layout_marginLeft="12dp" android:background="@drawable/base_panel">
+    <RelativeLayout
+        android:id="@+id/recording_panel"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="60dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/base_panel"
+        android:orientation="vertical">
 
-		<ImageView android:id="@+id/recording_panel_head"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:adjustViewBounds="true" android:scaleType="center"
-			android:src="@drawable/panel_head" />
+        <ImageView
+            android:id="@+id/recording_panel_head"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="center"
+            android:src="@drawable/panel_head" />
 
-		<RelativeLayout android:id="@+id/recording_timer_container"
-			android:orientation="vertical" android:gravity="center"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:layout_marginTop="50dp">
+        <RelativeLayout
+            android:id="@+id/recording_timer_container"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:gravity="center"
+            android:orientation="vertical">
 
-			<TextView android:id="@+id/recording_timer" android:gravity="center"
-				android:layout_width="fill_parent" android:layout_height="wrap_content"
-				android:text="00:00" android:textSize="40sp" android:textColor="#b67bff"
-				android:textStyle="bold" android:background="@drawable/large_display" />
+            <TextView
+                android:id="@+id/recording_timer"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/large_display"
+                android:gravity="center"
+                android:text="00:00"
+                android:textColor="#b67bff"
+                android:textSize="40sp"
+                android:textStyle="bold" />
 
-		</RelativeLayout>
-		<!-- would be nice if mic_toggle -> recording_button -->
-		<RelativeLayout android:id="@+id/recording_button_container"
-			android:orientation="vertical" android:gravity="center"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:layout_centerVertical="true"
-			android:layout_alignParentBottom="true">
+        </RelativeLayout>
+        <!-- would be nice if mic_toggle -> recording_button -->
+        <RelativeLayout
+            android:id="@+id/recording_button_container"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:orientation="vertical">
 
-			<ToggleButton android:id="@+id/recording_button"
-				android:layout_width="112dp" android:layout_height="112dp"
-				android:textOn="" android:textOff="" android:background="@drawable/recording_button" />
+            <ToggleButton
+                android:id="@+id/recording_button"
+                android:layout_width="112dp"
+                android:layout_height="112dp"
+                android:background="@drawable/recording_button"
+                android:textOff=""
+                android:textOn="" />
 
-		</RelativeLayout>
-	</RelativeLayout>
+        </RelativeLayout>
+    </RelativeLayout>
 
-	<RelativeLayout android:id="@+id/navigation_area"
-		android:orientation="vertical" android:gravity="center"
-		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		android:layout_alignParentBottom="true">
+    <RelativeLayout
+        android:id="@+id/navigation_area"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:orientation="vertical">
 
-		<Button android:id="@+id/library_button" android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:gravity="center"
-			android:text="My Recordings" android:textSize="15sp"
-			android:textColor="#fff" android:shadowColor="#000" android:shadowDy="-1"
-			android:shadowRadius="1" android:background="@drawable/base_button" />
+        <Button
+            android:id="@+id/library_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/base_button"
+            android:gravity="center"
+            android:shadowColor="#000"
+            android:shadowDy="-1"
+            android:shadowRadius="1"
+            android:text="My Recordings"
+            android:textColor="#fff"
+            android:textSize="15sp" />
 
-	</RelativeLayout>
+    </RelativeLayout>
 </RelativeLayout>

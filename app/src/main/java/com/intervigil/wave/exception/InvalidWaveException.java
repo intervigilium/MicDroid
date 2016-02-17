@@ -27,9 +27,9 @@ public class InvalidWaveException extends IOException {
      * Generated serialVersionUID
      */
     private static final long serialVersionUID = -8229742633848759378L;
-    
+
     public InvalidWaveException() {
-        
+
     }
 
     public InvalidWaveException(String msg) {

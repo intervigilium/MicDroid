@@ -20,7 +20,6 @@
 
 package com.intervigil.micdroid;
 
-import net.sourceforge.autotalent.Autotalent;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -38,10 +37,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.intervigil.micdroid.helper.AudioHelper;
 import com.intervigil.micdroid.helper.DialogHelper;
@@ -51,6 +50,8 @@ import com.intervigil.micdroid.helper.UpdateHelper;
 import com.intervigil.micdroid.interfaces.DependentTask;
 import com.intervigil.micdroid.interfaces.Recorder;
 import com.intervigil.micdroid.recorder.SipdroidRecorder;
+
+import net.sourceforge.autotalent.Autotalent;
 
 public class Mic extends Activity implements OnClickListener {
 
@@ -72,7 +73,9 @@ public class Mic extends Activity implements OnClickListener {
     private ToggleButton recordingButton;
     private AutotalentTask autotalentTask;
 
-    /** Called when the activity is first created. */
+    /**
+     * Called when the activity is first created.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="app_name">MicDroid</string>
-	<string name="default_recording_name">recording.wav</string>
+    <string name="app_name">MicDroid</string>
+    <string name="default_recording_name">recording.wav</string>
 
-	<string name="startup_dialog_title">What\'s new in this version?</string>
+    <string name="startup_dialog_title">What\'s new in this version?</string>
     <string name="startup_dialog_text">1. Fix recording length bug\n\
     	2. Major code cleanup\n\
     	3. Cleaner error handling\n\
@@ -14,204 +14,204 @@
     	DISCLAIMER: This is beta software! May be buggy and force close on you! Author is
     	aware and working on issues!\n\
     </string>
-	<string name="startup_dialog_accept_btn">Accept</string>
+    <string name="startup_dialog_accept_btn">Accept</string>
 
-	<string name="recording_button_label">My Recordings</string>
+    <string name="recording_button_label">My Recordings</string>
 
-	<string name="recording_library_row_label_1">Recording Name</string>
-	<string name="recording_library_row_label_2">Recording Length</string>
+    <string name="recording_library_row_label_1">Recording Name</string>
+    <string name="recording_library_row_label_2">Recording Length</string>
 
-	<string name="no_external_storage_title">WARNING!</string>
+    <string name="no_external_storage_title">WARNING!</string>
 	<string name="no_external_storage_warning">This app requires a mounted SD card to function
 		properly! Make sure there is an SD card properly inserted and mounted
 		before recording!</string>
 
-	<string name="unable_to_configure_audio_title">ERROR!</string>
+    <string name="unable_to_configure_audio_title">ERROR!</string>
 	<string name="unable_to_configure_audio_warning">Unable to configure audio! Please check your sample
 		rate settings and make sure your device is able to record at that
 		rate!</string>
 
-	<string name="unconfigured_audio_title">ERROR!</string>
+    <string name="unconfigured_audio_title">ERROR!</string>
 	<string name="unconfigured_audio_warning">Cannot record audio with current settings! Please
 		check your sample rate settings and make sure your device is able to
 		record at that rate!</string>
 
-	<string name="recording_io_error_title">WARNING!</string>
+    <string name="recording_io_error_title">WARNING!</string>
 	<string name="recording_io_error_warning">Error writing recording! Please make sure
 		your SD card has free space and is inserted and writable!</string>
 
-	<string name="audio_record_exception_title">ERROR!</string>
+    <string name="audio_record_exception_title">ERROR!</string>
 	<string name="audio_record_exception_warning">An error has occurred while recording! Please check
 		your settings and make sure your device is able to record audio!</string>
 
-	<string name="no_headset_plugged_in_title">WARNING!</string>
-	<string name="no_headset_plugged_in_warning">Live correction mode requires headphones!</string>
+    <string name="no_headset_plugged_in_title">WARNING!</string>
+    <string name="no_headset_plugged_in_warning">Live correction mode requires headphones!</string>
 
 	<string name="recording_started_toast">Recording started! Press power button to stop
 		recording!</string>
-	<string name="recording_finished_toast">Recording finished!</string>
+    <string name="recording_finished_toast">Recording finished!</string>
 
-	<string name="recording_save_success">Recording saved successfully!</string>
-	<string name="recording_save_canceled">Recording save canceled!</string>
+    <string name="recording_save_success">Recording saved successfully!</string>
+    <string name="recording_save_canceled">Recording save canceled!</string>
 
-	<string name="filename_entry">Save Recording</string>
-	<string name="filename_entry_text">The current recording will have the name: </string>
-	<string name="filename_entry_btn_ok">Save</string>
-	<string name="filename_entry_btn_cancel">Cancel</string>
+    <string name="filename_entry">Save Recording</string>
+    <string name="filename_entry_text">The current recording will have the name: </string>
+    <string name="filename_entry_btn_ok">Save</string>
+    <string name="filename_entry_btn_cancel">Cancel</string>
 
-	<string name="invalid_name_alert_title">Invalid Filename!</string>
-	<string name="invalid_name_alert_message">Invalid filename detected, please enter a new one</string>
+    <string name="invalid_name_alert_title">Invalid Filename!</string>
+    <string name="invalid_name_alert_message">Invalid filename detected, please enter a new one</string>
 
-	<string name="autotalent_progress_msg">Pitch correction in progress...</string>
-	<string name="saving_recording_progress_msg">Saving recording...</string>
+    <string name="autotalent_progress_msg">Pitch correction in progress...</string>
+    <string name="saving_recording_progress_msg">Saving recording...</string>
 
-	<string name="recording_library">Recordings</string>
-	<string name="recording_library_title">Recorded Clips</string>
-	<string name="recording_library_empty">No Recordings</string>
+    <string name="recording_library">Recordings</string>
+    <string name="recording_library_title">Recorded Clips</string>
+    <string name="recording_library_empty">No Recordings</string>
 
-	<string name="recording_options_title">Recording Options</string>
-	<string name="recording_options_play">Play Recording</string>
-	<string name="recording_options_delete">Delete Recording</string>
-	<string name="recording_options_rename">Rename Recording</string>
-	<string name="recording_options_set_ringtone">Set as Ringtone</string>
-	<string name="recording_options_set_notification">Set as Notification</string>
-	<string name="recording_options_share">Share recording</string>
+    <string name="recording_options_title">Recording Options</string>
+    <string name="recording_options_play">Play Recording</string>
+    <string name="recording_options_delete">Delete Recording</string>
+    <string name="recording_options_rename">Rename Recording</string>
+    <string name="recording_options_set_ringtone">Set as Ringtone</string>
+    <string name="recording_options_set_notification">Set as Notification</string>
+    <string name="recording_options_share">Share recording</string>
 
-	<string name="recording_options_ringtone_set">Recording set as ringtone!</string>
-	<string name="recording_options_ringtone_error">Unable to set recording as ringtone!</string>
-	<string name="recording_options_notification_set">Recording set as notification!</string>
-	<string name="recording_options_notification_error">Unable to set recording as notification!</string>
+    <string name="recording_options_ringtone_set">Recording set as ringtone!</string>
+    <string name="recording_options_ringtone_error">Unable to set recording as ringtone!</string>
+    <string name="recording_options_notification_set">Recording set as notification!</string>
+    <string name="recording_options_notification_error">Unable to set recording as notification!</string>
 
-	<string name="recording_player">Recording Player</string>
-	<string name="recording_player_file_name">Recording Name</string>
-	<string name="recording_player_btn_play">Play</string>
-	<string name="recording_player_btn_stop">Stop</string>
-	<string name="recording_player_btn_close">Close</string>
+    <string name="recording_player">Recording Player</string>
+    <string name="recording_player_file_name">Recording Name</string>
+    <string name="recording_player_btn_play">Play</string>
+    <string name="recording_player_btn_stop">Stop</string>
+    <string name="recording_player_btn_close">Close</string>
 
-	<string name="confirm_delete_title">Delete Recording</string>
-	<string name="confirm_delete_message">Are you sure you want to delete this recording?</string>
-	<string name="confirm_delete_btn_yes">Delete</string>
-	<string name="confirm_delete_btn_no">Cancel</string>
+    <string name="confirm_delete_title">Delete Recording</string>
+    <string name="confirm_delete_message">Are you sure you want to delete this recording?</string>
+    <string name="confirm_delete_btn_yes">Delete</string>
+    <string name="confirm_delete_btn_no">Cancel</string>
 
-	<string name="confirm_reset_prefs_title">Reset to Default</string>
+    <string name="confirm_reset_prefs_title">Reset to Default</string>
 	<string name="confirm_reset_prefs_message">Are you sure you want to reset all settings to
 		default?</string>
-	<string name="confirm_reset_prefs_btn_yes">Reset</string>
-	<string name="confirm_reset_prefs_btn_no">Cancel</string>
+    <string name="confirm_reset_prefs_btn_yes">Reset</string>
+    <string name="confirm_reset_prefs_btn_no">Cancel</string>
 
-	<string name="set_preferences">Pitch-Correction Settings</string>
-	<string name="mic_label">Power Button</string>
-	<string name="mic_toggle_off">On</string>
-	<string name="mic_toggle_on">Off</string>
+    <string name="set_preferences">Pitch-Correction Settings</string>
+    <string name="mic_label">Power Button</string>
+    <string name="mic_toggle_off">On</string>
+    <string name="mic_toggle_on">Off</string>
 
-	<string name="prefs_cat_screen">Android Settings</string>
-	<string name="prefs_prevent_screen_lock_key">screen_lock</string>
-	<string name="prefs_prevent_screen_lock">Prevent Screen Lock</string>
-	<string name="prefs_prevent_screen_lock_summary_on">Screen will not dim or lock when recording</string>
-	<string name="prefs_prevent_screen_lock_summary_off">Screen will dim or lock when recording</string>
-	<string name="prefs_prevent_screen_lock_title">Prevent Screen from Dimming</string>
-	<string name="prefs_prevent_screen_lock_default">true</string>
+    <string name="prefs_cat_screen">Android Settings</string>
+    <string name="prefs_prevent_screen_lock_key">screen_lock</string>
+    <string name="prefs_prevent_screen_lock">Prevent Screen Lock</string>
+    <string name="prefs_prevent_screen_lock_summary_on">Screen will not dim or lock when recording</string>
+    <string name="prefs_prevent_screen_lock_summary_off">Screen will dim or lock when recording</string>
+    <string name="prefs_prevent_screen_lock_title">Prevent Screen from Dimming</string>
+    <string name="prefs_prevent_screen_lock_default">true</string>
 
-	<string name="prefs_enable_ads_key">enable_ads</string>
-	<string name="prefs_enable_ads">Enable Ads</string>
-	<string name="prefs_enable_ads_summary_on">Thanks for supporting the developer!</string>
+    <string name="prefs_enable_ads_key">enable_ads</string>
+    <string name="prefs_enable_ads">Enable Ads</string>
+    <string name="prefs_enable_ads_summary_on">Thanks for supporting the developer!</string>
 	<string name="prefs_enable_ads_summary_off">Please consider showing ads to support the
 		developer!</string>
-	<string name="prefs_enable_ads_title">Enable Mobile Ads</string>
-	<string name="prefs_enable_ads_default">true</string>
+    <string name="prefs_enable_ads_title">Enable Mobile Ads</string>
+    <string name="prefs_enable_ads_default">true</string>
 
-	<string name="prefs_cat_recording">Recording Settings</string>
-	<string name="prefs_live_mode_key">live_mode</string>
-	<string name="prefs_live_mode">Enable Live Correction</string>
-	<string name="prefs_live_mode_summary_on">Real time pitch-correction is enabled.</string>
-	<string name="prefs_live_mode_summary_off">Real time pitch-correction is disabled.</string>
-	<string name="prefs_live_mode_title">Enable Live Correction</string>
-	<string name="prefs_live_mode_default">false</string>
+    <string name="prefs_cat_recording">Recording Settings</string>
+    <string name="prefs_live_mode_key">live_mode</string>
+    <string name="prefs_live_mode">Enable Live Correction</string>
+    <string name="prefs_live_mode_summary_on">Real time pitch-correction is enabled.</string>
+    <string name="prefs_live_mode_summary_off">Real time pitch-correction is disabled.</string>
+    <string name="prefs_live_mode_title">Enable Live Correction</string>
+    <string name="prefs_live_mode_default">false</string>
 
-	<string name="prefs_sample_rate_key">sample_rate</string>
-	<string name="prefs_sample_rate">Change Sample Rate</string>
+    <string name="prefs_sample_rate_key">sample_rate</string>
+    <string name="prefs_sample_rate">Change Sample Rate</string>
 	<string name="prefs_sample_rate_summary">Recording sample rate is device dependent, if you
 		have trouble recording try changing this.</string>
-	<string name="prefs_sample_rate_title">Change Recording Sample Rate</string>
-	<string name="prefs_sample_rate_default">22050</string>
+    <string name="prefs_sample_rate_title">Change Recording Sample Rate</string>
+    <string name="prefs_sample_rate_default">22050</string>
 
-	<string name="prefs_buffer_size_key">buffer_size</string>
+    <string name="prefs_buffer_size_key">buffer_size</string>
     <string name="prefs_buffer_size">Change Buffer Size (bytes)</string>
     <string name="prefs_buffer_size_summary">Recording buffer size (bytes) is device dependent, if you
         have trouble recording try changing this.</string>
     <string name="prefs_buffer_size_title">Change Buffer Size (bytes)</string>
     <string name="prefs_buffer_size_default">0</string>
 
-	<string name="prefs_buffer_size_adjuster_key">buffer_size_adjuster</string>
-	<string name="prefs_buffer_size_adjuster">Change Buffer Size</string>
+    <string name="prefs_buffer_size_adjuster_key">buffer_size_adjuster</string>
+    <string name="prefs_buffer_size_adjuster">Change Buffer Size</string>
 	<string name="prefs_buffer_size_adjuster_summary">Recording buffer size is device dependent, if you
 		have trouble recording try changing this.</string>
-	<string name="prefs_buffer_size_adjuster_title">Change Buffer Size</string>
-	<string name="prefs_buffer_size_adjuster_default">1</string>
+    <string name="prefs_buffer_size_adjuster_title">Change Buffer Size</string>
+    <string name="prefs_buffer_size_adjuster_default">1</string>
 
-	<string name="prefs_cat_key">Key Settings</string>
-	<string name="prefs_key_key">key</string>
-	<string name="prefs_key">Change Key</string>
-	<string name="prefs_key_summary">Change the key to tune to</string>
-	<string name="prefs_key_title">Change Key</string>
-	<string name="prefs_key_default">C</string>
+    <string name="prefs_cat_key">Key Settings</string>
+    <string name="prefs_key_key">key</string>
+    <string name="prefs_key">Change Key</string>
+    <string name="prefs_key_summary">Change the key to tune to</string>
+    <string name="prefs_key_title">Change Key</string>
+    <string name="prefs_key_default">C</string>
 
-	<string name="prefs_cat_pitch">Pitch Settings</string>
-	<string name="prefs_pitch_pull_key">pitch_pull</string>
-	<string name="prefs_pitch_pull">Pull to Fixed Pitch</string>
-	<string name="prefs_pitch_pull_summary">The degree that pitch is pulled towards</string>
-	<string name="prefs_pitch_pull_title">Pull to Fixed Pitch</string>
-	<string name="prefs_pitch_pull_default">0.0</string>
+    <string name="prefs_cat_pitch">Pitch Settings</string>
+    <string name="prefs_pitch_pull_key">pitch_pull</string>
+    <string name="prefs_pitch_pull">Pull to Fixed Pitch</string>
+    <string name="prefs_pitch_pull_summary">The degree that pitch is pulled towards</string>
+    <string name="prefs_pitch_pull_title">Pull to Fixed Pitch</string>
+    <string name="prefs_pitch_pull_default">0.0</string>
 
-	<string name="prefs_pitch_shift_key">pitch_shift</string>
-	<string name="prefs_pitch_shift">Pitch Shift</string>
-	<string name="prefs_pitch_shift_summary">Number of notes in scale which pitch is shifted</string>
-	<string name="prefs_pitch_shift_title">Pitch Shift</string>
-	<string name="prefs_pitch_shift_default">0.0</string>
+    <string name="prefs_pitch_shift_key">pitch_shift</string>
+    <string name="prefs_pitch_shift">Pitch Shift</string>
+    <string name="prefs_pitch_shift_summary">Number of notes in scale which pitch is shifted</string>
+    <string name="prefs_pitch_shift_title">Pitch Shift</string>
+    <string name="prefs_pitch_shift_default">0.0</string>
 
-	<string name="prefs_cat_correction">Correction Settings</string>
-	<string name="prefs_corr_str_key">strength</string>
-	<string name="prefs_corr_str">Correction Strength</string>
-	<string name="prefs_corr_str_summary">Strength of pitch correction</string>
-	<string name="prefs_corr_str_title">Correction Strength</string>
-	<string name="prefs_corr_str_default">1.0</string>
+    <string name="prefs_cat_correction">Correction Settings</string>
+    <string name="prefs_corr_str_key">strength</string>
+    <string name="prefs_corr_str">Correction Strength</string>
+    <string name="prefs_corr_str_summary">Strength of pitch correction</string>
+    <string name="prefs_corr_str_title">Correction Strength</string>
+    <string name="prefs_corr_str_default">1.0</string>
 
-	<string name="prefs_corr_smooth_key">smooth</string>
-	<string name="prefs_corr_smooth">Correction Smoothness</string>
-	<string name="prefs_corr_smooth_summary">Smoothness of correction transition</string>
-	<string name="prefs_corr_smooth_title">Correction Smoothness</string>
-	<string name="prefs_corr_smooth_default">0.0</string>
+    <string name="prefs_corr_smooth_key">smooth</string>
+    <string name="prefs_corr_smooth">Correction Smoothness</string>
+    <string name="prefs_corr_smooth_summary">Smoothness of correction transition</string>
+    <string name="prefs_corr_smooth_title">Correction Smoothness</string>
+    <string name="prefs_corr_smooth_default">0.0</string>
 
-	<string name="prefs_formant_corr_key">formant_correction</string>
-	<string name="prefs_formant_corr">Formant Correction</string>
-	<string name="prefs_formant_corr_summary_on">Formant correction is enabled.</string>
-	<string name="prefs_formant_corr_summary_off">Formant correction is disabled.</string>
-	<string name="prefs_formant_corr_title">Formant Correction</string>
-	<string name="prefs_formant_corr_default">false</string>
+    <string name="prefs_formant_corr_key">formant_correction</string>
+    <string name="prefs_formant_corr">Formant Correction</string>
+    <string name="prefs_formant_corr_summary_on">Formant correction is enabled.</string>
+    <string name="prefs_formant_corr_summary_off">Formant correction is disabled.</string>
+    <string name="prefs_formant_corr_title">Formant Correction</string>
+    <string name="prefs_formant_corr_default">false</string>
 
-	<string name="prefs_formant_warp_key">formant_warp</string>
-	<string name="prefs_formant_warp">Correction Warp Amount</string>
+    <string name="prefs_formant_warp_key">formant_warp</string>
+    <string name="prefs_formant_warp">Correction Warp Amount</string>
 	<string name="prefs_formant_warp_summary">Warp formant frequencies (can helps prevent
 		chipmunk effect)</string>
-	<string name="prefs_formant_warp_title">Formant Frequency Warp</string>
-	<string name="prefs_formant_warp_default">-0.10</string>
+    <string name="prefs_formant_warp_title">Formant Frequency Warp</string>
+    <string name="prefs_formant_warp_default">-0.10</string>
 
-	<string name="prefs_corr_mix_key">mix</string>
-	<string name="prefs_corr_mix">Mix</string>
-	<string name="prefs_corr_mix_summary">Blend between wet and dry signal</string>
-	<string name="prefs_corr_mix_title">Mix</string>
-	<string name="prefs_corr_mix_default">1.0</string>
+    <string name="prefs_corr_mix_key">mix</string>
+    <string name="prefs_corr_mix">Mix</string>
+    <string name="prefs_corr_mix_summary">Blend between wet and dry signal</string>
+    <string name="prefs_corr_mix_title">Mix</string>
+    <string name="prefs_corr_mix_default">1.0</string>
 
-	<string name="prefs_cat_reset_default">Default Settings</string>
-	<string name="prefs_reset_default_key">reset_default</string>
-	<string name="prefs_reset_default">Reset to Default</string>
-	<string name="prefs_reset_default_summary">Reset all settings to default.</string>
-	<string name="prefs_reset_default_title">Reset to Default</string>
-	<string name="prefs_reset_default_default">false</string>
+    <string name="prefs_cat_reset_default">Default Settings</string>
+    <string name="prefs_reset_default_key">reset_default</string>
+    <string name="prefs_reset_default">Reset to Default</string>
+    <string name="prefs_reset_default_summary">Reset all settings to default.</string>
+    <string name="prefs_reset_default_title">Reset to Default</string>
+    <string name="prefs_reset_default_default">false</string>
 
-	<string name="home_banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="home_banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
 
-	<string name="about_title">About MicDroid Version 0.46</string>
+    <string name="about_title">About MicDroid Version 0.46</string>
 	<string name="about_text">Graphics work courtesy of Peng X. Wang:
 		http://pengxwang.com\n\
 		\n\
@@ -273,7 +273,7 @@
 		License terms available at: http://creativecommons.org/licenses/by/3.0/\n\
     </string>
 
-	<string name="help_title">How to Use</string>
+    <string name="help_title">How to Use</string>
 	<string name="help_text">How to Record and Play Back\n\
 		1. Press the \'Record Button\' to begin recording\n\
 		2. Press the \'Record Button\' again to stop recording\n\

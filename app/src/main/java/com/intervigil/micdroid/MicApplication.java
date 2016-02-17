@@ -19,11 +19,11 @@
 
 package com.intervigil.micdroid;
 
-import java.io.File;
-
 import android.app.Application;
 
 import com.intervigil.micdroid.helper.ApplicationHelper;
+
+import java.io.File;
 
 public class MicApplication extends Application {
 

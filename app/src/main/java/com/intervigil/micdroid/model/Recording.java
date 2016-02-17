@@ -19,15 +19,15 @@
 
 package com.intervigil.micdroid.model;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.intervigil.wave.WaveReader;
 import com.intervigil.wave.exception.InvalidWaveException;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class Recording implements Parcelable {
     public static final int WAVE_HEADER_SIZE = 44;

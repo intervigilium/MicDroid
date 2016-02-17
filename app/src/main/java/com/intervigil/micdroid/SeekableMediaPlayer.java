@@ -19,15 +19,15 @@
 
 package com.intervigil.micdroid;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Handler;
 import android.os.Message;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
+
+import java.io.FileInputStream;
+import java.io.IOException;
 
 public class SeekableMediaPlayer {
 
@@ -141,7 +141,7 @@ public class SeekableMediaPlayer {
         }
 
         public void onProgressChanged(SeekBar seekBar, int progress,
-                boolean fromUser) {
+                                      boolean fromUser) {
             if (fromUser) {
                 int progressMs = (progress * mediaPlayer.getDuration())
                         / seekBar.getMax();
@@ -169,12 +169,12 @@ public class SeekableMediaPlayer {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-            case REFRESH:
-                long delay = onRefresh();
-                queueNextRefresh(delay);
-                break;
-            default:
-                break;
+                case REFRESH:
+                    long delay = onRefresh();
+                    queueNextRefresh(delay);
+                    break;
+                default:
+                    break;
             }
         }
     }
