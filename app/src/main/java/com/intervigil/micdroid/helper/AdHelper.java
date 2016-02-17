@@ -22,19 +22,15 @@ package com.intervigil.micdroid.helper;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.ads.AdRequest;
-import com.google.ads.AdView;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 public class AdHelper {
 
     public static void GenerateAd(AdView ad, boolean enabled) {
         if (enabled) {
             ad.setEnabled(true);
-            Map<String, Object> extras = new HashMap<String, Object>();
-            extras.put("color_bg", "000000");
-            extras.put("color_text", "FFFFFF");
-            AdRequest adRequest = new AdRequest();
-            adRequest.setExtras(extras);
+            AdRequest adRequest = new AdRequest.Builder().build();
             ad.loadAd(adRequest);
         } else {
             ad.setEnabled(false);

@@ -48,7 +48,7 @@ import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
-import com.google.ads.AdView;
+import com.google.android.gms.ads.AdView;
 import com.intervigil.micdroid.helper.AdHelper;
 import com.intervigil.micdroid.helper.ApplicationHelper;
 import com.intervigil.micdroid.helper.DialogHelper;

@@ -209,6 +209,8 @@
 	<string name="prefs_reset_default_title">Reset to Default</string>
 	<string name="prefs_reset_default_default">false</string>
 
+	<string name="home_banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+
 	<string name="about_title">About MicDroid Version 0.46</string>
 	<string name="about_text">Graphics work courtesy of Peng X. Wang:
 		http://pengxwang.com\n\

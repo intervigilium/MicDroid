@@ -6,12 +6,12 @@
 	android:orientation="vertical" android:gravity="center"
 	android:layout_width="fill_parent" android:layout_height="fill_parent">
 
-	<com.google.gms.ads.AdView
+	<com.google.android.gms.ads.AdView
 		android:id="@+id/recording_ad"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		ads:adUnitId="a14cbf73c14c77d"
-		ads:adSize="BANNER" />
+		ads:adSize="BANNER"
+		ads:adUnitId="@string/home_banner_ad_unit_id" />
 
 	<TextView android:id="@+id/recording_library_title"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"

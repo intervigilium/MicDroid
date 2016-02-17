@@ -12,7 +12,7 @@ model {
 
         defaultConfig {
             applicationId "com.intervigil.micdroid"
-            minSdkVersion.apiLevel 7
+            minSdkVersion.apiLevel 9
             targetSdkVersion.apiLevel 23
 
             buildConfigFields {
@@ -61,4 +61,5 @@ model {
 dependencies {
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.google.android.gms:play-services-ads:8.4.0'
 }
