@@ -143,7 +143,6 @@ public class Mic extends Activity implements OnClickListener {
     @Override
     protected void onDestroy() {
         Log.i(CLASS_MIC, "onDestroy()");
-        super.onStop();
 
         if (wakeLock != null && wakeLock.isHeld()) {
             wakeLock.release();
@@ -153,6 +152,8 @@ public class Mic extends Activity implements OnClickListener {
             recorder.cleanup();
         }
         Autotalent.destroyAutotalent();
+
+        super.onDestroy();
     }
 
     @Override
