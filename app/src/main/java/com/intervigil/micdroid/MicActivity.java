@@ -234,7 +234,7 @@ public class MicActivity extends Activity implements OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.library_button:
-                Intent libraryIntent = new Intent(getBaseContext(), RecordingLibrary.class);
+                Intent libraryIntent = new Intent(getBaseContext(), LibraryActivity.class);
                 startActivity(libraryIntent);
                 break;
         }

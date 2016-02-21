@@ -48,7 +48,7 @@
             android:theme="@android:style/Theme.Dialog" />
 
         <activity
-            android:name=".RecordingLibrary"
+            android:name=".LibraryActivity"
             android:label="@string/recording_library" />
 
         <activity

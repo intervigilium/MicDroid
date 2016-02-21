@@ -57,38 +57,28 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecordingLibrary extends Activity implements OnItemClickListener {
+public class LibraryActivity extends Activity implements OnItemClickListener {
 
-    private static final String CLASS_RECORDING_LIBRARY = "RecordingLibrary";
+    private static final String TAG = "Library";
     private static final String STATE_LOAD_IN_PROGRESS = "load_recordings_in_progress";
 
-    private Boolean showAds;
-    private AdView ad;
-    private ListView library;
     private RecordingAdapter libraryAdapter;
     private ArrayList<Recording> recordings;
     private LoadRecordingsTask loadRecordingsTask;
-
     private ProgressDialog loadRecordingSpinner;
 
-    /**
-     * Called when the activity is starting. This is where most initialization
-     * should go: calling setContentView(int) to inflate the activity's UI, etc.
-     *
-     * @param savedInstanceState Activity's saved state, if any.
-     */
     @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recording_library);
 
-        showAds = PreferenceHelper.getShowAds(RecordingLibrary.this);
+        Boolean showAds = PreferenceHelper.getShowAds(LibraryActivity.this);
 
-        ad = (AdView) findViewById(R.id.recording_ad);
+        AdView ad = (AdView) findViewById(R.id.recording_ad);
         AdHelper.GenerateAd(ad, showAds);
 
-        library = (ListView) findViewById(R.id.recording_library_list);
+        ListView library = (ListView) findViewById(R.id.recording_library_list);
         library.setOnItemClickListener(this);
         registerForContextMenu(library);
 
@@ -104,32 +94,7 @@ public class RecordingLibrary extends Activity implements OnItemClickListener {
     }
 
     @Override
-    protected void onStart() {
-        Log.i(CLASS_RECORDING_LIBRARY, "onStart()");
-        super.onStart();
-    }
-
-    @Override
-    protected void onResume() {
-        Log.i(CLASS_RECORDING_LIBRARY, "onResume()");
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        Log.i(CLASS_RECORDING_LIBRARY, "onPause()");
-        super.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        Log.i(CLASS_RECORDING_LIBRARY, "onStop()");
-        super.onStop();
-    }
-
-    @Override
     protected void onDestroy() {
-        Log.i(CLASS_RECORDING_LIBRARY, "onDestroy()");
         super.onDestroy();
 
         onCancelLoadRecordings();
@@ -137,7 +102,6 @@ public class RecordingLibrary extends Activity implements OnItemClickListener {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        Log.i(CLASS_RECORDING_LIBRARY, "onSaveInstanceState()");
         super.onSaveInstanceState(outState);
 
         saveLoadRecordingsTask(outState);
@@ -145,7 +109,6 @@ public class RecordingLibrary extends Activity implements OnItemClickListener {
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        Log.i(CLASS_RECORDING_LIBRARY, "onRestoreInstanceState()");
         super.onRestoreInstanceState(savedInstanceState);
 
         restoreLoadRecordingsTask(savedInstanceState);
@@ -213,7 +176,7 @@ public class RecordingLibrary extends Activity implements OnItemClickListener {
 
         switch (item.getItemId()) {
             case R.string.recording_options_play:
-                RecordingOptionsHelper.playRecording(RecordingLibrary.this, r);
+                RecordingOptionsHelper.playRecording(LibraryActivity.this, r);
                 break;
             case R.string.recording_options_delete:
                 DialogInterface.OnClickListener deleteListener = new DialogInterface.OnClickListener() {
@@ -232,7 +195,7 @@ public class RecordingLibrary extends Activity implements OnItemClickListener {
                         }
                     }
                 };
-                DialogHelper.showConfirmation(RecordingLibrary.this,
+                DialogHelper.showConfirmation(LibraryActivity.this,
                         R.string.confirm_delete_title,
                         R.string.confirm_delete_message,
                         R.string.confirm_delete_btn_yes,
@@ -248,30 +211,30 @@ public class RecordingLibrary extends Activity implements OnItemClickListener {
                 startActivityForResult(renameFileIntent, Constants.INTENT_FILENAME_ENTRY);
                 break;
             case R.string.recording_options_set_ringtone:
-                if (RecordingOptionsHelper.setRingTone(RecordingLibrary.this, r)) {
-                    Toast.makeText(RecordingLibrary.this,
+                if (RecordingOptionsHelper.setRingTone(LibraryActivity.this, r)) {
+                    Toast.makeText(LibraryActivity.this,
                             R.string.recording_options_ringtone_set,
                             Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(RecordingLibrary.this,
+                    Toast.makeText(LibraryActivity.this,
                             R.string.recording_options_ringtone_error,
                             Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.string.recording_options_set_notification:
                 if (RecordingOptionsHelper.setNotificationTone(
-                        RecordingLibrary.this, r)) {
-                    Toast.makeText(RecordingLibrary.this,
+                        LibraryActivity.this, r)) {
+                    Toast.makeText(LibraryActivity.this,
                             R.string.recording_options_notification_set,
                             Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(RecordingLibrary.this,
+                    Toast.makeText(LibraryActivity.this,
                             R.string.recording_options_notification_error,
                             Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.string.recording_options_share:
-                RecordingOptionsHelper.shareRecording(RecordingLibrary.this, r);
+                RecordingOptionsHelper.shareRecording(LibraryActivity.this, r);
                 break;
             default:
                 break;
@@ -331,7 +294,7 @@ public class RecordingLibrary extends Activity implements OnItemClickListener {
         @Override
         protected void onPreExecute() {
             libraryAdapter.clear();
-            loadRecordingSpinner = new ProgressDialog(RecordingLibrary.this);
+            loadRecordingSpinner = new ProgressDialog(LibraryActivity.this);
             loadRecordingSpinner.setMessage("Loading recordings");
             loadRecordingSpinner.show();
         }
@@ -349,11 +312,11 @@ public class RecordingLibrary extends Activity implements OnItemClickListener {
                             r = new Recording(waveFiles[i]);
                             recordings.add(r);
                         } catch (FileNotFoundException e) {
-                            Log.i(CLASS_RECORDING_LIBRARY,
+                            Log.i(TAG,
                                     String.format("File %s not found in library directory!",
                                             waveFiles[i].getName()));
                         } catch (InvalidWaveException e) {
-                            Log.i(CLASS_RECORDING_LIBRARY,
+                            Log.i(TAG,
                                     String.format("Non-wave file %s found in library directory!",
                                             waveFiles[i].getName()));
                         } catch (IOException e) {
