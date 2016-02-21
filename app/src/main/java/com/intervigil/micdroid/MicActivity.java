@@ -53,9 +53,9 @@ import com.intervigil.micdroid.recorder.SipdroidRecorder;
 
 import net.sourceforge.autotalent.Autotalent;
 
-public class Mic extends Activity implements OnClickListener {
+public class MicActivity extends Activity implements OnClickListener {
 
-    private static final String CLASS_MIC = "Mic";
+    private static final String TAG = "MicActivity";
 
     private static final float CONCERT_A = 440.0f;
 
@@ -95,55 +95,39 @@ public class Mic extends Activity implements OnClickListener {
 
         timer = new Timer(timerDisplay);
 
-        autotalentTask = new AutotalentTask(Mic.this, postAutotalentTask);
+        autotalentTask = new AutotalentTask(MicActivity.this, postAutotalentTask);
 
-        if (PreferenceHelper.getScreenLock(Mic.this)) {
+        if (PreferenceHelper.getScreenLock(MicActivity.this)) {
             PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
             wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,
                     "recordingWakeLock");
         }
 
-        if (UpdateHelper.isAppUpdated(Mic.this)) {
-            UpdateHelper.onAppUpdate(Mic.this);
+        if (UpdateHelper.isAppUpdated(MicActivity.this)) {
+            UpdateHelper.onAppUpdate(MicActivity.this);
         } else {
-            AudioHelper.configureRecorder(Mic.this);
+            AudioHelper.configureRecorder(MicActivity.this);
         }
     }
 
     @Override
-    protected void onStart() {
-        Log.i(CLASS_MIC, "onStart()");
-        super.onStart();
-    }
-
-    @Override
     protected void onResume() {
-        Log.i(CLASS_MIC, "onResume()");
         super.onResume();
-        if (PreferenceHelper.getScreenLock(Mic.this)) {
+        if (PreferenceHelper.getScreenLock(MicActivity.this)) {
             wakeLock.acquire();
         }
     }
 
     @Override
     protected void onPause() {
-        Log.i(CLASS_MIC, "onPause()");
         super.onPause();
-        if (PreferenceHelper.getScreenLock(Mic.this)) {
+        if (PreferenceHelper.getScreenLock(MicActivity.this)) {
             wakeLock.release();
         }
     }
 
     @Override
-    protected void onStop() {
-        Log.i(CLASS_MIC, "onStop()");
-        super.onStop();
-    }
-
-    @Override
     protected void onDestroy() {
-        Log.i(CLASS_MIC, "onDestroy()");
-
         if (wakeLock != null && wakeLock.isHeld()) {
             wakeLock.release();
         }
@@ -157,25 +141,13 @@ public class Mic extends Activity implements OnClickListener {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle savedInstanceState) {
-        Log.i(CLASS_MIC, "onSaveInstanceState()");
-        super.onSaveInstanceState(savedInstanceState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        Log.i(CLASS_MIC, "onRestoreInstanceState()");
-        super.onRestoreInstanceState(savedInstanceState);
-    }
-
-    @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        Log.i(CLASS_MIC, "onConfigurationChanged");
+        Log.i(TAG, "onConfigurationChanged");
         super.onConfigurationChanged(newConfig);
 
         setContentView(R.layout.main);
 
-        boolean isRecording = recorder != null ? recorder.isRunning() : false;
+        boolean isRecording = recorder != null && recorder.isRunning();
 
         ((Button) findViewById(R.id.library_button)).setOnClickListener(this);
         ToggleButton micSwitch = (ToggleButton) findViewById(R.id.recording_button);
@@ -216,11 +188,11 @@ public class Mic extends Activity implements OnClickListener {
                 startActivity(marketSearchIntent);
                 break;
             case R.id.help:
-                DialogHelper.showWarning(Mic.this, R.string.help_title,
+                DialogHelper.showWarning(MicActivity.this, R.string.help_title,
                         R.string.help_text);
                 break;
             case R.id.about:
-                DialogHelper.showWarning(Mic.this, R.string.about_title,
+                DialogHelper.showWarning(MicActivity.this, R.string.about_title,
                         R.string.about_text);
                 break;
             case R.id.quit:
@@ -243,7 +215,7 @@ public class Mic extends Activity implements OnClickListener {
                     updateAutoTalentPreferences();
                     autotalentTask.runAutotalentTask(fileName);
                 } else if (resultCode == Activity.RESULT_CANCELED) {
-                    Toast.makeText(Mic.this, R.string.recording_save_canceled,
+                    Toast.makeText(MicActivity.this, R.string.recording_save_canceled,
                             Toast.LENGTH_SHORT).show();
                 }
                 break;
@@ -274,21 +246,21 @@ public class Mic extends Activity implements OnClickListener {
                 return;
             } else if (!canWriteToSdCard()) {
                 btn.setChecked(false);
-                DialogHelper.showWarning(Mic.this,
+                DialogHelper.showWarning(MicActivity.this,
                         R.string.no_external_storage_title,
                         R.string.no_external_storage_warning);
-            } else if (!AudioHelper.isValidRecorderConfiguration(Mic.this)) {
+            } else if (!AudioHelper.isValidRecorderConfiguration(MicActivity.this)) {
                 btn.setChecked(false);
-                DialogHelper.showWarning(Mic.this,
+                DialogHelper.showWarning(MicActivity.this,
                         R.string.unconfigured_audio_title,
                         R.string.unconfigured_audio_warning);
             } else {
                 if (btn.isChecked()) {
-                    boolean isLiveMode = PreferenceHelper.getLiveMode(Mic.this);
+                    boolean isLiveMode = PreferenceHelper.getLiveMode(MicActivity.this);
                     if (isLiveMode
-                            && !HeadsetHelper.isHeadsetPluggedIn(Mic.this)) {
+                            && !HeadsetHelper.isHeadsetPluggedIn(MicActivity.this)) {
                         btn.setChecked(false);
-                        DialogHelper.showWarning(Mic.this,
+                        DialogHelper.showWarning(MicActivity.this,
                                 R.string.no_headset_plugged_in_title,
                                 R.string.no_headset_plugged_in_warning);
                     } else {
@@ -297,7 +269,7 @@ public class Mic extends Activity implements OnClickListener {
                             updateAutoTalentPreferences();
                         }
                         if (recorder == null) {
-                            recorder = new SipdroidRecorder(Mic.this, postRecordTask, isLiveMode);
+                            recorder = new SipdroidRecorder(MicActivity.this, postRecordTask, isLiveMode);
                         }
                         recorder.start();
                         timer.start();
@@ -323,14 +295,14 @@ public class Mic extends Activity implements OnClickListener {
         @Override
         public void doTask() {
             Autotalent.destroyAutotalent();
-            Toast.makeText(Mic.this, R.string.recording_save_success,
+            Toast.makeText(MicActivity.this, R.string.recording_save_success,
                     Toast.LENGTH_SHORT).show();
         }
     };
     DependentTask postRecordTask = new DependentTask() {
         @Override
         public void doTask() {
-            if (PreferenceHelper.getLiveMode(Mic.this)) {
+            if (PreferenceHelper.getLiveMode(MicActivity.this)) {
                 Autotalent.destroyAutotalent();
             }
             Toast.makeText(getBaseContext(),
@@ -344,7 +316,7 @@ public class Mic extends Activity implements OnClickListener {
 
         @Override
         public void handleError() {
-            if (PreferenceHelper.getLiveMode(Mic.this)) {
+            if (PreferenceHelper.getLiveMode(MicActivity.this)) {
                 Autotalent.destroyAutotalent();
             }
             recordingButton.setOnCheckedChangeListener(null);
@@ -354,16 +326,16 @@ public class Mic extends Activity implements OnClickListener {
     };
 
     private void updateAutoTalentPreferences() {
-        char key = PreferenceHelper.getKey(Mic.this);
-        float fixedPull = PreferenceHelper.getPullToFixedPitch(Mic.this);
-        float pitchShift = PreferenceHelper.getPitchShift(Mic.this);
-        float strength = PreferenceHelper.getCorrectionStrength(Mic.this);
-        float smooth = PreferenceHelper.getCorrectionSmoothness(Mic.this);
-        int formantCorrection = PreferenceHelper.getFormantCorrection(Mic.this) ? 1 : 0;
-        float formantWarp = PreferenceHelper.getFormantWarp(Mic.this);
-        float mix = PreferenceHelper.getMix(Mic.this);
+        char key = PreferenceHelper.getKey(MicActivity.this);
+        float fixedPull = PreferenceHelper.getPullToFixedPitch(MicActivity.this);
+        float pitchShift = PreferenceHelper.getPitchShift(MicActivity.this);
+        float strength = PreferenceHelper.getCorrectionStrength(MicActivity.this);
+        float smooth = PreferenceHelper.getCorrectionSmoothness(MicActivity.this);
+        int formantCorrection = PreferenceHelper.getFormantCorrection(MicActivity.this) ? 1 : 0;
+        float formantWarp = PreferenceHelper.getFormantWarp(MicActivity.this);
+        float mix = PreferenceHelper.getMix(MicActivity.this);
 
-        Autotalent.instantiateAutotalent(PreferenceHelper.getSampleRate(Mic.this));
+        Autotalent.instantiateAutotalent(PreferenceHelper.getSampleRate(MicActivity.this));
         Autotalent.setKey(key);
         Autotalent.setConcertA(CONCERT_A);
         Autotalent.setFixedPitch(DEFAULT_FIXED_PITCH);
