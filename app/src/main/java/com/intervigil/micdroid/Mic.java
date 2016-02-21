@@ -204,7 +204,7 @@ public class Mic extends Activity implements OnClickListener {
         switch (item.getItemId()) {
             case R.id.options:
                 Intent preferencesIntent = new Intent(getBaseContext(),
-                        Preferences.class);
+                        SettingsActivity.class);
                 startActivityForResult(preferencesIntent,
                         Constants.INTENT_PREFERENCES);
                 break;

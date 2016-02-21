@@ -19,7 +19,9 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/prefs_cat_recording">
+    <PreferenceCategory
+        android:key="@string/prefs_cat_recording_key"
+        android:title="@string/prefs_cat_recording">
 
         <CheckBoxPreference
             android:defaultValue="@string/prefs_live_mode_default"

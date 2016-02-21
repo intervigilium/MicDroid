@@ -121,6 +121,7 @@
     <string name="prefs_enable_ads_default">true</string>
 
     <string name="prefs_cat_recording">Recording Settings</string>
+    <string name="prefs_cat_recording_key">prefs_recording</string>
     <string name="prefs_live_mode_key">live_mode</string>
     <string name="prefs_live_mode">Enable Live Correction</string>
     <string name="prefs_live_mode_summary_on">Real time pitch-correction is enabled.</string>

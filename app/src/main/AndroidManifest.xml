@@ -39,7 +39,7 @@
         </activity>
 
         <activity
-            android:name=".Preferences"
+            android:name=".SettingsActivity"
             android:label="@string/set_preferences" />
 
         <activity

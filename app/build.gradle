@@ -12,7 +12,7 @@ model {
 
         defaultConfig {
             applicationId "com.intervigil.micdroid"
-            minSdkVersion.apiLevel 9
+            minSdkVersion.apiLevel 11
             targetSdkVersion.apiLevel 23
 
             buildConfigFields {
