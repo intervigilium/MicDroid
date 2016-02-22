@@ -23,21 +23,15 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.intervigil.wave.WaveReader;
-import com.intervigil.wave.exception.InvalidWaveException;
 
-import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class Recording implements Parcelable {
-    public static final int WAVE_HEADER_SIZE = 44;
-    public static final int MILLISECONDS_IN_SECOND = 1000;
 
-    private String recordingName;
-    private int recordingLength;
-    private int recordingSize;
+    private String mName;
+    private int mLength;
+    private int mSize;
 
     public static final Parcelable.Creator<Recording> CREATOR = new Parcelable.Creator<Recording>() {
         public Recording createFromParcel(Parcel in) {
@@ -55,22 +49,22 @@ public class Recording implements Parcelable {
     public Recording(String name, FileInputStream stream) throws IOException {
         WaveReader reader = new WaveReader(stream);
         reader.openWave();
-        this.recordingName = name;
-        this.recordingLength = reader.getLength();
-        this.recordingSize = reader.getDataSize() + WAVE_HEADER_SIZE;
+        mName = name;
+        mLength = reader.getLength();
+        mSize = reader.getSize();
         reader.closeWaveFile();
     }
 
     private Recording(Parcel in) {
-        this.recordingName = in.readString();
-        this.recordingLength = in.readInt();
-        this.recordingSize = in.readInt();
+        mName = in.readString();
+        mLength = in.readInt();
+        mSize = in.readInt();
     }
 
     public Recording(String name, int length, int size) {
-        this.recordingName = name;
-        this.recordingLength = length;
-        this.recordingSize = size;
+        mName = name;
+        mLength = length;
+        mSize = size;
     }
 
     public int describeContents() {
@@ -78,37 +72,36 @@ public class Recording implements Parcelable {
     }
 
     public void writeToParcel(Parcel out, int flags) {
-        out.writeString(recordingName);
-        out.writeInt(recordingLength);
-        out.writeInt(recordingSize);
+        out.writeString(mName);
+        out.writeInt(mLength);
+        out.writeInt(mSize);
     }
 
     public String getName() {
         // gets recording name, typically the file name
-        return recordingName;
+        return mName;
     }
 
     public int getLengthInMs() {
-        return recordingLength * 1000;
+        return mLength * 1000;
     }
 
     public String getLength() {
         // gets recording length in MM:SS format
-        int minutes = recordingLength / 60;
-        int seconds = recordingLength % 60;
+        int minutes = mLength / 60;
+        int seconds = mLength % 60;
         return String.format("%d:%02d", minutes, seconds);
     }
 
     public int getSize() {
-        return recordingSize;
+        return mSize;
     }
 
     public void setName(String name) {
-        // sets recording name, typically the file name
-        recordingName = name;
+        mName = name;
     }
 
     public void setSize(int size) {
-        recordingSize = size;
+        mSize = size;
     }
 }

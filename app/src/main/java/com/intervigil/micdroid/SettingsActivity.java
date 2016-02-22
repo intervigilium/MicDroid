@@ -20,7 +20,6 @@
 package com.intervigil.micdroid;
 
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;

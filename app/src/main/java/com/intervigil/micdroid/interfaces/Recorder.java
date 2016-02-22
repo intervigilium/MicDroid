@@ -1,13 +1,12 @@
 package com.intervigil.micdroid.interfaces;
 
-
 public interface Recorder {
 
-    public void start();
+    void start();
 
-    public void stop();
+    void stop();
 
-    public void cleanup();
+    void cleanup();
 
-    public boolean isRunning();
+    boolean isRunning();
 }

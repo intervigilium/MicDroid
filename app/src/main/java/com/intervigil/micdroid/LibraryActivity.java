@@ -55,6 +55,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class LibraryActivity extends Activity implements OnItemClickListener {
@@ -62,10 +63,10 @@ public class LibraryActivity extends Activity implements OnItemClickListener {
     private static final String TAG = "Library";
     private static final String STATE_LOAD_IN_PROGRESS = "load_recordings_in_progress";
 
-    private RecordingAdapter libraryAdapter;
-    private ArrayList<Recording> recordings;
-    private LoadRecordingsTask loadRecordingsTask;
-    private ProgressDialog loadRecordingSpinner;
+    private RecordingAdapter mLibraryAdapter;
+    private ArrayList<Recording> mRecordings;
+    private LoadRecordingsTask mLoadTask;
+    private ProgressDialog mLoadSpinner;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -84,13 +85,13 @@ public class LibraryActivity extends Activity implements OnItemClickListener {
 
         Object savedRecordings = getLastNonConfigurationInstance();
         if (savedRecordings == null) {
-            recordings = new ArrayList<Recording>();
+            mRecordings = new ArrayList<>();
         } else {
-            recordings = (ArrayList<Recording>) savedRecordings;
+            mRecordings = (ArrayList<Recording>) savedRecordings;
         }
-        libraryAdapter = new RecordingAdapter(this, R.layout.recording_library_row, recordings);
-        library.setAdapter(libraryAdapter);
-        loadRecordingsTask = (LoadRecordingsTask) new LoadRecordingsTask().execute((Void) null);
+        mLibraryAdapter = new RecordingAdapter(this, R.layout.recording_library_row, mRecordings);
+        library.setAdapter(mLibraryAdapter);
+        mLoadTask = (LoadRecordingsTask) new LoadRecordingsTask().execute((Void) null);
     }
 
     @Override
@@ -116,7 +117,7 @@ public class LibraryActivity extends Activity implements OnItemClickListener {
 
     @Override
     public Object onRetainNonConfigurationInstance() {
-        return recordings;
+        return mRecordings;
     }
 
     @Override
@@ -127,15 +128,15 @@ public class LibraryActivity extends Activity implements OnItemClickListener {
             case Constants.INTENT_FILENAME_ENTRY:
                 if (resultCode == Activity.RESULT_OK) {
                     Recording r = data.getParcelableExtra(Constants.INTENT_EXTRA_RECORDING);
-                    recordings.remove(r);
+                    mRecordings.remove(r);
                     String destinationName = data.getStringExtra(
                             Constants.INTENT_EXTRA_FILE_NAME).trim()
                             + ".wav";
                     File destination = new File(ApplicationHelper.getLibraryDirectory()
                             + File.separator + destinationName);
                     // TODO: Allow file moves
-                    recordings.add(r);
-                    libraryAdapter.notifyDataSetChanged();
+                    mRecordings.add(r);
+                    mLibraryAdapter.notifyDataSetChanged();
                 }
                 break;
             default:
@@ -171,7 +172,7 @@ public class LibraryActivity extends Activity implements OnItemClickListener {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-        final Recording r = (Recording) libraryAdapter.getItem(info.position);
+        final Recording r = mLibraryAdapter.getItem(info.position);
 
         switch (item.getItemId()) {
             case R.string.recording_options_play:
@@ -184,8 +185,8 @@ public class LibraryActivity extends Activity implements OnItemClickListener {
                         switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
                                 getApplicationContext().deleteFile(r.getName());
-                                libraryAdapter.remove(r);
-                                libraryAdapter.notifyDataSetChanged();
+                                mLibraryAdapter.remove(r);
+                                mLibraryAdapter.notifyDataSetChanged();
                                 dialog.dismiss();
                                 break;
                             case DialogInterface.BUTTON_NEGATIVE:
@@ -267,15 +268,15 @@ public class LibraryActivity extends Activity implements OnItemClickListener {
     }
 
     private void onCancelLoadRecordings() {
-        if (loadRecordingsTask != null
-                && loadRecordingsTask.getStatus() == AsyncTask.Status.RUNNING) {
-            loadRecordingsTask.cancel(true);
-            loadRecordingsTask = null;
+        if (mLoadTask != null
+                && mLoadTask.getStatus() == AsyncTask.Status.RUNNING) {
+            mLoadTask.cancel(true);
+            mLoadTask = null;
         }
     }
 
     private void saveLoadRecordingsTask(Bundle outState) {
-        final LoadRecordingsTask task = loadRecordingsTask;
+        final LoadRecordingsTask task = mLoadTask;
         if (task != null && task.getStatus() != AsyncTask.Status.FINISHED) {
             task.cancel(true);
             outState.putBoolean(STATE_LOAD_IN_PROGRESS, true);
@@ -284,7 +285,7 @@ public class LibraryActivity extends Activity implements OnItemClickListener {
 
     private void restoreLoadRecordingsTask(Bundle savedInstanceState) {
         if (savedInstanceState.getBoolean(STATE_LOAD_IN_PROGRESS)) {
-            loadRecordingsTask = (LoadRecordingsTask) new LoadRecordingsTask()
+            mLoadTask = (LoadRecordingsTask) new LoadRecordingsTask()
                     .execute((Void) null);
         }
     }
@@ -292,31 +293,31 @@ public class LibraryActivity extends Activity implements OnItemClickListener {
     private class LoadRecordingsTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
-            libraryAdapter.clear();
-            loadRecordingSpinner = new ProgressDialog(LibraryActivity.this);
-            loadRecordingSpinner.setMessage("Loading recordings");
-            loadRecordingSpinner.show();
+            mLibraryAdapter.clear();
+            mLoadSpinner = new ProgressDialog(LibraryActivity.this);
+            mLoadSpinner.setMessage("Loading mRecordings");
+            mLoadSpinner.show();
         }
 
         @Override
         protected Void doInBackground(Void... params) {
             String[] wavFiles = getApplicationContext().fileList();
 
-            Log.i(TAG, "doInBackground: Found files: " + wavFiles);
+            Log.i(TAG, "doInBackground: Found files: " + Arrays.toString(wavFiles));
 
             if (wavFiles != null) {
-                for (int i = 0; i < wavFiles.length; i++) {
+                for (String fileName : wavFiles) {
                     Recording r;
                     try {
-                        r = new Recording(wavFiles[i], openFileInput(wavFiles[i]));
-                        recordings.add(r);
+                        r = new Recording(fileName, openFileInput(fileName));
+                        mRecordings.add(r);
                     } catch (FileNotFoundException e) {
-                        Log.w(TAG, wavFiles[i] + " not found in library directory!");
+                        Log.w(TAG, fileName + " not found in library directory!");
                     } catch (InvalidWaveException e) {
-                        Log.i(TAG, "Non-wav file " + wavFiles[i] + " found in library directory!");
+                        Log.i(TAG, "Non-wav file " + fileName + " found in library directory!");
                     } catch (IOException e) {
                         // can't recover
-                        Log.e(TAG, "Error opening file: " + wavFiles[i], e);
+                        Log.e(TAG, "Error opening file: " + fileName, e);
                     }
                 }
             }
@@ -326,8 +327,8 @@ public class LibraryActivity extends Activity implements OnItemClickListener {
 
         @Override
         protected void onPostExecute(Void result) {
-            libraryAdapter.notifyDataSetChanged();
-            loadRecordingSpinner.dismiss();
+            mLibraryAdapter.notifyDataSetChanged();
+            mLoadSpinner.dismiss();
         }
     }
 }

@@ -2,7 +2,7 @@ package com.intervigil.micdroid.interfaces;
 
 public interface DependentTask {
 
-    public void doTask();
+    void doTask();
 
-    public void handleError();
+    void handleError();
 }

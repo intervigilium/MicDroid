@@ -38,58 +38,57 @@ import com.intervigil.micdroid.helper.PreferenceHelper;
 import com.intervigil.micdroid.interfaces.DependentTask;
 import com.intervigil.micdroid.interfaces.Recorder;
 import com.intervigil.wave.WaveWriter;
-import com.intervigil.wave.exception.InvalidWaveException;
 
 import net.sourceforge.autotalent.Autotalent;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class SipdroidRecorder implements Recorder {
 
-    private static final String CLASS_SIPDROID_RECORDER = "SipdroidRecorder";
+    private static final String TAG = "SipdroidRecorder";
 
     private static final int RECORDER_MESSAGE_IO_ERROR = 8675308;
     private static final int RECORDER_MESSAGE_RECORD_ERROR = 8675310;
     private static final int RECORDER_MESSAGE_FINISHED = 8675307;
 
-    private final Context context;
-    private MicWriter writerThread;
-    private final boolean isLiveMode;
-    private final int sampleRate;
-    private DependentTask postRecordTask;
+    private final Context mContext;
+    private RecordThread mWriterThread;
+    private final boolean mIsLive;
+    private final int mSampleRate;
+    private DependentTask mPostRecordTask;
 
-    public SipdroidRecorder(Context context, DependentTask postRecordTask, boolean isLiveMode) {
-        this.context = context;
-        this.sampleRate = PreferenceHelper.getSampleRate(context);
-        this.postRecordTask = postRecordTask;
-        this.isLiveMode = isLiveMode;
+    public SipdroidRecorder(Context context, DependentTask postRecordTask, boolean isLive) {
+        mContext = context;
+        mSampleRate = PreferenceHelper.getSampleRate(mContext);
+        mPostRecordTask = postRecordTask;
+        mIsLive = isLive;
     }
 
     public void start() {
         try {
-            writerThread = new MicWriter();
-            writerThread.start();
-            Toast.makeText(context,
+            mWriterThread = new RecordThread();
+            mWriterThread.start();
+            Toast.makeText(mContext,
                     R.string.recording_started_toast,
                     Toast.LENGTH_SHORT).show();
         } catch (IllegalArgumentException e) {
-            DialogHelper.showWarning(context,
+            DialogHelper.showWarning(mContext,
                     R.string.audio_record_exception_title,
                     R.string.audio_record_exception_warning);
-            postRecordTask.handleError();
+            mPostRecordTask.handleError();
         }
     }
 
     public void stop() {
         if (isRunning()) {
-            writerThread.close();
+            mWriterThread.close();
             try {
-                writerThread.join();
+                mWriterThread.join();
             } catch (InterruptedException e) {
+                // Do nothing
             }
-            writerThread = null;
+            mWriterThread = null;
         }
     }
 
@@ -98,8 +97,8 @@ public class SipdroidRecorder implements Recorder {
     }
 
     public boolean isRunning() {
-        return (writerThread != null
-                && writerThread.getState() != Thread.State.NEW && writerThread
+        return (mWriterThread != null
+                && mWriterThread.getState() != Thread.State.NEW && mWriterThread
                 .getState() != Thread.State.TERMINATED);
     }
 
@@ -108,52 +107,52 @@ public class SipdroidRecorder implements Recorder {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case RECORDER_MESSAGE_RECORD_ERROR:
-                    DialogHelper.showWarning(context,
+                    DialogHelper.showWarning(mContext,
                             R.string.audio_record_exception_title,
                             R.string.audio_record_exception_warning);
-                    postRecordTask.handleError();
+                    mPostRecordTask.handleError();
                     break;
                 case RECORDER_MESSAGE_IO_ERROR:
-                    DialogHelper.showWarning(context,
+                    DialogHelper.showWarning(mContext,
                             R.string.recording_io_error_title,
                             R.string.recording_io_error_warning);
-                    postRecordTask.handleError();
+                    mPostRecordTask.handleError();
                     break;
                 case RECORDER_MESSAGE_FINISHED:
-                    postRecordTask.doTask();
+                    mPostRecordTask.doTask();
                     break;
             }
         }
     };
 
-    private class MicWriter extends Thread {
-        private final AudioRecord audioRecord;
-        private AudioTrack audioTrack;
-        private WaveWriter writer;
-        private final int frameSize;
-        private final int frameRate;
-        private final long framePeriod;
-        private final int bufSize;
-        private boolean running;
+    private class RecordThread extends Thread {
+        private final AudioRecord mAudioRecord;
+        private AudioTrack mAudioTrack;
+        private WaveWriter mWavWriter;
+        private final int mFrameSize;
+        private final int mFrameRate;
+        private final long mFramePeriod;
+        private final int mBufSize;
+        private boolean mRunning;
 
-        public MicWriter() {
-            this.frameSize = 160;
-            this.framePeriod = 1000 / (sampleRate / frameSize);
-            this.frameRate = (int) (sampleRate / frameSize * 1.5);
-            this.bufSize = frameSize * (frameRate + 1);
-            this.running = false;
-            this.audioRecord = AudioHelper.getRecorder(context);
+        public RecordThread() {
+            mFrameSize = 160;
+            mFramePeriod = 1000 / (mSampleRate / mFrameSize);
+            mFrameRate = (int) (mSampleRate / mFrameSize * 1.5);
+            mBufSize = mFrameSize * (mFrameRate + 1);
+            mRunning = false;
+            mAudioRecord = AudioHelper.getRecorder(mContext);
             try {
-                FileOutputStream out = context.openFileOutput("direct_recording.wav",
-                        Context.MODE_PRIVATE);
-                this.writer = new WaveWriter(out, sampleRate,
+                FileOutputStream out = mContext.openFileOutput(
+                        mContext.getString(R.string.default_recording_name), Context.MODE_PRIVATE);
+                mWavWriter = new WaveWriter(out, mSampleRate,
                         AudioHelper.getChannelConfig(Constants.DEFAULT_CHANNEL_CONFIG),
                         AudioHelper.getPcmEncoding(Constants.DEFAULT_PCM_FORMAT));
-                if (isLiveMode) {
-                    this.audioTrack = AudioHelper.getPlayer(context);
+                if (mIsLive) {
+                    mAudioTrack = AudioHelper.getPlayer(mContext);
                 }
             } catch (IOException e) {
-                Log.e(CLASS_SIPDROID_RECORDER, "Unable to write WAV file", e);
+                Log.e(TAG, "Unable to write WAV file", e);
             }
         }
 
@@ -169,35 +168,35 @@ public class SipdroidRecorder implements Recorder {
                 mp.stop();
                 mp.release();
             } catch (Exception e) {
-                Log.e(CLASS_SIPDROID_RECORDER, e.toString());
+                Log.e(TAG, e.toString());
             }
         }
 
         public synchronized void close() {
-            running = false;
+            mRunning = false;
         }
 
-        public void initialize() throws FileNotFoundException, InvalidWaveException, IOException {
-            writer.createWaveFile();
-            if (isLiveMode) {
-                AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        public void initialize() throws IOException {
+            mWavWriter.createWaveFile();
+            if (mIsLive) {
+                AudioManager am = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
                 am.setMode(AudioManager.MODE_NORMAL);
             }
         }
 
         public void cleanup() {
             // stop things
-            if (audioRecord.getRecordingState() == AudioRecord.RECORDSTATE_RECORDING) {
-                audioRecord.stop();
+            if (mAudioRecord.getRecordingState() == AudioRecord.RECORDSTATE_RECORDING) {
+                mAudioRecord.stop();
             }
-            audioRecord.release();
-            if (isLiveMode) {
-                audioTrack.stop();
-                audioTrack.release();
+            mAudioRecord.release();
+            if (mIsLive) {
+                mAudioTrack.stop();
+                mAudioTrack.release();
             }
             // close file
             try {
-                writer.closeWaveFile();
+                mWavWriter.closeWaveFile();
             } catch (IOException e) {
                 // no recovery possible here
                 e.printStackTrace();
@@ -208,34 +207,35 @@ public class SipdroidRecorder implements Recorder {
             Message msg;
             int num;
             long now, nextFrameDelay, lastFrameTime = 0;
-            short[] buf = new short[bufSize];
+            short[] buf = new short[mBufSize];
 
             try {
                 initialize();
-                running = true;
-                avoidClickHack(context);
-                audioRecord.startRecording();
-                if (isLiveMode) {
-                    audioTrack.play();
+                mRunning = true;
+                avoidClickHack(mContext);
+                mAudioRecord.startRecording();
+                if (mIsLive) {
+                    mAudioTrack.play();
                 }
-                while (running) {
+                while (mRunning) {
                     // delay reading if it's not time for the next frame
                     now = System.currentTimeMillis();
-                    nextFrameDelay = framePeriod - (now - lastFrameTime);
+                    nextFrameDelay = mFramePeriod - (now - lastFrameTime);
                     lastFrameTime = now;
                     if (nextFrameDelay > 0) {
                         try {
                             sleep(nextFrameDelay);
                         } catch (InterruptedException e) {
+                            // Do nothing
                         }
                         lastFrameTime = lastFrameTime + nextFrameDelay;
                     }
-                    num = audioRecord.read(buf, 0, frameSize);
-                    if (isLiveMode) {
+                    num = mAudioRecord.read(buf, 0, mFrameSize);
+                    if (mIsLive) {
                         processLiveAudio(buf, num);
-                        audioTrack.write(buf, 0, num);
+                        mAudioTrack.write(buf, 0, num);
                     }
-                    writer.write(buf, 0, num);
+                    mWavWriter.write(buf, 0, num);
                 }
                 msg = recorderHandler.obtainMessage(RECORDER_MESSAGE_FINISHED);
             } catch (IllegalStateException e) {

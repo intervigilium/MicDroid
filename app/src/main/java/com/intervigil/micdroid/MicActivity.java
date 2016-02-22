@@ -29,7 +29,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -67,11 +66,11 @@ public class MicActivity extends Activity implements OnClickListener {
     private static final float DEFAULT_LFO_SYM = 0.0f;
     private static final int DEFAULT_LFO_QUANT = 0;
 
-    private WakeLock wakeLock;
-    private Recorder recorder;
-    private Timer timer;
-    private ToggleButton recordingButton;
-    private AutotalentTask autotalentTask;
+    private WakeLock mWakelock;
+    private Recorder mRecorder;
+    private Timer mTimer;
+    private ToggleButton mRecordButton;
+    private AutotalentTask mAutotalentTask;
 
     /**
      * Called when the activity is first created.
@@ -83,23 +82,23 @@ public class MicActivity extends Activity implements OnClickListener {
 
         Typeface timerFont = Typeface.createFromAsset(getAssets(),
                 "fonts/Clockopia.ttf");
-        recordingButton = ((ToggleButton) findViewById(R.id.recording_button));
+        mRecordButton = ((ToggleButton) findViewById(R.id.recording_button));
         Button libraryButton = ((Button) findViewById(R.id.library_button));
         TextView timerDisplay = (TextView) findViewById(R.id.recording_timer);
 
-        recordingButton.setChecked(false);
-        recordingButton.setOnCheckedChangeListener(recordBtnListener);
+        mRecordButton.setChecked(false);
+        mRecordButton.setOnCheckedChangeListener(recordBtnListener);
         libraryButton.setOnClickListener(this);
 
         timerDisplay.setTypeface(timerFont);
 
-        timer = new Timer(timerDisplay);
+        mTimer = new Timer(timerDisplay);
 
-        autotalentTask = new AutotalentTask(MicActivity.this, postAutotalentTask);
+        mAutotalentTask = new AutotalentTask(MicActivity.this, postAutotalentTask);
 
         if (PreferenceHelper.getScreenLock(MicActivity.this)) {
             PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-            wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,
+            mWakelock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,
                     "recordingWakeLock");
         }
 
@@ -114,7 +113,7 @@ public class MicActivity extends Activity implements OnClickListener {
     protected void onResume() {
         super.onResume();
         if (PreferenceHelper.getScreenLock(MicActivity.this)) {
-            wakeLock.acquire();
+            mWakelock.acquire();
         }
     }
 
@@ -122,18 +121,18 @@ public class MicActivity extends Activity implements OnClickListener {
     protected void onPause() {
         super.onPause();
         if (PreferenceHelper.getScreenLock(MicActivity.this)) {
-            wakeLock.release();
+            mWakelock.release();
         }
     }
 
     @Override
     protected void onDestroy() {
-        if (wakeLock != null && wakeLock.isHeld()) {
-            wakeLock.release();
+        if (mWakelock != null && mWakelock.isHeld()) {
+            mWakelock.release();
         }
 
-        if (recorder != null) {
-            recorder.cleanup();
+        if (mRecorder != null) {
+            mRecorder.cleanup();
         }
         Autotalent.destroyAutotalent();
 
@@ -142,12 +141,11 @@ public class MicActivity extends Activity implements OnClickListener {
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        Log.i(TAG, "onConfigurationChanged");
         super.onConfigurationChanged(newConfig);
 
         setContentView(R.layout.main);
 
-        boolean isRecording = recorder != null && recorder.isRunning();
+        boolean isRecording = mRecorder != null && mRecorder.isRunning();
 
         ((Button) findViewById(R.id.library_button)).setOnClickListener(this);
         ToggleButton micSwitch = (ToggleButton) findViewById(R.id.recording_button);
@@ -158,7 +156,7 @@ public class MicActivity extends Activity implements OnClickListener {
                 "fonts/Clockopia.ttf");
         TextView timerDisplay = (TextView) findViewById(R.id.recording_timer);
         timerDisplay.setTypeface(timerFont);
-        timer.registerDisplay(timerDisplay);
+        mTimer.registerDisplay(timerDisplay);
     }
 
     @Override
@@ -213,16 +211,16 @@ public class MicActivity extends Activity implements OnClickListener {
                             Constants.INTENT_EXTRA_FILE_NAME).trim()
                             + ".wav";
                     updateAutoTalentPreferences();
-                    autotalentTask.runAutotalentTask(fileName);
+                    mAutotalentTask.runAutotalentTask(fileName);
                 } else if (resultCode == Activity.RESULT_CANCELED) {
                     Toast.makeText(MicActivity.this, R.string.recording_save_canceled,
                             Toast.LENGTH_SHORT).show();
                 }
                 break;
             case Constants.INTENT_PREFERENCES:
-                if (recorder != null && !recorder.isRunning()) {
-                    recorder.cleanup();
-                    recorder = null;
+                if (mRecorder != null && !mRecorder.isRunning()) {
+                    mRecorder.cleanup();
+                    mRecorder = null;
                 }
                 break;
             default:
@@ -264,22 +262,22 @@ public class MicActivity extends Activity implements OnClickListener {
                                 R.string.no_headset_plugged_in_title,
                                 R.string.no_headset_plugged_in_warning);
                     } else {
-                        timer.reset();
+                        mTimer.reset();
                         if (isLiveMode) {
                             updateAutoTalentPreferences();
                         }
-                        if (recorder == null) {
-                            recorder = new SipdroidRecorder(MicActivity.this, postRecordTask, isLiveMode);
+                        if (mRecorder == null) {
+                            mRecorder = new SipdroidRecorder(MicActivity.this, postRecordTask, isLiveMode);
                         }
-                        recorder.start();
-                        timer.start();
+                        mRecorder.start();
+                        mTimer.start();
                     }
                 } else {
-                    if (recorder != null && recorder.isRunning()) {
+                    if (mRecorder != null && mRecorder.isRunning()) {
                         // only do this if it was running, otherwise an error
                         // message triggered the check state change
-                        recorder.stop();
-                        timer.stop();
+                        mRecorder.stop();
+                        mTimer.stop();
                     }
                 }
             }
@@ -319,9 +317,9 @@ public class MicActivity extends Activity implements OnClickListener {
             if (PreferenceHelper.getLiveMode(MicActivity.this)) {
                 Autotalent.destroyAutotalent();
             }
-            recordingButton.setOnCheckedChangeListener(null);
-            recordingButton.setChecked(false);
-            recordingButton.setOnCheckedChangeListener(recordBtnListener);
+            mRecordButton.setOnCheckedChangeListener(null);
+            mRecordButton.setChecked(false);
+            mRecordButton.setOnCheckedChangeListener(recordBtnListener);
         }
     };
 

@@ -11,48 +11,48 @@ public class Timer {
     private static final int TIMER_RESET = 10;
     private static final int TIMER_COUNT_UP = 11;
 
-    private TimerHandler timerHandler;
-    private TextView display;
-    private int timer;
+    private TimerHandler mHandler;
+    private TextView mDisplay;
+    private int mTimeCounter;
 
     public Timer(TextView view) {
-        this.display = view;
-        this.timerHandler = new TimerHandler();
-        this.timer = 0;
+        mDisplay = view;
+        mHandler = new TimerHandler();
+        mTimeCounter = 0;
     }
 
     public void registerDisplay(TextView view) {
-        this.display = view;
+        mDisplay = view;
     }
 
     public void start() {
-        Message startMsg = timerHandler.obtainMessage(TIMER_START);
-        timerHandler.sendMessage(startMsg);
+        Message startMsg = mHandler.obtainMessage(TIMER_START);
+        mHandler.sendMessage(startMsg);
     }
 
     public void stop() {
-        Message stopMsg = timerHandler.obtainMessage(TIMER_STOP);
-        timerHandler.sendMessage(stopMsg);
+        Message stopMsg = mHandler.obtainMessage(TIMER_STOP);
+        mHandler.sendMessage(stopMsg);
     }
 
     public void reset() {
-        Message resetMsg = timerHandler.obtainMessage(TIMER_RESET);
-        timerHandler.sendMessage(resetMsg);
+        Message resetMsg = mHandler.obtainMessage(TIMER_RESET);
+        mHandler.sendMessage(resetMsg);
     }
 
     private String getTime() {
-        int minutes = timer / 60;
-        int seconds = timer % 60;
+        int minutes = mTimeCounter / 60;
+        int seconds = mTimeCounter % 60;
         return String.format("%02d:%02d", minutes, seconds);
     }
 
     private class TimerHandler extends Handler {
-        // handler processes updates to the timer
+        // handler processes updates to the mTimeCounter
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case TIMER_START:
-                    display.setText(getTime());
+                    mDisplay.setText(getTime());
                     this.sleep(DEFAULT_TIMER_COUNT);
                     break;
                 case TIMER_STOP:
@@ -62,22 +62,20 @@ public class Timer {
                     this.removeMessages(TIMER_RESET);
                     break;
                 case TIMER_RESET:
-                    timer = 0;
-                    display.setText(getTime());
+                    mTimeCounter = 0;
+                    mDisplay.setText(getTime());
                     break;
                 case TIMER_COUNT_UP:
-                    display.setText(getTime());
-                    timer++;
-                    this.sleep(DEFAULT_TIMER_COUNT);
+                    mDisplay.setText(getTime());
+                    mTimeCounter++;
+                    sleep(DEFAULT_TIMER_COUNT);
                     break;
             }
         }
 
         public void sleep(long delayMillis) {
             this.removeMessages(TIMER_COUNT_UP);
-            sendMessageDelayed(this.obtainMessage(TIMER_COUNT_UP), delayMillis);
+            sendMessageDelayed(obtainMessage(TIMER_COUNT_UP), delayMillis);
         }
     }
-
-    ;
 }

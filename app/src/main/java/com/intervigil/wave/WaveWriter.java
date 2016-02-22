@@ -52,7 +52,6 @@ public class WaveWriter {
     /**
      * Create output WAV file
      *
-     * @return whether file creation succeeded
      * @throws IOException if file I/O error occurs allocating header
      */
     public void createWaveFile() throws IOException {
@@ -156,7 +155,7 @@ public class WaveWriter {
     private static void writeUnsignedShortLE(OutputStream stream, short sample)
             throws IOException {
         // write already writes the lower order byte of this short
-        stream.write(sample);
-        stream.write((sample >> 8));
+        stream.write(sample & 0x00ff);
+        stream.write((sample & 0xff00) >> 8);
     }
 }

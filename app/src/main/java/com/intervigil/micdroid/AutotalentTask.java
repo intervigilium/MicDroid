@@ -29,12 +29,12 @@ public class AutotalentTask {
 
     public static final int AUTOTALENT_TASK_MESSAGE_RECORDING_IO_ERROR = 48105;
 
-    private final Context context;
-    private final DependentTask dependentTask;
+    private final Context mContext;
+    private final DependentTask mDependentTask;
 
     public AutotalentTask(Context context, DependentTask task) {
-        this.context = context;
-        this.dependentTask = task;
+        mContext = context;
+        mDependentTask = task;
     }
 
     public void runAutotalentTask(String file) {
@@ -48,33 +48,33 @@ public class AutotalentTask {
             switch (msg.what) {
                 case AUTOTALENT_TASK_MESSAGE_RECORDING_IO_ERROR:
                     // received error that the writer couldn't create the recording
-                    DialogHelper.showWarning(context,
+                    DialogHelper.showWarning(mContext,
                             R.string.recording_io_error_title,
                             R.string.recording_io_error_warning);
-                    dependentTask.handleError();
+                    mDependentTask.handleError();
                     break;
             }
         }
     };
 
     private class ProcessAutotalentTask extends AsyncTask<String, Void, Void> {
-        private ProgressDialog spinner;
-        private boolean isLiveMode;
+        private ProgressDialog mBusySpinner;
+        private boolean mIsLive;
 
         public ProcessAutotalentTask() {
-            spinner = new ProgressDialog(context);
-            spinner.setCancelable(false);
-            isLiveMode = PreferenceHelper.getLiveMode(context);
+            mBusySpinner = new ProgressDialog(mContext);
+            mBusySpinner.setCancelable(false);
+            mIsLive = PreferenceHelper.getLiveMode(mContext);
         }
 
         @Override
         protected void onPreExecute() {
-            if (isLiveMode) {
-                spinner.setMessage(context.getString(R.string.saving_recording_progress_msg));
+            if (mIsLive) {
+                mBusySpinner.setMessage(mContext.getString(R.string.saving_recording_progress_msg));
             } else {
-                spinner.setMessage(context.getString(R.string.autotalent_progress_msg));
+                mBusySpinner.setMessage(mContext.getString(R.string.autotalent_progress_msg));
             }
-            spinner.show();
+            mBusySpinner.show();
         }
 
         @Override
@@ -83,20 +83,22 @@ public class AutotalentTask {
             String fileName = params[0];
             Message msg = null;
 
-            if (isLiveMode) {
+            if (mIsLive) {
                 try {
                     // do a file copy since renameTo doesn't work
                     moveFile(fileName);
                 } catch (IOException e) {
                     e.printStackTrace();
-                    msg = autotalentTaskHandler.obtainMessage(AUTOTALENT_TASK_MESSAGE_RECORDING_IO_ERROR);
+                    msg = autotalentTaskHandler.obtainMessage(
+                            AUTOTALENT_TASK_MESSAGE_RECORDING_IO_ERROR);
                 }
             } else {
                 try {
                     processPitchCorrection(fileName);
                 } catch (IOException e) {
                     e.printStackTrace();
-                    msg = autotalentTaskHandler.obtainMessage(AUTOTALENT_TASK_MESSAGE_RECORDING_IO_ERROR);
+                    msg = autotalentTaskHandler.obtainMessage(
+                            AUTOTALENT_TASK_MESSAGE_RECORDING_IO_ERROR);
                 }
             }
             if (msg != null) {
@@ -110,13 +112,12 @@ public class AutotalentTask {
             WaveWriter writer = null;
             short[] buf = new short[AUTOTALENT_CHUNK_SIZE];
             try {
-                FileInputStream in = context.openFileInput("direct_recording.wav");
-                FileOutputStream out = context.openFileOutput(file, Context.MODE_WORLD_READABLE);
+                FileInputStream in = mContext.openFileInput(
+                        mContext.getString(R.string.default_recording_name));
+                FileOutputStream out = mContext.openFileOutput(file, Context.MODE_WORLD_READABLE);
                 reader = new WaveReader(in);
                 reader.openWave();
-                writer = new WaveWriter(out,
-                        reader.getSampleRate(),
-                        reader.getChannels(),
+                writer = new WaveWriter(out, reader.getSampleRate(), reader.getChannels(),
                         reader.getPcmFormat());
                 writer.createWaveFile();
                 while (true) {
@@ -135,12 +136,11 @@ public class AutotalentTask {
                     if (reader != null) {
                         reader.closeWaveFile();
                     }
-                    if (reader != null) {
+                    if (writer != null) {
                         writer.closeWaveFile();
-                        context.deleteFile("direct_recording.wav");
+                        mContext.deleteFile(mContext.getString(R.string.default_recording_name));
                     }
                 } catch (IOException e) {
-                    // I hate you sometimes java
                     e.printStackTrace();
                 }
             }
@@ -152,9 +152,9 @@ public class AutotalentTask {
             OutputStream out = null;
             byte[] buf = new byte[1024];
             File src = new File(
-                    context.getCacheDir().getAbsolutePath()
+                    mContext.getCacheDir().getAbsolutePath()
                             + File.separator
-                            + context.getString(R.string.default_recording_name));
+                            + mContext.getString(R.string.default_recording_name));
             File dst = new File(
                     ApplicationHelper.getLibraryDirectory()
                             + File.separator
@@ -176,7 +176,6 @@ public class AutotalentTask {
                         out.close();
                     }
                 } catch (IOException e) {
-                    // I hate you sometimes java
                     e.printStackTrace();
                 }
             }
@@ -184,9 +183,8 @@ public class AutotalentTask {
 
         @Override
         protected void onPostExecute(Void unused) {
-            spinner.dismiss();
-            dependentTask.doTask();
+            mBusySpinner.dismiss();
+            mDependentTask.doTask();
         }
     }
-
 }

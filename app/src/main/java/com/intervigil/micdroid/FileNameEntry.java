@@ -37,17 +37,17 @@ import java.util.Date;
 
 public class FileNameEntry extends Activity {
 
-    private AlertDialog invalidNameAlert;
+    private AlertDialog mInvalidNameAlert;
 
     /**
      * Called when the activity is starting. This is where most initialization
      * should go: calling setContentView(int) to inflate the activity's UI, etc.
      *
-     * @param savedInstanceState Activity's saved state, if any.
+     * @param icicle Activity's saved state, if any.
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreate(Bundle icicle) {
+        super.onCreate(icicle);
         setContentView(R.layout.filename_entry);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND,
                 WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
@@ -57,16 +57,16 @@ public class FileNameEntry extends Activity {
         ((EditText) findViewById(R.id.filename_entry_field))
                 .setText(defaultName);
 
-        invalidNameAlert = new AlertDialog.Builder(this).setTitle(
+        mInvalidNameAlert = new AlertDialog.Builder(this).setTitle(
                 getString(R.string.invalid_name_alert_title)).setMessage(
                 getString(R.string.invalid_name_alert_message))
                 .setNeutralButton("ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        invalidNameAlert.dismiss();
+                        mInvalidNameAlert.dismiss();
                     }
                 }).create();
 
-        ((Button) findViewById(R.id.filename_entry_btn_ok))
+        findViewById(R.id.filename_entry_btn_ok)
                 .setOnClickListener(mOkBtnListener);
     }
 
@@ -85,7 +85,7 @@ public class FileNameEntry extends Activity {
             }
 
             if (fileName == null || fileName.length() == 0) {
-                invalidNameAlert.show();
+                mInvalidNameAlert.show();
             } else {
                 setResult(Activity.RESULT_OK, result);
                 finish();

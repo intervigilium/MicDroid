@@ -30,6 +30,8 @@ public class WaveReader {
     private static final int WAV_FORMAT_CHUNK_ID = 0x666d7420; // "fmt "
     private static final int WAV_DATA_CHUNK_ID = 0x64617461; // "data"
 
+    private static final int WAV_HEADER_SIZE = 44;
+
     private InputStream mInputStream;
 
     private int mSampleRate;
@@ -101,7 +103,7 @@ public class WaveReader {
 
     /**
      * Get number of channels
-     *
+     *     * @return whether file creation succeeded
      * @return number of channels in input file
      */
     public int getChannels() {
@@ -118,22 +120,13 @@ public class WaveReader {
     }
 
     /**
-     * Get file size
-     *
-     * @return total input file size in bytes
-     */
-    public int getFileSize() {
-        return mFileSize + 8;
-    }
-
-    /**
-     * Get input file's audio data size
-     * Basically file size without headers included
+     * Get input file's size
+     * Basically data size with headers included
      *
      * @return audio data size in bytes
      */
-    public int getDataSize() {
-        return mDataSize;
+    public int getSize() {
+        return mDataSize + WAV_HEADER_SIZE;
     }
 
     /**
