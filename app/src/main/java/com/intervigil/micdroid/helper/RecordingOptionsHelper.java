@@ -19,36 +19,17 @@
 
 package com.intervigil.micdroid.helper;
 
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Bundle;
 
 import com.intervigil.micdroid.Constants;
-import com.intervigil.micdroid.RecordingPlayer;
 import com.intervigil.micdroid.model.Recording;
 
 import java.io.File;
 
 public class RecordingOptionsHelper {
-
-    public static void playRecording(Context context, Recording recording) {
-        try {
-            Intent playIntent = new Intent(Intent.ACTION_VIEW);
-            File privateRootDir = context.getFilesDir();
-            File recordingFile = new File(privateRootDir, recording.getName());
-            playIntent.setDataAndType(Uri.fromFile(recordingFile), Constants.MIME_AUDIO_WAV);
-            context.startActivity(playIntent);
-        } catch (ActivityNotFoundException e) {
-            Intent playIntent = new Intent(context, RecordingPlayer.class);
-            Bundle playData = new Bundle();
-            playData.putParcelable(Constants.INTENT_EXTRA_RECORDING, recording);
-            playIntent.putExtras(playData);
-            context.startActivity(playIntent);
-        }
-    }
 
     public static boolean setRingTone(Context context, Recording recording) {
         Uri recordingUri = MediaStoreHelper.getRecordingUri(context, recording);

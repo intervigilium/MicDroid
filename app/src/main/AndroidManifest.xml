@@ -52,12 +52,6 @@
             android:label="@string/recording_library" />
 
         <activity
-            android:name=".RecordingPlayer"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:label="@string/recording_player"
-            android:theme="@android:style/Theme.Dialog" />
-
-        <activity
             android:name="com.google.android.gms.ads.AdActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:theme="@android:style/Theme.Translucent" />

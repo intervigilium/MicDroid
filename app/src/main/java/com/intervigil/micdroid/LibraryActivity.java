@@ -24,6 +24,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -176,7 +177,12 @@ public class LibraryActivity extends Activity implements OnItemClickListener {
 
         switch (item.getItemId()) {
             case R.string.recording_options_play:
-                RecordingOptionsHelper.playRecording(LibraryActivity.this, r);
+                Context context = getApplicationContext();
+                Intent playIntent = new Intent(Intent.ACTION_VIEW);
+                File privateRootDir = context.getFilesDir();
+                File recordingFile = new File(privateRootDir, r.getName());
+                playIntent.setDataAndType(Uri.fromFile(recordingFile), Constants.MIME_AUDIO_WAV);
+                context.startActivity(playIntent);
                 break;
             case R.string.recording_options_delete:
                 DialogInterface.OnClickListener deleteListener = new DialogInterface.OnClickListener() {
