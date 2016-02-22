@@ -21,21 +21,16 @@ package com.intervigil.wave;
 
 import com.intervigil.wave.exception.InvalidWaveException;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class WaveReader {
     private static final int WAV_HEADER_CHUNK_ID = 0x52494646;  // "RIFF"
     private static final int WAV_FORMAT = 0x57415645;  // "WAVE"
     private static final int WAV_FORMAT_CHUNK_ID = 0x666d7420; // "fmt "
     private static final int WAV_DATA_CHUNK_ID = 0x64617461; // "data"
-    private static final int STREAM_BUFFER_SIZE = 4096;
 
-    private File mInFile;
-    private BufferedInputStream mInStream;
+    private InputStream mInputStream;
 
     private int mSampleRate;
     private int mChannels;
@@ -45,68 +40,54 @@ public class WaveReader {
 
 
     /**
-     * Constructor; initializes WaveReader to read from given file
+     * Constructor; initializes WaveReader to read from input stream
      *
-     * @param path path to input file
-     * @param name name of input file
+     * @param stream inputStream to read from
      */
-    public WaveReader(String path, String name) {
-        this.mInFile = new File(path + File.separator + name);
-    }
-
-    /**
-     * Constructor; initializes WaveReader to read from given file
-     *
-     * @param file handle to input file
-     */
-    public WaveReader(File file) {
-        this.mInFile = file;
+    public WaveReader(InputStream stream) {
+        mInputStream = stream;
     }
 
     /**
      * Open WAV file for reading
      *
-     * @throws FileNotFoundException if input file does not exist
-     * @throws InvalidWaveException  if input file is not a valid WAVE file
-     * @throws IOException           if I/O error occurred during file read
+     * @throws InvalidWaveException if input file is not a valid WAVE file
+     * @throws IOException          if I/O error occurred during file read
      */
-    public void openWave() throws FileNotFoundException, InvalidWaveException, IOException {
-        FileInputStream fileStream = new FileInputStream(mInFile);
-        mInStream = new BufferedInputStream(fileStream, STREAM_BUFFER_SIZE);
-
-        int headerId = readUnsignedInt(mInStream);  // should be "RIFF"
+    public void openWave() throws IOException {
+        int headerId = readUnsignedInt(mInputStream);  // should be "RIFF"
         if (headerId != WAV_HEADER_CHUNK_ID) {
-            throw new InvalidWaveException(String.format("Invalid WAVE header chunk ID: %d", headerId));
+            throw new InvalidWaveException(("Invalid WAVE header chunk ID: " + headerId));
         }
-        mFileSize = readUnsignedIntLE(mInStream);  // length of header
-        int format = readUnsignedInt(mInStream);  // should be "WAVE"
+        mFileSize = readUnsignedIntLE(mInputStream);  // length of header
+        int format = readUnsignedInt(mInputStream);  // should be "WAVE"
         if (format != WAV_FORMAT) {
             throw new InvalidWaveException("Invalid WAVE format");
         }
 
-        int formatId = readUnsignedInt(mInStream);  // should be "fmt "
+        int formatId = readUnsignedInt(mInputStream);  // should be "fmt "
         if (formatId != WAV_FORMAT_CHUNK_ID) {
             throw new InvalidWaveException("Invalid WAVE format chunk ID");
         }
-        int formatSize = readUnsignedIntLE(mInStream);
+        int formatSize = readUnsignedIntLE(mInputStream);
         if (formatSize != 16) {
 
         }
-        int audioFormat = readUnsignedShortLE(mInStream);
+        int audioFormat = readUnsignedShortLE(mInputStream);
         if (audioFormat != 1) {
             throw new InvalidWaveException("Not PCM WAVE format");
         }
-        mChannels = readUnsignedShortLE(mInStream);
-        mSampleRate = readUnsignedIntLE(mInStream);
-        int byteRate = readUnsignedIntLE(mInStream);
-        int blockAlign = readUnsignedShortLE(mInStream);
-        mSampleBits = readUnsignedShortLE(mInStream);
+        mChannels = readUnsignedShortLE(mInputStream);
+        mSampleRate = readUnsignedIntLE(mInputStream);
+        int byteRate = readUnsignedIntLE(mInputStream);
+        int blockAlign = readUnsignedShortLE(mInputStream);
+        mSampleBits = readUnsignedShortLE(mInputStream);
 
-        int dataId = readUnsignedInt(mInStream);
+        int dataId = readUnsignedInt(mInputStream);
         if (dataId != WAV_DATA_CHUNK_ID) {
             throw new InvalidWaveException("Invalid WAVE data chunk ID");
         }
-        mDataSize = readUnsignedIntLE(mInStream);
+        mDataSize = readUnsignedIntLE(mInputStream);
     }
 
     /**
@@ -183,7 +164,7 @@ public class WaveReader {
 
         byte[] buf = new byte[numSamples * 2];
         int index = 0;
-        int bytesRead = mInStream.read(buf, 0, numSamples * 2);
+        int bytesRead = mInputStream.read(buf, 0, numSamples * 2);
 
         for (int i = 0; i < bytesRead; i += 2) {
             dst[index] = byteToShortLE(buf[i], buf[i + 1]);
@@ -208,7 +189,7 @@ public class WaveReader {
         }
         byte[] buf = new byte[numSamples * 4];
         int index = 0;
-        int bytesRead = mInStream.read(buf, 0, numSamples * 4);
+        int bytesRead = mInputStream.read(buf, 0, numSamples * 4);
 
         for (int i = 0; i < bytesRead; i += 2) {
             short val = byteToShortLE(buf[0], buf[i + 1]);
@@ -229,8 +210,8 @@ public class WaveReader {
      * @throws IOException if I/O error occurred closing filestream
      */
     public void closeWaveFile() throws IOException {
-        if (mInStream != null) {
-            mInStream.close();
+        if (mInputStream != null) {
+            mInputStream.close();
         }
     }
 
@@ -238,7 +219,7 @@ public class WaveReader {
         return (short) (b1 & 0xFF | ((b2 & 0xFF) << 8));
     }
 
-    private static int readUnsignedInt(BufferedInputStream in) throws IOException {
+    private static int readUnsignedInt(InputStream in) throws IOException {
         int ret;
         byte[] buf = new byte[4];
         ret = in.read(buf);
@@ -252,7 +233,7 @@ public class WaveReader {
         }
     }
 
-    private static int readUnsignedIntLE(BufferedInputStream in) throws IOException {
+    private static int readUnsignedIntLE(InputStream in) throws IOException {
         int ret;
         byte[] buf = new byte[4];
         ret = in.read(buf);
@@ -266,7 +247,7 @@ public class WaveReader {
         }
     }
 
-    private static short readUnsignedShortLE(BufferedInputStream in) throws IOException {
+    private static short readUnsignedShortLE(InputStream in) throws IOException {
         int ret;
         byte[] buf = new byte[2];
         ret = in.read(buf, 0, 2);
