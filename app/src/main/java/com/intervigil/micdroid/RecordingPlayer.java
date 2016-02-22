@@ -33,6 +33,8 @@ import android.widget.TextView;
 
 import com.intervigil.micdroid.model.Recording;
 
+import java.io.File;
+
 public class RecordingPlayer extends Activity implements OnClickListener {
 
     private static final String CLASS_RECORDING_PLAYER = "RecordingPlayer";
@@ -67,7 +69,9 @@ public class RecordingPlayer extends Activity implements OnClickListener {
                 .setText(recording.getName());
 
         mediaSeekBar.setMax(SEEKBAR_RESOLUTION);
-        mediaPlayer = new SeekableMediaPlayer(recording.getAbsolutePath(),
+        File privateRootDir = getApplicationContext().getFilesDir();
+        File recordingFile = new File(privateRootDir, recording.getName());
+        mediaPlayer = new SeekableMediaPlayer(recordingFile.getAbsolutePath(),
                 mediaSeekBar);
     }
 

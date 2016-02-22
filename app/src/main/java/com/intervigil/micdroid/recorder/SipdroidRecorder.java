@@ -43,6 +43,7 @@ import com.intervigil.wave.exception.InvalidWaveException;
 import net.sourceforge.autotalent.Autotalent;
 
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class SipdroidRecorder implements Recorder {
@@ -128,7 +129,7 @@ public class SipdroidRecorder implements Recorder {
     private class MicWriter extends Thread {
         private final AudioRecord audioRecord;
         private AudioTrack audioTrack;
-        private final WaveWriter writer;
+        private WaveWriter writer;
         private final int frameSize;
         private final int frameRate;
         private final long framePeriod;
@@ -142,13 +143,17 @@ public class SipdroidRecorder implements Recorder {
             this.bufSize = frameSize * (frameRate + 1);
             this.running = false;
             this.audioRecord = AudioHelper.getRecorder(context);
-            this.writer = new WaveWriter(context.getCacheDir().getAbsolutePath(),
-                    context.getString(R.string.default_recording_name), sampleRate,
-                    AudioHelper.getChannelConfig(Constants.DEFAULT_CHANNEL_CONFIG),
-                    AudioHelper.getPcmEncoding(Constants.DEFAULT_PCM_FORMAT));
-
-            if (isLiveMode) {
-                this.audioTrack = AudioHelper.getPlayer(context);
+            try {
+                FileOutputStream out = context.openFileOutput("direct_recording.wav",
+                        Context.MODE_PRIVATE);
+                this.writer = new WaveWriter(out, sampleRate,
+                        AudioHelper.getChannelConfig(Constants.DEFAULT_CHANNEL_CONFIG),
+                        AudioHelper.getPcmEncoding(Constants.DEFAULT_PCM_FORMAT));
+                if (isLiveMode) {
+                    this.audioTrack = AudioHelper.getPlayer(context);
+                }
+            } catch (IOException e) {
+                Log.e(CLASS_SIPDROID_RECORDER, "Unable to write WAV file", e);
             }
         }
 

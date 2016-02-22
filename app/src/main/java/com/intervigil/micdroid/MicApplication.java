@@ -31,7 +31,7 @@ public class MicApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        File libraryDir = new File(ApplicationHelper.getLibraryDirectory());
+        File libraryDir = ApplicationHelper.getLibraryDirectory();
         if (!libraryDir.exists()) {
             libraryDir.mkdirs();
         }

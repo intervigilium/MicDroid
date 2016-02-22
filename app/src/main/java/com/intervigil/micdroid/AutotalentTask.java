@@ -110,13 +110,11 @@ public class AutotalentTask {
             WaveWriter writer = null;
             short[] buf = new short[AUTOTALENT_CHUNK_SIZE];
             try {
-                reader = new WaveReader(
-                        context.getCacheDir().getAbsolutePath(),
-                        context.getString(R.string.default_recording_name));
+                FileInputStream in = context.openFileInput("direct_recording.wav");
+                FileOutputStream out = context.openFileOutput(file, Context.MODE_WORLD_READABLE);
+                reader = new WaveReader(in);
                 reader.openWave();
-                writer = new WaveWriter(
-                        ApplicationHelper.getLibraryDirectory(),
-                        file,
+                writer = new WaveWriter(out,
                         reader.getSampleRate(),
                         reader.getChannels(),
                         reader.getPcmFormat());
@@ -139,6 +137,7 @@ public class AutotalentTask {
                     }
                     if (reader != null) {
                         writer.closeWaveFile();
+                        context.deleteFile("direct_recording.wav");
                     }
                 } catch (IOException e) {
                     // I hate you sometimes java

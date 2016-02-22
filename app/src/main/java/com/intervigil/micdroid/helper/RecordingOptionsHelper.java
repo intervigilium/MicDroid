@@ -30,12 +30,16 @@ import com.intervigil.micdroid.Constants;
 import com.intervigil.micdroid.RecordingPlayer;
 import com.intervigil.micdroid.model.Recording;
 
+import java.io.File;
+
 public class RecordingOptionsHelper {
 
     public static void playRecording(Context context, Recording recording) {
         try {
             Intent playIntent = new Intent(Intent.ACTION_VIEW);
-            playIntent.setDataAndType(Uri.fromFile(recording.asFile()), Constants.MIME_AUDIO_WAV);
+            File privateRootDir = context.getFilesDir();
+            File recordingFile = new File(privateRootDir, recording.getName());
+            playIntent.setDataAndType(Uri.fromFile(recordingFile), Constants.MIME_AUDIO_WAV);
             context.startActivity(playIntent);
         } catch (ActivityNotFoundException e) {
             Intent playIntent = new Intent(context, RecordingPlayer.class);
@@ -69,7 +73,9 @@ public class RecordingOptionsHelper {
 
     public static void shareRecording(Context context, Recording recording) {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(recording.asFile()));
+        File privateRootDir = context.getFilesDir();
+        File recordingFile = new File(privateRootDir, recording.getName());
+        shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(recordingFile));
         shareIntent.setType(Constants.MIME_AUDIO_WAV);
         context.startActivity(Intent.createChooser(shareIntent, "Share"));
     }

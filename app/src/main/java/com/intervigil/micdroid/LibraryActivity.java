@@ -116,8 +116,7 @@ public class LibraryActivity extends Activity implements OnItemClickListener {
 
     @Override
     public Object onRetainNonConfigurationInstance() {
-        final ArrayList<Recording> recordingList = recordings;
-        return recordingList;
+        return recordings;
     }
 
     @Override
@@ -134,7 +133,7 @@ public class LibraryActivity extends Activity implements OnItemClickListener {
                             + ".wav";
                     File destination = new File(ApplicationHelper.getLibraryDirectory()
                             + File.separator + destinationName);
-                    r.moveTo(destination);
+                    // TODO: Allow file moves
                     recordings.add(r);
                     libraryAdapter.notifyDataSetChanged();
                 }
@@ -184,7 +183,7 @@ public class LibraryActivity extends Activity implements OnItemClickListener {
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
-                                r.delete();
+                                getApplicationContext().deleteFile(r.getName());
                                 libraryAdapter.remove(r);
                                 libraryAdapter.notifyDataSetChanged();
                                 dialog.dismiss();
@@ -301,27 +300,23 @@ public class LibraryActivity extends Activity implements OnItemClickListener {
 
         @Override
         protected Void doInBackground(Void... params) {
-            File libraryDir = new File(ApplicationHelper.getLibraryDirectory());
-            File[] waveFiles = libraryDir.listFiles();
+            String[] wavFiles = getApplicationContext().fileList();
 
-            if (waveFiles != null) {
-                for (int i = 0; i < waveFiles.length; i++) {
-                    if (waveFiles[i].isFile()) {
-                        Recording r = null;
-                        try {
-                            r = new Recording(waveFiles[i]);
-                            recordings.add(r);
-                        } catch (FileNotFoundException e) {
-                            Log.i(TAG,
-                                    String.format("File %s not found in library directory!",
-                                            waveFiles[i].getName()));
-                        } catch (InvalidWaveException e) {
-                            Log.i(TAG,
-                                    String.format("Non-wave file %s found in library directory!",
-                                            waveFiles[i].getName()));
-                        } catch (IOException e) {
-                            // can't recover
-                        }
+            Log.i(TAG, "doInBackground: Found files: " + wavFiles);
+
+            if (wavFiles != null) {
+                for (int i = 0; i < wavFiles.length; i++) {
+                    Recording r;
+                    try {
+                        r = new Recording(wavFiles[i], openFileInput(wavFiles[i]));
+                        recordings.add(r);
+                    } catch (FileNotFoundException e) {
+                        Log.w(TAG, wavFiles[i] + " not found in library directory!");
+                    } catch (InvalidWaveException e) {
+                        Log.i(TAG, "Non-wav file " + wavFiles[i] + " found in library directory!");
+                    } catch (IOException e) {
+                        // can't recover
+                        Log.e(TAG, "Error opening file: " + wavFiles[i], e);
                     }
                 }
             }

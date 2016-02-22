@@ -39,8 +39,7 @@ public class ApplicationHelper {
         return versionCode;
     }
 
-    public static String getLibraryDirectory() {
-        return Environment.getExternalStorageDirectory() + File.separator
-                + "MicDroid" + File.separator + "recordings";
+    public static File getLibraryDirectory() {
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
     }
 }

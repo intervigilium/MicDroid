@@ -25,7 +25,9 @@ import android.os.Parcelable;
 import com.intervigil.wave.WaveReader;
 import com.intervigil.wave.exception.InvalidWaveException;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -33,7 +35,6 @@ public class Recording implements Parcelable {
     public static final int WAVE_HEADER_SIZE = 44;
     public static final int MILLISECONDS_IN_SECOND = 1000;
 
-    private String recordingPath;
     private String recordingName;
     private int recordingLength;
     private int recordingSize;
@@ -51,26 +52,22 @@ public class Recording implements Parcelable {
     public Recording() {
     }
 
-    public Recording(File file) throws FileNotFoundException, InvalidWaveException, IOException {
-        WaveReader reader = new WaveReader(file);
+    public Recording(String name, FileInputStream stream) throws IOException {
+        WaveReader reader = new WaveReader(stream);
         reader.openWave();
-        this.recordingPath = file.getParent();
-        this.recordingName = file.getName();
+        this.recordingName = name;
         this.recordingLength = reader.getLength();
         this.recordingSize = reader.getDataSize() + WAVE_HEADER_SIZE;
         reader.closeWaveFile();
-        reader = null;
     }
 
     private Recording(Parcel in) {
-        this.recordingPath = in.readString();
         this.recordingName = in.readString();
         this.recordingLength = in.readInt();
         this.recordingSize = in.readInt();
     }
 
-    public Recording(String path, String name, int length, int size) {
-        this.recordingPath = path;
+    public Recording(String name, int length, int size) {
         this.recordingName = name;
         this.recordingLength = length;
         this.recordingSize = size;
@@ -81,18 +78,9 @@ public class Recording implements Parcelable {
     }
 
     public void writeToParcel(Parcel out, int flags) {
-        out.writeString(recordingPath);
         out.writeString(recordingName);
         out.writeInt(recordingLength);
         out.writeInt(recordingSize);
-    }
-
-    public File asFile() {
-        return new File(recordingPath + File.separator + recordingName);
-    }
-
-    public String getAbsolutePath() {
-        return recordingPath + File.separator + recordingName;
     }
 
     public String getName() {
@@ -115,34 +103,12 @@ public class Recording implements Parcelable {
         return recordingSize;
     }
 
-    public void setPath(String path) {
-        // sets the recording path, where it is located
-        recordingPath = path;
-    }
-
     public void setName(String name) {
         // sets recording name, typically the file name
         recordingName = name;
     }
 
-    public void setLength(int length) {
-        // sets recording length, in number of seconds
-        recordingLength = length;
-    }
-
     public void setSize(int size) {
         recordingSize = size;
-    }
-
-    public boolean delete() {
-        return new File(recordingPath + File.separator + recordingName).delete();
-    }
-
-    public void moveTo(File destination) {
-        File recordingFile = new File(recordingPath + File.separator
-                + recordingName);
-        recordingPath = destination.getParent();
-        recordingName = destination.getName();
-        recordingFile.renameTo(destination);
     }
 }
