@@ -110,7 +110,6 @@
     <string name="prefs_prevent_screen_lock_summary_on">Screen will not dim or lock when recording</string>
     <string name="prefs_prevent_screen_lock_summary_off">Screen will dim or lock when recording</string>
     <string name="prefs_prevent_screen_lock_title">Prevent Screen from Dimming</string>
-    <string name="prefs_prevent_screen_lock_default">true</string>
 
     <string name="prefs_enable_ads_key">enable_ads</string>
     <string name="prefs_enable_ads">Enable Ads</string>
@@ -118,7 +117,6 @@
 	<string name="prefs_enable_ads_summary_off">Please consider showing ads to support the
 		developer!</string>
     <string name="prefs_enable_ads_title">Enable Mobile Ads</string>
-    <string name="prefs_enable_ads_default">true</string>
 
     <string name="prefs_cat_recording">Recording Settings</string>
     <string name="prefs_cat_recording_key">prefs_recording</string>
@@ -127,7 +125,6 @@
     <string name="prefs_live_mode_summary_on">Real time pitch-correction is enabled.</string>
     <string name="prefs_live_mode_summary_off">Real time pitch-correction is disabled.</string>
     <string name="prefs_live_mode_title">Enable Live Correction</string>
-    <string name="prefs_live_mode_default">false</string>
 
     <string name="prefs_sample_rate_key">sample_rate</string>
     <string name="prefs_sample_rate">Change Sample Rate</string>
@@ -188,7 +185,6 @@
     <string name="prefs_formant_corr_summary_on">Formant correction is enabled.</string>
     <string name="prefs_formant_corr_summary_off">Formant correction is disabled.</string>
     <string name="prefs_formant_corr_title">Formant Correction</string>
-    <string name="prefs_formant_corr_default">false</string>
 
     <string name="prefs_formant_warp_key">formant_warp</string>
     <string name="prefs_formant_warp">Correction Warp Amount</string>

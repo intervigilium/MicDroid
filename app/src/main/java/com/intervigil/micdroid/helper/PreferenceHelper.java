@@ -32,28 +32,22 @@ public class PreferenceHelper {
     public static boolean getShowAds(Context context) {
         SharedPreferences prefReader =
                 PreferenceManager.getDefaultSharedPreferences(context);
-        boolean pref = prefReader.getBoolean(
-                context.getString(R.string.prefs_enable_ads_key),
-                Boolean.parseBoolean(context.getString(R.string.prefs_enable_ads_default)));
-        return pref;
+        return prefReader.getBoolean(
+                context.getString(R.string.prefs_enable_ads_key), context.getResources().getBoolean(R.bool.prefs_enable_ads_default));
     }
 
     public static boolean getScreenLock(Context context) {
         SharedPreferences prefReader =
                 PreferenceManager.getDefaultSharedPreferences(context);
-        boolean pref = prefReader.getBoolean(
-                context.getString(R.string.prefs_prevent_screen_lock_key),
-                Boolean.parseBoolean(context.getString(R.string.prefs_prevent_screen_lock_default)));
-        return pref;
+        return prefReader.getBoolean(
+                context.getString(R.string.prefs_prevent_screen_lock_key), context.getResources().getBoolean(R.bool.prefs_prevent_screen_lock_default));
     }
 
     public static boolean getLiveMode(Context context) {
         SharedPreferences prefReader =
                 PreferenceManager.getDefaultSharedPreferences(context);
-        boolean pref = prefReader.getBoolean(
-                context.getString(R.string.prefs_live_mode_key),
-                Boolean.parseBoolean(context.getString(R.string.prefs_live_mode_default)));
-        return pref;
+        return prefReader.getBoolean(
+                context.getString(R.string.prefs_live_mode_key), context.getResources().getBoolean(R.bool.prefs_live_mode_default));
     }
 
     public static char getKey(Context context) {
@@ -104,10 +98,8 @@ public class PreferenceHelper {
     public static boolean getFormantCorrection(Context context) {
         SharedPreferences prefReader =
                 PreferenceManager.getDefaultSharedPreferences(context);
-        boolean pref = prefReader.getBoolean(
-                context.getString(R.string.prefs_formant_corr_key),
-                Boolean.parseBoolean(context.getString(R.string.prefs_formant_corr_default)));
-        return pref;
+        return prefReader.getBoolean(
+                context.getString(R.string.prefs_formant_corr_key), context.getResources().getBoolean(R.bool.prefs_formant_corr_default));
     }
 
     public static float getFormantWarp(Context context) {
