@@ -55,7 +55,6 @@ public class UpdateHelper {
 
     private static void resetRecordingSettings(Context context) {
         PreferenceHelper.unsetRecordingSettings(context);
-        AudioHelper.configureRecorder(context);
     }
 
     private static void resetPitchShift(Context context) {

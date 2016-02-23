@@ -30,6 +30,7 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.intervigil.micdroid.AudioController;
 import com.intervigil.micdroid.Constants;
 import com.intervigil.micdroid.R;
 import com.intervigil.micdroid.helper.AudioHelper;
@@ -54,15 +55,16 @@ public class SipdroidRecorder implements Recorder {
 
     private final Context mContext;
     private RecordThread mWriterThread;
-    private final boolean mIsLive;
     private final int mSampleRate;
     private DependentTask mPostRecordTask;
+    private AudioController mAudioControl;
 
-    public SipdroidRecorder(Context context, DependentTask postRecordTask, boolean isLive) {
+    public SipdroidRecorder(Context context, DependentTask postRecordTask,
+                            AudioController audioControl) {
         mContext = context;
         mSampleRate = PreferenceHelper.getSampleRate(mContext);
         mPostRecordTask = postRecordTask;
-        mIsLive = isLive;
+        mAudioControl = audioControl;
     }
 
     public void start() {
@@ -141,15 +143,15 @@ public class SipdroidRecorder implements Recorder {
             mFrameRate = (int) (mSampleRate / mFrameSize * 1.5);
             mBufSize = mFrameSize * (mFrameRate + 1);
             mRunning = false;
-            mAudioRecord = AudioHelper.getRecorder(mContext);
+            mAudioRecord = mAudioControl.getRecorder();
             try {
                 FileOutputStream out = mContext.openFileOutput(
                         mContext.getString(R.string.default_recording_name), Context.MODE_PRIVATE);
                 mWavWriter = new WaveWriter(out, mSampleRate,
                         AudioHelper.getChannelConfig(Constants.DEFAULT_CHANNEL_CONFIG),
                         AudioHelper.getPcmEncoding(Constants.DEFAULT_PCM_FORMAT));
-                if (mIsLive) {
-                    mAudioTrack = AudioHelper.getPlayer(mContext);
+                if (mAudioControl.isLive()) {
+                    mAudioTrack = mAudioControl.getPlayer();
                 }
             } catch (IOException e) {
                 Log.e(TAG, "Unable to write WAV file", e);
@@ -178,7 +180,7 @@ public class SipdroidRecorder implements Recorder {
 
         public void initialize() throws IOException {
             mWavWriter.createWaveFile();
-            if (mIsLive) {
+            if (mAudioControl.isLive()) {
                 AudioManager am = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
                 am.setMode(AudioManager.MODE_NORMAL);
             }
@@ -190,7 +192,7 @@ public class SipdroidRecorder implements Recorder {
                 mAudioRecord.stop();
             }
             mAudioRecord.release();
-            if (mIsLive) {
+            if (mAudioControl.isLive()) {
                 mAudioTrack.stop();
                 mAudioTrack.release();
             }
@@ -214,7 +216,7 @@ public class SipdroidRecorder implements Recorder {
                 mRunning = true;
                 avoidClickHack(mContext);
                 mAudioRecord.startRecording();
-                if (mIsLive) {
+                if (mAudioControl.isLive()) {
                     mAudioTrack.play();
                 }
                 while (mRunning) {
@@ -231,7 +233,7 @@ public class SipdroidRecorder implements Recorder {
                         lastFrameTime = lastFrameTime + nextFrameDelay;
                     }
                     num = mAudioRecord.read(buf, 0, mFrameSize);
-                    if (mIsLive) {
+                    if (mAudioControl.isLive()) {
                         processLiveAudio(buf, num);
                         mAudioTrack.write(buf, 0, num);
                     }

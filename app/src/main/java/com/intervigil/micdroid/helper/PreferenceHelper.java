@@ -155,25 +155,6 @@ public class PreferenceHelper {
         prefEditor.commit();
     }
 
-    public static int getBufferSizeAdjuster(Context context) {
-        SharedPreferences prefReader = PreferenceManager
-                .getDefaultSharedPreferences(context);
-        String bufferSize = prefReader.getString(
-                context.getString(R.string.prefs_buffer_size_adjuster_key),
-                "-1");
-        return Integer.parseInt(bufferSize);
-    }
-
-    public static void setBufferSizeAdjuster(Context context,
-                                             int bufferSizeAdjuster) {
-        Editor prefEditor =
-                PreferenceManager.getDefaultSharedPreferences(context).edit();
-        prefEditor.putString(
-                context.getString(R.string.prefs_buffer_size_adjuster_key),
-                String.format("%d", bufferSizeAdjuster));
-        prefEditor.commit();
-    }
-
     public static int getLastVersionCode(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context).getInt(
                 Constants.KEY_LAST_VERSION_CODE, -1);
@@ -190,8 +171,6 @@ public class PreferenceHelper {
         Editor prefEditor =
                 PreferenceManager.getDefaultSharedPreferences(context).edit();
         prefEditor.clear().commit();
-
-        AudioHelper.configureRecorder(context);
     }
 
     public static void resetFormantCorrectionDefault(Context context) {
@@ -213,7 +192,6 @@ public class PreferenceHelper {
                 PreferenceManager.getDefaultSharedPreferences(context).edit();
         editor.remove(context.getString(R.string.prefs_sample_rate_key));
         editor.remove(context.getString(R.string.prefs_buffer_size_key));
-        editor.remove(context.getString(R.string.prefs_buffer_size_adjuster_key));
         editor.commit();
     }
 }

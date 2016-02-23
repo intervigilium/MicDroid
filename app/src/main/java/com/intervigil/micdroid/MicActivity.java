@@ -28,7 +28,6 @@ import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Environment;
-import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -73,6 +72,7 @@ public class MicActivity extends Activity implements OnClickListener {
     private TimerDisplay mTimerDisplay;
     private ToggleButton mRecordButton;
     private AutotalentTask mAutotalentTask;
+    private AudioController mAudioControl;
 
     /**
      * Called when the activity is first created.
@@ -108,10 +108,12 @@ public class MicActivity extends Activity implements OnClickListener {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         sharedPrefs.registerOnSharedPreferenceChangeListener(mScreenLockListener);
 
+        mAudioControl = new AudioController(mContext);
+
         if (UpdateHelper.isAppUpdated(mContext)) {
             UpdateHelper.onAppUpdate(mContext);
         } else {
-            AudioHelper.configureRecorder(mContext);
+            mAudioControl.configureRecorder();
         }
     }
 
@@ -229,7 +231,7 @@ public class MicActivity extends Activity implements OnClickListener {
                 DialogHelper.showWarning(mContext,
                         R.string.no_external_storage_title,
                         R.string.no_external_storage_warning);
-            } else if (!AudioHelper.isValidRecorderConfiguration(mContext)) {
+            } else if (!mAudioControl.isValidRecorder()) {
                 btn.setChecked(false);
                 DialogHelper.showWarning(mContext,
                         R.string.unconfigured_audio_title,
@@ -249,7 +251,8 @@ public class MicActivity extends Activity implements OnClickListener {
                             updateAutoTalentPreferences();
                         }
                         if (mRecorder == null) {
-                            mRecorder = new SipdroidRecorder(mContext, postRecordTask, isLiveMode);
+                            mRecorder = new SipdroidRecorder(mContext, postRecordTask,
+                                    mAudioControl);
                         }
                         mRecorder.start();
                         mTimerDisplay.start();

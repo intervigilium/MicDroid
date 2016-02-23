@@ -24,7 +24,7 @@ import android.media.AudioFormat;
 public class Constants {
 
     // default recording parameters
-    public static final int DEFAULT_CHANNEL_CONFIG = AudioFormat.CHANNEL_CONFIGURATION_MONO;
+    public static final int DEFAULT_CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO;
     public static final int DEFAULT_PCM_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
     public static final int DEFAULT_BUFFER_LIMIT = 32;
 
@@ -33,6 +33,7 @@ public class Constants {
     public static final int SAMPLE_RATE_22KHZ = 22050;
     public static final int SAMPLE_RATE_11KHZ = 11025;
     public static final int SAMPLE_RATE_8KHZ = 8000;
+    public static final int DEFAULT_SAMPLE_RATE = SAMPLE_RATE_44KHZ;
 
     // intent codes
     public static final int INTENT_FILENAME_ENTRY = 12768;

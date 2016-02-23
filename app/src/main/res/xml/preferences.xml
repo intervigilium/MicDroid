@@ -32,22 +32,13 @@
             android:title="@string/prefs_live_mode" />
 
         <ListPreference
-            android:defaultValue="@string/prefs_sample_rate_default"
+            android:defaultValue="@integer/prefs_sample_rate_default"
             android:dialogTitle="@string/prefs_sample_rate_title"
             android:entries="@array/prefs_sample_rate_entries"
             android:entryValues="@array/prefs_sample_rate_values"
             android:key="@string/prefs_sample_rate_key"
             android:summary="@string/prefs_sample_rate_summary"
             android:title="@string/prefs_sample_rate" />
-
-        <ListPreference
-            android:defaultValue="@string/prefs_buffer_size_adjuster_default"
-            android:dialogTitle="@string/prefs_buffer_size_adjuster_title"
-            android:entries="@array/prefs_buffer_size_adjuster_entries"
-            android:entryValues="@array/prefs_buffer_size_adjuster_values"
-            android:key="@string/prefs_buffer_size_adjuster_key"
-            android:summary="@string/prefs_buffer_size_adjuster_summary"
-            android:title="@string/prefs_buffer_size_adjuster" />
 
     </PreferenceCategory>
 
