@@ -1,7 +1,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory android:title="@string/prefs_cat_screen">
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="@bool/prefs_prevent_screen_lock_default"
             android:dialogTitle="@string/prefs_prevent_screen_lock_title"
             android:key="@string/prefs_prevent_screen_lock_key"
@@ -9,7 +9,7 @@
             android:summaryOn="@string/prefs_prevent_screen_lock_summary_on"
             android:title="@string/prefs_prevent_screen_lock" />
 
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="@bool/prefs_enable_ads_default"
             android:dialogTitle="@string/prefs_enable_ads_title"
             android:key="@string/prefs_enable_ads_key"
@@ -23,7 +23,7 @@
         android:key="@string/prefs_cat_recording_key"
         android:title="@string/prefs_cat_recording">
 
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="@bool/prefs_live_mode_default"
             android:dialogTitle="@string/prefs_live_mode_title"
             android:key="@string/prefs_live_mode_key"
@@ -106,7 +106,7 @@
             android:summary="@string/prefs_corr_smooth_summary"
             android:title="@string/prefs_corr_smooth" />
 
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="@bool/prefs_formant_corr_default"
             android:dialogTitle="@string/prefs_formant_corr_title"
             android:key="@string/prefs_formant_corr_key"
