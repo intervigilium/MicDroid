@@ -21,19 +21,20 @@
 package com.intervigil.micdroid;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
+import android.preference.PreferenceCategory;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -66,7 +67,6 @@ public class MicActivity extends Activity implements OnClickListener {
     private static final float DEFAULT_LFO_SYM = 0.0f;
     private static final int DEFAULT_LFO_QUANT = 0;
 
-    private WakeLock mWakelock;
     private Recorder mRecorder;
     private TimerDisplay mTimerDisplay;
     private ToggleButton mRecordButton;
@@ -98,10 +98,11 @@ public class MicActivity extends Activity implements OnClickListener {
         mAutotalentTask = new AutotalentTask(MicActivity.this, postAutotalentTask);
 
         if (PreferenceHelper.getScreenLock(MicActivity.this)) {
-            PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-            mWakelock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,
-                    "recordingWakeLock");
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
+
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(MicActivity.this);
+        sharedPrefs.registerOnSharedPreferenceChangeListener(mScreenLockListener);
 
         if (UpdateHelper.isAppUpdated(MicActivity.this)) {
             UpdateHelper.onAppUpdate(MicActivity.this);
@@ -111,32 +112,8 @@ public class MicActivity extends Activity implements OnClickListener {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        if (PreferenceHelper.getScreenLock(MicActivity.this)) {
-            mWakelock.acquire();
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (PreferenceHelper.getScreenLock(MicActivity.this)) {
-            mWakelock.release();
-        }
-    }
-
-    @Override
     protected void onDestroy() {
-        if (mWakelock != null && mWakelock.isHeld()) {
-            mWakelock.release();
-        }
-
-        if (mRecorder != null) {
-            mRecorder.cleanup();
-        }
         Autotalent.destroyAutotalent();
-
         super.onDestroy();
     }
 
@@ -356,4 +333,18 @@ public class MicActivity extends Activity implements OnClickListener {
     private static boolean canWriteToSdCard() {
         return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
     }
+
+    private SharedPreferences.OnSharedPreferenceChangeListener mScreenLockListener =
+            new SharedPreferences.OnSharedPreferenceChangeListener() {
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            if (getString(R.string.prefs_prevent_screen_lock_key).equals(key)) {
+                if (PreferenceHelper.getScreenLock(MicActivity.this)) {
+                    getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                } else {
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                }
+            }
+        }
+    };
 }
