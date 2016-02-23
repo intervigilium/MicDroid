@@ -64,6 +64,7 @@ public class LibraryActivity extends Activity implements OnItemClickListener {
     private static final String TAG = "Library";
     private static final String STATE_LOAD_IN_PROGRESS = "load_recordings_in_progress";
 
+    private Context mContext;
     private RecordingAdapter mLibraryAdapter;
     private ArrayList<Recording> mRecordings;
     private LoadRecordingsTask mLoadTask;
@@ -74,6 +75,8 @@ public class LibraryActivity extends Activity implements OnItemClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recording_library);
+
+        mContext = LibraryActivity.this;
 
         Boolean showAds = PreferenceHelper.getShowAds(LibraryActivity.this);
 
@@ -177,12 +180,11 @@ public class LibraryActivity extends Activity implements OnItemClickListener {
 
         switch (item.getItemId()) {
             case R.string.recording_options_play:
-                Context context = getApplicationContext();
                 Intent playIntent = new Intent(Intent.ACTION_VIEW);
-                File privateRootDir = context.getFilesDir();
+                File privateRootDir = getFilesDir();
                 File recordingFile = new File(privateRootDir, r.getName());
                 playIntent.setDataAndType(Uri.fromFile(recordingFile), Constants.MIME_AUDIO_WAV);
-                context.startActivity(playIntent);
+                startActivity(playIntent);
                 break;
             case R.string.recording_options_delete:
                 DialogInterface.OnClickListener deleteListener = new DialogInterface.OnClickListener() {
@@ -190,7 +192,7 @@ public class LibraryActivity extends Activity implements OnItemClickListener {
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
-                                getApplicationContext().deleteFile(r.getName());
+                                deleteFile(r.getName());
                                 mLibraryAdapter.remove(r);
                                 mLibraryAdapter.notifyDataSetChanged();
                                 dialog.dismiss();
@@ -307,7 +309,7 @@ public class LibraryActivity extends Activity implements OnItemClickListener {
 
         @Override
         protected Void doInBackground(Void... params) {
-            String[] wavFiles = getApplicationContext().fileList();
+            String[] wavFiles = mContext.fileList();
 
             Log.i(TAG, "doInBackground: Found files: " + Arrays.toString(wavFiles));
 
