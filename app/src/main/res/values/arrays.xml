@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
+    <!-- Recording options items. -->
+    <string-array name="recording_options_array">
+        <item>@string/recording_options_play</item>
+        <item>@string/recording_options_delete</item>
+        <item>@string/recording_options_rename</item>
+        <item>@string/recording_options_set_ringtone</item>
+        <item>@string/recording_options_set_notification</item>
+        <item>@string/recording_options_share</item>
+    </string-array>
+
     <!-- Recording sample rates. -->
     <string-array name="prefs_sample_rate_entries">
         <item>44100 Hz (default)</item>

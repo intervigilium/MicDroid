@@ -2,37 +2,36 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/recording_library_layout"
+    android:id="@+id/library_layout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:gravity="center"
     android:orientation="vertical">
 
     <com.google.android.gms.ads.AdView
-        android:id="@+id/recording_ad"
+        android:id="@+id/library_ad"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         ads:adSize="BANNER"
         ads:adUnitId="@string/home_banner_ad_unit_id" />
 
     <TextView
-        android:id="@+id/recording_library_title"
+        android:id="@+id/library_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:focusable="false"
-        android:text="@string/recording_library_title" />
+        android:text="@string/library_title" />
 
     <ListView
-        android:id="@+id/recording_library_list"
+        android:id="@id/android:list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:choiceMode="singleChoice" />
 
     <TextView
-        android:id="@+id/android:empty"
+        android:id="@id/android:empty"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:focusable="false"
-        android:text="@string/recording_library_empty" />
-
+        android:text="@string/library_empty" />
 </LinearLayout>

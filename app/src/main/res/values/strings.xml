@@ -66,8 +66,8 @@
     <string name="saving_recording_progress_msg">Saving recording...</string>
 
     <string name="recording_library">Recordings</string>
-    <string name="recording_library_title">Recorded Clips</string>
-    <string name="recording_library_empty">No Recordings</string>
+    <string name="library_title">Recorded Clips</string>
+    <string name="library_empty">No Recordings</string>
 
     <string name="recording_options_title">Recording Options</string>
     <string name="recording_options_play">Play Recording</string>
