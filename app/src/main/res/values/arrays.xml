@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
+    <!-- Navigation drawer items. -->
+    <string-array name="drawer_items_array">
+        <item>@string/drawer_item_record</item>
+        <item>@string/drawer_item_library</item>
+        <item>@string/drawer_item_settings</item>
+        <item>@string/drawer_item_help</item>
+        <item>@string/drawer_item_about</item>
+        <item>@string/drawer_item_donate</item>
+    </string-array>
+
     <!-- Recording options items. -->
     <string-array name="recording_options_array">
         <item>@string/recording_options_play</item>

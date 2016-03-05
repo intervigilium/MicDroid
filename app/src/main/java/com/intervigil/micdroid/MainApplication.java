@@ -25,7 +25,7 @@ import com.intervigil.micdroid.helper.ApplicationHelper;
 
 import java.io.File;
 
-public class MicApplication extends Application {
+public class MainApplication extends Application {
 
     @Override
     public void onCreate() {

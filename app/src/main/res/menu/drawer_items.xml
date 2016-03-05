@@ -1,0 +1,28 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_record_fragment"
+            android:icon="@drawable/android_settings"
+            android:title="@string/drawer_item_record" />
+        <item
+            android:id="@+id/nav_library_fragment"
+            android:icon="@drawable/android_settings"
+            android:title="@string/drawer_item_library" />
+        <item
+            android:id="@+id/nav_settings_fragment"
+            android:icon="@drawable/android_settings"
+            android:title="@string/drawer_item_settings" />
+        <item
+            android:id="@+id/nav_help_item"
+            android:icon="@drawable/android_help"
+            android:title="@string/drawer_item_help" />
+        <item
+            android:id="@+id/nav_about_item"
+            android:icon="@drawable/android_about"
+            android:title="@string/drawer_item_about" />
+        <item
+            android:id="@+id/nav_donate_item"
+            android:icon="@drawable/android_donate"
+            android:title="@string/drawer_item_donate" />
+    </group>
+</menu>

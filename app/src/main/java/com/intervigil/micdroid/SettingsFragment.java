@@ -19,7 +19,6 @@
 
 package com.intervigil.micdroid;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
@@ -27,32 +26,23 @@ import android.preference.PreferenceFragment;
 
 import net.sourceforge.autotalent.Autotalent;
 
-public class SettingsActivity extends Activity {
-
-    public static class SettingsFragment extends PreferenceFragment {
-        @Override
-        public void onCreate(Bundle icicle) {
-            super.onCreate(icicle);
-
-            // Load the preferences from an XML resource.
-            addPreferencesFromResource(R.xml.preferences);
-
-            PreferenceCategory recordingPrefs =
-                    (PreferenceCategory) findPreference(getString(R.string.prefs_cat_recording_key));
-            Preference liveCorrection = findPreference(getString(R.string.prefs_live_mode_key));
-            if (liveCorrection != null && !Autotalent.getLiveCorrectionEnabled()) {
-                liveCorrection.setEnabled(Autotalent.getLiveCorrectionEnabled());
-                recordingPrefs.removePreference(liveCorrection);
-            }
-        }
+public class SettingsFragment extends PreferenceFragment {
+    public SettingsFragment() {
     }
 
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
-        getFragmentManager().beginTransaction()
-                .replace(android.R.id.content, new SettingsFragment())
-                .commit();
+        // Load the preferences from an XML resource.
+        addPreferencesFromResource(R.xml.preferences);
+
+        PreferenceCategory recordingPrefs =
+                (PreferenceCategory) findPreference(getString(R.string.prefs_cat_recording_key));
+        Preference liveCorrection = findPreference(getString(R.string.prefs_live_mode_key));
+        if (liveCorrection != null && !Autotalent.getLiveCorrectionEnabled()) {
+            liveCorrection.setEnabled(Autotalent.getLiveCorrectionEnabled());
+            recordingPrefs.removePreference(liveCorrection);
+        }
     }
 }

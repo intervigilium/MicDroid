@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/recording_layout"
     android:layout_width="fill_parent"
@@ -12,7 +11,7 @@
         android:id="@+id/recording_panel"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="90dp"
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
         android:layout_marginTop="20dp"
@@ -31,7 +30,7 @@
             android:id="@+id/recording_timer_container"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="60dp"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -47,7 +46,7 @@
                 android:textStyle="bold" />
 
         </RelativeLayout>
-        <!-- would be nice if mic_toggle -> recording_button -->
+
         <RelativeLayout
             android:id="@+id/recording_button_container"
             android:layout_width="fill_parent"
@@ -66,28 +65,5 @@
                 android:textOn="" />
 
         </RelativeLayout>
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/navigation_area"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <Button
-            android:id="@+id/library_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/base_button"
-            android:gravity="center"
-            android:shadowColor="#000"
-            android:shadowDy="-1"
-            android:shadowRadius="1"
-            android:text="My Recordings"
-            android:textColor="#fff"
-            android:textSize="15sp" />
-
     </RelativeLayout>
 </RelativeLayout>

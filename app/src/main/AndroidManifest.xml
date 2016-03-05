@@ -18,17 +18,18 @@
     <uses-feature android:name="android.hardware.microphone" />
 
     <application
-        android:name="com.intervigil.micdroid.MicApplication"
+        android:name=".MainApplication"
         android:allowBackup="true"
         android:icon="@drawable/micdroid_icon"
-        android:label="@string/app_name">
+        android:label="@string/app_name"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".MicActivity"
+            android:name=".MainActivity"
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
@@ -39,17 +40,9 @@
         </activity>
 
         <activity
-            android:name=".SettingsActivity"
-            android:label="@string/set_preferences" />
-
-        <activity
             android:name=".FileNameEntry"
             android:label="@string/filename_entry"
             android:theme="@android:style/Theme.Dialog" />
-
-        <activity
-            android:name=".LibraryActivity"
-            android:label="@string/recording_library" />
 
         <activity
             android:name="com.google.android.gms.ads.AdActivity"
