@@ -125,6 +125,7 @@
 	<string name="prefs_sample_rate_summary">Recording sample rate is device dependent, if you
 		have trouble recording try changing this.</string>
     <string name="prefs_sample_rate_title">Change Recording Sample Rate</string>
+    <string name="prefs_sample_rate_default">44100</string>
 
     <string name="prefs_buffer_size_key">buffer_size</string>
     <string name="prefs_buffer_size">Change Buffer Size (bytes)</string>

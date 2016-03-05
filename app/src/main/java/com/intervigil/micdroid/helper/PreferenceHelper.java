@@ -33,21 +33,24 @@ public class PreferenceHelper {
         SharedPreferences prefReader =
                 PreferenceManager.getDefaultSharedPreferences(context);
         return prefReader.getBoolean(
-                context.getString(R.string.prefs_enable_ads_key), context.getResources().getBoolean(R.bool.prefs_enable_ads_default));
+                context.getString(R.string.prefs_enable_ads_key),
+                context.getResources().getBoolean(R.bool.prefs_enable_ads_default));
     }
 
     public static boolean getScreenLock(Context context) {
         SharedPreferences prefReader =
                 PreferenceManager.getDefaultSharedPreferences(context);
         return prefReader.getBoolean(
-                context.getString(R.string.prefs_prevent_screen_lock_key), context.getResources().getBoolean(R.bool.prefs_prevent_screen_lock_default));
+                context.getString(R.string.prefs_prevent_screen_lock_key),
+                context.getResources().getBoolean(R.bool.prefs_prevent_screen_lock_default));
     }
 
     public static boolean getLiveMode(Context context) {
         SharedPreferences prefReader =
                 PreferenceManager.getDefaultSharedPreferences(context);
         return prefReader.getBoolean(
-                context.getString(R.string.prefs_live_mode_key), context.getResources().getBoolean(R.bool.prefs_live_mode_default));
+                context.getString(R.string.prefs_live_mode_key),
+                context.getResources().getBoolean(R.bool.prefs_live_mode_default));
     }
 
     public static char getKey(Context context) {
@@ -99,7 +102,8 @@ public class PreferenceHelper {
         SharedPreferences prefReader =
                 PreferenceManager.getDefaultSharedPreferences(context);
         return prefReader.getBoolean(
-                context.getString(R.string.prefs_formant_corr_key), context.getResources().getBoolean(R.bool.prefs_formant_corr_default));
+                context.getString(R.string.prefs_formant_corr_key),
+                context.getResources().getBoolean(R.bool.prefs_formant_corr_default));
     }
 
     public static float getFormantWarp(Context context) {
@@ -123,8 +127,8 @@ public class PreferenceHelper {
     public static int getSampleRate(Context context) {
         SharedPreferences prefReader =
                 PreferenceManager.getDefaultSharedPreferences(context);
-        String sampleRate = prefReader.getString(
-                context.getString(R.string.prefs_sample_rate_key), "-1");
+        String sampleRate = prefReader.getString(context.getString(R.string.prefs_sample_rate_key),
+                "-1");
         return Integer.parseInt(sampleRate);
     }
 
@@ -139,19 +143,14 @@ public class PreferenceHelper {
     public static int getBufferSize(Context context) {
         SharedPreferences prefReader = PreferenceManager
                 .getDefaultSharedPreferences(context);
-        String bufferSize = prefReader.getString(
-                context.getString(R.string.prefs_buffer_size_key),
-                "-1");
-        return Integer.parseInt(bufferSize);
+        return prefReader.getInt(context.getString(R.string.prefs_buffer_size_key), -1);
     }
 
     public static void setBufferSize(Context context,
                                      int bufferSize) {
         Editor prefEditor =
                 PreferenceManager.getDefaultSharedPreferences(context).edit();
-        prefEditor.putString(
-                context.getString(R.string.prefs_buffer_size_key),
-                String.format("%d", bufferSize));
+        prefEditor.putInt(context.getString(R.string.prefs_buffer_size_key), bufferSize);
         prefEditor.commit();
     }
 

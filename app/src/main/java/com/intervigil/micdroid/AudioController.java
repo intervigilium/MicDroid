@@ -124,11 +124,14 @@ public class AudioController {
     }
 
     private void loadPreferences(SharedPreferences sharedPrefs) {
-        mInputBufferSize = sharedPrefs.getInt(mContext.getResources().getString(R.string.prefs_buffer_size_key),
+        mInputBufferSize = sharedPrefs.getInt(
+                mContext.getResources().getString(R.string.prefs_buffer_size_key),
                 mContext.getResources().getInteger(R.integer.prefs_buffer_size_default));
-        mInputSampleRate = sharedPrefs.getInt(mContext.getResources().getString(R.string.prefs_sample_rate_key),
-                mContext.getResources().getInteger(R.integer.prefs_sample_rate_default));
-        mIsLive = sharedPrefs.getBoolean(mContext.getResources().getString(R.string.prefs_live_mode_key),
+        mInputSampleRate = Integer.parseInt(sharedPrefs.getString(
+                mContext.getResources().getString(R.string.prefs_sample_rate_key),
+                mContext.getResources().getString(R.string.prefs_sample_rate_default)));
+        mIsLive = sharedPrefs.getBoolean(
+                mContext.getResources().getString(R.string.prefs_live_mode_key),
                 mContext.getResources().getBoolean(R.bool.prefs_live_mode_default));
     }
 

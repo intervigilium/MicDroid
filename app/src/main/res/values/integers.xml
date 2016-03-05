@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="prefs_sample_rate_default">44100</integer>
     <integer name="prefs_buffer_size_default">0</integer>
 </resources>
