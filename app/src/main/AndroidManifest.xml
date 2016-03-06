@@ -42,7 +42,7 @@
         <activity
             android:name=".FileNameEntry"
             android:label="@string/filename_entry"
-            android:theme="@android:style/Theme.Dialog" />
+            android:theme="@style/Theme.AppCompat.Dialog" />
 
         <activity
             android:name="com.google.android.gms.ads.AdActivity"
