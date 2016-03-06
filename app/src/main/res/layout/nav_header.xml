@@ -6,7 +6,7 @@
     android:gravity="bottom"
     android:orientation="vertical"
     android:padding="16dp"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark">
+    android:theme="@style/HeaderTheme">
 
     <TextView
         android:layout_width="match_parent"
