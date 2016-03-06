@@ -2,27 +2,27 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_record_fragment"
-            android:icon="@drawable/android_settings"
+            android:icon="@drawable/ic_mic_black_48dp"
             android:title="@string/drawer_item_record" />
         <item
             android:id="@+id/nav_library_fragment"
-            android:icon="@drawable/android_settings"
+            android:icon="@drawable/ic_library_music_black_48dp"
             android:title="@string/drawer_item_library" />
         <item
             android:id="@+id/nav_settings_fragment"
-            android:icon="@drawable/android_settings"
+            android:icon="@drawable/ic_settings_applications_black_48dp"
             android:title="@string/drawer_item_settings" />
         <item
             android:id="@+id/nav_help_item"
-            android:icon="@drawable/android_help"
+            android:icon="@drawable/ic_help_black_48dp"
             android:title="@string/drawer_item_help" />
         <item
             android:id="@+id/nav_about_item"
-            android:icon="@drawable/android_about"
+            android:icon="@drawable/ic_info_black_48dp"
             android:title="@string/drawer_item_about" />
         <item
             android:id="@+id/nav_donate_item"
-            android:icon="@drawable/android_donate"
+            android:icon="@drawable/ic_favorite_black_48dp"
             android:title="@string/drawer_item_donate" />
     </group>
 </menu>
