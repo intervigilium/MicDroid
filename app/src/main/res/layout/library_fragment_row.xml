@@ -1,49 +1,53 @@
-<?xml version="1.0" encoding="utf-8"?>    <!--
-		Layout from Romain Guy's Android Layout Tricks here:
-		http://www.curious-creature.org/2009/02/22/android-layout-tricks-1/
-	-->
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    card_view:cardCornerRadius="4dp"
+    card_view:cardUseCompatPadding="true">
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="?android:attr/listPreferredItemHeight"
-
-    android:padding="6dip">
-
-    <ImageView
-        android:id="@+id/recording_row_icon"
-
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="6dip"
-        android:src="@drawable/android_music" />
-
-    <TextView
-        android:id="@+id/recording_row_second_line"
-
-        android:layout_width="fill_parent"
-        android:layout_height="26dip"
-
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_toRightOf="@id/recording_row_icon"
-        android:singleLine="true"
-        android:text="@string/recording_library_row_label_2" />
-
-    <TextView
-        android:id="@+id/recording_row_first_line"
-
-        android:layout_width="fill_parent"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="72dp">
 
-        android:layout_above="@id/recording_row_second_line"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignWithParentIfMissing="true"
-        android:layout_toRightOf="@id/recording_row_icon"
+        <ImageView
+            android:id="@+id/recording_row_icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/ic_queue_music_black_48dp" />
 
-        android:text="@string/recording_library_row_label_1" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_toRightOf="@id/recording_row_icon"
+            android:orientation="vertical"
+            android:paddingBottom="16dp"
+            android:paddingTop="16dp">
 
-</RelativeLayout>
+            <TextView
+                android:id="@+id/recording_row_first_line"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="@string/recording_library_row_label_1"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+
+            <TextView
+                android:id="@+id/recording_row_second_line"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="@string/recording_library_row_label_2"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+        </LinearLayout>
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

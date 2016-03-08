@@ -6,7 +6,8 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:theme="@style/AppTheme">
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/library_ad"
@@ -20,18 +21,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:focusable="false"
-        android:text="@string/library_title" />
+        android:text="@string/library_title"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
     <ListView
         android:id="@id/android:list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:choiceMode="singleChoice" />
+        android:choiceMode="singleChoice"
+        android:divider="@null"
+        android:dividerHeight="0dp" />
 
     <TextView
         android:id="@id/android:empty"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:focusable="false"
-        android:text="@string/library_empty" />
+        android:gravity="center"
+        android:text="@string/library_empty"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 </LinearLayout>
