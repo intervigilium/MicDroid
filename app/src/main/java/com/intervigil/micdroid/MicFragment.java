@@ -96,6 +96,11 @@ public class MicFragment extends Fragment {
     @Override
     public void onDestroy() {
         Autotalent.destroyAutotalent();
+
+        SharedPreferences sharedPrefs =
+                PreferenceManager.getDefaultSharedPreferences(getActivity());
+        sharedPrefs.unregisterOnSharedPreferenceChangeListener(mScreenLockListener);
+
         super.onDestroy();
     }
 

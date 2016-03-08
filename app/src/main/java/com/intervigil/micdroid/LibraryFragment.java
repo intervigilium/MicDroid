@@ -176,8 +176,8 @@ public class LibraryFragment extends ListFragment {
 
         getLoaderManager().initLoader(0, null, mLoaderCallbacks);
 
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(
-                getActivity());
+        SharedPreferences sharedPrefs =
+                PreferenceManager.getDefaultSharedPreferences(getActivity());
         loadPreferences();
         sharedPrefs.registerOnSharedPreferenceChangeListener(mAdPrefListener);
     }
@@ -188,6 +188,15 @@ public class LibraryFragment extends ListFragment {
 
         AdView ad = (AdView) view.findViewById(R.id.library_ad);
         AdHelper.GenerateAd(ad, mShowAds);
+    }
+
+    @Override
+    public void onDestroy() {
+        SharedPreferences sharedPrefs =
+                PreferenceManager.getDefaultSharedPreferences(getActivity());
+        sharedPrefs.unregisterOnSharedPreferenceChangeListener(mAdPrefListener);
+
+        super.onDestroy();
     }
 
     @Override
