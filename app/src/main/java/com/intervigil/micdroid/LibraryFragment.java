@@ -157,6 +157,7 @@ public class LibraryFragment extends ListFragment {
     }
 
     private RecordingAdapter mAdapter;
+    private AdView mAdView;
     private boolean mShowAds;
 
     public LibraryFragment() {
@@ -165,6 +166,13 @@ public class LibraryFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle icicle) {
         return inflater.inflate(R.layout.library_fragment, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle icicle) {
+        super.onViewCreated(view, icicle);
+
+        mAdView = (AdView) view.findViewById(R.id.library_ad);
     }
 
     @Override
@@ -180,14 +188,8 @@ public class LibraryFragment extends ListFragment {
                 PreferenceManager.getDefaultSharedPreferences(getActivity());
         loadPreferences();
         sharedPrefs.registerOnSharedPreferenceChangeListener(mAdPrefListener);
-    }
 
-    @Override
-    public void onViewCreated(View view, Bundle icicle) {
-        super.onViewCreated(view, icicle);
-
-        AdView ad = (AdView) view.findViewById(R.id.library_ad);
-        AdHelper.GenerateAd(ad, mShowAds);
+        AdHelper.GenerateAd(mAdView, mShowAds);
     }
 
     @Override
@@ -240,7 +242,7 @@ public class LibraryFragment extends ListFragment {
                     if (getString(R.string.prefs_enable_ads_key).equals(key)) {
                         mShowAds = sharedPreferences.getBoolean(getString(R.string.prefs_enable_ads_key),
                                 getResources().getBoolean(R.bool.prefs_enable_ads_default));
-                        // TODO: post message to UI thread to update ad view
+                        AdHelper.GenerateAd(mAdView, mShowAds);
                     }
                 }
             };
