@@ -21,11 +21,6 @@
     <string name="recording_library_row_label_1">Recording Name</string>
     <string name="recording_library_row_label_2">Recording Length</string>
 
-    <string name="no_external_storage_title">WARNING!</string>
-	<string name="no_external_storage_warning">This app requires a mounted SD card to function
-		properly! Make sure there is an SD card properly inserted and mounted
-		before recording!</string>
-
     <string name="unable_to_configure_audio_title">ERROR!</string>
 	<string name="unable_to_configure_audio_warning">Unable to configure audio! Please check your sample
 		rate settings and make sure your device is able to record at that
@@ -54,10 +49,11 @@
     <string name="recording_save_success">Recording saved successfully!</string>
     <string name="recording_save_canceled">Recording save canceled!</string>
 
-    <string name="filename_entry">Save Recording</string>
-    <string name="filename_entry_text">The current recording will have the name: </string>
-    <string name="filename_entry_btn_ok">Save</string>
-    <string name="filename_entry_btn_cancel">Cancel</string>
+    <string name="name_entry_title">Save Recording</string>
+    <string name="name_entry_description">Save recording as: </string>
+    <string name="name_entry_default">%s</string>
+    <string name="name_entry_btn_ok">Save</string>
+    <string name="name_entry_btn_cancel">Cancel</string>
 
     <string name="invalid_name_alert_title">Invalid Filename!</string>
     <string name="invalid_name_alert_message">Invalid filename detected, please enter a new one</string>

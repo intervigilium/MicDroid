@@ -18,7 +18,7 @@
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.intervigil.micdroid.recorder;
+package com.intervigil.micdroid;
 
 import android.content.Context;
 import android.media.AudioManager;
@@ -36,18 +36,22 @@ import com.intervigil.micdroid.R;
 import com.intervigil.micdroid.helper.AudioHelper;
 import com.intervigil.micdroid.helper.DialogHelper;
 import com.intervigil.micdroid.helper.PreferenceHelper;
-import com.intervigil.micdroid.interfaces.DependentTask;
-import com.intervigil.micdroid.interfaces.Recorder;
 import com.intervigil.wave.WaveWriter;
 
 import net.sourceforge.autotalent.Autotalent;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-public class SipdroidRecorder implements Recorder {
+public class SipdroidRecorder {
 
     private static final String TAG = "SipdroidRecorder";
+
+    public interface RecorderStoppedListener {
+        void onRecorderStopped();
+    }
 
     private static final int RECORDER_MESSAGE_IO_ERROR = 8675308;
     private static final int RECORDER_MESSAGE_RECORD_ERROR = 8675310;
@@ -55,16 +59,18 @@ public class SipdroidRecorder implements Recorder {
 
     private final Context mContext;
     private RecordThread mWriterThread;
-    private final int mSampleRate;
-    private DependentTask mPostRecordTask;
     private AudioController mAudioControl;
+    private List<RecorderStoppedListener> mListeners;
 
-    public SipdroidRecorder(Context context, DependentTask postRecordTask,
+    public SipdroidRecorder(Context context,
                             AudioController audioControl) {
         mContext = context;
-        mSampleRate = PreferenceHelper.getSampleRate(mContext);
-        mPostRecordTask = postRecordTask;
         mAudioControl = audioControl;
+        mListeners = new ArrayList<>();
+    }
+
+    public void registerRecorderStoppedListener(RecorderStoppedListener listener) {
+        mListeners.add(listener);
     }
 
     public void start() {
@@ -78,7 +84,6 @@ public class SipdroidRecorder implements Recorder {
             DialogHelper.showWarning(mContext,
                     R.string.audio_record_exception_title,
                     R.string.audio_record_exception_warning);
-            mPostRecordTask.handleError();
         }
     }
 
@@ -92,10 +97,6 @@ public class SipdroidRecorder implements Recorder {
             }
             mWriterThread = null;
         }
-    }
-
-    public void cleanup() {
-        stop();
     }
 
     public boolean isRunning() {
@@ -112,16 +113,16 @@ public class SipdroidRecorder implements Recorder {
                     DialogHelper.showWarning(mContext,
                             R.string.audio_record_exception_title,
                             R.string.audio_record_exception_warning);
-                    mPostRecordTask.handleError();
                     break;
                 case RECORDER_MESSAGE_IO_ERROR:
                     DialogHelper.showWarning(mContext,
                             R.string.recording_io_error_title,
                             R.string.recording_io_error_warning);
-                    mPostRecordTask.handleError();
                     break;
                 case RECORDER_MESSAGE_FINISHED:
-                    mPostRecordTask.doTask();
+                    for (RecorderStoppedListener l : mListeners) {
+                        l.onRecorderStopped();
+                    }
                     break;
             }
         }
@@ -139,15 +140,15 @@ public class SipdroidRecorder implements Recorder {
 
         public RecordThread() {
             mFrameSize = 160;
-            mFramePeriod = 1000 / (mSampleRate / mFrameSize);
-            mFrameRate = (int) (mSampleRate / mFrameSize * 1.5);
+            mFramePeriod = 1000 / (mAudioControl.getSampleRate() / mFrameSize);
+            mFrameRate = (int) (mAudioControl.getSampleRate() / mFrameSize * 1.5);
             mBufSize = mFrameSize * (mFrameRate + 1);
             mRunning = false;
             mAudioRecord = mAudioControl.getRecorder();
             try {
                 FileOutputStream out = mContext.openFileOutput(
                         mContext.getString(R.string.default_recording_name), Context.MODE_PRIVATE);
-                mWavWriter = new WaveWriter(out, mSampleRate,
+                mWavWriter = new WaveWriter(out, mAudioRecord.getSampleRate(),
                         AudioHelper.getChannelConfig(Constants.DEFAULT_CHANNEL_CONFIG),
                         AudioHelper.getPcmEncoding(Constants.DEFAULT_PCM_FORMAT));
                 if (mAudioControl.isLive()) {

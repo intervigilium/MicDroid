@@ -47,6 +47,10 @@ public class AudioController {
         sharedPrefs.registerOnSharedPreferenceChangeListener(mPrefListener);
     }
 
+    public int getSampleRate() {
+        return mInputSampleRate;
+    }
+
     public boolean isLive() {
         return mIsLive;
     }

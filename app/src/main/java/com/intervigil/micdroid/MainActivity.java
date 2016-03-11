@@ -20,34 +20,61 @@
 
 package com.intervigil.micdroid;
 
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.intervigil.micdroid.helper.DialogHelper;
+import com.intervigil.micdroid.helper.HeadsetHelper;
+import com.intervigil.micdroid.helper.PreferenceHelper;
 import com.intervigil.micdroid.helper.RecordingOptionsHelper;
+import com.intervigil.micdroid.helper.UpdateHelper;
 import com.intervigil.micdroid.model.Recording;
+
+import net.sourceforge.autotalent.Autotalent;
 
 import java.io.File;
 
 public class MainActivity extends AppCompatActivity
-        implements RecordingOptionsDialogFragment.RecordingOptionsDialogListener {
+        implements RecordingOptionsDialogFragment.RecordingOptionsDialogListener,
+        NameEntryDialogFragment.NameEntryDialogListener,
+        MicFragment.MicListener,
+        SipdroidRecorder.RecorderStoppedListener {
 
     private static final String TAG = "MainActivity";
 
+    private static final float CONCERT_A = 440.0f;
+
+    private static final int DEFAULT_SCALE_ROTATE = 0;
+    private static final float DEFAULT_FIXED_PITCH = 0.0f;
+    private static final float DEFAULT_LFO_DEPTH = 0.0f;
+    private static final float DEFAULT_LFO_RATE = 5.0f;
+    private static final float DEFAULT_LFO_SHAPE = 0.0f;
+    private static final float DEFAULT_LFO_SYM = 0.0f;
+    private static final int DEFAULT_LFO_QUANT = 0;
+
     private Context mContext;
+
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
+
+    private SipdroidRecorder mRecorder;
+    private AudioController mAudioControl;
+    private boolean mIsLive;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,6 +82,8 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.main);
 
         mContext = this;
+
+        mAudioControl = new AudioController(mContext);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.main_drawer_layout);
 
@@ -72,6 +101,24 @@ public class MainActivity extends AppCompatActivity
         getFragmentManager().beginTransaction()
                 .replace(R.id.main_content_frame, new MicFragment())
                 .commit();
+
+        SharedPreferences sharedPrefs =
+                PreferenceManager.getDefaultSharedPreferences(mContext);
+        sharedPrefs.registerOnSharedPreferenceChangeListener(mPreferenceListener);
+
+        loadPreferences();
+
+        if (UpdateHelper.isAppUpdated(mContext)) {
+            UpdateHelper.onAppUpdate(mContext);
+        } else {
+            mAudioControl.configureRecorder();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        Autotalent.destroyAutotalent();
+        super.onStop();
     }
 
     @Override
@@ -92,6 +139,66 @@ public class MainActivity extends AppCompatActivity
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    /* From MicListener */
+    @Override
+    public boolean onMicStart() {
+        if (!mAudioControl.isValidRecorder()) {
+            DialogHelper.showWarning(mContext,
+                    R.string.unconfigured_audio_title,
+                    R.string.unconfigured_audio_warning);
+            return false;
+        }
+        if (mIsLive) {
+            if (!HeadsetHelper.isHeadsetPluggedIn(mContext)) {
+                DialogHelper.showWarning(mContext,
+                        R.string.no_headset_plugged_in_title,
+                        R.string.no_headset_plugged_in_warning);
+                return false;
+            }
+            updateAutotalentSettings();
+        }
+
+        if (mRecorder == null) {
+            mRecorder = new SipdroidRecorder(mContext, mAudioControl);
+            mRecorder.registerRecorderStoppedListener(this);
+        }
+        mRecorder.start();
+
+        return true;
+    }
+
+    @Override
+    public void onMicStop() {
+        // mRecorder will trigger onRecorderStopped when it is finished
+        mRecorder.stop();
+
+        Toast.makeText(mContext,
+                R.string.recording_finished_toast,
+                Toast.LENGTH_SHORT).show();
+    }
+
+    /* From SipdroidRecorder */
+    @Override
+    public void onRecorderStopped() {
+        DialogFragment nameEntryFragment = new NameEntryDialogFragment();
+        nameEntryFragment.show(getFragmentManager(), "nameEntry");
+    }
+
+    /* From NameEntryDialogListener */
+    @Override
+    public void onSave(String name) {
+        String fullName = name.trim() + ".wav";
+        updateAutotalentSettings();
+        // TODO: disallow interaction while async task is proceeding
+        new AutotalentAsyncTask(mContext, mIsLive).execute(fullName);
+    }
+
+    @Override
+    public void onCancel() {
+        Toast.makeText(mContext, R.string.recording_save_canceled,
+                Toast.LENGTH_SHORT).show();
     }
 
     /* From RecordingOptionsDialogListener */
@@ -130,12 +237,15 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onRename(Recording r) {
-        Intent renameFileIntent = new Intent(getBaseContext(), FileNameEntry.class);
+        /*
+        TODO: Allow this again
+        Intent renameFileIntent = new Intent(getBaseContext(), NameEntryDialogFragment.class);
         Bundle recordingData = new Bundle();
         recordingData.putParcelable(Constants.INTENT_EXTRA_RECORDING, r);
         renameFileIntent.putExtras(recordingData);
 
         startActivityForResult(renameFileIntent, Constants.INTENT_FILENAME_ENTRY);
+        */
     }
 
     @Override
@@ -169,6 +279,68 @@ public class MainActivity extends AppCompatActivity
     public void onShare(Recording r) {
         RecordingOptionsHelper.shareRecording(mContext, r);
     }
+
+    private void updateAutotalentSettings() {
+        // TODO: Refactor to use loadPreferences/SharedPreferenceListener
+        char key = PreferenceHelper.getKey(mContext);
+        float fixedPull = PreferenceHelper.getPullToFixedPitch(mContext);
+        float pitchShift = PreferenceHelper.getPitchShift(mContext);
+        float strength = PreferenceHelper.getCorrectionStrength(mContext);
+        float smooth = PreferenceHelper.getCorrectionSmoothness(mContext);
+        int formantCorrection = PreferenceHelper.getFormantCorrection(mContext) ? 1 : 0;
+        float formantWarp = PreferenceHelper.getFormantWarp(mContext);
+        float mix = PreferenceHelper.getMix(mContext);
+
+        Autotalent.instantiateAutotalent(PreferenceHelper.getSampleRate(mContext));
+        Autotalent.setKey(key);
+        Autotalent.setConcertA(CONCERT_A);
+        Autotalent.setFixedPitch(DEFAULT_FIXED_PITCH);
+        Autotalent.setFixedPull(fixedPull);
+        Autotalent.setCorrectionStrength(strength);
+        Autotalent.setCorrectionSmoothness(smooth);
+        Autotalent.setPitchShift(pitchShift);
+        Autotalent.setScaleRotate(DEFAULT_SCALE_ROTATE);
+        Autotalent.setLfoDepth(DEFAULT_LFO_DEPTH);
+        Autotalent.setLfoRate(DEFAULT_LFO_RATE);
+        Autotalent.setLfoShape(DEFAULT_LFO_SHAPE);
+        Autotalent.setLfoSymmetric(DEFAULT_LFO_SYM);
+        Autotalent.setLfoQuantization(DEFAULT_LFO_QUANT);
+        Autotalent.setFormantCorrection(formantCorrection);
+        Autotalent.setFormantWarp(formantWarp);
+        Autotalent.setMix(mix);
+    }
+
+    private void onLiveModeUpdate(boolean isLive) {
+        mIsLive = isLive;
+    }
+
+    private void onScreenLockUpdate(boolean isLocked) {
+        if (isLocked) {
+            getWindow().addFlags(
+                    WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        } else {
+            getWindow().clearFlags(
+                    WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
+    }
+
+    private void loadPreferences() {
+        onLiveModeUpdate(PreferenceHelper.getLiveMode(mContext));
+        onScreenLockUpdate(PreferenceHelper.getScreenLock(mContext));
+    }
+
+    private SharedPreferences.OnSharedPreferenceChangeListener mPreferenceListener =
+            new SharedPreferences.OnSharedPreferenceChangeListener() {
+                @Override
+                public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+                                                      String key) {
+                    if (getString(R.string.prefs_live_mode_key).equals(key)) {
+                        onLiveModeUpdate(PreferenceHelper.getLiveMode(mContext));
+                    } else if (getString(R.string.prefs_prevent_screen_lock_key).equals(key)) {
+                        onScreenLockUpdate(PreferenceHelper.getScreenLock(mContext));
+                    }
+                }
+            };
 
     private NavigationView.OnNavigationItemSelectedListener mDrawerClickListener =
             new NavigationView.OnNavigationItemSelectedListener() {

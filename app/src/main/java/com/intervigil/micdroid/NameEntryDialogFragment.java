@@ -1,0 +1,92 @@
+/* FileNameEntry.java
+
+   Copyright (c) 2010 Ethan Chen
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License along
+   with this program; if not, write to the Free Software Foundation, Inc.,
+   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
+package com.intervigil.micdroid;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.widget.EditText;
+
+import com.intervigil.micdroid.model.Recording;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class NameEntryDialogFragment extends DialogFragment {
+
+    private static final String TAG = "NameEntryDialog";
+
+    public interface NameEntryDialogListener {
+        void onSave(String name);
+
+        void onCancel();
+    }
+
+    private NameEntryDialogListener mListener;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (NameEntryDialogListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement NameEntryDialogListener");
+        }
+    }
+
+    @Override
+    public Dialog onCreateDialog(Bundle icicle) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+
+        builder.setView(inflater.inflate(R.layout.name_entry_fragment, null))
+                .setPositiveButton(R.string.name_entry_btn_ok, mBtnListener)
+                .setNegativeButton(R.string.name_entry_btn_cancel, mBtnListener)
+                .setTitle(R.string.name_entry_title);
+        return builder.create();
+    }
+
+    @Override
+    public void onCreate(Bundle icicle) {
+        super.onCreate(icicle);
+    }
+
+    private DialogInterface.OnClickListener mBtnListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    EditText nameEditText = (EditText) getDialog().findViewById(R.id.name_entry_input);
+                    mListener.onSave(nameEditText.getText().toString());
+                    break;
+                case DialogInterface.BUTTON_NEGATIVE:
+                    getDialog().cancel();
+                    mListener.onCancel();
+                    break;
+            }
+        }
+    };
+}
