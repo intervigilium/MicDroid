@@ -50,7 +50,7 @@
 
     <string name="name_entry_title">Save Recording</string>
     <string name="name_entry_description">Save recording as: </string>
-    <string name="name_entry_default">%s</string>
+    <string name="name_entry_default">My Recording</string>
     <string name="name_entry_btn_ok">Save</string>
     <string name="name_entry_btn_cancel">Cancel</string>
 
