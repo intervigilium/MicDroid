@@ -42,8 +42,7 @@
     <string name="no_headset_plugged_in_title">WARNING!</string>
     <string name="no_headset_plugged_in_warning">Live correction mode requires headphones!</string>
 
-	<string name="recording_started_toast">Recording started! Press power button to stop
-		recording!</string>
+	<string name="recording_started_toast">Recording started! Press power button to stop recording!</string>
     <string name="recording_finished_toast">Recording finished!</string>
 
     <string name="recording_save_success">Recording saved successfully!</string>
