@@ -16,11 +16,8 @@ public class TimerDisplay {
     private Timer mTimer;
     private int mElapsed = 0;
 
-    public TimerDisplay() {
-    }
-
-    public void registerDisplay(TextView view) {
-        mDisplay = view;
+    public TimerDisplay(TextView timerText) {
+        mDisplay = timerText;
     }
 
     public void start() {

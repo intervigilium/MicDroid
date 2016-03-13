@@ -51,13 +51,12 @@ public class MicFragment extends Fragment {
         mRecordButton.setChecked(false);
         mRecordButton.setOnCheckedChangeListener(recordBtnListener);
 
+        TextView timerText = (TextView) getView().findViewById(R.id.recording_timer);
         Typeface timerFont = Typeface.createFromAsset(getActivity().getAssets(),
                 "fonts/Clockopia.ttf");
-        TextView timerText = (TextView) getView().findViewById(R.id.recording_timer);
         timerText.setTypeface(timerFont);
 
-        mTimerDisplay = new TimerDisplay();
-        mTimerDisplay.registerDisplay(timerText);
+        mTimerDisplay = new TimerDisplay(timerText);
     }
 
     private CompoundButton.OnCheckedChangeListener recordBtnListener =
