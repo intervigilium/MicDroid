@@ -7,6 +7,7 @@ model {
 
         ndk {
             moduleName "autotalent"
+            CFlags.add("-std=c99")
             ldLibs.add("log")
         }
 

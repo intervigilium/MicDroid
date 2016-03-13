@@ -253,7 +253,7 @@ public class SipdroidRecorder {
         }
 
         private void processLiveAudio(short[] samples, int numSamples) throws IOException {
-            Autotalent.processSamples(samples, numSamples);
+            mAudioControl.process(samples, numSamples);
         }
     }
 }

@@ -44,14 +44,6 @@ public class SettingsFragment extends PreferenceFragment {
 
     private void addPreferences() {
         addPreferencesFromResource(R.xml.preferences);
-
-        PreferenceCategory recordingPrefs =
-                (PreferenceCategory) findPreference(getString(R.string.prefs_cat_recording_key));
-        Preference liveCorrection = findPreference(getString(R.string.prefs_live_mode_key));
-        if (liveCorrection != null && !Autotalent.getLiveCorrectionEnabled()) {
-            liveCorrection.setEnabled(Autotalent.getLiveCorrectionEnabled());
-            recordingPrefs.removePreference(liveCorrection);
-        }
     }
 
     private void setResetListener() {

@@ -9,14 +9,11 @@ import com.intervigil.micdroid.helper.DialogHelper;
 import com.intervigil.wave.WaveReader;
 import com.intervigil.wave.WaveWriter;
 
-import net.sourceforge.autotalent.Autotalent;
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
 
 public class AutotalentAsyncTask extends AsyncTask<String, Void, Void> {
 
@@ -24,13 +21,13 @@ public class AutotalentAsyncTask extends AsyncTask<String, Void, Void> {
 
     private final Context mContext;
     private ProgressDialog mBusySpinner;
-    private boolean mIsLive;
+    private AudioController mAudioControl;
 
-    public AutotalentAsyncTask(Context context, boolean isLive) {
+    public AutotalentAsyncTask(Context context, AudioController audioControl) {
         mContext = context;
+        mAudioControl = audioControl;
         mBusySpinner = new ProgressDialog(mContext);
         mBusySpinner.setCancelable(false);
-        mIsLive = isLive;
     }
 
     @Override
@@ -42,7 +39,7 @@ public class AutotalentAsyncTask extends AsyncTask<String, Void, Void> {
 
     @Override
     protected void onPreExecute() {
-        if (mIsLive) {
+        if (mAudioControl.isLive()) {
             mBusySpinner.setMessage(mContext.getString(R.string.saving_recording_progress_msg));
         } else {
             mBusySpinner.setMessage(mContext.getString(R.string.autotalent_progress_msg));
@@ -55,7 +52,7 @@ public class AutotalentAsyncTask extends AsyncTask<String, Void, Void> {
         // maybe ugly but we only pass one string in anyway
         String fileName = params[0];
 
-        if (mIsLive) {
+        if (mAudioControl.isLive()) {
             try {
                 // do a file copy since renameTo doesn't work
                 moveFile(fileName);
@@ -90,7 +87,7 @@ public class AutotalentAsyncTask extends AsyncTask<String, Void, Void> {
             while (true) {
                 int samplesRead = reader.read(buf, AUTOTALENT_CHUNK_SIZE);
                 if (samplesRead > 0) {
-                    Autotalent.processSamples(buf, samplesRead);
+                    mAudioControl.process(buf, samplesRead);
                     writer.write(buf, 0, samplesRead);
                 } else {
                     break;

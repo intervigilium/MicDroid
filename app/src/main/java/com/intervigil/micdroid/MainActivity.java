@@ -40,12 +40,9 @@ import android.widget.Toast;
 
 import com.intervigil.micdroid.helper.DialogHelper;
 import com.intervigil.micdroid.helper.HeadsetHelper;
-import com.intervigil.micdroid.helper.PreferenceHelper;
 import com.intervigil.micdroid.helper.RecordingOptionsHelper;
 import com.intervigil.micdroid.helper.UpdateHelper;
 import com.intervigil.micdroid.model.Recording;
-
-import net.sourceforge.autotalent.Autotalent;
 
 import java.io.File;
 
@@ -106,8 +103,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onStop() {
-        Autotalent.destroyAutotalent();
         super.onStop();
+
+        mAudioControl.closeAutotalent();
     }
 
     @Override
@@ -146,7 +144,6 @@ public class MainActivity extends AppCompatActivity
                         R.string.no_headset_plugged_in_warning);
                 return false;
             }
-            mAudioControl.updateAutotalent();
         }
 
         if (mRecorder == null) {
@@ -179,9 +176,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onSave(String name) {
         String fullName = name.trim() + ".wav";
-        mAudioControl.updateAutotalent();
-        // TODO: disallow interaction while async task is proceeding
-        new AutotalentAsyncTask(mContext, mAudioControl.isLive()).execute(fullName);
+        new AutotalentAsyncTask(mContext, mAudioControl).execute(fullName);
     }
 
     @Override
