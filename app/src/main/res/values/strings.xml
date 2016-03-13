@@ -57,8 +57,8 @@
     <string name="invalid_name_alert_title">Invalid Filename!</string>
     <string name="invalid_name_alert_message">Invalid filename detected, please enter a new one</string>
 
-    <string name="autotalent_progress_msg">Pitch correction in progress...</string>
-    <string name="saving_recording_progress_msg">Saving recording...</string>
+    <string name="autotalent_progress_msg">Pitch correction in progress…</string>
+    <string name="saving_recording_progress_msg">Saving recording…</string>
 
     <string name="drawer_header_title">MicDroid</string>
     <string name="drawer_item_record">Record</string>
