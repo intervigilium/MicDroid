@@ -57,16 +57,6 @@ public class MainActivity extends AppCompatActivity
 
     private static final String TAG = "MainActivity";
 
-    private static final float CONCERT_A = 440.0f;
-
-    private static final int DEFAULT_SCALE_ROTATE = 0;
-    private static final float DEFAULT_FIXED_PITCH = 0.0f;
-    private static final float DEFAULT_LFO_DEPTH = 0.0f;
-    private static final float DEFAULT_LFO_RATE = 5.0f;
-    private static final float DEFAULT_LFO_SHAPE = 0.0f;
-    private static final float DEFAULT_LFO_SYM = 0.0f;
-    private static final int DEFAULT_LFO_QUANT = 0;
-
     private Context mContext;
 
     private DrawerLayout mDrawerLayout;
@@ -74,7 +64,6 @@ public class MainActivity extends AppCompatActivity
 
     private SipdroidRecorder mRecorder;
     private AudioController mAudioControl;
-    private boolean mIsLive;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -150,14 +139,14 @@ public class MainActivity extends AppCompatActivity
                     R.string.unconfigured_audio_warning);
             return false;
         }
-        if (mIsLive) {
+        if (mAudioControl.isLive()) {
             if (!HeadsetHelper.isHeadsetPluggedIn(mContext)) {
                 DialogHelper.showWarning(mContext,
                         R.string.no_headset_plugged_in_title,
                         R.string.no_headset_plugged_in_warning);
                 return false;
             }
-            updateAutotalentSettings();
+            mAudioControl.updateAutotalent();
         }
 
         if (mRecorder == null) {
@@ -190,9 +179,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onSave(String name) {
         String fullName = name.trim() + ".wav";
-        updateAutotalentSettings();
+        mAudioControl.updateAutotalent();
         // TODO: disallow interaction while async task is proceeding
-        new AutotalentAsyncTask(mContext, mIsLive).execute(fullName);
+        new AutotalentAsyncTask(mContext, mAudioControl.isLive()).execute(fullName);
     }
 
     @Override
@@ -280,40 +269,6 @@ public class MainActivity extends AppCompatActivity
         RecordingOptionsHelper.shareRecording(mContext, r);
     }
 
-    private void updateAutotalentSettings() {
-        // TODO: Refactor to use loadPreferences/SharedPreferenceListener
-        char key = PreferenceHelper.getKey(mContext);
-        float fixedPull = PreferenceHelper.getPullToFixedPitch(mContext);
-        float pitchShift = PreferenceHelper.getPitchShift(mContext);
-        float strength = PreferenceHelper.getCorrectionStrength(mContext);
-        float smooth = PreferenceHelper.getCorrectionSmoothness(mContext);
-        int formantCorrection = PreferenceHelper.getFormantCorrection(mContext) ? 1 : 0;
-        float formantWarp = PreferenceHelper.getFormantWarp(mContext);
-        float mix = PreferenceHelper.getMix(mContext);
-
-        Autotalent.instantiateAutotalent(PreferenceHelper.getSampleRate(mContext));
-        Autotalent.setKey(key);
-        Autotalent.setConcertA(CONCERT_A);
-        Autotalent.setFixedPitch(DEFAULT_FIXED_PITCH);
-        Autotalent.setFixedPull(fixedPull);
-        Autotalent.setCorrectionStrength(strength);
-        Autotalent.setCorrectionSmoothness(smooth);
-        Autotalent.setPitchShift(pitchShift);
-        Autotalent.setScaleRotate(DEFAULT_SCALE_ROTATE);
-        Autotalent.setLfoDepth(DEFAULT_LFO_DEPTH);
-        Autotalent.setLfoRate(DEFAULT_LFO_RATE);
-        Autotalent.setLfoShape(DEFAULT_LFO_SHAPE);
-        Autotalent.setLfoSymmetric(DEFAULT_LFO_SYM);
-        Autotalent.setLfoQuantization(DEFAULT_LFO_QUANT);
-        Autotalent.setFormantCorrection(formantCorrection);
-        Autotalent.setFormantWarp(formantWarp);
-        Autotalent.setMix(mix);
-    }
-
-    private void onLiveModeUpdate(boolean isLive) {
-        mIsLive = isLive;
-    }
-
     private void onScreenLockUpdate(boolean isLocked) {
         if (isLocked) {
             getWindow().addFlags(
@@ -325,19 +280,21 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void loadPreferences() {
-        onLiveModeUpdate(PreferenceHelper.getLiveMode(mContext));
-        onScreenLockUpdate(PreferenceHelper.getScreenLock(mContext));
+        SharedPreferences prefReader = PreferenceManager.getDefaultSharedPreferences(mContext);
+        onScreenLockUpdate(prefReader.getBoolean(
+                getResources().getString(R.string.prefs_prevent_screen_lock_key),
+                getResources().getBoolean(R.bool.prefs_prevent_screen_lock_default)));
     }
 
     private SharedPreferences.OnSharedPreferenceChangeListener mPreferenceListener =
             new SharedPreferences.OnSharedPreferenceChangeListener() {
                 @Override
-                public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+                public void onSharedPreferenceChanged(SharedPreferences sharedPrefs,
                                                       String key) {
-                    if (getString(R.string.prefs_live_mode_key).equals(key)) {
-                        onLiveModeUpdate(PreferenceHelper.getLiveMode(mContext));
-                    } else if (getString(R.string.prefs_prevent_screen_lock_key).equals(key)) {
-                        onScreenLockUpdate(PreferenceHelper.getScreenLock(mContext));
+                    if (getString(R.string.prefs_prevent_screen_lock_key).equals(key)) {
+                        onScreenLockUpdate(sharedPrefs.getBoolean(
+                                getResources().getString(R.string.prefs_prevent_screen_lock_key),
+                                getResources().getBoolean(R.bool.prefs_prevent_screen_lock_default)));
                     }
                 }
             };

@@ -232,7 +232,10 @@ public class LibraryFragment extends ListFragment {
             };
 
     private void loadPreferences() {
-        mShowAds = PreferenceHelper.getShowAds(getActivity());
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        mShowAds = sharedPrefs.getBoolean(
+                getResources().getString(R.string.prefs_enable_ads_key),
+                getResources().getBoolean(R.bool.prefs_enable_ads_default));
     }
 
     private SharedPreferences.OnSharedPreferenceChangeListener mAdPrefListener =

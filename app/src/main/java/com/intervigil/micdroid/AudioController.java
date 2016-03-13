@@ -29,15 +29,34 @@ import android.media.MediaRecorder;
 import android.preference.PreferenceManager;
 
 import com.intervigil.micdroid.helper.DialogHelper;
-import com.intervigil.micdroid.helper.PreferenceHelper;
+
+import net.sourceforge.autotalent.Autotalent;
 
 public class AudioController {
     private static final String TAG = "AudioController";
+
+    private static final float CONCERT_A = 440.0f;
+    private static final int DEFAULT_SCALE_ROTATE = 0;
+    private static final float DEFAULT_FIXED_PITCH = 0.0f;
+    private static final float DEFAULT_LFO_DEPTH = 0.0f;
+    private static final float DEFAULT_LFO_RATE = 5.0f;
+    private static final float DEFAULT_LFO_SHAPE = 0.0f;
+    private static final float DEFAULT_LFO_SYM = 0.0f;
+    private static final int DEFAULT_LFO_QUANT = 0;
 
     private Context mContext;
     private int mInputBufferSize;
     private int mInputSampleRate;
     private boolean mIsLive;
+
+    private char mAutotalentKey;
+    private float mAutotalentFixedPull;
+    private float mAutotalentPitchShift;
+    private float mAutotalentStrength;
+    private float mAutotalentSmoothness;
+    private boolean mAutotalentFormantCorrection;
+    private float mAutotalentFormantWarp;
+    private float mAutotalentMix;
 
     public AudioController(Context context) {
         mContext = context;
@@ -99,8 +118,8 @@ public class AudioController {
                         (int) (minBufferSize * multiplier));
 
                 if (recorder.getState() == AudioRecord.STATE_INITIALIZED) {
-                    PreferenceHelper.setBufferSize(mContext, (int) (minBufferSize * multiplier));
-                    PreferenceHelper.setSampleRate(mContext, Constants.DEFAULT_SAMPLE_RATE);
+                    saveBufferSize((int) (minBufferSize * multiplier));
+                    saveSampleRate(sampleRate);
                     recorder.release();
                     return;
                 }
@@ -127,7 +146,43 @@ public class AudioController {
         return player;
     }
 
+    public void updateAutotalent() {
+        Autotalent.instantiateAutotalent(mInputSampleRate);
+        Autotalent.setKey(mAutotalentKey);
+        Autotalent.setConcertA(CONCERT_A);
+        Autotalent.setFixedPitch(DEFAULT_FIXED_PITCH);
+        Autotalent.setFixedPull(mAutotalentFixedPull);
+        Autotalent.setCorrectionStrength(mAutotalentStrength);
+        Autotalent.setCorrectionSmoothness(mAutotalentSmoothness);
+        Autotalent.setPitchShift(mAutotalentPitchShift);
+        Autotalent.setScaleRotate(DEFAULT_SCALE_ROTATE);
+        Autotalent.setLfoDepth(DEFAULT_LFO_DEPTH);
+        Autotalent.setLfoRate(DEFAULT_LFO_RATE);
+        Autotalent.setLfoShape(DEFAULT_LFO_SHAPE);
+        Autotalent.setLfoSymmetric(DEFAULT_LFO_SYM);
+        Autotalent.setLfoQuantization(DEFAULT_LFO_QUANT);
+        Autotalent.setFormantCorrection(mAutotalentFormantCorrection ? 1 : 0);
+        Autotalent.setFormantWarp(mAutotalentFormantWarp);
+        Autotalent.setMix(mAutotalentMix);
+    }
+
+    private void saveSampleRate(int sampleRate) {
+        SharedPreferences.Editor prefEditor =
+                PreferenceManager.getDefaultSharedPreferences(mContext).edit();
+        prefEditor.putString(mContext.getString(R.string.prefs_sample_rate_key),
+                String.format("%d", sampleRate));
+        prefEditor.commit();
+    }
+
+    private void saveBufferSize(int bufferSize) {
+        SharedPreferences.Editor prefEditor =
+                PreferenceManager.getDefaultSharedPreferences(mContext).edit();
+        prefEditor.putInt(mContext.getString(R.string.prefs_buffer_size_key), bufferSize);
+        prefEditor.commit();
+    }
+
     private void loadPreferences(SharedPreferences sharedPrefs) {
+        /* Recorder settings */
         mInputBufferSize = sharedPrefs.getInt(
                 mContext.getResources().getString(R.string.prefs_buffer_size_key),
                 mContext.getResources().getInteger(R.integer.prefs_buffer_size_default));
@@ -137,13 +192,82 @@ public class AudioController {
         mIsLive = sharedPrefs.getBoolean(
                 mContext.getResources().getString(R.string.prefs_live_mode_key),
                 mContext.getResources().getBoolean(R.bool.prefs_live_mode_default));
+        /* Autotalent settings */
+        mAutotalentKey = sharedPrefs.getString(
+                mContext.getResources().getString(R.string.prefs_key_key),
+                mContext.getResources().getString(R.string.prefs_key_default)).charAt(0);
+        mAutotalentFixedPull = Float.valueOf(sharedPrefs.getString(
+                mContext.getResources().getString(R.string.prefs_pitch_pull_key),
+                mContext.getResources().getString(R.string.prefs_pitch_pull_default)));
+        mAutotalentPitchShift = Float.valueOf(sharedPrefs.getString(
+                mContext.getResources().getString(R.string.prefs_pitch_shift_key),
+                mContext.getResources().getString(R.string.prefs_pitch_shift_default)));
+        mAutotalentStrength = Float.valueOf(sharedPrefs.getString(
+                mContext.getResources().getString(R.string.prefs_corr_str_key),
+                mContext.getResources().getString(R.string.prefs_corr_str_default)));
+        mAutotalentSmoothness = Float.valueOf(sharedPrefs.getString(
+                mContext.getResources().getString(R.string.prefs_corr_smooth_key),
+                mContext.getResources().getString(R.string.prefs_corr_smooth_default)));
+        mAutotalentFormantCorrection = sharedPrefs.getBoolean(
+                mContext.getResources().getString(R.string.prefs_formant_corr_key),
+                mContext.getResources().getBoolean(R.bool.prefs_formant_corr_default));
+        mAutotalentFormantWarp = Float.valueOf(sharedPrefs.getString(
+                mContext.getResources().getString(R.string.prefs_formant_warp_key),
+                mContext.getResources().getString(R.string.prefs_formant_warp_default)));
+        mAutotalentMix = Float.valueOf(sharedPrefs.getString(
+                mContext.getResources().getString(R.string.prefs_corr_mix_key),
+                mContext.getResources().getString(R.string.prefs_corr_mix_default)));
     }
 
     private SharedPreferences.OnSharedPreferenceChangeListener mPrefListener =
             new SharedPreferences.OnSharedPreferenceChangeListener() {
                 @Override
-                public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                    loadPreferences(sharedPreferences);
+                public void onSharedPreferenceChanged(SharedPreferences sharedPrefs, String key) {
+                    if (mContext.getString(R.string.prefs_buffer_size_key).equals(key)) {
+                        mInputBufferSize = sharedPrefs.getInt(
+                                mContext.getResources().getString(R.string.prefs_buffer_size_key),
+                                mContext.getResources().getInteger(R.integer.prefs_buffer_size_default));
+                    } else if (mContext.getString(R.string.prefs_sample_rate_key).equals(key)) {
+                        mInputSampleRate = Integer.parseInt(sharedPrefs.getString(
+                                mContext.getResources().getString(R.string.prefs_sample_rate_key),
+                                mContext.getResources().getString(R.string.prefs_sample_rate_default)));
+                    } else if (mContext.getString(R.string.prefs_live_mode_key).equals(key)) {
+                        mIsLive = sharedPrefs.getBoolean(
+                                mContext.getResources().getString(R.string.prefs_live_mode_key),
+                                mContext.getResources().getBoolean(R.bool.prefs_live_mode_default));
+                    } else if (mContext.getString(R.string.prefs_key_key).equals(key)) {
+                        mAutotalentKey = sharedPrefs.getString(
+                                mContext.getResources().getString(R.string.prefs_key_key),
+                                mContext.getResources().getString(R.string.prefs_key_default)).charAt(0);
+                    } else if (mContext.getString(R.string.prefs_pitch_pull_key).equals(key)) {
+                        mAutotalentFixedPull = Float.valueOf(sharedPrefs.getString(
+                                mContext.getResources().getString(R.string.prefs_pitch_pull_key),
+                                mContext.getResources().getString(R.string.prefs_pitch_pull_default)));
+                    } else if (mContext.getString(R.string.prefs_pitch_shift_key).equals(key)) {
+                        mAutotalentPitchShift = Float.valueOf(sharedPrefs.getString(
+                                mContext.getResources().getString(R.string.prefs_pitch_shift_key),
+                                mContext.getResources().getString(R.string.prefs_pitch_shift_default)));
+                    } else if (mContext.getString(R.string.prefs_corr_str_key).equals(key)) {
+                        mAutotalentStrength = Float.valueOf(sharedPrefs.getString(
+                                mContext.getResources().getString(R.string.prefs_corr_str_key),
+                                mContext.getResources().getString(R.string.prefs_corr_str_default)));
+                    } else if (mContext.getString(R.string.prefs_corr_smooth_key).equals(key)) {
+                        mAutotalentSmoothness = Float.valueOf(sharedPrefs.getString(
+                                mContext.getResources().getString(R.string.prefs_corr_smooth_key),
+                                mContext.getResources().getString(R.string.prefs_corr_smooth_default)));
+                    } else if (mContext.getString(R.string.prefs_formant_corr_key).equals(key)) {
+                        mAutotalentFormantCorrection = sharedPrefs.getBoolean(
+                                mContext.getResources().getString(R.string.prefs_formant_corr_key),
+                                mContext.getResources().getBoolean(R.bool.prefs_formant_corr_default));
+                    } else if (mContext.getString(R.string.prefs_formant_warp_key).equals(key)) {
+                        mAutotalentFormantWarp = Float.valueOf(sharedPrefs.getString(
+                                mContext.getResources().getString(R.string.prefs_formant_warp_key),
+                                mContext.getResources().getString(R.string.prefs_formant_warp_default)));
+                    } else if (mContext.getString(R.string.prefs_corr_mix_key).equals(key)) {
+                        mAutotalentMix = Float.valueOf(sharedPrefs.getString(
+                                mContext.getResources().getString(R.string.prefs_corr_mix_key),
+                                mContext.getResources().getString(R.string.prefs_corr_mix_default)));
+                    }
                 }
             };
 }
