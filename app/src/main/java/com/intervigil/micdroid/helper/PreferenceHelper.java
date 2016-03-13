@@ -20,7 +20,6 @@
 package com.intervigil.micdroid.helper;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 
@@ -38,12 +37,6 @@ public class PreferenceHelper {
                 PreferenceManager.getDefaultSharedPreferences(context).edit();
         editor.putInt(Constants.KEY_LAST_VERSION_CODE, value);
         editor.commit();
-    }
-
-    public static void setDefaultPreferences(Context context) {
-        Editor prefEditor =
-                PreferenceManager.getDefaultSharedPreferences(context).edit();
-        prefEditor.clear().commit();
     }
 
     public static void resetFormantCorrectionDefault(Context context) {

@@ -19,10 +19,13 @@
 
 package com.intervigil.micdroid;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 
 import net.sourceforge.autotalent.Autotalent;
 
@@ -34,7 +37,12 @@ public class SettingsFragment extends PreferenceFragment {
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
-        // Load the preferences from an XML resource.
+        addPreferences();
+
+        setResetListener();
+    }
+
+    private void addPreferences() {
         addPreferencesFromResource(R.xml.preferences);
 
         PreferenceCategory recordingPrefs =
@@ -44,5 +52,38 @@ public class SettingsFragment extends PreferenceFragment {
             liveCorrection.setEnabled(Autotalent.getLiveCorrectionEnabled());
             recordingPrefs.removePreference(liveCorrection);
         }
+    }
+
+    private void setResetListener() {
+        Preference resetDefault = findPreference(getString(R.string.prefs_reset_default_key));
+        resetDefault.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                AlertDialog.Builder confirmDialogBuilder = new AlertDialog.Builder(getActivity());
+                confirmDialogBuilder.setTitle(R.string.confirm_reset_prefs_title)
+                        .setMessage(R.string.confirm_reset_prefs_message)
+                        .setPositiveButton(R.string.confirm_reset_prefs_btn_yes,
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        PreferenceManager.getDefaultSharedPreferences(
+                                                getActivity()).edit().clear().commit();
+                                        // Force refresh preference screen
+                                        setPreferenceScreen(null);
+                                        addPreferences();
+                                        setResetListener();
+                                    }
+                                })
+                        .setNegativeButton(R.string.confirm_reset_prefs_btn_no,
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                confirmDialogBuilder.create().show();
+                return true;
+            }
+        });
     }
 }
