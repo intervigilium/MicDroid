@@ -38,7 +38,6 @@ import android.widget.TextView;
 
 import com.google.android.gms.ads.AdView;
 import com.intervigil.micdroid.helper.AdHelper;
-import com.intervigil.micdroid.helper.PreferenceHelper;
 import com.intervigil.micdroid.model.Recording;
 import com.intervigil.wave.exception.InvalidWaveException;
 
@@ -186,10 +185,15 @@ public class LibraryFragment extends ListFragment {
 
         SharedPreferences sharedPrefs =
                 PreferenceManager.getDefaultSharedPreferences(getActivity());
-        loadPreferences();
+        loadPreferences(sharedPrefs);
         sharedPrefs.registerOnSharedPreferenceChangeListener(mAdPrefListener);
+    }
 
-        AdHelper.GenerateAd(mAdView, mShowAds);
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        updateAdView();
     }
 
     @Override
@@ -231,8 +235,16 @@ public class LibraryFragment extends ListFragment {
                 }
             };
 
-    private void loadPreferences() {
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+    private void updateAdView() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                AdHelper.updateAdView(mAdView, mShowAds);
+            }
+        });
+    }
+
+    private void loadPreferences(SharedPreferences sharedPrefs) {
         mShowAds = sharedPrefs.getBoolean(
                 getResources().getString(R.string.prefs_enable_ads_key),
                 getResources().getBoolean(R.bool.prefs_enable_ads_default));
@@ -245,7 +257,7 @@ public class LibraryFragment extends ListFragment {
                     if (getString(R.string.prefs_enable_ads_key).equals(key)) {
                         mShowAds = sharedPreferences.getBoolean(getString(R.string.prefs_enable_ads_key),
                                 getResources().getBoolean(R.bool.prefs_enable_ads_default));
-                        AdHelper.GenerateAd(mAdView, mShowAds);
+                        updateAdView();
                     }
                 }
             };

@@ -13,7 +13,7 @@
         android:id="@+id/library_ad"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        ads:adSize="BANNER"
+        ads:adSize="SMART_BANNER"
         ads:adUnitId="@string/home_banner_ad_unit_id" />
 
     <TextView

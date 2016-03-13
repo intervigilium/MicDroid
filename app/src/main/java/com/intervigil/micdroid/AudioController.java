@@ -147,6 +147,7 @@ public class AudioController {
     }
 
     public void updateAutotalent() {
+        // TODO: Refactor Autotalent so an instance is kept and params can by dynamically changed
         Autotalent.instantiateAutotalent(mInputSampleRate);
         Autotalent.setKey(mAutotalentKey);
         Autotalent.setConcertA(CONCERT_A);
