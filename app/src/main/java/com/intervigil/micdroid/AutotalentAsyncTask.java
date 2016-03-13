@@ -5,14 +5,12 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-import com.intervigil.micdroid.helper.ApplicationHelper;
 import com.intervigil.micdroid.helper.DialogHelper;
 import com.intervigil.wave.WaveReader;
 import com.intervigil.wave.WaveWriter;
 
 import net.sourceforge.autotalent.Autotalent;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -120,18 +118,9 @@ public class AutotalentAsyncTask extends AsyncTask<String, Void, Void> {
         InputStream in = null;
         OutputStream out = null;
         byte[] buf = new byte[1024];
-        // TODO: Refactor this to use app local storage
-        File src = new File(
-                mContext.getCacheDir().getAbsolutePath()
-                        + File.separator
-                        + mContext.getString(R.string.default_recording_name));
-        File dst = new File(
-                ApplicationHelper.getLibraryDirectory()
-                        + File.separator
-                        + file);
         try {
-            in = new FileInputStream(src);
-            out = new FileOutputStream(dst);
+            in = mContext.openFileInput(mContext.getString(R.string.default_recording_name));
+            out = mContext.openFileOutput(file, Context.MODE_WORLD_READABLE);
             while ((len = in.read(buf)) > 0) {
                 out.write(buf, 0, len);
             }

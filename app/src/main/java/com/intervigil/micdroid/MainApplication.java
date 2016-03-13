@@ -21,24 +21,5 @@ package com.intervigil.micdroid;
 
 import android.app.Application;
 
-import com.intervigil.micdroid.helper.ApplicationHelper;
-
-import java.io.File;
-
 public class MainApplication extends Application {
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-
-        File libraryDir = ApplicationHelper.getLibraryDirectory();
-        if (!libraryDir.exists()) {
-            libraryDir.mkdirs();
-        }
-    }
-
-    @Override
-    public void onTerminate() {
-        super.onTerminate();
-    }
 }

@@ -21,9 +21,6 @@ package com.intervigil.micdroid.helper;
 
 import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.os.Environment;
-
-import java.io.File;
 
 public class ApplicationHelper {
 
@@ -37,9 +34,5 @@ public class ApplicationHelper {
             e.printStackTrace();
         }
         return versionCode;
-    }
-
-    public static File getLibraryDirectory() {
-        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
     }
 }
