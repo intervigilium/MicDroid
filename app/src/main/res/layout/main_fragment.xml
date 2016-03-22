@@ -60,7 +60,7 @@
                 android:id="@+id/recording_button"
                 android:layout_width="112dp"
                 android:layout_height="112dp"
-                android:background="@drawable/recording_button"
+                android:background="@drawable/btn_record"
                 android:textOff=""
                 android:textOn="" />
 
