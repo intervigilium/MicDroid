@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:scaleType="center"
-            android:src="@drawable/panel_head" />
+            android:src="@drawable/header_panel" />
 
         <RelativeLayout
             android:id="@+id/recording_timer_container"
