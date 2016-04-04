@@ -22,17 +22,11 @@ package com.intervigil.micdroid;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.widget.EditText;
-
-import com.intervigil.micdroid.model.Recording;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class NameEntryDialogFragment extends DialogFragment {
 

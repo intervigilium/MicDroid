@@ -70,7 +70,7 @@ public class AudioController {
     }
 
     public boolean isValidRecorder() {
-        AudioRecord recorder = new AudioRecord(MediaRecorder.AudioSource.VOICE_COMMUNICATION,
+        AudioRecord recorder = new AudioRecord(MediaRecorder.AudioSource.MIC,
                 mInputSampleRate, Constants.DEFAULT_CHANNEL_CONFIG,
                 Constants.DEFAULT_PCM_FORMAT, mInputBufferSize);
         boolean valid = recorder.getState() == AudioRecord.STATE_INITIALIZED;
@@ -80,7 +80,7 @@ public class AudioController {
 
     public AudioRecord getRecorder()
             throws IllegalArgumentException {
-        AudioRecord recorder = new AudioRecord(MediaRecorder.AudioSource.VOICE_COMMUNICATION,
+        AudioRecord recorder = new AudioRecord(MediaRecorder.AudioSource.MIC,
                 mInputSampleRate, Constants.DEFAULT_CHANNEL_CONFIG,
                 Constants.DEFAULT_PCM_FORMAT, mInputBufferSize);
         if (recorder.getState() != AudioRecord.STATE_INITIALIZED) {
@@ -108,7 +108,7 @@ public class AudioController {
 
         for (int sampleRate : sampleRates) {
             for (double multiplier : multipliers) {
-                AudioRecord recorder = new AudioRecord(MediaRecorder.AudioSource.VOICE_COMMUNICATION,
+                AudioRecord recorder = new AudioRecord(MediaRecorder.AudioSource.MIC,
                         sampleRate, Constants.DEFAULT_CHANNEL_CONFIG, Constants.DEFAULT_PCM_FORMAT,
                         (int) (minBufferSize * multiplier));
 

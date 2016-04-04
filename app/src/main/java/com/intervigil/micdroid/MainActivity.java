@@ -20,7 +20,6 @@
 
 package com.intervigil.micdroid;
 
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -30,6 +29,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView drawerView = (NavigationView) findViewById(R.id.main_drawer_view);
         drawerView.setNavigationItemSelectedListener(mDrawerClickListener);
 
-        getFragmentManager().beginTransaction()
+        getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_content_frame, new MicFragment())
                 .commit();
 
@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onRecorderStopped() {
         DialogFragment nameEntryFragment = new NameEntryDialogFragment();
-        nameEntryFragment.show(getFragmentManager(), "nameEntry");
+        nameEntryFragment.show(getSupportFragmentManager(), "nameEntry");
     }
 
     /* From NameEntryDialogListener */
@@ -300,21 +300,21 @@ public class MainActivity extends AppCompatActivity
                 public boolean onNavigationItemSelected(MenuItem item) {
                     switch (item.getItemId()) {
                         case R.id.nav_record_fragment:
-                            getFragmentManager().beginTransaction()
+                            getSupportFragmentManager().beginTransaction()
                                     .replace(R.id.main_content_frame, new MicFragment())
                                     .commit();
                             setTitle(item.getTitle());
                             mDrawerLayout.closeDrawers();
                             break;
                         case R.id.nav_library_fragment:
-                            getFragmentManager().beginTransaction()
+                            getSupportFragmentManager().beginTransaction()
                                     .replace(R.id.main_content_frame, new LibraryFragment())
                                     .commit();
                             setTitle(item.getTitle());
                             mDrawerLayout.closeDrawers();
                             break;
                         case R.id.nav_settings_fragment:
-                            getFragmentManager().beginTransaction()
+                            getSupportFragmentManager().beginTransaction()
                                     .replace(R.id.main_content_frame, new SettingsFragment())
                                     .commit();
                             setTitle(item.getTitle());

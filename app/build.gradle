@@ -13,7 +13,7 @@ model {
 
         defaultConfig {
             applicationId "com.intervigil.micdroid"
-            minSdkVersion.apiLevel 11
+            minSdkVersion.apiLevel 10
             targetSdkVersion.apiLevel 23
 
             buildConfigFields {
@@ -61,8 +61,10 @@ model {
 
 dependencies {
     compile fileTree(dir: "libs", include: ["*.jar"])
-    compile 'com.android.support:appcompat-v7:23.2.0'
-    compile 'com.android.support:design:23.2.0'
-    compile 'com.android.support:cardview-v7:23.2.0'
+    compile 'com.android.support:appcompat-v7:23.3.0'
+    compile 'com.android.support:cardview-v7:23.3.0'
+    compile 'com.android.support:design:23.3.0'
+    compile 'com.android.support:preference-v7:23.3.0'
+    compile 'com.android.support:preference-v14:23.3.0'
     compile 'com.google.android.gms:play-services-ads:8.4.0'
 }

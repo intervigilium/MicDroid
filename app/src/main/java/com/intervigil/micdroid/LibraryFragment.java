@@ -19,15 +19,15 @@
 
 package com.intervigil.micdroid;
 
-import android.app.ListFragment;
-import android.app.LoaderManager;
-import android.content.AsyncTaskLoader;
 import android.content.Context;
-import android.content.Loader;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.FileObserver;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ListFragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -128,7 +128,9 @@ public class LibraryFragment extends ListFragment {
         public void setData(List<Recording> data) {
             clear();
             if (data != null) {
-                addAll(data);
+                for (Recording r : data) {
+                    add(r);
+                }
             }
         }
 
