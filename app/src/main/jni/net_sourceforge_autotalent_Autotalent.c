@@ -220,6 +220,7 @@ native_enable_formant_warp(JNIEnv *env, jobject thiz, jfloat warp)
 {
     if (instance == NULL) {
         ALOGW("No suitable autotalent instance found!");
+        return;
     }
     *(instance->m_pfFwarp) = (float)warp;
 }
