@@ -21,6 +21,7 @@
 package com.intervigil.micdroid;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
@@ -60,12 +61,14 @@ public class SipdroidRecorder {
     private final Context mContext;
     private RecordThread mWriterThread;
     private AudioController mAudioControl;
+    private AutotalentController mAutotalentControl;
     private List<RecorderStoppedListener> mListeners;
 
     public SipdroidRecorder(Context context,
                             AudioController audioControl) {
         mContext = context;
         mAudioControl = audioControl;
+        mAutotalentControl = new AutotalentController(mContext);
         mListeners = new ArrayList<>();
     }
 
@@ -182,6 +185,7 @@ public class SipdroidRecorder {
         public void initialize() throws IOException {
             mWavWriter.createWaveFile();
             if (mAudioControl.isLive()) {
+                mAutotalentControl.initializeAutotalent(mAudioControl.getSampleRate());
                 AudioManager am = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
                 am.setMode(AudioManager.MODE_NORMAL);
             }
@@ -196,6 +200,7 @@ public class SipdroidRecorder {
             if (mAudioControl.isLive()) {
                 mAudioTrack.stop();
                 mAudioTrack.release();
+                mAutotalentControl.closeAutotalent();
             }
             // close file
             try {
@@ -253,7 +258,7 @@ public class SipdroidRecorder {
         }
 
         private void processLiveAudio(short[] samples, int numSamples) throws IOException {
-            mAudioControl.process(samples, numSamples);
+            mAutotalentControl.process(samples, numSamples);
         }
     }
 }

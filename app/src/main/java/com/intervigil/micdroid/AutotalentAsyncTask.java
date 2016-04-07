@@ -12,20 +12,22 @@ import com.intervigil.wave.WaveWriter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 public class AutotalentAsyncTask extends AsyncTask<String, Void, Void> {
+
+    private static final String TAG = "AutotalentAsyncTask";
 
     private static final int AUTOTALENT_CHUNK_SIZE = 8192;
 
     private final Context mContext;
     private ProgressDialog mBusySpinner;
     private AudioController mAudioControl;
+    private AutotalentController mAutotalentControl;
 
     public AutotalentAsyncTask(Context context, AudioController audioControl) {
         mContext = context;
         mAudioControl = audioControl;
+        mAutotalentControl = new AutotalentController(mContext);
         mBusySpinner = new ProgressDialog(mContext);
         mBusySpinner.setCancelable(false);
     }
@@ -35,6 +37,7 @@ public class AutotalentAsyncTask extends AsyncTask<String, Void, Void> {
         DialogHelper.showWarning(mContext,
                 R.string.recording_io_error_title,
                 R.string.recording_io_error_warning);
+        mAutotalentControl.closeAutotalent();
     }
 
     @Override
@@ -43,6 +46,7 @@ public class AutotalentAsyncTask extends AsyncTask<String, Void, Void> {
             mBusySpinner.setMessage(mContext.getString(R.string.saving_recording_progress_msg));
         } else {
             mBusySpinner.setMessage(mContext.getString(R.string.autotalent_progress_msg));
+            mAutotalentControl.initializeAutotalent(mAudioControl.getSampleRate());
         }
         mBusySpinner.show();
     }
@@ -87,7 +91,7 @@ public class AutotalentAsyncTask extends AsyncTask<String, Void, Void> {
             while (true) {
                 int samplesRead = reader.read(buf, AUTOTALENT_CHUNK_SIZE);
                 if (samplesRead > 0) {
-                    mAudioControl.process(buf, samplesRead);
+                    mAutotalentControl.process(buf, samplesRead);
                     writer.write(buf, 0, samplesRead);
                 } else {
                     break;
@@ -139,6 +143,7 @@ public class AutotalentAsyncTask extends AsyncTask<String, Void, Void> {
 
     @Override
     protected void onPostExecute(Void result) {
+        mAutotalentControl.closeAutotalent();
         mBusySpinner.dismiss();
         Toast.makeText(mContext, R.string.recording_save_success,
                 Toast.LENGTH_SHORT).show();

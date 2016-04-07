@@ -92,11 +92,6 @@ public class MainActivity extends AppCompatActivity
         sharedPrefs.registerOnSharedPreferenceChangeListener(mPreferenceListener);
 
         loadPreferences();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
 
         mAudioControl = new AudioController(mContext);
 
@@ -105,14 +100,6 @@ public class MainActivity extends AppCompatActivity
         } else {
             mAudioControl.configureRecorder();
         }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        mAudioControl.closeAutotalent();
-        mAudioControl = null;
     }
 
     @Override
