@@ -65,11 +65,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.main);
 
         mContext = this;
-
-        mAudioControl = new AudioController(mContext);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.main_drawer_layout);
 
@@ -93,6 +92,13 @@ public class MainActivity extends AppCompatActivity
         sharedPrefs.registerOnSharedPreferenceChangeListener(mPreferenceListener);
 
         loadPreferences();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        mAudioControl = new AudioController(mContext);
 
         if (UpdateHelper.isAppUpdated(mContext)) {
             UpdateHelper.onAppUpdate(mContext);
@@ -106,6 +112,7 @@ public class MainActivity extends AppCompatActivity
         super.onStop();
 
         mAudioControl.closeAutotalent();
+        mAudioControl = null;
     }
 
     @Override
