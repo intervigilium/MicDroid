@@ -97,6 +97,7 @@ public class Autotalent {
 
     public void close() {
         native_destroyAutotalent();
+        sInstance = null;
     }
 
     static {
