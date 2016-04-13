@@ -21,12 +21,12 @@ public class AutotalentAsyncTask extends AsyncTask<String, Void, Void> {
 
     private final Context mContext;
     private ProgressDialog mBusySpinner;
-    private AudioController mAudioControl;
     private AutotalentController mAutotalentControl;
+    private int mSampleRate;
 
-    public AutotalentAsyncTask(Context context, AudioController audioControl) {
+    public AutotalentAsyncTask(Context context, int sampleRate) {
         mContext = context;
-        mAudioControl = audioControl;
+        mSampleRate = sampleRate;
         mAutotalentControl = new AutotalentController(mContext);
         mBusySpinner = new ProgressDialog(mContext);
         mBusySpinner.setCancelable(false);
@@ -42,12 +42,8 @@ public class AutotalentAsyncTask extends AsyncTask<String, Void, Void> {
 
     @Override
     protected void onPreExecute() {
-        if (mAudioControl.isLive()) {
-            mBusySpinner.setMessage(mContext.getString(R.string.saving_recording_progress_msg));
-        } else {
-            mBusySpinner.setMessage(mContext.getString(R.string.autotalent_progress_msg));
-            mAutotalentControl.initializeAutotalent(mAudioControl.getSampleRate());
-        }
+        mBusySpinner.setMessage(mContext.getString(R.string.autotalent_progress_msg));
+        mAutotalentControl.initializeAutotalent(mSampleRate);
         mBusySpinner.show();
     }
 
@@ -56,22 +52,13 @@ public class AutotalentAsyncTask extends AsyncTask<String, Void, Void> {
         // maybe ugly but we only pass one string in anyway
         String fileName = params[0];
 
-        if (mAudioControl.isLive()) {
-            try {
-                // do a file copy since renameTo doesn't work
-                moveFile(fileName);
-            } catch (IOException e) {
-                e.printStackTrace();
-                cancel(true);
-            }
-        } else {
-            try {
-                processPitchCorrection(fileName);
-            } catch (IOException e) {
-                e.printStackTrace();
-                cancel(true);
-            }
+        try {
+            processPitchCorrection(fileName);
+        } catch (IOException e) {
+            e.printStackTrace();
+            cancel(true);
         }
+
         return null;
     }
 
@@ -107,33 +94,6 @@ public class AutotalentAsyncTask extends AsyncTask<String, Void, Void> {
                 if (writer != null) {
                     writer.closeWaveFile();
                     mContext.deleteFile(mContext.getString(R.string.default_recording_name));
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void moveFile(String file) throws IOException {
-        int len;
-        InputStream in = null;
-        OutputStream out = null;
-        byte[] buf = new byte[1024];
-        try {
-            in = mContext.openFileInput(mContext.getString(R.string.default_recording_name));
-            out = mContext.openFileOutput(file, Context.MODE_WORLD_READABLE);
-            while ((len = in.read(buf)) > 0) {
-                out.write(buf, 0, len);
-            }
-        } catch (IOException e) {
-            throw e;
-        } finally {
-            try {
-                if (in != null) {
-                    in.close();
-                }
-                if (out != null) {
-                    out.close();
                 }
             } catch (IOException e) {
                 e.printStackTrace();

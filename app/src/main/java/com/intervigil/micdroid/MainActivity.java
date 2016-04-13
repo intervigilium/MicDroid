@@ -45,6 +45,9 @@ import com.intervigil.micdroid.helper.UpdateHelper;
 import com.intervigil.micdroid.model.Recording;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class MainActivity extends AppCompatActivity
         implements RecordingOptionsDialogFragment.RecordingOptionsDialogListener,
@@ -170,7 +173,15 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onSave(String name) {
         String fullName = name.trim() + ".wav";
-        new AutotalentAsyncTask(mContext, mAudioControl).execute(fullName);
+        if (mAudioControl.isLive()) {
+            try {
+                moveFile(fullName);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            new AutotalentAsyncTask(mContext, mAudioControl.getSampleRate()).execute(fullName);
+        }
     }
 
     @Override
@@ -256,6 +267,33 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onShare(Recording r) {
         RecordingOptionsHelper.shareRecording(mContext, r);
+    }
+
+    private void moveFile(String file) throws IOException {
+        int len;
+        InputStream in = null;
+        OutputStream out = null;
+        byte[] buf = new byte[1024];
+        try {
+            in = mContext.openFileInput(mContext.getString(R.string.default_recording_name));
+            out = mContext.openFileOutput(file, Context.MODE_WORLD_READABLE);
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+        } catch (IOException e) {
+            throw e;
+        } finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void onScreenLockUpdate(boolean isLocked) {
