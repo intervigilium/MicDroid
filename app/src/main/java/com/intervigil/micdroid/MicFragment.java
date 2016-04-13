@@ -64,6 +64,7 @@ public class MicFragment extends Fragment {
                 public void onCheckedChanged(CompoundButton btn, boolean isChecked) {
                     if (btn.isChecked()) {
                         if (mListener.onMicStart()) {
+                            mTimerDisplay.reset();
                             mTimerDisplay.start();
                         } else {
                             // Failed to start correctly, reset fragment state
