@@ -21,9 +21,6 @@ package com.intervigil.micdroid.helper;
 
 import android.content.Context;
 
-import com.intervigil.micdroid.R;
-import com.intervigil.micdroid.StartupDialog;
-
 public class UpdateHelper {
     /*
      * One time updates when app has been updated goes here Currently we always
@@ -39,18 +36,10 @@ public class UpdateHelper {
         resetRecordingSettings(context);
         resetFormantCorrection(context);
         resetPitchShift(context);
-        showStartupDialog(context);
 
         // update the version code so we know not to do this again next time
         PreferenceHelper.setLastVersionCode(context, ApplicationHelper
                 .getPackageVersion(context));
-    }
-
-    private static void showStartupDialog(Context context) {
-        StartupDialog startupDialog = new StartupDialog(context,
-                R.string.startup_dialog_title, R.string.startup_dialog_text,
-                R.string.startup_dialog_accept_btn);
-        startupDialog.show();
     }
 
     private static void resetRecordingSettings(Context context) {

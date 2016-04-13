@@ -100,6 +100,8 @@ public class MainActivity extends AppCompatActivity
 
         if (UpdateHelper.isAppUpdated(mContext)) {
             UpdateHelper.onAppUpdate(mContext);
+            StartupDialogFragment startupDialogFragment = new StartupDialogFragment();
+            startupDialogFragment.show(getSupportFragmentManager(), "startup");
         } else {
             mAudioControl.configureRecorder();
         }
