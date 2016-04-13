@@ -63,11 +63,6 @@ public class NameEntryDialogFragment extends DialogFragment {
         return builder.create();
     }
 
-    @Override
-    public void onCreate(Bundle icicle) {
-        super.onCreate(icicle);
-    }
-
     private DialogInterface.OnClickListener mBtnListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
