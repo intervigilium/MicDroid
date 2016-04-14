@@ -22,27 +22,25 @@
     <string name="recording_library_row_label_2">Recording Length</string>
 
     <string name="unable_to_configure_audio_title">ERROR!</string>
-	<string name="unable_to_configure_audio_warning">Unable to configure audio! Please check your sample
-		rate settings and make sure your device is able to record at that
-		rate!</string>
+    <string name="unable_to_configure_audio_warning">Unable to configure audio! Please check your
+        sample rate settings and make sure your device is able to record at that rate!</string>
 
     <string name="unconfigured_audio_title">ERROR!</string>
-	<string name="unconfigured_audio_warning">Cannot record audio with current settings! Please
-		check your sample rate settings and make sure your device is able to
-		record at that rate!</string>
+    <string name="unconfigured_audio_warning">Cannot record audio with current settings! Please
+        check your sample rate settings and make sure your device is able to record at that rate!</string>
 
     <string name="recording_io_error_title">WARNING!</string>
-	<string name="recording_io_error_warning">Error writing recording! Please make sure
-		your SD card has free space and is inserted and writable!</string>
+    <string name="recording_io_error_warning">Error writing recording! Please make sure your SD card
+        has free space and is inserted and writable!</string>
 
     <string name="audio_record_exception_title">ERROR!</string>
-	<string name="audio_record_exception_warning">An error has occurred while recording! Please check
-		your settings and make sure your device is able to record audio!</string>
+    <string name="audio_record_exception_warning">An error has occurred while recording! Please
+        check your settings and make sure your device is able to record audio!</string>
 
     <string name="no_headset_plugged_in_title">WARNING!</string>
     <string name="no_headset_plugged_in_warning">Live correction mode requires headphones!</string>
 
-	<string name="recording_started_toast">Recording started! Press power button to stop recording!</string>
+    <string name="recording_started_toast">Recording started! Press power button to stop recording!</string>
     <string name="recording_finished_toast">Recording finished!</string>
 
     <string name="recording_save_success">Recording saved successfully!</string>
@@ -93,8 +91,7 @@
     <string name="confirm_delete_btn_no">Cancel</string>
 
     <string name="confirm_reset_prefs_title">Reset to Default</string>
-	<string name="confirm_reset_prefs_message">Are you sure you want to reset all settings to
-		default?</string>
+    <string name="confirm_reset_prefs_message">Are you sure you want to reset all settings to default?</string>
     <string name="confirm_reset_prefs_btn_yes">Reset</string>
     <string name="confirm_reset_prefs_btn_no">Cancel</string>
 
@@ -113,8 +110,7 @@
     <string name="prefs_enable_ads_key">enable_ads</string>
     <string name="prefs_enable_ads">Enable Ads</string>
     <string name="prefs_enable_ads_summary_on">Thanks for supporting the developer!</string>
-	<string name="prefs_enable_ads_summary_off">Please consider showing ads to support the
-		developer!</string>
+    <string name="prefs_enable_ads_summary_off">Please consider showing ads to support the developer!</string>
     <string name="prefs_enable_ads_title">Enable Mobile Ads</string>
 
     <string name="prefs_cat_recording">Recording Settings</string>
@@ -127,15 +123,14 @@
 
     <string name="prefs_sample_rate_key">sample_rate</string>
     <string name="prefs_sample_rate">Change Sample Rate</string>
-	<string name="prefs_sample_rate_summary">Recording sample rate is device dependent, if you
-		have trouble recording try changing this.</string>
+    <string name="prefs_sample_rate_summary">Recording sample rate is device dependent, if you have trouble recording try changing this.</string>
     <string name="prefs_sample_rate_title">Change Recording Sample Rate</string>
     <string name="prefs_sample_rate_default">44100</string>
 
     <string name="prefs_buffer_size_key">buffer_size</string>
     <string name="prefs_buffer_size">Change Buffer Size (bytes)</string>
-    <string name="prefs_buffer_size_summary">Recording buffer size (bytes) is device dependent, if you
-        have trouble recording try changing this.</string>
+    <string name="prefs_buffer_size_summary">Recording buffer size (bytes) is device dependent,
+        if you have trouble recording try changing this.</string>
     <string name="prefs_buffer_size_title">Change Buffer Size (bytes)</string>
 
     <string name="prefs_cat_key">Key Settings</string>
@@ -179,8 +174,7 @@
 
     <string name="prefs_formant_warp_key">formant_warp</string>
     <string name="prefs_formant_warp">Correction Warp Amount</string>
-	<string name="prefs_formant_warp_summary">Warp formant frequencies (can helps prevent
-		chipmunk effect)</string>
+    <string name="prefs_formant_warp_summary">Warp formant frequencies (can helps prevent chipmunk effect)</string>
     <string name="prefs_formant_warp_title">Formant Frequency Warp</string>
     <string name="prefs_formant_warp_default">-0.10</string>
 
@@ -200,12 +194,12 @@
     <string name="home_banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
 
     <string name="about_title">About MicDroid Version 0.46</string>
-	<string name="about_text">Graphics work courtesy of Peng X. Wang:
+    <string name="about_text">Graphics work courtesy of Peng X. Wang:
 		http://pengxwang.com\n\
 		\n\
 		MicDroid is licensed under the GPL2 License\n\
 		\n\
-		Copyright (c) 2010 Ethan Chen\n\
+		Copyright © 2010 Ethan Chen\n\
 		http://github.com/intervigilium/MicDroid\n\
 		\n\
 		This program is free software; you can redistribute it and/or modify\n\
@@ -262,7 +256,7 @@
     </string>
 
     <string name="help_title">How to Use</string>
-	<string name="help_text">How to Record and Play Back\n\
+    <string name="help_text">How to Record and Play Back\n\
 		1. Press the \'Record Button\' to begin recording\n\
 		2. Press the \'Record Button\' again to stop recording\n\
 		3. Enter a recording name in the pop-up dialog\n\
