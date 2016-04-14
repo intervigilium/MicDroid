@@ -281,4 +281,7 @@
 		3. Try re-installing the application\n\
 		4. Send me an email with your problems/questions\n\
     </string>
+
+    <string name="errors.must_be_between">Must be between</string>
+    <string name="errors.and">And</string>
 </resources>

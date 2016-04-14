@@ -67,4 +67,5 @@ dependencies {
     compile 'com.android.support:preference-v7:23.3.0'
     compile 'com.android.support:preference-v14:23.3.0'
     compile 'com.google.android.gms:play-services-ads:8.4.0'
+    compile 'org.adw.library:discrete-seekbar:1.0.1'
 }
