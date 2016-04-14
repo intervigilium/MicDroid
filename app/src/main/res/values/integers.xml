@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="prefs_buffer_size_default">0</integer>
+
+    <integer name="prefs_pitch_pull_default">0</integer>
+    <integer name="prefs_pitch_shift_default">0</integer>
+    <integer name="prefs_corr_str_default">100</integer>
+    <integer name="prefs_corr_smooth_default">0</integer>
+    <integer name="prefs_formant_warp_default">-10</integer>
+    <integer name="prefs_corr_mix_default">100</integer>
 </resources>

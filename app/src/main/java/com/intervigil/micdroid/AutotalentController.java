@@ -62,33 +62,33 @@ public class AutotalentController {
                 mContext.getResources().getString(R.string.prefs_key_key),
                 mContext.getResources().getString(R.string.prefs_key_default)).charAt(0);
         mAutotalent.setKey(key);
-        float fixedPull = Float.valueOf(sharedPrefs.getString(
+        float fixedPull = (float) sharedPrefs.getInt(
                 mContext.getResources().getString(R.string.prefs_pitch_pull_key),
-                mContext.getResources().getString(R.string.prefs_pitch_pull_default)));
+                mContext.getResources().getInteger(R.integer.prefs_pitch_pull_default)) / 100.0f;
         mAutotalent.setFixedPull(fixedPull);
-        float pitchShift = Float.valueOf(sharedPrefs.getString(
+        float pitchShift = sharedPrefs.getInt(
                 mContext.getResources().getString(R.string.prefs_pitch_shift_key),
-                mContext.getResources().getString(R.string.prefs_pitch_shift_default)));
+                mContext.getResources().getInteger(R.integer.prefs_pitch_shift_default));
         mAutotalent.setPitchShift(pitchShift);
-        float strength = Float.valueOf(sharedPrefs.getString(
+        float strength = (float) sharedPrefs.getInt(
                 mContext.getResources().getString(R.string.prefs_corr_str_key),
-                mContext.getResources().getString(R.string.prefs_corr_str_default)));
+                mContext.getResources().getInteger(R.integer.prefs_corr_str_default)) / 100.0f;
         mAutotalent.setStrength(strength);
-        float smoothness = Float.valueOf(sharedPrefs.getString(
+        float smoothness = (float) sharedPrefs.getInt(
                 mContext.getResources().getString(R.string.prefs_corr_smooth_key),
-                mContext.getResources().getString(R.string.prefs_corr_smooth_default)));
+                mContext.getResources().getInteger(R.integer.prefs_corr_smooth_default)) / 100.0f;
         mAutotalent.setSmoothness(smoothness);
         boolean formantCorrection = sharedPrefs.getBoolean(
                 mContext.getResources().getString(R.string.prefs_formant_corr_key),
                 mContext.getResources().getBoolean(R.bool.prefs_formant_corr_default));
         mAutotalent.enableFormantCorrection(formantCorrection);
-        float formantWarp = Float.valueOf(sharedPrefs.getString(
+        float formantWarp = (float) sharedPrefs.getInt(
                 mContext.getResources().getString(R.string.prefs_formant_warp_key),
-                mContext.getResources().getString(R.string.prefs_formant_warp_default)));
+                mContext.getResources().getInteger(R.integer.prefs_formant_warp_default)) / 100.0f;
         mAutotalent.setFormantWarp(formantWarp);
-        float mix = Float.valueOf(sharedPrefs.getString(
+        float mix = (float) sharedPrefs.getInt(
                 mContext.getResources().getString(R.string.prefs_corr_mix_key),
-                mContext.getResources().getString(R.string.prefs_corr_mix_default)));
+                mContext.getResources().getInteger(R.integer.prefs_corr_mix_default)) / 100.0f;
         mAutotalent.setMix(mix);
         sharedPrefs.registerOnSharedPreferenceChangeListener(mPrefListener);
     }
@@ -114,27 +114,27 @@ public class AutotalentController {
                         mAutotalent.setKey(autotalentKey);
 
                     } else if (mContext.getString(R.string.prefs_pitch_pull_key).equals(key)) {
-                        float fixedPull = Float.valueOf(sharedPrefs.getString(
+                        float fixedPull = (float) sharedPrefs.getInt(
                                 mContext.getResources().getString(R.string.prefs_pitch_pull_key),
-                                mContext.getResources().getString(R.string.prefs_pitch_pull_default)));
+                                mContext.getResources().getInteger(R.integer.prefs_pitch_pull_default)) / 100.0f;
                         mAutotalent.setFixedPull(fixedPull);
 
                     } else if (mContext.getString(R.string.prefs_pitch_shift_key).equals(key)) {
-                        float pitchShift = Float.valueOf(sharedPrefs.getString(
+                        float pitchShift = sharedPrefs.getInt(
                                 mContext.getResources().getString(R.string.prefs_pitch_shift_key),
-                                mContext.getResources().getString(R.string.prefs_pitch_shift_default)));
+                                mContext.getResources().getInteger(R.integer.prefs_pitch_shift_default));
                         mAutotalent.setPitchShift(pitchShift);
 
                     } else if (mContext.getString(R.string.prefs_corr_str_key).equals(key)) {
-                        float strength = Float.valueOf(sharedPrefs.getString(
+                        float strength = (float) sharedPrefs.getInt(
                                 mContext.getResources().getString(R.string.prefs_corr_str_key),
-                                mContext.getResources().getString(R.string.prefs_corr_str_default)));
+                                mContext.getResources().getInteger(R.integer.prefs_corr_str_default)) / 100.0f;
                         mAutotalent.setStrength(strength);
 
                     } else if (mContext.getString(R.string.prefs_corr_smooth_key).equals(key)) {
-                        float smoothness = Float.valueOf(sharedPrefs.getString(
+                        float smoothness = (float) sharedPrefs.getInt(
                                 mContext.getResources().getString(R.string.prefs_corr_smooth_key),
-                                mContext.getResources().getString(R.string.prefs_corr_smooth_default)));
+                                mContext.getResources().getInteger(R.integer.prefs_corr_smooth_default)) / 100.0f;
                         mAutotalent.setSmoothness(smoothness);
 
                     } else if (mContext.getString(R.string.prefs_formant_corr_key).equals(key)) {
@@ -144,15 +144,15 @@ public class AutotalentController {
                         mAutotalent.enableFormantCorrection(enabled);
 
                     } else if (mContext.getString(R.string.prefs_formant_warp_key).equals(key)) {
-                        float formantWarp = Float.valueOf(sharedPrefs.getString(
+                        float formantWarp = (float) sharedPrefs.getInt(
                                 mContext.getResources().getString(R.string.prefs_formant_warp_key),
-                                mContext.getResources().getString(R.string.prefs_formant_warp_default)));
+                                mContext.getResources().getInteger(R.integer.prefs_formant_warp_default)) / 100.0f;
                         mAutotalent.setFormantWarp(formantWarp);
 
                     } else if (mContext.getString(R.string.prefs_corr_mix_key).equals(key)) {
-                        float mix = Float.valueOf(sharedPrefs.getString(
+                        float mix = (float) sharedPrefs.getInt(
                                 mContext.getResources().getString(R.string.prefs_corr_mix_key),
-                                mContext.getResources().getString(R.string.prefs_corr_mix_default)));
+                                mContext.getResources().getInteger(R.integer.prefs_corr_mix_default)) / 100.0f;
                         mAutotalent.setMix(mix);
                     }
                 }
