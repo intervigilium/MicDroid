@@ -295,6 +295,7 @@ public class MainActivity extends AppCompatActivity
             try {
                 if (in != null) {
                     in.close();
+                    mContext.deleteFile(src);
                 }
                 if (out != null) {
                     out.close();
