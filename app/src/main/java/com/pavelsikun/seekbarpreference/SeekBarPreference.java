@@ -158,7 +158,8 @@ public class SeekBarPreference extends Preference {
         seekBarValue.setText(String.valueOf(currentValue));
         seekBarValue.setTextSize(TypedValue.COMPLEX_UNIT_PX, mValueTextSize);
         seekBarValue.setFilters(new InputFilter[]{
-                new InputFilter.LengthFilter(String.valueOf(mMaxValue).length()),
+                new InputFilter.LengthFilter(Math.max(String.valueOf(mMaxValue).length(),
+                        String.valueOf(mMinValue).length())),
         });
         seekBarValue.setEnabled(false);
 
