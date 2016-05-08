@@ -148,9 +148,10 @@ public class LibraryFragment extends ListFragment {
             if (r != null) {
                 TextView name = (TextView) view.findViewById(R.id.recording_row_first_line);
                 TextView length = (TextView) view.findViewById(R.id.recording_row_second_line);
-                // TODO: handle this correctly with resources
-                name.setText("Name: " + r.getName());
-                length.setText("Length: " + r.getLength());
+                name.setText(String.format(getContext().getResources().getString(
+                        R.string.library_recording_name), r.getName()));
+                length.setText(String.format(getContext().getResources().getString(
+                        R.string.library_recording_length), r.getLength()));
             }
 
             return view;
