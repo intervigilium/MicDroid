@@ -254,36 +254,6 @@ public class SeekBarPreference extends Preference {
         persistInt(value);
     }
 
-    /* TODO: Properly enable/disable this?
-    @Override
-    public void setEnabled(boolean enabled) {
-        super.setEnabled(enabled);
-
-        DiscreteSeekBar seekBar = (DiscreteSeekBar) findViewFromRef(mViewHolder, R.id.seekbar);
-        if (seekBar != null) {
-            seekBar.setEnabled(enabled);
-        }
-        EditText seekBarValue = (EditText) findViewFromRef(mViewHolder, R.id.seekbar_value);
-        if (seekBarValue != null) {
-            seekBarValue.setEnabled(enabled);
-        }
-    }
-
-    @Override
-    public void onDependencyChanged(Preference dependency, boolean disableDependent) {
-        super.onDependencyChanged(dependency, disableDependent);
-
-        DiscreteSeekBar seekBar = (DiscreteSeekBar) findViewFromRef(mViewHolder, R.id.seekbar);
-        if (seekBar != null) {
-            seekBar.setEnabled(!disableDependent);
-        }
-        EditText seekBarValue = (EditText) findViewFromRef(mViewHolder, R.id.seekbar_value);
-        if (seekBarValue != null) {
-            seekBarValue.setEnabled(!disableDependent);
-        }
-    }
-    */
-
     private static void setError(Context context, EditText textView, String error) {
         textView.setError(error);
         // android.R.color.holo_red_light: 0x01060016
