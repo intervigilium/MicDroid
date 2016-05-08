@@ -52,15 +52,96 @@ public class SeekBarPreference extends Preference {
     private static final String DEFAULT_MEASUREMENT_UNIT = "";
     private static final int DEFAULT_TEXT_SIZE = 12;
 
+    private int mDefaultValue;
     private int mMaxValue;
     private int mMinValue;
     private int mInterval;
-    private int mCurrentValue;
     private String mMeasurementUnit;
     private int mValueTextSize;
 
-    private boolean mIsTrackingTouch = false;
-    private boolean mIsChangingText = false;
+    private class SeekBarListener implements DiscreteSeekBar.OnProgressChangeListener, TextWatcher {
+
+        private static final String TAG = "SeekBarListener";
+
+        private final DiscreteSeekBar mSeekBar;
+        private final EditText mSeekBarValue;
+
+        private boolean mIsTrackingTouch = false;
+        private boolean mIsChangingText = false;
+
+        public SeekBarListener(DiscreteSeekBar seekBar, EditText seekBarValue) {
+            mSeekBar = seekBar;
+            mSeekBarValue = seekBarValue;
+        }
+
+        @Override
+        public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
+            setError(getContext(), mSeekBarValue, null);
+            persistInt(value);
+            mSeekBarValue.setText(String.valueOf(value));
+        }
+
+        @Override
+        public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
+            if (mIsChangingText) {
+                return;
+            }
+            mIsTrackingTouch = true;
+        }
+
+        @Override
+        public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
+            if (mIsChangingText) {
+                return;
+            }
+            mIsTrackingTouch = false;
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            if (mIsTrackingTouch) {
+                return;
+            }
+            mIsChangingText = true;
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            // Do nothing
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (mIsTrackingTouch) {
+                // Already dragging seekbar
+                return;
+            }
+
+            mIsChangingText = false;
+
+            int value = mMinValue;
+
+            try {
+                value = Integer.parseInt(s.toString());
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+
+            setError(getContext(), mSeekBarValue, null);
+
+            if (value <= mMaxValue && value >= mMinValue) {
+                persistInt(value);
+            } else {
+                String errorBuilder = getContext().getString(R.string.errors_must_be_between) +
+                        " " + mMinValue + " " + mMeasurementUnit +
+                        " " + getContext().getString(R.string.errors_and).toLowerCase() +
+                        " " + mMaxValue + " " + mMeasurementUnit;
+                setError(getContext(), mSeekBarValue, errorBuilder);
+            }
+            // Always show seekbar movement, even if it's wrong
+            mSeekBar.setProgress(value);
+        }
+    }
 
     public SeekBarPreference(Context context) {
         super(context);
@@ -87,7 +168,6 @@ public class SeekBarPreference extends Preference {
         setLayoutResource(R.layout.seekbar_preference);
 
         if (attrs == null) {
-            mCurrentValue = DEFAULT_CURRENT_VALUE;
             mMinValue = DEFAULT_MIN_VALUE;
             mMaxValue = DEFAULT_MAX_VALUE;
             mInterval = DEFAULT_INTERVAL;
@@ -104,7 +184,7 @@ public class SeekBarPreference extends Preference {
                 mInterval = ta.getInt(R.styleable.SeekBarPreference_msbp_interval,
                         DEFAULT_INTERVAL);
 
-                mCurrentValue = attrs.getAttributeIntValue(android.R.attr.defaultValue,
+                mDefaultValue = attrs.getAttributeIntValue(android.R.attr.defaultValue,
                         DEFAULT_CURRENT_VALUE);
 
                 mValueTextSize = ta.getDimensionPixelSize(
@@ -112,8 +192,8 @@ public class SeekBarPreference extends Preference {
                         (int) (getContext().getResources().getDisplayMetrics().density *
                                 DEFAULT_TEXT_SIZE));
 
-                if (mCurrentValue < mMinValue) {
-                    mCurrentValue = (mMaxValue - mMinValue) / 2;
+                if (mDefaultValue < mMinValue) {
+                    mDefaultValue = (mMaxValue - mMinValue) / 2;
                 }
                 mMeasurementUnit = ta.getString(R.styleable.SeekBarPreference_msbp_measurementUnit);
                 if (mMeasurementUnit == null) {
@@ -129,111 +209,36 @@ public class SeekBarPreference extends Preference {
     public void onBindViewHolder(PreferenceViewHolder holder) {
         super.onBindViewHolder(holder);
 
-        /* HORRIBLE: Unsure what's happening here */
+        /* HACK: v7 Preference seems to keep references to the recycled view's object somehow */
         holder.setIsRecyclable(false);
 
+        final int currentValue = getPersistedInt(mDefaultValue);
+
         final DiscreteSeekBar seekBar = (DiscreteSeekBar) holder.findViewById(R.id.seekbar);
+        final EditText seekBarValue = (EditText) holder.findViewById(R.id.seekbar_value);
+        final TextView measurementUnitView = (TextView) holder.findViewById(R.id.measurement_unit);
+        final SeekBarListener seekBarListener = new SeekBarListener(seekBar, seekBarValue);
+
         seekBar.setMin(mMinValue);
         seekBar.setMax(mMaxValue);
-        seekBar.setProgress(mCurrentValue);
+        seekBar.setProgress(currentValue);
         seekBar.setEnabled(isEnabled());
+        seekBar.setOnProgressChangeListener(seekBarListener);
 
-        final EditText seekBarValue = (EditText) holder.findViewById(R.id.seekbar_value);
-        seekBarValue.setText(String.valueOf(mCurrentValue));
+        seekBarValue.setText(String.valueOf(currentValue));
         seekBarValue.setTextSize(TypedValue.COMPLEX_UNIT_PX, mValueTextSize);
         seekBarValue.setFilters(new InputFilter[]{
                 new InputFilter.LengthFilter(String.valueOf(mMaxValue).length()),
         });
         seekBarValue.setEnabled(isEnabled());
+        seekBarValue.addTextChangedListener(seekBarListener);
 
-        seekBar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
-            @Override
-            public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
-                mCurrentValue = value;
-                setError(getContext(), seekBarValue, null);
-                seekBarValue.setText(String.valueOf(value));
-            }
-
-            @Override
-            public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
-                if (mIsChangingText) {
-                    // Already changing text
-                    return;
-                }
-                mIsTrackingTouch = true;
-            }
-
-            @Override
-            public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
-                if (mIsChangingText) {
-                    // Already changing text
-                    return;
-                }
-                mIsTrackingTouch = false;
-
-                // mCurrentValue is already correct due to onProgressChanged
-                persistInt(mCurrentValue);
-                seekBar.setProgress(mCurrentValue);
-            }
-        });
-
-        seekBarValue.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                if (mIsTrackingTouch) {
-                    // Already dragging seekbar
-                    return;
-                }
-
-                mIsChangingText = true;
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Empty
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (mIsTrackingTouch) {
-                    // Already dragging seekbar
-                    return;
-                }
-
-                mIsChangingText = false;
-
-                int value = mMinValue;
-
-                try {
-                    value = Integer.parseInt(s.toString());
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                }
-
-                setError(getContext(), seekBarValue, null);
-
-                if (value <= mMaxValue && value >= mMinValue) {
-                    persistInt(value);
-                    mCurrentValue = value;
-                } else {
-                    String errorBuilder = getContext().getString(R.string.errors_must_be_between) +
-                            " " + mMinValue + " " + mMeasurementUnit +
-                            " " + getContext().getString(R.string.errors_and).toLowerCase() +
-                            " " + mMaxValue + " " + mMeasurementUnit;
-                    setError(getContext(), seekBarValue, errorBuilder);
-                }
-                // Always show seekbar movement, even if it's wrong
-                seekBar.setProgress(value);
-            }
-        });
-
-        final TextView measurementUnitView = (TextView) holder.findViewById(R.id.measurement_unit);
         measurementUnitView.setText(mMeasurementUnit);
     }
 
     @Override
     protected Object onGetDefaultValue(TypedArray ta, int index) {
-        return ta.getInt(index, mCurrentValue);
+        return ta.getInt(index, mDefaultValue);
     }
 
     @Override
@@ -250,7 +255,7 @@ public class SeekBarPreference extends Preference {
                 value = average;
             }
         }
-        mCurrentValue = value;
+        mDefaultValue = value;
         persistInt(value);
     }
 
@@ -295,6 +300,6 @@ public class SeekBarPreference extends Preference {
     }
 
     public int getCurrentValue() {
-        return mCurrentValue;
+        return getPersistedInt(mDefaultValue);
     }
 }
