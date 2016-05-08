@@ -173,11 +173,21 @@ public class MainActivity extends AppCompatActivity
 
     /* From NameEntryDialogListener */
     @Override
+    public void onRename(String srcName, String destName) {
+        String fullDestName = destName.trim() + ".wav";
+        try {
+            moveFile(srcName, fullDestName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void onSave(String name) {
         String fullName = name.trim() + ".wav";
         if (mAudioControl.isLive()) {
             try {
-                moveFile(fullName);
+                moveFile(mContext.getString(R.string.default_recording_name), fullName);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -228,15 +238,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onRename(Recording r) {
-        /*
-        TODO: Allow this again
-        Intent renameFileIntent = new Intent(getBaseContext(), NameEntryDialogFragment.class);
-        Bundle recordingData = new Bundle();
-        recordingData.putParcelable(Constants.INTENT_EXTRA_RECORDING, r);
-        renameFileIntent.putExtras(recordingData);
-
-        startActivityForResult(renameFileIntent, Constants.INTENT_FILENAME_ENTRY);
-        */
+        DialogFragment nameEntryFragment = new NameEntryDialogFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(NameEntryDialogFragment.NAME_ENTRY_RENAME_FILE_KEY, true);
+        args.putString(NameEntryDialogFragment.NAME_ENTRY_RENAME_FILE_NAME, r.getName());
+        nameEntryFragment.setArguments(args);
+        nameEntryFragment.show(getSupportFragmentManager(), "renameEntry");
     }
 
     @Override
@@ -271,14 +278,14 @@ public class MainActivity extends AppCompatActivity
         RecordingOptionsHelper.shareRecording(mContext, r);
     }
 
-    private void moveFile(String file) throws IOException {
+    private void moveFile(String src, String dst) throws IOException {
         int len;
         InputStream in = null;
         OutputStream out = null;
         byte[] buf = new byte[1024];
         try {
-            in = mContext.openFileInput(mContext.getString(R.string.default_recording_name));
-            out = mContext.openFileOutput(file, Context.MODE_WORLD_READABLE);
+            in = mContext.openFileInput(src);
+            out = mContext.openFileOutput(dst, Context.MODE_WORLD_READABLE);
             while ((len = in.read(buf)) > 0) {
                 out.write(buf, 0, len);
             }

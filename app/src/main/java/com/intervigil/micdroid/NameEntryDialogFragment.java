@@ -32,7 +32,12 @@ public class NameEntryDialogFragment extends DialogFragment {
 
     private static final String TAG = "NameEntryDialog";
 
+    public static final String NAME_ENTRY_RENAME_FILE_KEY = "name_entry_dialog_rename_file_key";
+    public static final String NAME_ENTRY_RENAME_FILE_NAME = "name_entry_dialog_rename_file_name";
+
     public interface NameEntryDialogListener {
+        void onRename(String srcName, String destName);
+
         void onSave(String name);
 
         void onCancel();
@@ -63,13 +68,34 @@ public class NameEntryDialogFragment extends DialogFragment {
         return builder.create();
     }
 
+    private boolean getIsRename() {
+        Bundle args = getArguments();
+        if (args != null) {
+            return args.getBoolean(NAME_ENTRY_RENAME_FILE_KEY);
+        }
+        return false;
+    }
+
+    private String getRenameSourceName() {
+        Bundle args = getArguments();
+        if (args != null) {
+            return args.getString(NAME_ENTRY_RENAME_FILE_NAME);
+        }
+        return null;
+    }
+
     private DialogInterface.OnClickListener mBtnListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             switch (which) {
                 case DialogInterface.BUTTON_POSITIVE:
                     EditText nameEditText = (EditText) getDialog().findViewById(R.id.name_entry_input);
-                    mListener.onSave(nameEditText.getText().toString());
+                    String fileName = nameEditText.getText().toString();
+                    if (getIsRename()) {
+                        mListener.onRename(getRenameSourceName(), fileName);
+                    } else {
+                        mListener.onSave(fileName);
+                    }
                     break;
                 case DialogInterface.BUTTON_NEGATIVE:
                     getDialog().cancel();
