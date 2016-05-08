@@ -28,9 +28,7 @@ import android.content.res.TypedArray;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceViewHolder;
-import android.text.Editable;
 import android.text.InputFilter;
-import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
@@ -58,90 +56,6 @@ public class SeekBarPreference extends Preference {
     private int mInterval;
     private String mMeasurementUnit;
     private int mValueTextSize;
-
-    private class SeekBarListener implements DiscreteSeekBar.OnProgressChangeListener, TextWatcher {
-
-        private static final String TAG = "SeekBarListener";
-
-        private final DiscreteSeekBar mSeekBar;
-        private final EditText mSeekBarValue;
-
-        private boolean mIsTrackingTouch = false;
-        private boolean mIsChangingText = false;
-
-        public SeekBarListener(DiscreteSeekBar seekBar, EditText seekBarValue) {
-            mSeekBar = seekBar;
-            mSeekBarValue = seekBarValue;
-        }
-
-        @Override
-        public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
-            setError(getContext(), mSeekBarValue, null);
-            persistInt(value);
-            mSeekBarValue.setText(String.valueOf(value));
-        }
-
-        @Override
-        public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
-            if (mIsChangingText) {
-                return;
-            }
-            mIsTrackingTouch = true;
-        }
-
-        @Override
-        public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
-            if (mIsChangingText) {
-                return;
-            }
-            mIsTrackingTouch = false;
-        }
-
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            if (mIsTrackingTouch) {
-                return;
-            }
-            mIsChangingText = true;
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            // Do nothing
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            if (mIsTrackingTouch) {
-                // Already dragging seekbar
-                return;
-            }
-
-            mIsChangingText = false;
-
-            int value = mMinValue;
-
-            try {
-                value = Integer.parseInt(s.toString());
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            }
-
-            setError(getContext(), mSeekBarValue, null);
-
-            if (value <= mMaxValue && value >= mMinValue) {
-                persistInt(value);
-            } else {
-                String errorBuilder = getContext().getString(R.string.errors_must_be_between) +
-                        " " + mMinValue + " " + mMeasurementUnit +
-                        " " + getContext().getString(R.string.errors_and).toLowerCase() +
-                        " " + mMaxValue + " " + mMeasurementUnit;
-                setError(getContext(), mSeekBarValue, errorBuilder);
-            }
-            // Always show seekbar movement, even if it's wrong
-            mSeekBar.setProgress(value);
-        }
-    }
 
     public SeekBarPreference(Context context) {
         super(context);
@@ -217,21 +131,36 @@ public class SeekBarPreference extends Preference {
         final DiscreteSeekBar seekBar = (DiscreteSeekBar) holder.findViewById(R.id.seekbar);
         final EditText seekBarValue = (EditText) holder.findViewById(R.id.seekbar_value);
         final TextView measurementUnitView = (TextView) holder.findViewById(R.id.measurement_unit);
-        final SeekBarListener seekBarListener = new SeekBarListener(seekBar, seekBarValue);
 
         seekBar.setMin(mMinValue);
         seekBar.setMax(mMaxValue);
         seekBar.setProgress(currentValue);
         seekBar.setEnabled(isEnabled());
-        seekBar.setOnProgressChangeListener(seekBarListener);
+        seekBar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
+            @Override
+            public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
+                setError(getContext(), seekBarValue, null);
+                persistInt(value);
+                seekBarValue.setText(String.valueOf(value));
+            }
+
+            @Override
+            public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
+                // Do nothing
+            }
+
+            @Override
+            public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
+                // Do nothing
+            }
+        });
 
         seekBarValue.setText(String.valueOf(currentValue));
         seekBarValue.setTextSize(TypedValue.COMPLEX_UNIT_PX, mValueTextSize);
         seekBarValue.setFilters(new InputFilter[]{
                 new InputFilter.LengthFilter(String.valueOf(mMaxValue).length()),
         });
-        seekBarValue.setEnabled(isEnabled());
-        seekBarValue.addTextChangedListener(seekBarListener);
+        seekBarValue.setEnabled(false);
 
         measurementUnitView.setText(mMeasurementUnit);
     }
