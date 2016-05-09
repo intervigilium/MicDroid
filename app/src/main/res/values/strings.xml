@@ -79,9 +79,15 @@
     <string name="recording_options_play">Play Recording</string>
     <string name="recording_options_delete">Delete Recording</string>
     <string name="recording_options_rename">Rename Recording</string>
+    <string name="recording_options_export">Export Recording</string>
     <string name="recording_options_set_ringtone">Set as Ringtone</string>
     <string name="recording_options_set_notification">Set as Notification</string>
     <string name="recording_options_share">Share recording</string>
+
+    <string name="recording_options_export_external_media_unavailable">Unable to export, external media not available!</string>
+    <string name="recording_options_export_external_music_dir_unavailable">Unable to export, failed to create external music directory!</string>
+    <string name="recording_options_export_copy_error">Failed to export recording!</string>
+    <string name="recording_options_export_complete">Exported recording to external \'Music\' directory!</string>
 
     <string name="recording_options_ringtone_set">Recording set as ringtone!</string>
     <string name="recording_options_ringtone_error">Unable to set recording as ringtone!</string>

@@ -16,6 +16,7 @@
         <item>@string/recording_options_play</item>
         <item>@string/recording_options_delete</item>
         <item>@string/recording_options_rename</item>
+        <item>@string/recording_options_export</item>
         <item>@string/recording_options_set_ringtone</item>
         <item>@string/recording_options_set_notification</item>
         <item>@string/recording_options_share</item>

@@ -27,6 +27,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.DialogFragment;
@@ -34,6 +35,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -45,9 +47,11 @@ import com.intervigil.micdroid.helper.UpdateHelper;
 import com.intervigil.micdroid.model.Recording;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.channels.FileChannel;
 
 public class MainActivity extends AppCompatActivity
         implements RecordingOptionsDialogFragment.RecordingOptionsDialogListener,
@@ -244,6 +248,53 @@ public class MainActivity extends AppCompatActivity
         args.putString(NameEntryDialogFragment.NAME_ENTRY_RENAME_FILE_NAME, r.getName());
         nameEntryFragment.setArguments(args);
         nameEntryFragment.show(getSupportFragmentManager(), "renameEntry");
+    }
+
+    @Override
+    public void onExport(Recording r) {
+        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            Log.w(TAG, "onExport: External media is not available");
+            Toast.makeText(mContext, R.string.recording_options_export_external_media_unavailable,
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        File externalMusicDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_MUSIC);
+        if (!externalMusicDir.exists() && !externalMusicDir.mkdirs()) {
+            Log.e(TAG, "onExport: Failed to create external music directory");
+            Toast.makeText(mContext, R.string.recording_options_export_external_music_dir_unavailable,
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        File exported = new File(externalMusicDir, r.getName());
+        FileChannel srcChannel = null;
+        FileChannel dstChannel = null;
+        try {
+            srcChannel = mContext.openFileInput(r.getName()).getChannel();
+            dstChannel = new FileOutputStream(exported).getChannel();
+
+            srcChannel.transferTo(0, srcChannel.size(), dstChannel);
+
+            Toast.makeText(mContext, R.string.recording_options_export_complete,
+                    Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            Log.e(TAG, "onExport: Failed to export file: " + r.getName());
+            e.printStackTrace();
+            Toast.makeText(mContext, R.string.recording_options_export_copy_error,
+                    Toast.LENGTH_SHORT).show();
+        } finally {
+            try {
+                if (srcChannel != null) {
+                    srcChannel.close();
+                }
+                if (dstChannel != null) {
+                    dstChannel.close();
+                }
+            } catch (IOException e) {
+                // Do nothing
+            }
+        }
     }
 
     @Override

@@ -23,6 +23,8 @@ public class RecordingOptionsDialogFragment extends DialogFragment {
 
         void onRename(Recording r);
 
+        void onExport(Recording r);
+
         void onSetRingtone(Recording r);
 
         void onSetNotification(Recording r);
@@ -35,6 +37,7 @@ public class RecordingOptionsDialogFragment extends DialogFragment {
             R.string.recording_options_play,
             R.string.recording_options_delete,
             R.string.recording_options_rename,
+            R.string.recording_options_export,
             R.string.recording_options_set_ringtone,
             R.string.recording_options_set_notification,
             R.string.recording_options_share,
@@ -78,6 +81,9 @@ public class RecordingOptionsDialogFragment extends DialogFragment {
                     break;
                 case R.string.recording_options_rename:
                     mListener.onRename(mRecording);
+                    break;
+                case R.string.recording_options_export:
+                    mListener.onExport(mRecording);
                     break;
                 case R.string.recording_options_set_ringtone:
                     mListener.onSetRingtone(mRecording);
