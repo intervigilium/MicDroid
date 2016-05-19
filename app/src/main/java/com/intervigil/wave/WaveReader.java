@@ -59,7 +59,7 @@ public class WaveReader {
     public void openWave() throws IOException {
         int headerId = readUnsignedInt(mInputStream);  // should be "RIFF"
         if (headerId != WAV_HEADER_CHUNK_ID) {
-            throw new InvalidWaveException(("Invalid WAVE header chunk ID: " + headerId));
+            throw new InvalidWaveException("Invalid WAVE header chunk ID: " + headerId);
         }
         mFileSize = readUnsignedIntLE(mInputStream);  // length of header
         int format = readUnsignedInt(mInputStream);  // should be "WAVE"
@@ -219,10 +219,10 @@ public class WaveReader {
         if (ret == -1) {
             return -1;
         } else {
-            return (((buf[0] & 0xFF) << 24)
+            return ((buf[0] & 0xFF) << 24)
                     | ((buf[1] & 0xFF) << 16)
                     | ((buf[2] & 0xFF) << 8)
-                    | (buf[3] & 0xFF));
+                    | (buf[3] & 0xFF);
         }
     }
 
@@ -233,10 +233,10 @@ public class WaveReader {
         if (ret == -1) {
             return -1;
         } else {
-            return (buf[0] & 0xFF
+            return buf[0] & 0xFF
                     | ((buf[1] & 0xFF) << 8)
                     | ((buf[2] & 0xFF) << 16)
-                    | ((buf[3] & 0xFF) << 24));
+                    | ((buf[3] & 0xFF) << 24);
         }
     }
 

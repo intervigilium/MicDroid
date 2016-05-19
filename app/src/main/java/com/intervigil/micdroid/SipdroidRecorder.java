@@ -103,9 +103,9 @@ public class SipdroidRecorder {
     }
 
     public boolean isRunning() {
-        return (mWriterThread != null
+        return mWriterThread != null
                 && mWriterThread.getState() != Thread.State.NEW && mWriterThread
-                .getState() != Thread.State.TERMINATED);
+                .getState() != Thread.State.TERMINATED;
     }
 
     private Handler recorderHandler = new Handler() {

@@ -74,7 +74,7 @@ public class WaveWriter {
         }
         if (offset > length) {
             throw new IndexOutOfBoundsException(
-                    ("offset " + offset + " is greater than length " + length));
+                    "offset " + offset + " is greater than length " + length);
         }
         for (int i = offset; i < length; i++) {
             writeUnsignedShortLE(mOutputStream, src[i]);
@@ -98,7 +98,7 @@ public class WaveWriter {
         }
         if (offset > length) {
             throw new IndexOutOfBoundsException(
-                    ("offset " + offset + " is greater than length " + length));
+                    "offset " + offset + " is greater than length " + length);
         }
         for (int i = offset; i < length; i++) {
             writeUnsignedShortLE(mOutputStream, left[i]);
@@ -146,7 +146,7 @@ public class WaveWriter {
 
     private static void writeUnsignedIntLE(OutputStream stream, int sample)
             throws IOException {
-        stream.write((sample & 0x000000ff));
+        stream.write(sample & 0x000000ff);
         stream.write((sample & 0x0000ff00) >> 8);
         stream.write((sample & 0x00ff0000) >> 16);
         stream.write((sample & 0xff000000) >> 24);
