@@ -24,6 +24,8 @@ import android.content.pm.PackageManager.NameNotFoundException;
 
 public class ApplicationHelper {
 
+    private ApplicationHelper() {}
+
     public static int getPackageVersion(Context context) {
         int versionCode = -1;
         try {

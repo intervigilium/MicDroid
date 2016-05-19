@@ -48,4 +48,6 @@ public class Constants {
 
     // mime type
     public static final String MIME_AUDIO_WAV = "audio/x-wav";
+
+    private Constants() {}
 }

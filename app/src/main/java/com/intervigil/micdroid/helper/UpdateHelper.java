@@ -22,6 +22,9 @@ package com.intervigil.micdroid.helper;
 import android.content.Context;
 
 public class UpdateHelper {
+
+    private UpdateHelper() {}
+
     /*
      * One time updates when app has been updated goes here Currently we always
      * show startup dialog, and reset default recording settings

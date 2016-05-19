@@ -34,6 +34,8 @@ import java.io.File;
 
 public class MediaStoreHelper {
 
+    private MediaStoreHelper() {}
+
     public static Uri getRecordingUri(Context context, Recording recording) {
         ContentResolver resolver = context.getContentResolver();
         if (resolver != null) {

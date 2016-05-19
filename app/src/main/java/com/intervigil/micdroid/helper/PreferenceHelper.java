@@ -27,6 +27,9 @@ import com.intervigil.micdroid.Constants;
 import com.intervigil.micdroid.R;
 
 public class PreferenceHelper {
+
+    private PreferenceHelper() {}
+
     public static int getLastVersionCode(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context).getInt(
                 Constants.KEY_LAST_VERSION_CODE, -1);

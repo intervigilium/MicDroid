@@ -24,6 +24,8 @@ import android.media.AudioFormat;
 public class AudioHelper {
     private static final String TAG = "AudioHelper";
 
+    private AudioHelper() {}
+
     /**
      * Convert Android AudioFormat.CHANNEL_CONFIGURATION constants to integers
      *
