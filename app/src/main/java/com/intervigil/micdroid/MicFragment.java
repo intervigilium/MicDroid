@@ -47,7 +47,7 @@ public class MicFragment extends Fragment {
     public void onActivityCreated(Bundle icicle) {
         super.onActivityCreated(icicle);
 
-        ToggleButton mRecordButton = ((ToggleButton) getView().findViewById(R.id.recording_button));
+        ToggleButton mRecordButton = (ToggleButton) getView().findViewById(R.id.recording_button);
         mRecordButton.setChecked(false);
         mRecordButton.setOnCheckedChangeListener(recordBtnListener);
 
