@@ -28,6 +28,8 @@ public class HeadsetHelper {
 
     private static final String EXTRA_HEADSET_STATE_KEY = "state";
 
+    private HeadsetHelper() {}
+
     public static boolean isHeadsetPluggedIn(Context context) {
         Intent headsetIntent = context.registerReceiver(null, new IntentFilter(
                 Intent.ACTION_HEADSET_PLUG));

@@ -31,6 +31,8 @@ import java.io.File;
 
 public class RecordingOptionsHelper {
 
+    private RecordingOptionsHelper() {}
+
     public static boolean setRingTone(Context context, Recording recording) {
         Uri recordingUri = MediaStoreHelper.getRecordingUri(context, recording);
         if (recordingUri != null) {

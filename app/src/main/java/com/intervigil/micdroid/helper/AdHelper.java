@@ -24,6 +24,8 @@ import com.google.android.gms.ads.AdView;
 
 public class AdHelper {
 
+    private AdHelper() {}
+
     public static void updateAdView(AdView ad, boolean enabled) {
         if (enabled) {
             ad.setEnabled(true);

@@ -29,6 +29,8 @@ import com.intervigil.micdroid.R;
 
 public class DialogHelper {
 
+    private DialogHelper() {}
+
     public static void showWarning(Context context, int titleId, int warningId) {
         Builder warningBuilder = new AlertDialog.Builder(context);
         warningBuilder.setMessage(context.getString(warningId)).setTitle(
